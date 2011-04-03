@@ -1,0 +1,478 @@
+.\" Copyright (C) 1999-2011 mnoGoSearch <general@mnogosearch.org>
+.\"
+.\" May be distributed under the GNU General Public License
+.\" Written by Kir (kir@sever.net) for UdmSearch 2.1
+.\" Modified by Dmitry Tkatchenko (dim@lavtech.ru) for mnoGoSearch 3.1
+.\" Modified by Maxime Zakharov (maxime@mnogosearch.org) for mnoGoSearch 3.2
+.\" 
+.de TQ
+.br
+.ns
+.TP \\$1
+..
+.TH INDEXER 1 "23 December 2002" "mnoGoSearch 3.2" "mnoGoSearch 3.2 reference manual"
+.SH NAME
+indexer \- indexing WWW space.
+.SH SYNOPSIS
+.B indexer
+[
+.B -a
+] [
+.B -b
+] [
+.B -n
+.I number
+] [
+.B -e
+] [
+.B -m
+] [
+.B -q
+] [
+.B -o
+] [
+.B -r
+] [
+.B -i
+] [
+.B -w
+] [
+.B -R
+] [
+.B -N
+.I number
+] [
+.B -p
+.I seconds
+] [
+.B -t
+.I tag
+] [
+.B -u
+.I pattern
+] [
+.B -s 
+.I status
+] [
+.B -y
+.I content-type
+] [
+.B configfile
+]
+
+.B "indexer -C"
+[
+.B -R
+] [
+.B -t 
+.I tag
+] [
+.B -u 
+.I pattern
+] [
+.B -s 
+.I status
+] [
+.B -y
+.I content-type
+] [
+.B configfile
+]
+
+.B "indexer -S"
+[
+.B -R
+] [
+.B -t
+.I tag
+] [
+.B -u 
+.I pattern
+] [
+.B -s 
+.I status
+] [
+.B -y
+.I content-type
+] [
+.B configfile
+]
+
+.B "indexer -I"
+[
+.B -R
+] [
+.B -t 
+.I tag
+] [
+.B -u 
+.I pattern
+] [
+.B -s 
+.I status
+] [
+.B -y
+.I content-type
+] [
+.B configfile
+]
+
+.B "indexer -h|-?"
+
+.SH DESCRIPTION
+.B indexer
+is a part of
+.B mnoGoSearch
+-  search engine. The purpose of
+.B indexer
+is to walk through HTTP, HTTPS, FTP, NEWS servers as well as local file system, 
+recursively grabbing all the documents and storing metadata about documents 
+into SQL or built-in database in a smart and effective manner. Since every 
+document is referenced by its corresponding URL, metadata collected by
+.B indexer
+is used later in a search process.
+
+The behaviour of
+.B indexer
+is controlled mainly via configuration file
+.B indexer.conf (5)
+, which it reads on startup. There is a compiled-in default for configuration
+file name and location, so you don't need to specify it every time you run
+.B indexer
+, but you can specify alternative configuration file as the last argument.
+
+.B indexer
+supports HTML-formatted (text/html MIME type), XML-formated (text/xml MIME type) and plain text
+(text/plain MIME type) documents. Support for other data types is provided
+by using external programs, which are called "parsers". Parser should get
+data of some type from stdin and put text/html or text/plain data to stdout.
+See
+.B indexer.conf(5)
+for details.
+
+You may run
+.B indexer
+regularly from
+.B cron (8)
+to keep metadata up-to-date.
+
+.B indexer
+is also used to manipulate database. It may be used to clear some data
+from database, to output some statistics and to calculate popolarity ranking.
+
+
+
+
+.SH OPTIONS
+.B Indexing
+
+.TP
+.B \-a
+Reindex all documents even if not expired.
+
+By default indexer reindex only whose documents that are "expired", e.g.
+time since their last reindexing is greater than "Period" from
+.B indexer.conf (5)
+file. This option disables the feature, so all documents will be reindexed,
+irrelevant to their state.
+To achieve this,
+.B indexer
+just first marks all URLs as "expired". This gives the
+following side effect: if you start
+.B indexer
+.B \-a
+and then terminate it (for example, by pressing
+.I Ctrl\-C
+) and start again, all URLs will be considered "expired" and will be
+reindexed again.
+
+.TP
+.B \-m
+This option force
+.B indexer
+to reindex documents, even if their content has not been modified. 
+It is achived by disabling If-Modified-Since HTTP header and MD5 hash check.
+This is usable if you have changed some
+.I Allow
+,
+.I Disallow
+,
+.I MaxHops
+or other directives in your
+.B indexer.conf(5)
+file. Thus, there will be different set of rules for storing document URLs and
+so different set of URLs. To find out that URLs, there is a need to reindex
+even-not-changed documents.
+
+.TP
+.B \-n\ 
+.I number
+Reindex only given
+.I number
+of URLs and exit.
+
+.TP
+.B \-c\ 
+.I seconds
+limit indexing time to a given number of
+.I seconds
+.
+
+.TP
+.B \-e
+Reindex most expired documents first.
+That option forces the list of documents to reindex to be sorted by last
+reindexing time. That means that most "expired" documents will be reindexed 
+first. You may or may not experience some minor delay with that option,
+but at least in theory it should slow down indexer a bit.
+
+The combination of
+.B \-e
+and
+.BI \-n\ 
+.I number
+is seems to be of some value. So, you can use
+.B indexer
+.B \-e
+.B \-n\ 
+.B 100
+to reindex just 100 most expired documents.
+
+.TP
+.B \-q
+Quick startup. This mode is useful if you haven't added or modified
+.I Server
+commands.
+.B indexer
+will not insert URLs given in Server commands into database which leads
+to some startup speed-up.
+
+.TP
+.B \-k 
+skip locking (this option affects only MySQL and PostgreSQL only).
+
+.TP
+.B \-i
+Isert new URLs. New URL must be specified using
+.BI -u
+or
+.BI -f
+options.
+
+.TP
+.B \-p
+.I seconds
+Specifies time in seconds to pause after each URL.
+
+.TP
+.B \-w
+Turns off warnings before clearing database.
+
+.TP
+.B \-o
+Index documents with less depth (hops value) first.
+
+.TP
+.B \-r
+Do not try to reduce remote servers load by randomising url fetch list before indexing (recommended for very big number of URLs).
+.TP
+.B \-b
+Block start more than one indexer instances
+
+.TP
+.B \-N
+.I number
+Run 
+.I number
+threads, if multithreaded mnoGoSearch version was compiled.
+
+.TP
+.B \-R
+Calculate popularity rank before program exit.
+
+
+.B Subsection control
+
+.TP
+.BI \-t\ tag
+.TQ 
+.BI \-u\ pattern
+.TQ 
+.BI \-s\ status
+.TQ
+.BI \-g\ category
+.TQ
+.BI \-y\ content-type
+
+Set URL filters on 
+.I tag
+, 
+.I pattern
+,
+.I status
+,
+.I category
+and
+.I content-type
+respectively.
+
+.I tag
+is a server tag that you can arbitrary set in config file
+.B indexer.conf (5)
+
+.I pattern
+is a SQL LIKE wildcard for URL. In short, underscore (
+.B _
+) means "any symbol", and per cent (
+.B %
+) means "any symbols", and the comparison is case insensitive. For example,
+.B indexer
+.B \-u\ 
+.I "%izhcom.ru%"
+will reindex all documents that URLs contains string "izhcom.ru".
+
+.I status
+is a filter on document's HTTP status obtained during last reindexing.
+For example,
+.B \-s\ 
+.I 0
+is a filter for all documents that has not been indexed before.
+.B \-s\ 
+.I 200
+is a filter for all documents that was retrieved with "HTTP 200 Ok" status,
+and
+.B \-s 
+.I 301
+is a filter for all documents that was retrieved with "HTTP 301 Redirect"
+status.
+See HTTP protocol specifications
+for details on HTTP status codes and their respective meanings.
+
+.I category
+is a filter for documents that match specific category. 
+Categories are almost like 
+.I tags
+but nested.
+
+.I content-type
+is a MIME type for documents with that Content-Type.
+
+
+You can freely combine any number of
+.B \-t
+,
+.B \-u
+,
+.B \-s
+,
+.B \-g
+and
+.B \-y
+options. The filters of the same class (tag, pattern, status) are be combined
+using logical OR, and the filters of different classes will be combined using
+logical AND. That means, if you type
+.I indexer -u %izhcom.ru% -u %udm.net% -t 1 -s 200
+the documents-to-index will be those with tag 1 and HTTP status 200, 
+which URLs contains the strings "izhcom.ru" or "udm.net".
+
+.TP
+.B \-f
+.I filename
+Read URL to be indexed/inserted/cleared from a file. (With -a or -C option,
+it supports SQL LIKE wildcard 
+.I '%'
+, has no effect when combined with
+.B \-m
+option.
+
+.TP
+.B \-f
+.I -
+Use STDIN instead of a file to read URL list
+
+
+
+.B Logging options
+
+.TP
+.B \-l
+Do not log to stdout/stderr.
+
+.TP
+.B \-v
+.I level
+Verbose level, can be set to 0-5.
+
+
+.B Misc.
+.TP
+.B \-C
+Clear databases.
+
+This will erase data previously collected by indexer from the mnoGoSearch
+databases. You can use options
+.B \-t
+,
+.B \-u
+and
+.B \-s
+described above to select what do you want to delete.
+
+.B WARNING:
+Use this option with extreme caution!
+
+.TP
+.B \-S
+Show statistics.
+
+This option outputs a brief statistics of how many documents are there in
+database, their HTTP status, and how many documents are expired. You can use
+options
+.B \-t
+,
+.B \-u
+and
+.B \-s
+described above to select what documents do you want statistics on.
+
+.TP
+.B \-I
+Show referrers.
+
+This option shows you the referrers of URLs. Or, in other words, all hyperlinks
+from the document. You can use
+options
+.B \-t
+,
+.B \-u
+and
+.B \-s
+described above to select what documents do you want to show referrers on.
+
+.TP
+.B \-h
+.TQ
+.B \-?
+Shows help screen with brief overall description of indexer options.
+
+.SH BUGS
+If you think you've found a bug in indexer, please report it to
+mnoGoSearch bugreport system at 
+.I http://www.mnogosearch.org/bugs/ 
+(please post in English only).
+
+.SH COPYRIGHT
+Copyright \(co  1998-2011  Lavtech.Com Corp.
+.I (http://www.mnogosearch.org/).
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+.SH "SEE ALSO"
+.BR indexer.conf (5)

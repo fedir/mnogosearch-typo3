@@ -1,0 +1,460 @@
+<chapter id="parsers">
+  <title>External parsers<indexterm><primary>Parsers</primary></indexterm></title>
+
+  <para>&mnogo; understands
+  <literal>text/plain</literal>, <literal>text/html</literal>
+  and <literal>text/xml</literal> Mime types out of the box,
+  and is able to index files of these types using the build-in parsers.
+  For the other file types it can use <emphasis>external parsers</emphasis>.
+  </para>
+  <para>An <emphasis>external parser</emphasis> is an executable program which can convert
+    a file of some Mime type to the one of the types 
+    supported by &mnogo;.
+    For example, if you want &mnogo;
+    to index <application>PostScript</application> files , you can
+    do it with help of the <application>ps2ascii</application> parser,
+    which reads a <application>PostScript</application> file from 
+    &stdin; and produces plain text output to &stdout;.
+  </para>
+  <note>
+  <para>
+  <emphasis>External parsers</emphasis> are also often referenced 
+   in this manual as <emphasis>filters</emphasis>, or <emphasis>converters</emphasis>.
+  </para>
+  </note>
+
+
+  <sect2 id="pars-sup">
+    <title>Supported parser types</title>
+    <para>&mnogo; supports
+    four types of external parsers:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>read data from &stdin;,
+        send the result to &stdout;</para>
+      </listitem>
+      <listitem>
+        <para>read data from a file, send the result to &stdout;</para>
+      </listitem>
+      <listitem>
+        <para>read data from a file, send the result to another file</para>
+      </listitem>
+      <listitem>
+        <para>read data from &stdin;, send the result to a file</para>
+      </listitem>
+    </itemizedlist>
+  </sect2>
+
+  
+  <sect2 id="pars-setup">
+    <title>Setting up parsers</title>
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>Configure Mime types</para>
+        <para>Make sure your HTTP server sends correct
+        <literal>Content-Type</literal> headers.
+        For <application>Apache</application>, have a look at the file
+        <filename>mime.types</filename>, the most common Mime types are already defined there.
+        </para>
+
+        <para>
+        <indexterm><primary>Command</primary><secondary>AddType</secondary></indexterm>
+        If you want to index local files or an FTP server,
+        use the <command><xref linkend="cmdref-addtype"/></command>
+        command in &indexer.conf; to associate
+        file name extensions with their Mime types. For example:
+<programlisting>
+AddType text/html *.html
+</programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <indexterm><primary>Command</primary><secondary>Mime</secondary></indexterm>
+          Add parsers
+        </para>
+        <para>Add parser definition commands. These commands have the following format with three arguments:
+<programlisting>
+Mime &lt;from_mime&gt; &lt;to_mime&gt; &lt;command line&gt;
+</programlisting>
+        </para>
+        <para>For example, the following command defines a parser for <application>man</application> pages:
+<programlisting>
+# Use deroff for parsing man pages ( *.man )
+Mime  application/x-troff-man   text/plain   deroff
+</programlisting>
+        </para>
+        <para>This parser will take data from &stdin; and output
+        results to &stdout;.
+        </para>
+        <para>Some parsers can not operate on &stdin; and require a file to read from.
+        In this case &indexer; can create a
+        temporary file in <filename>/tmp</filename> and remove the file when the parser is done.
+        Use the <literal>$1</literal>
+        macro in the parser command line to substitute the temporary file name. For example,
+        the <command><xref linkend="cmdref-mime"/></command> command for the <application>catdoc</application>
+        <application>MS-Word</application>-to-text converter can look like this:
+<programlisting>
+Mime application/msword text/plain "/usr/bin/catdoc -a $1"
+</programlisting>
+        </para>
+        <para>If your parser writes the result
+        into an output file, use the <literal>$2</literal> macro.
+        &indexer; will replace <literal>$2</literal>
+        with the output temporary file name, then start the parser,
+        read the result from this temporary file and delete the file. For example:
+<programlisting>
+Mime application/msword text/plain "/usr/bin/catdoc -a $1 >$2"
+</programlisting>
+        </para>
+        <para>The parser above will read data
+        from the first temporary file and write results to the second file. Both
+        temporary files will be deleted after reading parser results. Note that
+        this command is effectively the same with the previous example. They
+        only differ in the execution method used by &indexer;:
+        <literal>file-to-STDOUT</literal> versus <literal>file-to-file</literal>.
+        </para>
+      </listitem>
+    </orderedlist>
+  </sect2>
+
+
+<sect2 id="ParserTimeOut">
+  <title>Preventing &indexer; from getting stuck on a parser execution</title>
+  <para>
+  <indexterm><primary>Command</primary><secondary>ParserTimeOut</secondary></indexterm>
+  To prevent &indexer; from getting stuck on a parser execution
+  you can specify the amount of time (in seconds) &indexer;
+  waits for an external parser to return results.
+  Use the <command><xref linkend="cmdref-parsertimeout"/></command> 
+  &indexer.conf; for this purpose. For example:
+<programlisting>
+ParserTimeOut 600
+</programlisting>
+  </para>
+  <para>
+  The default value is <literal>300</literal> seconds (<literal>5</literal> minutes).
+  If an external parser does not return results within this period of time,
+  &indexer; will kill the parser process, remove the
+  associated temporary files and continue with the next document in
+  the queue.
+  </para>
+</sect2>
+
+
+
+  <sect2 id="pars-pipes">
+    <title>Pipes in a parser command line</title>
+    <para>You can use pipes in a parser command line. For
+    example, these lines will be useful to index gzipped
+    <application>man</application> pages from the local disk:
+<programlisting>
+AddType  application/x-gzipped-man  *.1.gz *.2.gz *.3.gz *.4.gz
+Mime     application/x-gzipped-man  text/plain  "zcat | deroff"
+</programlisting>
+    </para>
+  </sect2>
+
+
+  <sect2 id="pars-char">
+    <title>
+       Parsers and character sets
+       <indexterm><primary>Parsers</primary><secondary>Charsets</secondary></indexterm>
+    </title>
+    <para>Some parsers can produce output in a character sets
+    different from the one given in the
+    <command><xref linkend="cmdref-localcharset"/></command> command.
+    You can specify the output character set in a parser command line
+    to make &indexer; convert the parser output to
+    <command><xref linkend="cmdref-localcharset"/></command>.
+    For example, if <application>catdoc</application> is configured
+    to produce output in <literal>windows-1251</literal> character
+    set but LocalCharset is set to <literal>koi8-r</literal>,
+    you can use this command for parsing <application>MS Word</application> documents:
+<programlisting>
+Mime  application/msword  "text/plain; charset=windows-1251" "catdoc -a $1"
+</programlisting>
+    </para>
+  </sect2>
+
+
+  <sect2 id="pars-udmurl">
+    <title>The <varname>UDM_URL</varname> environment variable</title>
+    <para>When executing a parser, &indexer; creates
+    the <literal>UDM_URL</literal> environment variable with the
+    document URL as a value. You can use this variable in the parser scripts.
+    </para>
+    <note>
+      <para>
+      When running &indexer; with multiple threads
+      it's not recommended to use the <varname>UDM_URL</varname> environment variable,
+      use the <varname>${URL}</varname> variable in the parser
+      command line instead. See <xref linkend="cmdref-mime"/> for more details.
+      </para>
+    </note>
+  </sect2>
+
+
+  <sect1 id="pars-links">
+    <title>External parsers for the most common file types
+    <indexterm><primary>Parsers</primary><secondary>third-party</secondary></indexterm>
+    </title>
+
+    <sect2 id="pars-msword">
+    <title><application>MS Word</application> (<filename>*.doc</filename>)</title>
+    <itemizedlist>
+      <listitem>
+        <para><application>catdoc</application> <application>MS-Word</application>-to-text converter</para>
+        <para>
+          <ulink url="http://freshmeat.net/redir/catdoc/1055/url_homepage/">Home page</ulink>, also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/msword "text/plain; charset=utf-8"  "catdoc -d utf-8 $1"
+</programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para><application>wvWare</application> <application>MS-Word</application>-to-&html; converter</para>
+        <para>
+           <ulink url="http://wvware.sourceforge.net/">Home page</ulink>,
+           also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/msword    "text/html; charset=utf-8"    "wvHtml --charset=utf-8 $1 -"
+</programlisting>
+         </para>
+      </listitem>
+      <listitem>
+        <para><application>Tika</application>
+      <application>MS-Word</application>-to-text converter</para>
+        <para>
+           <ulink url="http://lucene.apache.org/tika">Home page</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/msword    "text/plain; charset=utf-8"    "java -Xms128m -Xmx256m -jar /opt/tika-0.5/tika-app-0.5.jar --text $1"
+</programlisting>
+         </para>
+         <para>
+         The exact path to Tika JAR archive file may vary depending on 
+         you system configuration.
+         </para>
+      </listitem>
+     </itemizedlist>
+    </sect2>
+
+ 
+    <sect2 id="pars-excel"> 
+    <title><application>MS Excel</application> (<filename>*.xls</filename>)</title>
+    <itemizedlist>
+      <listitem>
+        <para><application>xls2csv</application> <application>MS-Excel</application>-to-text converter</para>
+        <para>A part of <application>catdoc</application> distribution.
+        </para>
+        <para>
+        &indexer.conf;:
+<programlisting>
+Mime application/vnd.ms-excel   text/plain      "xls2csv $1"
+</programlisting>
+</para>
+      </listitem>
+      <listitem>
+        <para><application>xlhtml</application> <application>Excel-XLS</application>-to-&html; converter</para>
+        <para>Available from the project
+        <ulink url="http://www.xlhtml.org/">homepage</ulink>,
+        also listed on <ulink url="http://freshmeat.net/projects/xlhtml/">Freshmeat</ulink>.
+        and  <ulink url="http://chicago.sourceforge.net/xlhtml/">SourceForge</ulink>.
+        Download page includes <ulink url="http://chicago.sourceforge.net/xlhtml/binarys.html">binaries for Windows</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/vnd.ms-excel  text/html  "xlhtml $1"
+</programlisting>
+        </para>
+      </listitem>
+    </itemizedlist>
+    </sect2>
+
+   <sect2 id="pars-ppt">
+   <title><application>MS PowerPoint</application> (<filename>*.ppt</filename>)</title>
+   <itemizedlist>
+      <listitem>
+        <para>
+          <application>pptohtml</application>
+          <application>PowerPoint-PPT</application>-to-&html; converter
+        </para>
+        <para>A part of the <application>xlhtml</application> distribution. Available from the project
+        <ulink url="http://www.xlhtml.org/">homepage</ulink>,
+        also listed on <ulink url="http://freshmeat.net/projects/xlhtml/">Freshmeat</ulink>.
+        and  <ulink url="http://chicago.sourceforge.net/xlhtml/">SourceForge</ulink>.
+        Download page includes <ulink url="http://chicago.sourceforge.net/xlhtml/binarys.html">binaries for Windows</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/vnd.ms-powerpoint   text/html   "ppthtml $1"
+</programlisting>
+        </para>
+      </listitem>
+   </itemizedlist>
+   </sect2>   
+
+
+    <sect2 id="pars-msword-docx">
+    <title><application>MS Word 2007</application> (<filename>*.docx</filename>)</title>
+    <itemizedlist>
+      <listitem>
+        <para><application>MS Word 2007</application> files can be indexed with help of <application>unzip</application>.</para>
+        <para>
+          <ulink url="http://www.info-zip.org/">unzip</ulink> is included into the majority of the modern
+          <application>Unix</application> distributions.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document *.docx
+Mime application/vnd.openxmlformats-officedocument.wordprocessingml.document text/xml "unzip -p $1 word/document.xml"
+</programlisting>
+        </para>
+      </listitem>
+     </itemizedlist>
+    </sect2>
+
+   <sect2 id="pars-rtf">
+   <title><application>Rich Text</application> (<filename>*.rtf</filename>)</title>
+   <itemizedlist>
+      <listitem>
+        <para><application>unrtf</application> <application>RTF</application>-to-&html; converter</para>
+        <para>
+          <ulink url="ftp://ftp.gnu.org/pub/gnu/unrtf/">Homepage</ulink>
+        </para>
+        <para>
+          &indexer.conf;:
+        <programlisting>
+Mime text/rtf*        text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1
+Mime application/rtf  text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1
+</programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para><application>rtfx</application> RTF-to-XML converter</para>
+        <para>
+          <ulink url="http://memberwebs.com/stef/software/rtfx/">Homepage</ulink>,
+          also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+        </para>
+          &indexer.conf;:
+        <para>
+<programlisting>
+Mime text/rtf*       text/xml "rtfx -w $1 2>/dev/null"
+Mime application/rtf text/xml "rtfx -w $1 2>/dev/null"
+</programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para><application>rthc</application> <application>RTF</application>-to-&html; converter</para>
+        <para>
+          <!-- ulink url="ftp://ftp.gnu.org/pub/gnu/unrtf/">Homepage</ulink -->
+          &indexer.conf;:
+<programlisting>
+Mime text/rtf*       text/html "rthc --use-stdout $1 2>/dev/null"
+Mime application/rtf text/html "rthc --use-stdout $1 2>/dev/null"
+</programlisting>
+        </para>
+      </listitem>
+   </itemizedlist>
+   </sect2>
+
+   
+   <sect2 id="pars-pdf">
+   <title><application>Adobe Acrobat</application> (<filename>*.pdf</filename>)</title>
+   <itemizedlist>
+      <listitem>
+        <para><application>pdftotext</application> <application>Adobe PDF</application> converter</para>
+        <para>A part of the <application>xpdf</application> project.</para>
+        <para>
+          <ulink url="http://freshmeat.net/redir/xpdf/12080/url_homepage/">Homepage</ulink>,
+          also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/pdf            text/plain      "pdftotext $1 -"
+</programlisting>
+        </para>
+      </listitem>
+   </itemizedlist>
+   </sect2>
+
+
+   <sect2 id="pars-ps">
+   <title><application>PostScript</application> (<filename>*.ps</filename>)</title>
+   <itemizedlist>
+      <listitem>
+        <para><application>ps2ascii</application> <application>PostScript</application> converter</para>
+        <para>A part of the <application>GhostScript</application> project.</para>
+        <para>
+          <ulink url="http://pages.cs.wisc.edu/~ghost/">Homepage</ulink>,
+          also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/postscript    text/plain  "ps2ascii $1"
+</programlisting>
+        </para>
+      </listitem>
+   </itemizedlist>
+   </sect2>
+
+
+   <sect2 id="parse-rpm">
+   <title><application>RPM</application></title>
+     <itemizedlist>
+      <listitem>
+        <para>
+          <application>RPM</application> converter by Mario Lang <email>lang[at]zid[dot]tu-graz[dot]ac[dot]at</email>
+        </para>
+        <para><filename>/usr/local/bin/rpminfo</filename>:
+<programlisting>
+#!/bin/bash
+/usr/bin/rpm -q --queryformat="&lt;html&gt;&lt;head&gt;&lt;title&gt;RPM: %{NAME} %{VERSION}-%{RELEASE}
+(%{GROUP})&lt;/title&gt;&lt;meta name=\"description\" content=\"%{SUMMARY}\"&gt;&lt;/head&gt;&lt;body&gt;
+%{DESCRIPTION}\n&lt;/body&gt;&lt;/html&gt;" -p $1
+</programlisting>
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/x-rpm text/html "/usr/local/bin/rpminfo $1"
+</programlisting>
+        </para>
+        <para>It renders to such nice <application>RPM</application> information:
+<programlisting>
+3. RPM: mysql 3.20.32a-3 (Applications/Databases) [4]
+       Mysql is a SQL (Structured Query Language) database server.
+       Mysql was written by Michael (Monty) Widenius. See the CREDITS
+       file in the distribution for more credits for mysql and related
+       things....
+       (application/x-rpm) 2088855 bytes
+</programlisting>
+        </para>
+      </listitem>
+    </itemizedlist>
+    </sect2>
+
+    <para>
+      If you're using an external parser not listed here,
+      please contribute your parser configuration
+      to <email>general@mnogosearch.org</email>.
+    </para>
+  </sect1>
+
+</chapter>
+

@@ -1,0 +1,31 @@
+use strict;
+use ExtUtils::MakeMaker;
+
+my $udm_dir = "@prefix@";
+my $udm_conf_dir = "$udm_dir/etc";
+
+my $libs       = `sh ../scripts/udm-config --libs`;
+my $cflags     = "-I../include";
+my $udmversion = `sh ../scripts/udm-config --version`;
+
+chomp($libs);
+chomp($cflags);
+chomp($udmversion);
+
+die "Can't find mnoGoSearch" unless $udmversion && $libs && $cflags; 
+
+print "\nUsing mnoGoSearch version : $udmversion\n";
+print "\nUsing mnoGoSearch libs    : $libs\n";
+print "\nUsing mnoGoSearch cflags  : $cflags\n";
+
+
+WriteMakefile(
+    'NAME'         => 'Mnogosearch',
+    'VERSION'      => $udmversion,
+    'LIBS'         => [$libs],
+    'DEFINE'       => "-DUDM_CONF_DIR=\\\"$udm_conf_dir\\\"",
+    'INC'          => $cflags,
+    'XSPROTOARG'   => '-prototypes',
+    'AUTHOR'       => 'Alexander Barkov <bar@mnogosearch.org>',
+    'DISTNAME'     => 'Mnogosearch'
+);

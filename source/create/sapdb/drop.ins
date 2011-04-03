@@ -1,0 +1,389 @@
+SAY  --- DROP ALL EXIST Tables !!!!
+/
+AUTOCOMMIT OFF
+/
+IF $RC (EXISTS TABLE dict) = 0 
+THEN
+/
+DROP TABLE dict 
+/
+IF $RC (EXISTS TABLE robots) = 0 
+THEN
+/
+DROP TABLE robots 
+/
+IF $RC (EXISTS TABLE stopword) = 0 
+THEN
+/
+DROP TABLE stopword
+/
+IF $RC (EXISTS TABLE url) = 0 
+THEN
+BEGIN
+/
+DROP  INDEX XAK1url ON url
+/
+DROP INDEX XIE1url ON url
+/
+DROP INDEX rec_id_ind ON url
+/
+DROP INDEX next_index_time_ind ON url
+/
+DROP TABLE url
+/
+END
+/
+IF $RC ( select * from domain.sequences where SEQUENCE_NAME = 'NEXT_URL_ID') = 0
+THEN
+/
+DROP SEQUENCE next_url_id 
+/
+/
+IF $RC (EXISTS TABLE dict10) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict10_url_ind ON dict10
+/
+DROP INDEX dict10_word_ind ON dict10
+/
+DROP TABLE dict10
+/
+END
+/
+IF $RC (EXISTS TABLE dict11) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict11_url_ind ON dict11
+/
+DROP INDEX dict11_word_ind ON dict11
+/
+DROP TABLE dict11
+/
+END
+/
+IF $RC (EXISTS TABLE dict12) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict12_url_ind ON dict12
+/
+DROP INDEX dict12_word_ind ON dict12
+/
+DROP TABLE dict12 
+/
+END
+/
+IF $RC (EXISTS TABLE dict16) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict16_url_ind ON dict16
+/
+DROP INDEX dict16_word_ind ON dict16
+/
+DROP TABLE dict16 
+/
+END
+/
+IF $RC (EXISTS TABLE dict2) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict2_url_ind ON dict2
+/
+DROP INDEX dict2_word_ind ON dict2
+/
+DROP TABLE dict2 
+/
+END
+/
+IF $RC (EXISTS TABLE dict3) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict3_url_ind ON dict3
+/
+DROP INDEX dict3_word_ind ON dict3
+/
+DROP TABLE dict3 
+/
+END
+/
+IF $RC (EXISTS TABLE dict32) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict32_url_ind ON dict32
+/
+DROP INDEX dict32_word_ind ON dict32
+/
+DROP TABLE dict32 
+/
+END
+/
+IF $RC (EXISTS TABLE dict4) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict4_url_ind ON dict4
+/
+DROP INDEX dict4_word_ind ON dict4
+/
+DROP TABLE dict4 
+/
+END
+/
+IF $RC (EXISTS TABLE dict5) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict5_url_ind ON dict5
+/
+DROP INDEX dict5_word_ind ON dict5
+/
+DROP TABLE dict5 
+/
+END
+/
+IF $RC (EXISTS TABLE dict6) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict6_url_ind ON dict6
+/
+DROP INDEX dict6_word_ind ON dict6
+/
+DROP TABLE dict6 
+/
+END
+/
+IF $RC (EXISTS TABLE dict7) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict7_url_ind ON dict7
+/
+DROP INDEX dict7_word_ind ON dict7
+/
+DROP TABLE dict7 
+/
+END
+/
+IF $RC (EXISTS TABLE dict8) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict8_url_ind ON dict8
+/
+DROP INDEX dict8_word_ind ON dict8
+/
+DROP TABLE dict8 
+/
+END
+/
+IF $RC (EXISTS TABLE dict9) = 0
+THEN
+    BEGIN
+/
+DROP INDEX dict9_url_ind ON dict9
+/
+DROP INDEX dict9_word_ind ON dict9
+/
+DROP TABLE dict9 
+/
+END
+/
+COMMIT
+/
+IF $RC (EXISTS TABLE ndict) = 0
+THEN
+    BEGIN
+/    
+DROP INDEX ndict_url_ind ON ndict
+/
+DROP INDEX ndict_word_ind ON ndict
+/
+DROP TABLE ndict 
+/
+END
+/
+COMMIT
+/
+IF $RC (EXISTS TABLE ndict2) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict2_url_ind ON ndict2
+/
+DROP INDEX ndict2_word_ind ON ndict2
+/
+DROP TABLE ndict2 
+/
+END
+/
+IF $RC (EXISTS TABLE ndict3) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict3_url_ind ON ndict3
+/
+DROP INDEX ndict3_word_ind ON ndict3
+/
+DROP TABLE ndict3 
+/
+END
+/
+IF $RC (EXISTS TABLE ndict4) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict4_url_ind ON ndict4
+/
+DROP INDEX ndict4_word_ind ON ndict4
+/
+DROP TABLE ndict4 
+/
+END
+/
+IF $RC (EXISTS TABLE ndict5) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict5_url_ind ON ndict5
+/
+DROP INDEX ndict5_word_ind ON ndict5
+/
+DROP TABLE ndict5 
+/
+END
+/
+IF $RC (EXISTS TABLE ndict6) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict6_url_ind ON ndict6
+/
+DROP INDEX ndict6_word_ind ON ndict6
+/
+DROP TABLE ndict6 
+/
+END
+/
+IF $RC (EXISTS TABLE ndict7) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict7_url_ind ON ndict7
+/
+DROP INDEX ndict7_word_ind ON ndict7
+/
+DROP TABLE ndict7
+/
+END
+/
+IF $RC (EXISTS TABLE ndict8) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict8_url_ind ON ndict8
+/
+DROP INDEX ndict8_word_ind ON ndict8
+/
+DROP TABLE ndict8
+/
+END
+/
+IF $RC (EXISTS TABLE ndict9) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict9_url_ind ON ndict9
+/
+DROP INDEX ndict9_word_ind ON ndict9
+/
+DROP TABLE ndict9
+/
+END
+/
+IF $RC (EXISTS TABLE ndict10) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict10_url_ind ON ndict10
+/
+DROP INDEX ndict10_word_ind ON ndict10
+/
+DROP TABLE ndict10
+/
+END
+/
+IF $RC (EXISTS TABLE ndict11) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict11_url_ind ON ndict11
+/
+DROP INDEX ndict11_word_ind ON ndict11
+/
+DROP TABLE ndict11
+/
+END
+/
+IF $RC (EXISTS TABLE ndict12) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict12_url_ind ON ndict12
+/
+DROP INDEX ndict12_word_ind ON ndict12
+/
+DROP TABLE ndict12
+/
+END
+/
+IF $RC (EXISTS TABLE ndict16) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict16_url_ind ON ndict16
+/
+DROP INDEX ndict16_word_ind ON ndict16
+/
+DROP TABLE ndict16
+/
+END
+/
+IF $RC (EXISTS TABLE ndict32) = 0
+THEN
+    BEGIN
+/
+DROP INDEX ndict32_url_ind ON ndict32
+/
+DROP INDEX ndict32_word_ind ON ndict32
+/
+DROP TABLE ndict32
+/
+END
+/
+COMMIT
+/
+IF $RC (EXISTS TABLE categories) = 0
+THEN
+/
+DROP TABLE categories 
+/
+IF $RC ( select * from domain.sequences where SEQUENCE_NAME = 'SQ_CATEGORY_ID') = 0
+THEN
+/
+ DROP SEQUENCE SQ_category_id
+/
+COMMIT
+/
+IF $RC (EXISTS TABLE qtrack) = 0
+THEN
+/
+    DROP TABLE qtrack 
+/
+COMMIT

@@ -1,0 +1,141 @@
+<sect1 id="syslog">
+  <title>Using syslog
+  <indexterm><primary>Syslog</primary></indexterm>
+  </title>
+  <para>
+    &mnogo;
+    programs &indexer; and
+    &search.cgi; can use
+    <application>syslog</application> to
+    log its messages.
+    Different verbose levels can be specified 
+    using the  <literal>-v</literal> option in 
+    &indexer; command line,
+    as well as with help of 
+    the <xref linkend="cmdref-loglevel"/> command
+    in &indexer.conf; and
+    <filename>search.cgi</filename>
+  </para>
+  <table>
+    <title>Verbose levels</title>
+    <tgroup cols="2">
+      <tbody>
+        <row>
+          <entry>0</entry>
+          <entry>SILENT</entry>
+          <entry>suppress all logs.
+            Default for &search.cgi;
+          </entry>
+        </row>
+        <row>
+          <entry>1</entry>
+          <entry>ERROR</entry>
+          <entry>log only critical errors</entry>
+        </row>
+        <row>
+          <entry>2</entry>
+          <entry>WARNING</entry>
+          <entry>log warnings as well</entry>
+        </row>
+        <row>
+          <entry>3</entry>
+          <entry>INFO</entry>
+          <entry>add info messages to log.
+            Default for &indexer;.
+          </entry>
+        </row>
+        <row>
+          <entry>4</entry>
+          <entry>EXTRA</entry>
+          <entry>extra logging</entry>
+        </row>
+        <row>
+          <entry>5</entry>
+          <entry>DEBUG</entry>
+          <entry>for debug purposes</entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </table>
+
+  <para>
+  By default, log messages are sent both to
+  <application>syslog</application> and to &stdout;/&stderr;.
+  You can use the <option>-l</option> command line
+  option to suppress logging to &stdout;/&stderr;.
+  This can be useful when you run &indexer;
+  from <application>cron</application>.
+  </para>
+
+  <note>
+  <para>
+  You can compile &mnogo;
+  without <application>syslog</application> support. In order
+  to do it, run <literal>configure --disable-syslog</literal>, then
+  rebuild &mnogo;.
+  When compiled without <application>syslog</application> support,
+  &mnogo; can only
+  use &stdout;/&stderr; for logging.
+  </para>
+  </note>
+
+  <para><application>syslog</application> uses different facilities to separate log
+  messages. &mnogo; uses
+  the <literal>LOCAL7</literal> facility by default.
+  Facility be changed when running <application>configure</application>
+  with the <literal>--enable-syslog=LOG_FACILITY</literal> option,
+  where <literal>LOG_FACILITY</literal> is one of the standard
+  facilities, usually listed in <filename>/usr/include/sys/syslog.h</filename>
+  header file.
+  </para>
+
+  <para>Facility helps to separate
+  &mnogo; messages from
+  others. You can modify <filename>/etc/syslog.conf</filename> to tell
+  <application>syslog</application> how to handle
+  &mnogo; messages. For example:
+<programlisting>
+# Log all messages from mnoGoSearch to a separate file
+local7.*        -/var/log/mnoGoSearch.log
+</programlisting>
+  </para>
+
+  <para>Another example:
+<programlisting>
+# Send all mnoGoSearch messages to the host "central"
+# Syslog on central should be configured to accept the messages
+local7.*        @central
+</programlisting>
+  </para>
+
+  <para>By default all messages are also logged to
+  the file <filename>/var/log/messages</filename>.
+  If you use &mnogo;
+  actively, it can flood this file with a huge
+  number of messages. To avoid this you can add
+  <literal>local7.none</literal> or
+  <literal>local7.!*</literal>
+  (ignore any messages from the <literal>local7</literal> facility)
+   to your "catch-all" log files.
+  </para>
+
+  <para>For example:
+<programlisting>
+#
+# Some `catch-all' logfiles.
+#
+*.=info;*.=notice;*.=warn;\
+        auth,authpriv.none;\
+        cron,daemon.none;\
+        mail,news.none;\
+        local7.!*               -/var/log/messages
+</programlisting>
+  </para>
+
+  <para>Please take a look at <literal>syslogd(8)</literal>
+  and <literal>syslog.conf(5)</literal> man pages for
+  more information about <application>syslog</application>
+  and its configuration notes.
+  </para>
+</sect1>
+

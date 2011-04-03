@@ -1,0 +1,13 @@
+DROP TABLE url;
+DROP TABLE dict;
+DROP TABLE bdict;
+DROP TABLE urlinfo;
+DROP TABLE server;
+DROP TABLE srvinfo;
+DROP TABLE links;
+DROP TABLE categories;
+DROP TABLE wrdstat;
+DROP TABLE crossdict;
+DROP TABLE qcache;
+DROP TABLE qtrack;
+DROP TABLE qinfo;

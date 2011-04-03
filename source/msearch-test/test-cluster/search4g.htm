@@ -1,0 +1,41 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+ImportEnv UDM_TEST_DIR
+DBAddr file://$(UDM_TEST_DIR)/test4g.xml
+
+HlBeg	<b>
+HlEnd	</b>
+
+Log2Stderr yes
+LogLevel 6
+-->
+<!--restop-->
+Search for: $&(q)
+Search results: $(W)
+Results $(first)-$(last) of $(total)
+<!--/restop-->
+<!--res-->
+<!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
+$(Order).
+ID: $(ID)
+Score: $(Score)
+Title: $&(Title)
+URL: $(URL)
+Body: $&(Body)
+Content-Length: $&(Content-Length)
+Content-Type: $&(Content-Type)
+Tag: $(Tag)
+More results from same site: $(sitelimit_href) - $(PerSite) found.
+<!--/res-->
+<!--notfound-->
+Sorry, your search for $&(q) did not find any results.
+<!--/notfound-->
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+<!--error-->
+Error: $(E)
+<!--/error-->
+<!--bottom-->
+---------------------
+<!--/bottom-->

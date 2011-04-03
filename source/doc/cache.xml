@@ -1,0 +1,91 @@
+<sect1 id="srcache">
+  <title>Search results cache
+    <indexterm><primary>Search results cache</primary></indexterm>
+  </title>
+
+  <para>
+  By caching the results of search queries, &search.cgi; can
+  avoid having to repeat time-consuming &cpu; and disk
+  operations needed to generate the search results.
+  This helps &search.cgi; to respond very quickly in case if
+  the same search query was done recently, as well as when
+  the user is navigating through the pages of the same result
+  seeing documents <literal>11-20</literal>, <literal>21-30</literal>,
+  and so on.
+  </para>
+
+  <note>
+  <para>
+  &mnogo; <literal>3.3.8</literal> introduced a new type
+  of search result cache, which is activated using
+  the <option><link linkend="cmdref-dbaddr-qcache">QCache=yes</link></option>
+  parameter to &cmd-dbaddr;. The old cache implementation which was
+  controlled by the <command><xref linkend="cmdref-cache"/></command>
+  command is obsolete and should not be used.
+  </para>
+  </note>
+  
+  <para>The new search result cache stores its data
+  in the <varname>qcache</varname> table in the &mnogo; database.
+  New search result cache implementation additionally supports the
+  <emphasis>search in found</emphasis> feature, also often
+  referenced to as <emphasis>refine your search</emphasis>.
+  </para>
+
+  <para>
+  Search result cache is automatically invalidated when
+  <command><literal>indexer -Eblob</literal></command> is executed.
+  </para>
+
+  <para>
+  When checking if a previously cached search result exists
+  for the current search query, &search.cgi; also verifies that
+  all &sec-search-parameters; that may affect the way search 
+  query is executed match in the current and the cached queries.
+  This guarantees that &search.cgi; normally returns exactly
+  the same results, with query cache enabled or disabled.
+  However, &search.cgi; does not check if any of &search.htm;
+  commands have changed between the times of executions of
+  the cached query and the current query. That means, if you
+  change any of the commands affecting score, make sure to 
+  clear query cache.
+  </para>
+  
+  <para id="srcache-clear">
+  <title>Clearing search result cache</title>
+  To clear search result cache please use
+  <literal>TRUNCATE TABLE qcache</literal> or
+  a similar &sql; statement (depending on your database software).
+  </para>
+
+  <para>
+  <title>Old search result cache</title>
+  The rest of this article applies to the old search result
+  cache implementation.
+  </para>
+  
+  <para>
+  Search results cache is disabled by default. You may use
+  "Cache yes" &search.htm; command to enable results caching.
+  </para>
+
+  <para>Search cache is located in the
+<literal>$PREFIX/var/cache/</literal> subdirectory, where
+<literal>$PREFIX</literal> is mnoGoSearch installation's base
+directory. Each result is stored in a separate file.</para>
+
+  <note>
+    <para>Search results cache is not deleted
+    automatically. You have to delete it every time after indexer's work
+    to avoid displaying non-recent cached results. It is also reasonable
+    to insert cache cleaning into system crontab, for example once a
+    day. To clean cache, just remove all files in the
+    <literal>$PREFIX/var/cache/</literal> directory.
+    For example:
+    <programlisting>
+/bin/rm -f /usr/local/mnoGoSearch/var/cache/*
+    </programlisting>
+    </para>
+  </note>
+
+</sect1>

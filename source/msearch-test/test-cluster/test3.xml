@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Generator v1.1" -->
+<rss version="2.0" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
+
+  <channel>
+
+    <openSearch:totalResults>0</openSearch:totalResults>
+
+    <mnoGoSearch:WordStatList>
+      <mnoGoSearch:WordStatItem order="0" count="0" word="web"/>
+    </mnoGoSearch:WordStatList>
+
+  </channel>
+
+</rss>

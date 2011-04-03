@@ -1,0 +1,148 @@
+CREATE TABLE dict (
+       word                 VARCHAR2(32) NOT NULL,
+       url_id               NUMBER(12) NOT NULL,
+       intag                NUMBER(12) NOT NULL
+) PCTFREE 5 PCTUSED 95;
+
+CREATE INDEX dict_word   ON dict (word);
+CREATE INDEX dict_url_id ON dict (url_id);
+
+CREATE TABLE crossdict (
+  url_id INT NOT NULL,
+  ref_id INT NOT NULL,
+  word  varchar(32) NOT NULL,
+  intag  INT NOT NULL
+);
+CREATE INDEX crossdict_url_id ON crossdict (url_id);
+CREATE INDEX crossdict_ref_id ON crossdict (ref_id);
+CREATE INDEX crossdict_word ON crossdict (word);
+CREATE TABLE bdict (
+       word                 VARCHAR2(255) NOT NULL,
+       secno                NUMBER(12) NOT NULL,
+       intag                BLOB NOT NULL
+) PCTFREE 5 PCTUSED 95;
+
+CREATE INDEX bdict_word ON bdict (word);
+
+CREATE TABLE qcache (
+  id      NUMBER(12) NOT NULL,
+  tm      NUMBER(12) NOT NULL,
+  doclist BLOB NOT NULL,
+  wordinfo CLOB NOT NULL,
+  PRIMARY KEY (id,tm)
+);
+CREATE INDEX key_qcache_tmstamp ON qcache(tm);
+
+
+CREATE TABLE url (
+       rec_id               NUMBER(12) NOT NULL,
+       status               NUMBER(6) DEFAULT 0 NOT NULL,
+       docsize              NUMBER(12) DEFAULT 0 NOT NULL,
+       next_index_time      NUMBER(12) NULL,
+       last_mod_time        NUMBER(12) DEFAULT 0 NOT NULL,
+       referrer             NUMBER(12) DEFAULT 0 NOT NULL,
+       hops                 NUMBER(6) DEFAULT 0 NOT NULL,
+       crc32                NUMBER(12) DEFAULT -1 NOT NULL,
+       seed                 NUMBER(6) DEFAULT 0 NOT NULL,
+       bad_since_time       NUMBER(12) NULL,
+       site_id		    NUMBER(12),
+       server_id	    NUMBER(12),
+       shows		    NUMBER(12) DEFAULT 0 NOT NULL,
+       pop_rank	  	    FLOAT DEFAULT 0.0 NOT NULL,
+       url                  VARCHAR2(2048) NOT NULL
+)
+       PCTFREE 5
+       PCTUSED 95;
+
+CREATE UNIQUE INDEX url_url ON url (url ASC);
+CREATE INDEX url_rec_id ON url (rec_id);
+CREATE INDEX url_crc32 ON url (crc32 ASC);
+CREATE INDEX url_next_index_time_ind ON url (next_index_time);
+CREATE INDEX url_referrer ON url (referrer);
+CREATE INDEX url_server_id  ON url (server_id);
+
+CREATE SEQUENCE next_url_id INCREMENT BY 1 START WITH 1;
+
+CREATE TABLE urlinfo (
+       url_id NUMBER(38) NOT NULL,
+       sname  VARCHAR2(64) NOT NULL,
+       sval   CLOB
+);
+
+CREATE INDEX urlinfo_id_ind ON urlinfo (url_id);
+
+CREATE TABLE server (
+	rec_id          NUMBER          DEFAULT 0   NOT NULL, 
+	enabled		NUMBER		DEFAULT 0   NOT NULL,
+	url		VARCHAR2(2048)	DEFAULT ''  NOT NULL,
+	period		NUMBER		DEFAULT 604800 NOT NULL,
+	tag		VARCHAR2(16)	DEFAULT '',
+	category	VARCHAR2(16)	DEFAULT ''  NOT NULL,
+	command		CHAR(1)		DEFAULT 'S' NOT NULL,
+	ordre		NUMBER		DEFAULT 0   NOT NULL,
+	parent		NUMBER		DEFAULT 0   not null,
+	weight		float		DEFAULT 1   not null,
+	pop_weight	float		DEFAULT 0   not null
+);
+
+CREATE SEQUENCE server_rec_id_seq INCREMENT BY 1 START WITH 1;
+
+ALTER TABLE server ADD CONSTRAINT server_pk PRIMARY KEY (rec_id);
+CREATE UNIQUE INDEX srv_url ON server (url); 
+CREATE INDEX srv_ordre ON server (ordre);
+CREATE INDEX srv_parent ON server (parent);
+CREATE INDEX srv_command ON server (command);
+CREATE INDEX srv_tag ON SERVER (tag);
+CREATE INDEX srv_category ON SERVER (category);
+
+CREATE TABLE srvinfo (
+     srv_id int           NOT NULL,
+     sname  varchar(96)   NOT NULL,
+     sval   varchar(1024) NOT NULL
+);
+CREATE INDEX srvinfo_id ON srvinfo (srv_id);
+
+CREATE TABLE links (
+	ot	 NUMBER not null,
+	k	 NUMBER not null,
+	weight   FLOAT DEFAULT 0.0 not null
+);
+
+CREATE UNIQUE INDEX links_links ON links (ot, k);
+CREATE INDEX links_ot ON links (ot);
+CREATE INDEX links_k ON links (k);
+
+CREATE TABLE categories (
+  rec_id int    NOT NULL PRIMARY KEY,
+  path char(10) DEFAULT '' NOT NULL,
+  link char(10) DEFAULT '' NOT NULL,
+  name char(64) DEFAULT '' NOT NULL
+);
+
+CREATE SEQUENCE qtrack_seq INCREMENT BY 1 START WITH 1;
+
+CREATE TABLE qtrack (
+  rec_id INT            NOT NULL  PRIMARY KEY,
+  ip     VARCHAR(16),
+  qwords VARCHAR(2048)  NOT NULL,
+  qtime  INT            NOT NULL,
+  wtime  INT            NOT NULL,
+  found  INT            NOT NULL
+);
+CREATE INDEX qtrack_ipt ON qtrack(ip,qtime);
+
+CREATE TABLE qinfo (
+  q_id  INT NOT NULL,
+  name    VARCHAR(64),
+  sval    VARCHAR(2048)
+);
+CREATE INDEX qinfo_id ON qinfo (q_id);
+
+CREATE TABLE wrdstat (
+  word varchar(64) NOT NULL,
+  snd varchar(64) NOT NULL,
+  cnt int NOT NULL
+);
+CREATE INDEX wrdstat_word ON wrdstat (word);
+CREATE INDEX wrdstat_snd  ON wrdstat (snd);
+

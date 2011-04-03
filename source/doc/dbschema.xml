@@ -1,0 +1,213 @@
+<sect1 id="dbschema">
+<title>Database schema</title>
+<indexterm><primary>Database schema</primary></indexterm>
+<para>The complete database schema used by &mnogo;
+can be found in the SQL scripts in the <filename>/create</filename> subdirectory
+of &mnogo; sources.
+
+<table id="db-server">
+  <title><varname>server</varname> table schema</title>
+  <tgroup cols="2">
+  <thead>
+    <row><entry>Column name</entry>
+    <entry>Purpose</entry></row>
+  </thead>
+
+<tbody>
+<row>
+  <entry><varname>rec_id</varname></entry>
+  <entry>An unique record identifier.</entry>
+</row>
+<row>
+  <entry><varname>enabled</varname></entry>
+  <entry>Indicates whether this record is to be loaded
+  or ignored by <command>indexer</command>. Use this flag to disable entries temporarily.
+  </entry>
+</row>
+<row>
+  <entry><varname>url</varname></entry>
+  <entry>URL in case of <command><xref linkend="cmdref-server"/></command>, or an URL pattern in case
+  of a filter (<command><xref linkend="cmdref-allow"/></command>,
+  <command><xref linkend="cmdref-disallow"/></command>, etc.).
+  </entry>
+</row>
+<row>
+  <entry><varname>tag</varname></entry>
+  <entry>Tag value, used to limit searches by <xref linkend="cmdref-tag"/>.</entry>
+</row>
+<row>
+  <entry><varname>category</varname></entry>
+  <entry>Category ID, referencing to the table <literal>Category</literal>.</entry>
+</row>
+<row>
+  <entry><varname>command</varname></entry>
+  <entry>
+    <para>'<literal>S</literal>' - this record defines a <varname>server</varname>.</para>
+    <para>'<literal>F</literal>' - this record defines a <varname>filter</varname>.</para>
+  </entry>
+</row>
+<row>
+  <entry><varname>ordre</varname></entry>
+  <entry>Sorting key, <command>indexer</command> fetches the records from the table "<varname>server</varname>"
+  in the order of this key. Put the entries for subdirectories with smaller <varname>ordre</varname>
+  values than the entries for the entire server.
+  </entry>
+</row>
+<row>
+  <entry><varname>parent</varname></entry>
+  <entry>
+  Use <literal>0</literal> for your own entries.
+  A non-zero value <literal>N</literal> in this column indicates that 
+  this record was collected by <command>indexer</command> automatically,
+  references to the parent record with <varname>url_id</varname>=<literal>N</literal>.
+  </entry>
+</row>
+<row>
+  <entry><varname>weight</varname></entry>
+  <entry>The weight of this record for PopRank calculation.</entry>
+</row>
+<row>
+  <entry><varname>pop_weight</varname></entry>
+  <entry>The weight of the outgoing links of this server.
+  This value is calculated automatically. Manual changes will have no effect.
+  </entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+
+<para>The other server parameters are stored in the <varname>srvinfo</varname> table.
+Possible values for some parameters are given in the table below.
+Most of them have similar effect with the corresponding &indexer.conf;
+commands.
+
+<table id="db-srvinfo">
+<title>Server parameters in the table <varname>srvinfo</varname>.</title>
+<tgroup cols="2">
+<thead>
+<row><entry><varname>sname</varname> value</entry>
+<entry>Possible <varname>sval</varname> values.</entry></row>
+</thead>
+<tbody>
+<row>
+  <entry><varname>Alias</varname></entry>
+  <entry>An alias used for the <varname>URL</varname>, in case of a server
+  definition.
+  </entry>
+</row>
+<row>
+  <entry><varname>Period</varname></entry>
+  <entry>Reindexing period in seconds.</entry>
+</row>
+<row>
+  <entry><varname>RemoteCharset</varname>
+  </entry><entry>Default character set value.
+  </entry>
+</row>
+<row>
+  <entry><varname>DefaultLang</varname></entry>
+  <entry>Default language value.</entry>
+</row>
+<row>
+  <entry><varname>DetectClones</varname></entry>
+  <entry>Indicates whether to detect clones for this site.</entry>
+</row>
+<row>
+  <entry><varname>Request.Authorization</varname></entry>
+  <entry>For basic authorization.</entry>
+</row>
+<row>
+  <entry><varname>Request.Proxy</varname></entry>
+  <entry>Proxy server to access documents from this resource.</entry>
+</row>
+<row>
+  <entry><varname>Request.Proxy-Authorization</varname></entry>
+  <entry>Proxy server authorization.</entry>
+</row>
+<row>
+  <entry><varname>MaxHops</varname></entry>
+  <entry>Maximum depth of the path in "mouse" clicks from the start URL.</entry>
+</row>
+<row>
+  <entry><varname>Index</varname></entry>
+  <entry>
+    <para><literal>yes</literal> indicates that the content of
+    this site should be indexed.
+    </para>
+    <para>
+     <literal>no</literal> indicates that the site content should not be indexed,
+     but the outgoing links should be collected.
+    </para>
+   </entry>
+</row>
+<row>
+  <entry><varname>Follow</varname></entry>
+  <entry>
+    Corresponds to the <varname>Subsection</varname> argument of
+    the command <command><xref linkend="cmdref-server"/></command>.
+    <para><literal>0</literal> - "page"</para>
+    <para><literal>1</literal> - "path"</para>
+    <para><literal>2</literal> - "site"</para>
+    <para><literal>3</literal> - "world"</para>
+  </entry>
+</row>
+<row>
+  <entry><varname>Robots</varname></entry>
+  <entry>Indicates whether <filename>robots.txt</filename> should be
+  downloaded and processed for this site.
+  </entry>
+</row>
+<row>
+  <entry><varname>MaxNetErrors</varname></entry>
+  <entry>Maximum network errors for this server.</entry>
+</row>
+<row>
+  <entry><varname>NetErrorDelayTime</varname></entry>
+  <entry>Crawler delay time when a network error occurs for this server.</entry>
+</row>
+<row>
+  <entry><varname>ReadTimeOut</varname></entry>
+  <entry>Network timeout value.</entry>
+</row>
+<row>
+  <entry><varname>match_type</varname></entry>
+  <entry>
+    <para>=0, UDM_MATCH_FULL - full match (<literal>Server page</literal>).</para>
+    <para>=1, UDM_MATCH_BEGIN - pattern is a URL prefix (<literal>Server path</literal>).</para>
+    <para>=2, UDM_MATCH_SUBSTR - pattern is a URL substring.</para>
+    <para>=3, UDM_MATCH_END - pattern is a URL suffix.</para>
+    <para>=4, UDM_MATCH_REGEX - pattern is a regular expression (<literal>Realm regex</literal>).</para>
+    <para>=5, UDM_MATCH_WILD - a wildcard pattern with * and ? wildcards
+    (<literal>Realm string</literal>).
+    </para>
+<para>=6, UDM_MATCH_SUBNET - &lt; not yet supported &gt;.</para>
+</entry>
+</row>
+<row>
+  <entry>
+    <varname>case_sense</varname>
+  </entry>
+  <entry>
+    <para><literal>1</literal> - case insensitive match.</para>
+    <para><literal>0</literal> - case sensitive match.</para>
+  </entry>
+</row>
+<row>
+  <entry><varname>nomatch</varname></entry>
+  <entry>
+    <para><literal>1</literal> - URLs not matching this record are accepted.</para>
+    <para><literal>0</literal> - URLs matching this record are accepted.</para>
+  </entry>
+</row>
+
+
+</tbody>
+</tgroup>
+</table>
+</para>
+
+
+</sect1>
+

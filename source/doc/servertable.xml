@@ -1,0 +1,206 @@
+<sect2 id="srvtable">
+
+  <title>ServerTable
+    <indexterm><primary>Command</primary><secondary>ServerTable</secondary></indexterm>
+  </title>
+
+  <para>The quick way to specify URLs to be indexed by &mnogo; is just
+    to specify them using the &cmd-server; or &cmd-realm; directives in the &indexer.conf; file.
+    However, in some cases users might already have URLs saved in a &sql; database,
+    it would be much simpler to have &mnogo; use this information. This can be
+    done using the <command><xref linkend="cmdref-servertable"/></command> command,
+    which is available in &mnogo; starting from the version 3.3.7.
+  </para>
+
+
+  <para>When <command>ServerTable mysql://user:pass@host/dbname/my_server?srvinfo=my_srvinfo</command>
+  is specified, &indexer; loads server information from
+  the given &sql; table <literal>my_server</literal> and loads
+  the server parameters from the table <literal>my_srvinfo</literal>.
+  </para>
+
+  <para>    
+  The following sections provide step-by-step instructions how to create,
+  populate and load Server tables.
+  </para>
+
+
+  <sect3 id="srvtable-create">
+    <title>Step 1: creating Server table</title>
+    <para>
+     The tables <literal>server</literal> and <literal>srvinfo</literal>
+     that are already present in &mnogo; are used internally. One should not
+     try to use these tables to insert your own URLs. Instead, you must create
+     your own tables with similar structures.
+     For example, with &app-mysql; you can do:
+     <programlisting>
+CREATE TABLE my_server LIKE server;
+CREATE TABLE my_srvinfo LIKE srvinfo;
+     </programlisting>
+     </para>
+    <note>
+      <para>
+      You may find useful to do some modifications in the column types,
+      for example, add <literal>AUTOINCREMENT</literal> flag to <literal>rec_id</literal>.
+      However, don't change the column names - &mnogo; looks up the columns
+      by their names.
+      </para>
+    </note>
+  </sect3>
+
+
+  <sect3 id="srvtable-insert">
+    <title>Step 2: populating Server table</title>
+    <para>Now that you have your custom tables, you can load data:
+    <programlisting>
+INSERT INTO my_server (rec_id, enabled, command, url) VALUES (1, 1, 'S', 'http://server1/');
+INSERT INTO my_srvinfo (srv_id, sname, sval) VALUES ('Period', '30d');
+
+INSERT INTO my_server (rec_id, enabled, command, url) VALUES (2, 1, 'S', 'http://server2/');
+INSERT INTO my_srvinfo (srv_id, sname, sval) VALUES ('MaxHops', '3');   
+    </programlisting>
+    </para>
+
+    <para>
+    The columns <literal>rec_id</literal>, <literal>enabled</literal> and <literal>url</literal>
+    must be specified in the <literal>INSERT INTO my_server</literal> statements.
+    </para>
+
+    <para>
+    The columns <literal>parent</literal> and <literal>pop_weight</literal>
+    <emphasis>should NOT</emphasis> be specified, as these columns used by &mnogo; internally.
+    </para>
+
+    <para>
+    The columns <literal>tag</literal>, <literal>category</literal>,
+    <literal>ordre</literal>, <literal>weight</literal> can be specified optionally.
+    </para>
+
+    <para>
+    <literal>my_srvinfo</literal> is a child table of <literal>my_server</literal>.
+    These tables are joint using the condition
+    <literal>my_server.rec_id = my_srvinfo.srv_id</literal>.
+    </para>
+
+    <para>
+    <literal>sname</literal> in the table <literal>my_srvinfo</literal>
+    is the name of a directive that might be specified for the particular URL
+    in &indexer.conf;. For example, you might want to specify <literal>Period</literal>
+    of "<literal>30d</literal>" for the respective URL,
+    so you insert a record with <literal>sname="Period"</literal> and <literal>sval="30d"</literal>,
+    or set <literal>MaxHops</literal> to "<literal>3</literal>",
+    so you insert a record with <literal>sname="MaxHops"</literal> and <literal>sval="3"</literal>.
+    </para>
+
+    <para>
+    The meaning of various columns is explained in <xref linkend="dbschema"/>.
+    </para>
+
+    <note>
+      <para>
+      Look at the table <literal>srvinfo</literal> data to get examples about how it is used.
+      </para>
+    </note>
+  </sect3>
+
+
+  <sect3 id="srvtable-load">
+    <title>Step 3: loading Server table</title>
+    <para>
+      Now that you have data in your custom Server tables, you need to specify the new tables in &indexer.conf;.
+      Just add the following line:
+      <programlisting>
+      ServerTable mysql://user:pass@host/dbname/my_server?srvinfo=my_srvinfo
+      </programlisting>
+    </para>
+
+    <note>
+      <para>
+      If the <literal>srvinfo</literal> parameter is omitted,
+      parameters are loaded from the table with name <literal>srvinfo</literal>
+      by default.
+      </para>
+    </note>
+
+    <para>
+    A quick way to test if your Server table works fine is to insert one or two URLs into
+    the <literal>my_server</literal> table that do not already exist in your &indexer.conf;,
+    then run &indexer; and specify that only the given URLs are to be indexed, e.g.:
+    <programlisting>
+./indexer -a -u http://server1/
+./indexer -a -u http://server2/
+    </programlisting>
+    If it is working properly, you should see the test URLs being indexed.
+    </para>
+
+  </sect3>
+
+  <sect3 id="srvtable-notes">
+    <title>Important notes on using Server table</title>
+    <para>1) You can create as many custom server/srvinfo tables as you like,
+    and then specify each pair in the &indexer.conf; file using a different 
+    <command><xref linkend="cmdref-servertable"/></command> directive with the appropriate values.
+    </para>
+    <para>2) Using your own Server table does not stop other URLs that
+    are specified in your &indexer.conf; from being indexed. &indexer; will do both.
+    So you can define some non-changing URLs in the &indexer.conf; file, and
+    put the URLs that tend to come and go into your custom Server table.
+    You can also write some scripts that copy URLs from
+    your own database into your custom Server table used by &mnogo;.
+    </para>
+  </sect3>
+
+
+
+  <sect3 id="srvtable-structure">
+    <!-- this section exists for old link purposes: srvtable-structure-->
+
+    <title>Server table structure</title>
+    
+<!--
+    <para>The Server table column names correspond to 
+    &indexer.conf; commands. For example, to the column
+    <literal>period</literal> corresponds the &indexer.conf; command
+    <command><xref linkend="cmdref-period"/></command>.
+    <note>
+      <para>The <literal>gindex</literal> column
+      corresponds to the <command><xref linkend="cmdref-index"/></command> command.
+      The name has been slightly changed to avoid use of an &sql; reserved word.
+      </para>
+      </note>
+    </para>
+--> 
+
+    <para>
+    See <xref linkend="dbschema"/> for the meaning of various columns in the Server tables.
+    </para>
+
+<!--
+    <note>
+      <para>&indexer; loads only those records from Server table
+      with the <literal>active</literal> column set to <literal>1</literal>,
+      and with the <literal>parent</literal> column set to
+      <literal>0</literal>.
+      This is useful to allow users to submit new URLs
+      into Server table and give administrator a possibility
+      to approve added URLs.
+      </para>
+    </note>
+-->
+
+  </sect3>
+</sect2>
+
+
+<sect2 id="flushsrvtable">
+  <title>FlushServerTable
+    <indexterm><primary>Command</primary><secondary>FlushServerTable</secondary></indexterm>
+  </title>
+
+  <para>
+   Flush server sets active field to inactive for all ServerTable records. 
+   Use this command to deactivate all commands in ServerTable before loading
+   new commands from &indexer.conf; or from other ServerTable.
+  </para>
+
+</sect2>

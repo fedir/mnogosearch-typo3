@@ -1,0 +1,46 @@
+$Source: /home/bar/cvsroot/mnogosearch33/php/README,v $
+$Id: README,v 1.5 2009/01/20 06:56:33 bar Exp $
+
+mnoGoSearch extension module for PHP-5.x.
+
+For details please refer to http://www.mnogosearch.org/
+
+Installation steps:
+==================
+1. phpize
+
+2. ./configure --with-mnogosearch=/usr/local/mnogosearch
+
+3. make
+
+4. make install
+
+5. Open /etc/php.ini in your text editor and add this line:
+extension=mnogosearch.so
+
+6. Make sure PHP detected mnoGoSearch module
+Run this command from shell:
+
+echo "<?phpinfo();?>" | php | grep -i mnogosearch
+
+Its output should contain these lines:
+
+mnoGoSearch Support => enabled
+mnoGoSearch library version => 30305 (or a newer version number)
+
+7. If you use PHP as an Apache module, restart httpd.
+
+
+Testing non-installed module:
+============================
+If you want to run a PHP program with a newly compiled
+modile (without having to install it), run:
+
+php -n -dextension_dir=./modules -dextension=mnogosearch.so index.php
+
+or
+
+QUERY_STRING="q=test" \
+REDIRECT_STATUS=302 \
+PATH_TRANSLATED=index.php \
+php-cgi -n -dextension_dir=./modules -dextension=mnogosearch.so

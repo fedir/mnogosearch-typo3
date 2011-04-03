@@ -1,0 +1,22 @@
+CREATE TABLE bdicti (
+  url_id INT NOT NULL,
+  state INT NOT NULL,
+  intag00 BLOB, intag01 BLOB,
+  intag02 BLOB, intag03 BLOB,
+  intag04 BLOB, intag05 BLOB,
+  intag06 BLOB, intag07 BLOB,
+  intag08 BLOB, intag09 BLOB,
+  intag0A BLOB, intag0B BLOB,
+  intag0C BLOB, intag0D BLOB,
+  intag0E BLOB, intag0F BLOB,
+  intag10 BLOB, intag11 BLOB,
+  intag12 BLOB, intag13 BLOB,
+  intag14 BLOB, intag15 BLOB,
+  intag16 BLOB, intag17 BLOB,
+  intag18 BLOB, intag19 BLOB,
+  intag1A BLOB, intag1B BLOB,
+  intag1C BLOB, intag1D BLOB,
+  intag1E BLOB, intag1F BLOB
+);
+CREATE INDEX bdicti_url_id ON bdicti (url_id);
+CREATE INDEX bdicti_state ON bdicti (state);

@@ -1,0 +1,32 @@
+<sect2 id="news">
+  <title>News extensions
+<indexterm><primary>News extensions</primary></indexterm>
+</title>
+<!--
+  <sect3 id="news-install">
+    <title>Installation</title>
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>Compile:</para>
+        <para>Unpack the mnoGoSearch
+distribution archive. Start the configure script with the 
+<literal> - -enable-news</literal> option. Type <literal>make</literal> and
+<literal>make install</literal> as described in the regular install
+instructions </para>
+      </listitem>
+      <listitem>
+        <para>Create Database.</para>
+      </listitem>
+      <listitem>
+        <para>Install &indexer.conf;.</para>
+      </listitem>
+      <listitem>
+        <para>Now you are set and can run
+indexer for the first time according to the instructions you can find
+in &indexer.conf;.</para>
+
+      </listitem>
+    </orderedlist>
+  </sect3>
+-->
+</sect2>

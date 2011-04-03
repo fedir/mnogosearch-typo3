@@ -1,0 +1,208 @@
+<sect1 id="stored">
+
+  <title>Cached copies
+    <indexterm><primary>cached copy</primary></indexterm>
+  </title>
+
+  <para>
+    Starting from the version 3.2.2
+    &mnogo;
+    is able to store compressed copies of the indexed
+    documents, so called <emphasis>cached copies</emphasis>.
+    Cached copies are stored in the same
+    <acronym>SQL</acronym> database.
+  </para>
+ 
+  <para>
+    &search.cgi;
+    uses cached copies for two purposes:
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>
+          To display smart excerpts from every
+          found document with the search query
+          words in their context.
+          <!--
+          This feature 
+          is available starting from
+          the version <literal>3.2.4</literal>.
+          -->
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+         To display the entire original copy of the document,
+         with the search words highlighted.
+         <note>
+           <para>
+           A cached copy is opened in the browser when 
+           the user clicks on the
+           <literal>Display cached copy</literal> link
+           near every document in search results.
+           </para>
+         </note>
+         Watching a cached copy can be especially useful
+         when the original site is temporarily down
+         or the document does not exist any longer.
+        </para>
+      </listitem>
+    </orderedlist>
+  </para>
+
+
+  <para>
+    Cached copies are displayed by with help of
+    &search.cgi;
+    executed with a special <acronym>HTTP</acronym>
+    query string parameter.
+    &search.cgi;
+    fetches a cached copy of the document
+    from the &sql; database, decompresses it,
+    and the document is displayed in your web
+    browser, with search keywords highlighted.
+  </para>
+
+
+  <para>
+   To enable cached copies support, compile
+   &mnogo; with <literal>zlib</literal> support:
+<programlisting>
+     ./configure --with-zlib &lt;other arguments&gt;
+</programlisting>
+  </para>
+
+  <sect2 id="stored-start">
+    <title>Configuring cached copies</title>
+    <para>
+      Collecting cached copies is enabled in the default version
+      of &indexer.conf; using this line:
+<programlisting>
+      Section CachedCopy 0 64000
+</programlisting>
+    </para>
+
+    <para>
+      The number <literal>64000</literal> is the maximum
+      allowed cached copy size.
+      When crawling, &indexer; stores
+      a cached copy only if its compressed size is smaller
+      than the maximum allowed size. You can change
+      this number according to your needs and your
+      <acronym>SQL</acronym> database capabilities.
+      <note>
+      <para>
+      Storing too large cached copies can affect 
+      search performance negatively.
+      </para>
+      </note>
+    </para>
+
+    <para>
+     You can disable collecting cached copies:
+     open &indexer.conf;
+     in your favorite text editor and delete
+     the <literal>Section CachedCopy</literal> line.
+     Disabling cached copies will save disk space,
+     however search results presentation will be
+     not as good as with cached copies enabled.
+    </para>
+  </sect2>
+
+
+  <sect2 id="stored-search">
+    <title>Using cached copies at search time</title>
+    <para>
+      Displaying cached copies is enabled
+      in the default search result template &search.htm-dist;.
+      To check if your template enables displaying
+      cached copies, open the template in a text
+      editor and make sure that you have this
+      <acronym>HTML</acronym> code in the section
+      <literal>&lt;!--res--&gt;</literal>:
+<programlisting>
+&lt;A HREF="$(stored_href)"&gt;Display cached copy&lt;/A&gt;
+</programlisting>
+    </para>
+
+    <para>
+    When using the default search template,
+    &search.cgi; refers
+    to itself recursively, that is it when you follow
+    the <literal>Display Cached Copy</literal>
+    link in your browser, you'll open
+    &search.cgi; again
+    (just with special query string parameters
+     which tell to display a cached copy rather
+    than search results).
+    </para>
+
+
+    <para>After cached copies have been configured, it works in the following order during search time:</para>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <para>
+            For each document a link to its cached copy is displayed;
+          </para>
+        </listitem>
+        <listitem>
+    <para>When the user clicks the link,
+      &search.cgi; is executed. It sends a query
+       to the &sql; database and fetches the cached copy content.
+    </para>
+        </listitem>
+        <listitem>
+          <para>
+      &search.cgi; decompresses
+      the requested cached copy and sends it to the web browser,
+      highlighting the search keywords using the highlighting method given in
+      the <xref linkend="cmdref-hlbeg"/> and <xref linkend="cmdref-hlend"/>
+      commands;
+    </para>
+  </listitem>
+      </orderedlist>
+  </sect2>
+
+
+  <sect2 id="stored-distributed">
+    <title>Moving cached copies to another machine</title>
+    <para>
+    You can optionally specify an alternative
+    <acronym>URL</acronym> for the <literal>Display Cached Copy</literal>
+    links, to have cached copies reside under another location
+    of the same server, or even on another physical server.
+    For example:
+<programlisting>
+&lt;A HREF="http://site2/cgi-bin/search.cgi?$(stored_href)"&gt;Display cached copy&lt;/A&gt;
+</programlisting>
+
+    Moving cached copies to another server can be useful
+    to distribute <acronym>CPU</acronym> load between machines.
+      <note>
+      <para>
+        &mnogo; must be
+        installed on the machine <literal>site2</literal>.
+      </para>
+      </note>
+    </para>
+  </sect2>
+
+  <sect2 id="stored-remote">
+    <title>Using the original document as a cached copy source</title>
+    <para>
+    Starting from the version <literal>3.3.8</literal>,
+    &mnogo; understands
+    the <xref linkend="cmdref-uselocalcachedcopy"/> command
+    in &search.htm; to force downloading
+    documents from their original locations when generating
+    <emphasis>smart excerpts</emphasis> for search results
+    as well as when generating the "<emphasis>Cached Copy</emphasis>"
+    documents.
+    This command can be useful when you index the documents
+    residing on your local file system and helps to avoid 
+    storing of cached copies in the database and thus
+    makes the database smaller. 
+    </para>
+  </sect2>
+
+
+</sect1>

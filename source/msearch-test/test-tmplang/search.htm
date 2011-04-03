@@ -1,0 +1,118 @@
+<!--variables
+ImportEnv UDM_TEST_DIR
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+HlBeg	<b>
+HlEnd	</b>
+-->
+
+<!--top-->
+Alternative search:
+
+<!UDMENV  NAME="Env" CONTENT="Default">
+<!AddLine NAME="Env" CONTENT="DBListFree">
+<!AddLine NAME="Env" CONTENT="DBAddr $(ENV.UDM_TEST_DBADDR0)?dbmode=single">
+<!Find    NAME="Env" CONTENT="q=$%(q)&ps=10&np=$(np)" RESULT="Res">
+Total=$(Res.total)
+First=$(Res.first)
+Last=$(Res.last)
+<!IFNOT   NAME="Res.total" CONTENT="0">
+<!IFNOT   NAME="Res.total" CONTENT="">
+
+<!Fetch NAME="Res" RESULT="Row">
+<!WHILENOT NAME="Row.URL" CONTENT="">
+Order : $(Row.order)
+URL   : $(Row.url)
+Title : $&(Row.Title)
+Body  : $&(Row.Title)
+<!Fetch NAME="Res" RESULT="Row">
+<!ENDWHILE>
+<!ENDIF>
+<!ENDIF>
+
+SQL query:
+
+<!SQLQuery NAME="Env" CONTENT="SELECT seed, url FROM url ORDER BY seed" RESULT="SQLRes">
+<!IFNOT NAME="SQLRes.num_rows" CONTENT="0">
+<!IFNOT NAME="SQLRes.num_rows" CONTENT="">
+num_rows= $(SQLRes.num_rows)
+<!SQLFetch NAME="SQLRes" RESULT="SQLRow">
+<!WHILENOT NAME="SQLRow.0" CONTENT="">
+  $(SQLRow.0) $(SQLRow.1)
+<!SQLFetch  NAME="SQLRes" RESULT="SQLRow">
+<!ENDWHILE>
+<!ENDIF>
+<!ENDIF>
+
+
+<!--/top-->
+
+
+<!--restop-->
+Search for <b>$&(q)</b>.</small>
+Search results: <b>$(W)</b>.</small>
+Results <b>$(first)-$(last)</b> of <B>$(total)</B>.</small>
+<!--/restop-->
+
+
+<!--res-->
+Order: $(Order)
+URL  : $(URL)
+Title: $&(Title)
+Body : $&(Body)
+<!--/res-->
+
+
+<!--resbot-->
+Result pages: 
+ $(NL) $(NB) $(NR)
+<!--/resbot-->
+
+
+<!--clone-->
+<!--/clone-->
+
+
+<!--navleft-->
+<TD><small><A HREF="$(self)$(NH)">&lt;&lt; Prev</A></TD>
+<!--/navleft-->
+
+<!--navleft_nop-->
+<TD><small><FONT COLOR=gray>&lt;&lt; Prev</FONT></TD>
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<TD><small><A HREF="$(self)$(NH)">$(NP)</A></TD>
+<!--/navbar1-->
+
+<!--navbar0-->
+<TD><small>$(NP)</TD>
+<!--/navbar0-->
+
+<!--navright-->
+<TD><small><A HREF="$(self)$(NH)">Next &gt;&gt;</A></TD>
+<!--/navright-->
+
+<!--navright_nop-->
+<TD><small><FONT COLOR=gray>Next &gt;&gt;</FONT></TD>
+<!--/navright_nop-->
+
+<!--notfound-->
+Sorry, your search for <b>$&(q)</b> did not find any results.<br>
+No documents were found containing <b>"$&(q)"</b>.<br>
+<!--/notfound-->
+
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

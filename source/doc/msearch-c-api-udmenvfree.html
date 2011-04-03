@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>UdmEnvFree</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="mnoGoSearch C API function reference"
+HREF="msearch-c-api.html"><LINK
+REL="PREVIOUS"
+TITLE="UdmEnvInit"
+HREF="msearch-c-api-udmenvinit.html"><LINK
+REL="NEXT"
+TITLE="UdmAgentInit"
+HREF="msearch-c-api-udmagentinit.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-c-api-udmenvinit.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-c-api-udmagentinit.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="c-api-UdmEnvFree"
+></A
+>UdmEnvFree</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN14258"
+></A
+><H2
+>Name</H2
+>UdmEnvFree&nbsp;--&nbsp;Closes a search context</DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN14261"
+></A
+><H2
+>Description</H2
+><code
+class="methodsynopsis"
+>&#13;  <span
+class="type"
+>void </span
+>UdmEnvFree(<span
+class="methodparam"
+><span
+class="type"
+>UDM_ENV* </span
+><span
+class="parameter"
+>Env</span
+></span
+>);&#13;</code
+><P
+>&#13;  Closes a previously initialized search context, and deallocated
+  the variable if it was allocated by <CODE
+CLASS="function"
+>UdmEnvInit()</CODE
+>.
+  </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN14271"
+></A
+><H2
+>Parameters</H2
+><P
+>&#13;   <P
+></P
+><DIV
+CLASS="variablelist"
+><DL
+><DT
+><CODE
+CLASS="parameter"
+>Env</CODE
+></DT
+><DD
+><P
+>&#13;       Pointer to a variable of type <SPAN
+CLASS="type"
+>UDM_ENV</SPAN
+>.
+      </P
+></DD
+></DL
+></DIV
+>
+  </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN14281"
+></A
+><H2
+>Return Values</H2
+><P
+>&#13;   None.
+  </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN14284"
+></A
+><H2
+>Examples</H2
+><P
+>&#13;   <DIV
+CLASS="example"
+><A
+NAME="AEN14287"
+></A
+><P
+><B
+>Example 1. <CODE
+CLASS="function"
+>UdmEnvFree</CODE
+> example #1</B
+></P
+><PRE
+CLASS="programlisting"
+>&#13;
+UDM_ENV *Env;
+
+if (!(Env= UdmEnvInit(NULL)))
+{
+  printf('Fatal error: could not allocate Env');
+  exit(1);
+}
+...
+UdmEnvFree(Env);
+
+    </PRE
+></DIV
+>
+  </P
+><P
+>&#13;   <DIV
+CLASS="example"
+><A
+NAME="AEN14292"
+></A
+><P
+><B
+>Example 2. <CODE
+CLASS="function"
+>UdmEnvFree</CODE
+> example #2</B
+></P
+><PRE
+CLASS="programlisting"
+>&#13;
+UDM_ENV Env;
+
+if (!UdmEnvInit(&#38;Env))
+{
+  printf('Fatal error: could not initialize Env');
+  exit(1);
+}
+...
+UdmEnvFree(&#38;Env);
+
+    </PRE
+></DIV
+>
+  </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN14296"
+></A
+><H2
+>See Also</H2
+><P
+>&#13;   <P
+></P
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+><CODE
+CLASS="function"
+><A
+HREF="msearch-c-api-udmenvinit.html"
+>UdmEnvInit</A
+></CODE
+></TD
+></TR
+><TR
+><TD
+><CODE
+CLASS="function"
+><A
+HREF="msearch-c-api-udmagentinit.html"
+>UdmAgentInit</A
+></CODE
+></TD
+></TR
+><TR
+><TD
+><CODE
+CLASS="function"
+><A
+HREF="msearch-c-api-udmagentfree.html"
+>UdmAgentFree</A
+></CODE
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+>
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-c-api-udmenvinit.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-c-api-udmagentinit.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>UdmEnvInit</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-c-api.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>UdmAgentInit</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

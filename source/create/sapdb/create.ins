@@ -1,0 +1,118 @@
+SAY --- Installing Basic UdmSearch Database Objects ...
+/
+AUTOCOMMIT OFF
+/
+    CREATE TABLE dict (
+       word                 VARCHAR(32) NOT NULL,
+       url_id               FIXED(12) NOT NULL,
+       intag                FIXED(12) NOT NULL
+)
+/
+ALTER TABLE dict ADD PRIMARY KEY (word, url_id)  
+/
+IF $RC (EXISTS TABLE url) <> 0 
+THEN
+    BEGIN
+/
+CREATE TABLE url (
+       rec_id               FIXED(12) NOT NULL,
+       status               FIXED(6) DEFAULT 0 NOT NULL,
+       url                  VARCHAR(128) NOT NULL,
+       docsize              FIXED(12) NULL,
+       next_index_time      FIXED(12) NULL,
+       last_mod_time        FIXED(12) DEFAULT 0 NOT NULL,
+       referrer             FIXED(12) DEFAULT 0 NOT NULL,
+       hops                 FIXED(6) DEFAULT 0 NOT NULL,
+       crc32                FIXED(12) DEFAULT -1 NOT NULL,
+       seed                 FIXED(12) DEFAULT 0 NOT NULL,
+       bad_since_time       FIXED(12) NULL,
+       site_id              FIXED(12) NULL,
+       server_id            FIXED(12) NULL,
+       pop_rank             FLOAT NULL
+)
+/
+CREATE UNIQUE INDEX XAK1url ON url
+(
+       url                            ASC
+)
+/
+CREATE INDEX XIE1url ON url
+(
+       crc32                          ASC
+)
+/
+CREATE INDEX rec_id_ind ON url
+(
+       rec_id			
+)
+/
+CREATE INDEX next_index_time_ind ON url
+(
+       	next_index_time
+)
+/
+END
+/
+CREATE TABLE links (
+        ot     FIXED(12) NOT NULL,
+        k      FIXED(12) NOT NULL,
+        weight float NOT NULL DEFAULT 0
+)
+/
+create table server (
+        rec_id          SERIAL,
+        enabled         FIXED(12)       DEFAULT 0       NOT NULL,
+        url             VARCHAR(128)    DEFAULT ''      NOT NULL,
+        alias           CHAR(128)    DEFAULT ''      NULL,
+        period          FIXED(12)       DEFAULT 604800  NOT NULL,
+        tag             VARCHAR(16)     DEFAULT ''      NULL,
+        category        VARCHAR(16)     DEFAULT ''      NULL,
+        charset         VARCHAR(40)     DEFAULT ''      NULL,
+        lang            VARCHAR(32)     DEFAULT ''      NULL,
+        basic_auth      VARCHAR(64)     DEFAULT ''      NULL,
+        proxy           VARCHAR(64)     DEFAULT ''      NULL,
+        proxy_auth      VARCHAR(64)     DEFAULT ''      NULL,
+        proxy_port      VARCHAR(64)     DEFAULT 3128    NULL,
+        
+        maxhops         FIXED(12)       DEFAULT 9999    NOT NULL,
+        gindex          FIXED(12)       DEFAULT 1       NOT NULL,
+        follow          FIXED(12)       DEFAULT 1       NOT NULL,
+        deletebad       FIXED(12)       DEFAULT 1       NOT NULL,
+        use_robots      FIXED(12)       DEFAULT 1       NOT NULL,
+        use_clones      FIXED(12)       DEFAULT 0       NOT NULL,
+        max_net_errors  FIXED(12)       DEFAULT 16      NOT NULL,
+        net_delay_time  FIXED(12)       DEFAULT 86400   NOT NULL,
+        read_timeout    FIXED(12)       DEFAULT 90      NOT NULL,
+        
+        command         char(1)         DEFAULT 'S'     NOT NULL,
+        match_type      FIXED(12)       DEFAULT 1       NOT NULL,
+        case_sense      FIXED(12)       DEFAULT 0       NOT NULL,
+        nomatch         FIXED(12)       DEFAULT 0       NOT NULL,
+        ordre           FIXED(12)       DEFAULT 0       NOT NULL,
+        parent          FIXED(12)       DEFAULT 0       NOT NULL,
+        weight          float           DEFAULT 1       NOT NULL,
+        pop_weight      float           DEFAULT 0       NOT NULL
+)
+/
+ALTER TABLE server ADD PRIMARY KEY (rec_id)
+/
+CREATE UNIQUE INDEX srv_url     ON server (url)
+/
+CREATE        INDEX srv_ordre   ON server (ordre)
+/
+CREATE        INDEX srv_parent  ON server (parent)
+/
+CREATE        INDEX srv_command ON server (command)
+/
+CREATE TABLE urlinfo (
+       url_id FIXED(12) NOT NULL,
+       sname  VARCHAR(64) NOT NULL,
+       sval   VARCHAR(8000) ASCII
+)
+/
+IF $RC ( select * from domain.sequences where SEQUENCE_NAME = 'NEXT_URL_ID') <> 0
+THEN
+/
+CREATE SEQUENCE next_url_id INCREMENT BY 1 START WITH 1
+/
+COMMIT

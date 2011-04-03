@@ -1,0 +1,63 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" [
+  <!ENTITY intro SYSTEM "intro.xml">
+  <!ENTITY install SYSTEM "install.xml">
+  <!ENTITY general SYSTEM "general.xml">
+  <!ENTITY http SYSTEM "httpcodes.xml">
+  <!ENTITY content-enc SYSTEM "content-enc.xml">
+  <!ENTITY htmlparser SYSTEM "htmlparser.xml">
+  <!ENTITY follow SYSTEM "follow.xml">
+]>
+<book>
+
+  <bookinfo>
+    <title>mnoGoSearch 3.3.3 reference manual</title>
+    <subtitle>Full-featured search engine software</subtitle>
+    <copyright>
+      <year>2001-2007</year>
+      <holder>Lavtech.com corp.</holder>
+    </copyright>
+  </bookinfo>
+
+  introduction
+
+  <chapter id="indexing">
+    <title>Indexing</title>
+
+    <sect1 id="indexer-configuration">
+      <title>indexer configuration</title>
+    </sect1>
+
+    <sect1 id="extended-indexing">
+      <title>Extended indexing features</title>
+    </sect1>
+
+  </chapter>
+
+  <chapter id="howstore">
+    <title>Storing mnoGoSearch data </title>
+  </chapter>
+
+  <chapter id="subsections">
+    <title>Subsections</title>
+  </chapter>
+
+  <chapter id="international">
+    <title>Multiple languages support</title>
+  </chapter>
+
+  <chapter id="doingsearch">
+    <title>Searching documents</title>
+  </chapter>
+
+  <chapter id="misc">
+    <title>Miscellaneous</title>
+  </chapter>
+
+  <part id="reference">
+    <title>Reference</title>
+    <reference id="cmdref">
+      <title>mnoGoSearch commands reference</title>
+    </reference>
+  </part>
+
+</book>

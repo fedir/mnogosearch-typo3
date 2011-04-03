@@ -1,0 +1,75 @@
+<!--variables
+ImportEnv UDM_TEST_DIR
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=blob
+
+HlBeg <b>
+HlEnd </b>
+
+StripAccents yes
+Dehyphenate $(dh)
+-->
+
+<!--top-->
+<!--/top-->
+
+
+<!--restop-->
+QUERY_STRING=$(QUERY_STRING)
+Search for: $&(q).
+WE= $(WE)
+W= $(W)
+Results $(first)-$(last) of $(total).
+<!--/restop-->
+
+
+<!--res-->
+$(Order). [$(Score)]
+$&(Body)...
+$(URL:40)
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+
+<!--clone-->
+Clone:
+  - $(Content-Length) bytes
+  - $(Last-Modified) 
+<!--/clone-->
+
+<!--navleft-->
+<!--/navleft-->
+
+<!--navleft_nop-->
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<!--/navbar1-->
+
+<!--navbar0-->
+<!--/navbar0-->
+
+<!--navright-->
+<!--/navright-->
+
+<!--navright_nop-->
+<!--/navright_nop-->
+
+<!--notfound-->
+Sorry, your search for <b>$&(q)</b> did not find any results.<br>
+No documents were found containing <b>"$&(q)"</b>.<br>
+<!--/notfound-->
+
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+
+<!--error-->
+Error: $(E)
+<!--/error-->
+
+<!--bottom-->
+-------------
+<!--/bottom-->

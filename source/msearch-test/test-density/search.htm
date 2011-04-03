@@ -1,0 +1,75 @@
+<!--variables
+ImportEnv UDM_TEST_DIR
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single
+
+HlBeg	<b>
+HlEnd	</b>
+
+NumSections 3
+WordDensityFactor $(wdf)
+
+-->
+
+<!--top-->
+----------------------
+<!--/top-->
+
+
+<!--restop-->
+Search for <b>$&(q)</b>.</small>
+Search results: <b>$(W)</b>.</small>
+Results $(first)-$(last) of $(total)
+<!--/restop-->
+
+
+<!--res-->
+<!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
+$(Order).
+URL: $(URL)
+Title: <!IF NAME="Title" CONTENT="">$(URL:40)<!ELSE>$&(Title)<!ENDIF>
+Score: $(Score)
+Body: $&(Body)
+Content-Length: $(Content-Length)
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+
+<!--navleft-->
+<!--/navleft-->
+
+<!--navleft_nop-->
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<!--/navbar1-->
+
+<!--navbar0-->
+<!--/navbar0-->
+
+<!--navright-->
+<!--/navright-->
+
+<!--navright_nop-->
+<!--/navright_nop-->
+
+
+
+<!--notfound-->
+Search for $&(q)
+Search results: $(W)
+Sorry, your search for $&(q) did not find any results.
+<!--/notfound-->
+
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

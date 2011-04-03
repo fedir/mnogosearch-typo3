@@ -1,0 +1,27 @@
+BODY {margin-left: 6em; margin-right: 6em;}
+P {text-align: justify;}
+TABLE.CALSTABLE { margin-left: 4em; width: 86%; }
+.SECT1 { text-align: center; }
+#.chapter { text-align: center; } 
+.programlisting
+{
+  text-align: left;
+  color: #4444FF;
+  background-color: #e0e0e0;
+  padding: 0.5em;
+}
+.emphasis { text-align: left; color: #222266; }
+.filename { text-align: left; color: #222266; }
+.application { text-align: left; color: #222266; }
+.command { text-align: left; color: #222266; }
+.literal { text-align: left; color: #222266; }
+.function { text-align: left; color: #222266; }
+.methodname { text-align: left; color: #222266; }
+.type { text-align: left; color: #222266; }
+.methodsynopsis { text-align: left; color: #222266; }
+.parameter { text-align: left; color: #222266; }
+.varname { text-align: left; color: #222266; }
+.userinput { text-align: left; color: #222266; }
+.option { text-align: left; color: #222266; }
+.acronym { text-align: left; color: #222266; }
+.envar { text-align: left; color: #222266; }

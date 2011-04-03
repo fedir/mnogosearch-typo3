@@ -1,0 +1,2042 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>indexer configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Indexing"
+HREF="msearch-indexing.html"><LINK
+REL="PREVIOUS"
+TITLE="Content-Encoding support
+    
+  "
+HREF="msearch-content-enc.html"><LINK
+REL="NEXT"
+TITLE="Using syslog
+  
+  "
+HREF="msearch-syslog.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-content-enc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Indexing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-syslog.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="indexer-configuration"
+>indexer configuration</A
+></H1
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="follow"
+>Specifying the Web space for indexing</A
+></H2
+><P
+>&#13;    When <SPAN
+CLASS="application"
+>indexer</SPAN
+> found a new URL during crawling,
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> checks whether the URL has
+    a corresponding Web space definition command
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+>,
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+> or
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-subnet.html"
+>Subnet</A
+></B
+>
+    given in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    URLs which do not have a corresponding Web space definition
+    command are not added into the database.
+    Also, the URLs which already present in the search database
+    and appear not to have corresponding Web space definition commands
+    are deleted from the database. This can happen after removing of
+    some of the definition commands from <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+  </P
+><P
+>The Web definiton commands have the following format: 
+<PRE
+CLASS="programlisting"
+>&#13;Server [Method] [SubSection] &#60;pattern&#62; [alias]
+Realm [Method] [CaseType] [MatchType] [CmpType] &#60;pattern&#62; [alias]
+Subnet [Method] [MatchType] &#60;pattern&#62;
+</PRE
+>
+  </P
+><P
+>The mandatory parameter <CODE
+CLASS="option"
+>pattern</CODE
+> specifies an URL,
+   or its part, or a pattern.
+  </P
+><P
+>The optional parameter <CODE
+CLASS="option"
+>method</CODE
+>
+  specifies the action for this command.
+  It can take one of the following values:
+    <TT
+CLASS="literal"
+>Allow</TT
+>,
+    <TT
+CLASS="literal"
+>Disallow</TT
+>,
+    <TT
+CLASS="literal"
+>HrefOnly</TT
+>, 
+    <TT
+CLASS="literal"
+>CheckOnly</TT
+>,
+    <TT
+CLASS="literal"
+>Skip</TT
+>,
+    <TT
+CLASS="literal"
+>CheckMP3</TT
+>,
+    <TT
+CLASS="literal"
+>CheckMP3Only</TT
+>.
+    By default, the value <TT
+CLASS="literal"
+>Allow</TT
+> is used.
+    <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+>Allow</B
+>
+          <A
+NAME="AEN1520"
+></A
+>
+        </P
+><P
+>&#13;          <TT
+CLASS="literal"
+>Allow</TT
+> specifies that all corresponding
+          documents will be indexed and scanned for new links.
+          Depending on <TT
+CLASS="literal"
+>Content-Type</TT
+>,
+          an external parser can be executed if needed.
+        </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+>Disallow</B
+>
+          <A
+NAME="AEN1530"
+></A
+>
+        </P
+><P
+>&#13;          <TT
+CLASS="literal"
+>Disallow</TT
+> specifies that all corresponding
+          documents will be ignored and deleted from the database.
+        </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+>HrefOnly</B
+>
+          <A
+NAME="AEN1539"
+></A
+>
+        </P
+><P
+>&#13;          <TT
+CLASS="literal"
+>HrefOnly</TT
+> specifies that all corresponding
+          documents will only be scanned for new links, but their
+          content won't be indexed. This is useful, for example,
+          when indexing mail archives, when the index pages are only
+          scanned for links to new messages.
+<PRE
+CLASS="programlisting"
+>&#13;Server HrefOnly Page http://www.mail-archive.com/general%40mnogosearch.org/
+Server Allow    Path http://www.mail-archive.com/general%40mnogosearch.org/
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+>CheckOnly</B
+>
+          <A
+NAME="AEN1549"
+></A
+>
+        </P
+><P
+>&#13;          <TT
+CLASS="literal"
+>CheckOnly</TT
+> specifies that all corresponding
+          documents will be requested using the <TT
+CLASS="literal"
+>HEAD</TT
+>
+          HTTP method instead of the default <TT
+CLASS="literal"
+>GET</TT
+> method.
+          When using <TT
+CLASS="literal"
+>CheckOnly</TT
+>, only brief information
+          about the documents (such as size, last modification time,
+          content type) will be fetched. This method can be helpful
+          to detect broken links on your site. For example:
+<PRE
+CLASS="programlisting"
+>&#13;Server HrefOnly  http://www.mnogosearch.org/
+Realm  CheckOnly *
+</PRE
+>
+        </P
+><P
+>These commands instruct <B
+CLASS="command"
+>indexer</B
+>
+        to scan all documents on the site <TT
+CLASS="literal"
+>www.mnogosearch.org</TT
+>
+        and collect all outgoing links. Brief info about every document
+        outside <TT
+CLASS="literal"
+>www.mnogosearch.org</TT
+> will be requested
+        using the <TT
+CLASS="literal"
+>HEAD</TT
+> method. After indexing is done,
+        use <B
+CLASS="command"
+>indexer -S</B
+> command to see if there are
+        any pages with status <TT
+CLASS="literal"
+>404 Not found</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+>Skip</B
+>
+          <A
+NAME="AEN1569"
+></A
+>
+        </P
+><P
+>&#13;          <TT
+CLASS="literal"
+>Skip</TT
+> specifies that all corresponding
+          documents will be skipped while indexing. This is useful
+          when you need to disable temporarily reindexing of some sites,
+          but to keep them available for search with their previous content.
+          <SPAN
+CLASS="application"
+>indexer</SPAN
+>  will mark these documents as "fresh"
+          and put in the end of its queue.
+        </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+>CheckMP3</B
+>
+          <A
+NAME="AEN1579"
+></A
+>
+        </P
+><P
+>&#13;          <TT
+CLASS="literal"
+>CheckMP3</TT
+> specifies that the corresponding
+          documents will be checked for MP3 tags even if the
+          <TT
+CLASS="literal"
+>Content-Type</TT
+> is not equal
+          to <TT
+CLASS="literal"
+>audio/mpeg</TT
+>. This is useful if the remote
+          server sends <TT
+CLASS="literal"
+>application/octet-stream</TT
+> as
+          <TT
+CLASS="literal"
+>Content-Type</TT
+> for MP3 files. In case when
+           MP3 tags are found in some document, they will be indexed,
+           otherwise the document will be further processed according
+           to the <TT
+CLASS="literal"
+>Content-Type</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+>CheckMP3Only</B
+>
+          <A
+NAME="AEN1593"
+></A
+>
+        </P
+><P
+>&#13;          This method is very similar to <TT
+CLASS="literal"
+>CheckMP3</TT
+>,
+          but in case when MP3 tags are not found in a document,
+          the document is not further processed.
+        </P
+></LI
+></OL
+>
+  </P
+><P
+>&#13;      The optional <CODE
+CLASS="option"
+>SubSection</CODE
+> parameter specifies
+      the pattern match method, which can be one of the following values:
+      <TT
+CLASS="literal"
+>page</TT
+>, <TT
+CLASS="literal"
+>path</TT
+>,
+      <TT
+CLASS="literal"
+>site</TT
+>, <TT
+CLASS="literal"
+>world</TT
+>,
+      with <TT
+CLASS="literal"
+>path</TT
+> being the default.
+
+    <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+><TT
+CLASS="literal"
+>Server path</TT
+></P
+><P
+>&#13;          All URLs from the same directory match. For example, if:
+          <TT
+CLASS="literal"
+>Server path http://localhost/path/to/index.html</TT
+>
+          is given, all URLs starting with
+          <TT
+CLASS="literal"
+>http://localhost/path/to/</TT
+>
+          will match this command.
+        </P
+><P
+>The following commands have the same effect
+        when searching for a matching Web space definition command:
+        </P
+><P
+>&#13;          <PRE
+CLASS="programlisting"
+>&#13;Server path http://localhost/path/to/index.html
+Server path http://localhost/path/to/index
+Server path http://localhost/path/to/index.cgi?q=bla
+Server path http://localhost/path/to/index?q=bla
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>Server site</TT
+></P
+><P
+>&#13;        All URLs from the same host match.
+        For example, <TT
+CLASS="literal"
+>Server site http://localhost/path/to/a.html</TT
+>
+        will allow to index the entire site
+        <TT
+CLASS="literal"
+>http://localhost/</TT
+>.
+        </P
+></LI
+><LI
+><P
+> <TT
+CLASS="literal"
+>Server world</TT
+></P
+><P
+>If <TT
+CLASS="literal"
+>world</TT
+> subsection is specified,
+        then absolutely any URL will correspond
+        to this definiton command. See the explanation below.
+        </P
+></LI
+><LI
+><P
+> <TT
+CLASS="literal"
+>Server page</TT
+></P
+><P
+>Means exact match, only the given URL will match this command.
+        </P
+></LI
+><LI
+><P
+>subsection in <TT
+CLASS="literal"
+>news://</TT
+> schema</P
+><P
+>Subsection is always considered as <TT
+CLASS="literal"
+>site</TT
+>
+        for the <TT
+CLASS="literal"
+>news://</TT
+> URL schema.
+        This is because unlike <TT
+CLASS="literal"
+>ftp://</TT
+> or
+        <TT
+CLASS="literal"
+>http://</TT
+>, the <TT
+CLASS="literal"
+>news://</TT
+> schema
+        has no recursive paths.
+        Use <TT
+CLASS="literal"
+>Server news://news.server.com/</TT
+> to index
+        the whole news server or, for example,
+        <TT
+CLASS="literal"
+>Server news://news.server.com/udm</TT
+> to index all
+        messages from the <TT
+CLASS="literal"
+>/udm</TT
+> hierarchy.</P
+></LI
+></OL
+>
+  </P
+><P
+>&#13;    The optional parameter <TT
+CLASS="literal"
+>CaseType</TT
+> specifies case
+    sensitivity for string comparison, it can take one of the following
+    values:  <TT
+CLASS="literal"
+>case</TT
+> - case insensitive comparison,
+    or <TT
+CLASS="literal"
+>nocase</TT
+> - case sensitive comparison.
+  </P
+><P
+>The optional parameter <TT
+CLASS="literal"
+>CmpType</TT
+> specifies
+  comparison type and can take two values:
+  <TT
+CLASS="literal"
+>Regex</TT
+> and <TT
+CLASS="literal"
+>String</TT
+>.
+  <TT
+CLASS="literal"
+>String</TT
+> wildcards are the default match type.
+  You can use ? and * signs in the <TT
+CLASS="literal"
+>patter</TT
+>,
+  they mean "one character" and "any number of characters" respectively.
+  For example, if you want to index all HTTP sites in the
+  <TT
+CLASS="literal"
+>.ru</TT
+> domain, you can use this command: 
+<PRE
+CLASS="programlisting"
+>&#13;Realm http://*.ru/*
+</PRE
+>
+  </P
+><P
+>The <TT
+CLASS="literal"
+>regex</TT
+> comparison type says that
+  the pattern is a regular expression. For example, you can describe
+  everything in the <TT
+CLASS="literal"
+>.ru</TT
+> domain using the
+  <TT
+CLASS="literal"
+>regex</TT
+> comparison type:
+<PRE
+CLASS="programlisting"
+>&#13;Realm Regex ^http://.*\.ru/
+</PRE
+>
+  </P
+><P
+>The optional parameter <TT
+CLASS="literal"
+>MatchType</TT
+>
+  can be  <TT
+CLASS="literal"
+>Match</TT
+> or <TT
+CLASS="literal"
+>NoMatch</TT
+>,
+  with <TT
+CLASS="literal"
+>Match</TT
+> as default.
+  <TT
+CLASS="literal"
+>Realm NoMatch</TT
+> has reverse effect.
+  It means that URLs not matching the given <CODE
+CLASS="option"
+>pattern</CODE
+>
+  will correspond to this <B
+CLASS="command"
+>Realm</B
+> command.
+  For example, use this command to index everything but the
+  <TT
+CLASS="literal"
+>.com</TT
+> domain:
+<PRE
+CLASS="programlisting"
+>&#13;Realm NoMatch http://*.com/*
+</PRE
+>
+  </P
+><P
+>The optional <CODE
+CLASS="option"
+>alias</CODE
+> argument provides
+  URL rewrite rules, described in details in <A
+HREF="msearch-indexer-configuration.html#aliases"
+>the Section called <I
+>Aliases</I
+></A
+>.
+  </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-difparam"
+>Using different parameters for a server and its subsections</A
+></H3
+><P
+><SPAN
+CLASS="application"
+>indexer</SPAN
+> examines the
+    Web space definition command in order of their appearance
+    in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    Thus, if you want to give different parameters to
+    a site and its subsections, you can add the command
+    describing a subsection before the command describing
+    the entire site. Imagine that you have a subdirectory
+    which contains news articles and want those articles
+    to be reindexed more often than the rest of the site.
+    The following combination can be useful in this cases:</P
+><P
+>&#13;      <PRE
+CLASS="programlisting"
+>&#13;# Add subsection
+Period 200000
+Server http://servername/news/
+
+# Add server
+Period 600000
+Server http://servername/
+</PRE
+>
+    </P
+><P
+>These commands give different reindexing periods for the
+    <TT
+CLASS="filename"
+>/news/</TT
+> subdirectory and the rest of the site.
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> will choose the first command for
+    the URL <TT
+CLASS="filename"
+>http://servername/news/page1.html</TT
+>.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-default"
+>The default indexer behavior</A
+></H3
+><P
+>The default behavior of indexer is to follow through
+    the links found having correspondent Web space definition commands
+    given in the <TT
+CLASS="filename"
+>indexer.conf</TT
+> file.
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> jumps between sites if both
+    of them have a corresponding Web definition command.
+    For example, there are two commands:</P
+><P
+>&#13;<PRE
+CLASS="programlisting"
+>&#13;Server http://www/
+Server http://web/
+</PRE
+>
+    </P
+><P
+>When indexing <TT
+CLASS="filename"
+>http://www/page1.html</TT
+>
+    indexer WILL follow the link <TT
+CLASS="filename"
+>http://web/page2.html</TT
+>.
+    Note that although these pages are on different sites, BOTH of
+    them have a correspondent Web space definition command.
+    </P
+><P
+>If we delete one of the commands, <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    will remove all expired URLs from this server during the next
+    crawling sessions.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="aliases"
+>Aliases</A
+></H2
+><P
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> offers a flexible technique
+   of aliases and reverse aliases, making it possible to index sites by downloading
+   documents from another location. For example, if you index your local web server,
+   it is possible to load pages directly from the hard disk without involving your
+   web server in the crawling process.  Another example is building of a search engine
+   for the primary site using its mirror to download the documents.
+  </P
+><P
+>Different ways of using aliases are described in the next sections.
+  </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-conf"
+>The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-alias.html"
+>Alias</A
+></B
+>
+  <TT
+CLASS="filename"
+>indexer.conf</TT
+> command
+      <A
+NAME="AEN1706"
+></A
+></A
+></H3
+><P
+>The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-alias.html"
+>Alias</A
+></B
+> <TT
+CLASS="filename"
+>indexer.conf</TT
+> command
+    uses this format:
+    <PRE
+CLASS="programlisting"
+>&#13;Alias &#60;masterURL&#62; &#60;mirrorURL&#62;
+</PRE
+>
+    </P
+><P
+>For example, if you wish to index <TT
+CLASS="literal"
+>http://www.mnogosearch.ru/</TT
+>
+    using the nearest German mirror
+    <TT
+CLASS="literal"
+>http://www.gstammw.de/mirrors/mnoGoSearch/</TT
+>, you can add these lines
+    into your <TT
+CLASS="filename"
+>indexer.conf</TT
+>:
+
+    <PRE
+CLASS="programlisting"
+>&#13;Server http://www.mnogosearch.ru/
+Alias  http://www.mnogosearch.ru/  http://www.gstammw.de/mirrors/mnoGoSearch/
+</PRE
+>
+    </P
+><P
+>&#13;      When crawling, <TT
+CLASS="filename"
+>indexer</TT
+> will download the
+      documents from the mirror site <TT
+CLASS="literal"
+>http://www.gstammw.de/mirrors/mnoGoSearch/</TT
+>.
+      At search time <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> will display URLs from
+      the master site <TT
+CLASS="literal"
+>http://www.mnogosearch.ru/</TT
+>.
+    </P
+><P
+>Another example: You want to index all sites from the domain
+    <TT
+CLASS="literal"
+>udm.net</TT
+>. Suppose one of the servers (e.g.
+    <TT
+CLASS="literal"
+>http://home.udm.net/</TT
+>) is stored on the local machine in
+    the directory <TT
+CLASS="filename"
+>/home/httpd/htdocs/</TT
+>. These commands will be useful:
+    <PRE
+CLASS="programlisting"
+>&#13;Realm http://*.udm.net/
+Alias http://home.udm.net/ file:///home/httpd/htdocs/
+    </PRE
+>
+    </P
+><P
+><TT
+CLASS="filename"
+>Indexer</TT
+> will load documents form the site <TT
+CLASS="literal"
+>home.udm.net</TT
+>
+    using the local disk, and will use HTTP for the other sites.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="aliases-diff"
+>Using different aliases for server parts</A
+></H3
+><P
+>Aliases are searched in the order of their appearance in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    So, you can create different aliases for a server and its parts:
+    <PRE
+CLASS="programlisting"
+>&#13;# First, create alias for example for /stat/ directory which
+# is not under common location:
+Alias http://home.udm.net/stat/  file:///usr/local/stat/htdocs/
+
+# Then create alias for the rest of the server:
+Alias http://home.udm.net/ file:///usr/local/apache/htdocs/
+</PRE
+>
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>If you change the order of these commands, the alias for the
+    directory <TT
+CLASS="filename"
+>/stat/</TT
+> will never be found.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-server"
+>Using aliases in the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+> command</A
+></H3
+><P
+>You can specify the location used by indexer as an optional argument
+    in a <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+> command:
+    <PRE
+CLASS="programlisting"
+>&#13;Server  http://home.udm.net/  file:///home/httpd/htdocs/
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-realm"
+>Using aliases in the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+> command</A
+></H3
+><P
+>Aliases in the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+> command
+    are based on regular expressions.
+    The implementation of this feature reminds PHP's <CODE
+CLASS="function"
+>preg_replace()</CODE
+>
+    function. Aliases in the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+> command
+    work only if the <TT
+CLASS="literal"
+>regex</TT
+> match type is used, and do not work in case
+    of the <TT
+CLASS="literal"
+>string</TT
+> match type.
+    </P
+><P
+>Use this syntax for Realm aliases:
+    <PRE
+CLASS="programlisting"
+>&#13;Realm regex &#60;URL_pattern&#62; &#60;alias_pattern&#62;
+</PRE
+>
+    </P
+><P
+>When <TT
+CLASS="filename"
+>indexer</TT
+> finds a URL matching to
+    <CODE
+CLASS="varname"
+>URL_pattern</CODE
+>, it builds an alias using
+    <CODE
+CLASS="varname"
+>alias_pattern</CODE
+>. <CODE
+CLASS="varname"
+>alias_pattern</CODE
+>
+    can contain references of the form $n, where n is a number in the range of 0-9.
+    Every reference is replaced to text captured by the
+    <CODE
+CLASS="varname"
+>n</CODE
+>-th parenthesized sub-pattern.
+    <TT
+CLASS="literal"
+>$0</TT
+> refers to text matched by the whole pattern.
+    Opening parentheses are counted from left to right
+    (starting from 1) to obtain the number of the capturing
+    sub-pattern.
+    </P
+><P
+>Example: your company hosts a few hundred users with their own domains in the form
+    of <TT
+CLASS="literal"
+>www.username.yourname.com</TT
+>. All user sites are stored on
+    the disk in the subdirectory <TT
+CLASS="filename"
+>/htdocs</TT
+> under their home
+    directories: <TT
+CLASS="literal"
+>/home/username/htdocs/</TT
+>.
+    </P
+><P
+>You can write this command into <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+    (note that the dot '.' character has a special meaning in regular expressions
+    and should be escaped with a '\' sign when dot is used in its literal meaning):
+    <PRE
+CLASS="programlisting"
+>&#13;Realm regex (http://www\.)(.*)(\.yourname\.com/)(.*)  file:///home/$2/htdocs/$4
+</PRE
+>
+    </P
+><P
+>Imagine that <TT
+CLASS="filename"
+>indexer</TT
+> processes a document
+    located at <TT
+CLASS="filename"
+>http://www.john.yourname.com/news/index.html</TT
+>.
+    These patterns will be captured:
+    </P
+><P
+CLASS="literallayout"
+><br>
+&nbsp;&nbsp;&nbsp;$0&nbsp;=&nbsp;<TT
+CLASS="literal"
+>http://www.john.yourname.com/news/index.htm</TT
+>&nbsp;(the&nbsp;whole&nbsp;pattern&nbsp;match)<br>
+&nbsp;&nbsp;&nbsp;$1&nbsp;=&nbsp;<TT
+CLASS="literal"
+>http://www.</TT
+>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;subpattern&nbsp;matching&nbsp;<TT
+CLASS="literal"
+>(http://www\.)</TT
+><br>
+&nbsp;&nbsp;&nbsp;$2&nbsp;=&nbsp;<TT
+CLASS="literal"
+>john</TT
+>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;subpattern&nbsp;matching&nbsp;<TT
+CLASS="literal"
+>(.*)</TT
+><br>
+&nbsp;&nbsp;&nbsp;$3&nbsp;=&nbsp;<TT
+CLASS="literal"
+>.yourname.com/</TT
+>&nbsp;&nbsp;&nbsp;-&nbsp;subpattern&nbsp;matching&nbsp;<TT
+CLASS="literal"
+>(\.yourname\.com/)</TT
+><br>
+&nbsp;&nbsp;&nbsp;$4&nbsp;=&nbsp;<TT
+CLASS="literal"
+>/news/index.html</TT
+>&nbsp;-&nbsp;subpattern&nbsp;matching&nbsp;<TT
+CLASS="literal"
+>(.*)</TT
+><br>
+</P
+><P
+>After the matches are found, the subpatterns <TT
+CLASS="literal"
+>$2</TT
+>
+    and <TT
+CLASS="literal"
+>$4</TT
+> are substituted to
+    <CODE
+CLASS="varname"
+>alias_pattern</CODE
+>, which will result into this alias:
+    <PRE
+CLASS="programlisting"
+>&#13;file:///home/john/htdocs/news/index.html
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-prog"
+>The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-aliasprog.html"
+>AliasProg</A
+></B
+> command
+      <A
+NAME="AEN1798"
+></A
+></A
+></H3
+><P
+><B
+CLASS="command"
+><A
+HREF="msearch-cmdref-aliasprog.html"
+>AliasProg</A
+></B
+> can be useful for
+    a web hosting company indexing its customer web sites by loading documents
+    directly from the disk without having to involve the HTTP server into
+    crawling process (to offload the server). Document layout can be very complex
+    to describe it using  the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+> or
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+>
+    commands. <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-aliasprog.html"
+>AliasProg</A
+></B
+> defines an external
+    program that can be executed with an URL in the command line argument and
+    return the corresponding alias to <TT
+CLASS="filename"
+>STDOUT</TT
+>.
+    Use <TT
+CLASS="literal"
+>$1</TT
+> to pass URLs to the command line.
+    </P
+><P
+>&#13;     The command in this example uses the <SPAN
+CLASS="application"
+>replace</SPAN
+> program
+     from <SPAN
+CLASS="application"
+>MySQL</SPAN
+> distribution and replaces URL
+     substring <TT
+CLASS="literal"
+>http://www.apache.org/</TT
+> to
+     <TT
+CLASS="literal"
+>file:///usr/local/apache/htdocs/</TT
+>:
+    <PRE
+CLASS="programlisting"
+>&#13;AliasProg  "echo $1 | /usr/local/mysql/bin/mysql/replace http://www.apache.org/ file:///usr/local/apache/htdocs/"
+    </PRE
+>
+    </P
+><P
+>You can write your own complex program for converting URLs int
+    their aliases using any preferred programming language.</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-reverse"
+>The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-reversealias.html"
+>ReverseAlias</A
+></B
+> command
+<A
+NAME="AEN1823"
+></A
+></A
+></H3
+><P
+>The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-reversealias.html"
+>ReverseAlias</A
+></B
+> <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+    command allows mapping of URLs before a URL is inserted into the database. Unlike the
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-alias.html"
+>Alias</A
+></B
+> command (which
+    performs mapping right before a document is downloaded), the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-reversealias.html"
+>ReverseAlias</A
+></B
+> command performs mapping
+    immediately after a new link is found. 
+<PRE
+CLASS="programlisting"
+>&#13;ReverseAlias http://name2/   http://name2.yourname.com/
+Server       http://name2.yourname.com/
+    </PRE
+>
+    </P
+><P
+>In the above example, all links with the short server name
+    will be converted to links with the full server and will be put
+    into the database after converting.
+    </P
+><P
+>Another possible use of the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-reversealias.html"
+>ReverseAlias</A
+></B
+>
+    is stripping off various undesired query string parameters like
+    <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+>.
+    </P
+><P
+>The following example will strip off the
+    <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+> part from the URLs
+    like <TT
+CLASS="literal"
+>http://www/a.php?PHPSESSID=XXX</TT
+>, when there
+    are no any other query string parameters other than <TT
+CLASS="literal"
+>PHPSESSID</TT
+>.
+    The question mark is deleted as well:
+    <PRE
+CLASS="programlisting"
+>&#13;ReverseAlias regex  (http://[^?]*)[?]PHPSESSID=[^&#38;]*$          $1$2
+    </PRE
+>
+    </P
+><P
+>Stripping the <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+> from the URL
+    like <TT
+CLASS="literal"
+>w/a.php?PHPSESSID=xxx&#38;..</TT
+>, that is when
+    <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+> is the very first query string
+    parameter followed by a number of other parameters.
+    The ampersand sign <TT
+CLASS="literal"
+>&#38;</TT
+> after the
+    <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+> part is deleted as well.
+    The question mark <TT
+CLASS="literal"
+>?</TT
+> is not deleted:
+    <PRE
+CLASS="programlisting"
+>&#13;ReverseAlias regex  (http://[^?]*[?])PHPSESSID=[^&#38;]*&#38;(.*)      $1$2
+</PRE
+>
+    </P
+><P
+>Stripping the <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+> part from the URLs
+    like <TT
+CLASS="literal"
+>http://www/a.php?a=b&#38;PHPSESSID=xxx</TT
+> or
+    <TT
+CLASS="literal"
+>http://www/a.php?a=b&#38;PHPSESSID=xxx&#38;c=d</TT
+>,
+    where <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+> is not the first parameter.
+    The ampersand sign <TT
+CLASS="literal"
+>&#38;</TT
+> before
+    <TT
+CLASS="literal"
+>PHPSESSID=XXXX</TT
+> is deleted:
+    <PRE
+CLASS="programlisting"
+>&#13;ReverseAlias regex  (http://.*)&#38;PHPSESSION=[^&#38;]*(.*)         $1$2
+    </PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-search"
+>Search-time aliases in <TT
+CLASS="filename"
+>search.htm</TT
+>
+      <A
+NAME="AEN1864"
+></A
+></A
+></H3
+><P
+>It is also possible to define aliases in the search template (<TT
+CLASS="filename"
+>search.htm</TT
+>).
+    The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-alias.html"
+>Alias</A
+></B
+> command in <TT
+CLASS="filename"
+>search.htm</TT
+>
+    is identical to the one in <TT
+CLASS="filename"
+>indexer.conf</TT
+>, but is
+    applied  at search time rather than during crawling.</P
+><P
+>The syntax of the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-alias.html"
+>Alias</A
+></B
+>
+    command in <TT
+CLASS="filename"
+>search.htm</TT
+> is similar to <TT
+CLASS="filename"
+>indexer.conf</TT
+>:
+    <PRE
+CLASS="programlisting"
+>&#13;Alias &#60;find-prefix&#62; &#60;replace-prefix&#62;
+    </PRE
+>
+    </P
+><P
+>Suppose your <TT
+CLASS="filename"
+>search.htm</TT
+> has the following
+    command:
+    <PRE
+CLASS="programlisting"
+>&#13;Alias http://localhost/ http://www.mnogo.ru/
+    </PRE
+>
+    </P
+><P
+>When <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> returns a page with
+    the URL <TT
+CLASS="literal"
+>http://localhost/news/article10.html</TT
+>,
+    it will be replaced to
+    <TT
+CLASS="literal"
+>http://www.mnogo.ru/news/article10.html</TT
+>.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>When you need aliases, you can put aliases either into <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+    (to convert the remote notation to the local notation during crawling
+    time) or into <TT
+CLASS="filename"
+>search.htm</TT
+> (to convert the
+    local notation to the remote notation during search time). Use the 
+    approach which looks more convenient for you.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="srvtable"
+>ServerTable
+    <A
+NAME="AEN1892"
+></A
+></A
+></H2
+><P
+>The quick way to specify URLs to be indexed by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> is just
+    to specify them using the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+> or <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+> directives in the <TT
+CLASS="filename"
+>indexer.conf</TT
+> file.
+    However, in some cases users might already have URLs saved in a <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> database,
+    it would be much simpler to have <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> use this information. This can be
+    done using the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-servertable.html"
+>ServerTable</A
+></B
+> command,
+    which is available in <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> starting from the version 3.3.7.
+  </P
+><P
+>When <B
+CLASS="command"
+>ServerTable mysql://user:pass@host/dbname/my_server?srvinfo=my_srvinfo</B
+>
+  is specified, <SPAN
+CLASS="application"
+>indexer</SPAN
+> loads server information from
+  the given <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> table <TT
+CLASS="literal"
+>my_server</TT
+> and loads
+  the server parameters from the table <TT
+CLASS="literal"
+>my_srvinfo</TT
+>.
+  </P
+><P
+>    
+  The following sections provide step-by-step instructions how to create,
+  populate and load Server tables.
+  </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="srvtable-create"
+>Step 1: creating Server table</A
+></H3
+><P
+>&#13;     The tables <TT
+CLASS="literal"
+>server</TT
+> and <TT
+CLASS="literal"
+>srvinfo</TT
+>
+     that are already present in <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> are used internally. One should not
+     try to use these tables to insert your own URLs. Instead, you must create
+     your own tables with similar structures.
+     For example, with <SPAN
+CLASS="application"
+>MySQL</SPAN
+> you can do:
+     <PRE
+CLASS="programlisting"
+>&#13;CREATE TABLE my_server LIKE server;
+CREATE TABLE my_srvinfo LIKE srvinfo;
+     </PRE
+>
+     </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      You may find useful to do some modifications in the column types,
+      for example, add <TT
+CLASS="literal"
+>AUTOINCREMENT</TT
+> flag to <TT
+CLASS="literal"
+>rec_id</TT
+>.
+      However, don't change the column names - <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> looks up the columns
+      by their names.
+      </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="srvtable-insert"
+>Step 2: populating Server table</A
+></H3
+><P
+>Now that you have your custom tables, you can load data:
+    <PRE
+CLASS="programlisting"
+>&#13;INSERT INTO my_server (rec_id, enabled, command, url) VALUES (1, 1, 'S', 'http://server1/');
+INSERT INTO my_srvinfo (srv_id, sname, sval) VALUES ('Period', '30d');
+
+INSERT INTO my_server (rec_id, enabled, command, url) VALUES (2, 1, 'S', 'http://server2/');
+INSERT INTO my_srvinfo (srv_id, sname, sval) VALUES ('MaxHops', '3');   
+    </PRE
+>
+    </P
+><P
+>&#13;    The columns <TT
+CLASS="literal"
+>rec_id</TT
+>, <TT
+CLASS="literal"
+>enabled</TT
+> and <TT
+CLASS="literal"
+>url</TT
+>
+    must be specified in the <TT
+CLASS="literal"
+>INSERT INTO my_server</TT
+> statements.
+    </P
+><P
+>&#13;    The columns <TT
+CLASS="literal"
+>parent</TT
+> and <TT
+CLASS="literal"
+>pop_weight</TT
+>
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>should NOT</I
+></SPAN
+> be specified, as these columns used by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> internally.
+    </P
+><P
+>&#13;    The columns <TT
+CLASS="literal"
+>tag</TT
+>, <TT
+CLASS="literal"
+>category</TT
+>,
+    <TT
+CLASS="literal"
+>ordre</TT
+>, <TT
+CLASS="literal"
+>weight</TT
+> can be specified optionally.
+    </P
+><P
+>&#13;    <TT
+CLASS="literal"
+>my_srvinfo</TT
+> is a child table of <TT
+CLASS="literal"
+>my_server</TT
+>.
+    These tables are joint using the condition
+    <TT
+CLASS="literal"
+>my_server.rec_id = my_srvinfo.srv_id</TT
+>.
+    </P
+><P
+>&#13;    <TT
+CLASS="literal"
+>sname</TT
+> in the table <TT
+CLASS="literal"
+>my_srvinfo</TT
+>
+    is the name of a directive that might be specified for the particular URL
+    in <TT
+CLASS="filename"
+>indexer.conf</TT
+>. For example, you might want to specify <TT
+CLASS="literal"
+>Period</TT
+>
+    of "<TT
+CLASS="literal"
+>30d</TT
+>" for the respective URL,
+    so you insert a record with <TT
+CLASS="literal"
+>sname="Period"</TT
+> and <TT
+CLASS="literal"
+>sval="30d"</TT
+>,
+    or set <TT
+CLASS="literal"
+>MaxHops</TT
+> to "<TT
+CLASS="literal"
+>3</TT
+>",
+    so you insert a record with <TT
+CLASS="literal"
+>sname="MaxHops"</TT
+> and <TT
+CLASS="literal"
+>sval="3"</TT
+>.
+    </P
+><P
+>&#13;    The meaning of various columns is explained in <A
+HREF="msearch-dbschema.html"
+>the Section called <I
+>Database schema</I
+> in Chapter 12</A
+>.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      Look at the table <TT
+CLASS="literal"
+>srvinfo</TT
+> data to get examples about how it is used.
+      </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="srvtable-load"
+>Step 3: loading Server table</A
+></H3
+><P
+>&#13;      Now that you have data in your custom Server tables, you need to specify the new tables in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+      Just add the following line:
+      <PRE
+CLASS="programlisting"
+>&#13;      ServerTable mysql://user:pass@host/dbname/my_server?srvinfo=my_srvinfo
+      </PRE
+>
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      If the <TT
+CLASS="literal"
+>srvinfo</TT
+> parameter is omitted,
+      parameters are loaded from the table with name <TT
+CLASS="literal"
+>srvinfo</TT
+>
+      by default.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;    A quick way to test if your Server table works fine is to insert one or two URLs into
+    the <TT
+CLASS="literal"
+>my_server</TT
+> table that do not already exist in your <TT
+CLASS="filename"
+>indexer.conf</TT
+>,
+    then run <SPAN
+CLASS="application"
+>indexer</SPAN
+> and specify that only the given URLs are to be indexed, e.g.:
+    <PRE
+CLASS="programlisting"
+>&#13;./indexer -a -u http://server1/
+./indexer -a -u http://server2/
+    </PRE
+>
+    If it is working properly, you should see the test URLs being indexed.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="srvtable-notes"
+>Important notes on using Server table</A
+></H3
+><P
+>1) You can create as many custom server/srvinfo tables as you like,
+    and then specify each pair in the <TT
+CLASS="filename"
+>indexer.conf</TT
+> file using a different 
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-servertable.html"
+>ServerTable</A
+></B
+> directive with the appropriate values.
+    </P
+><P
+>2) Using your own Server table does not stop other URLs that
+    are specified in your <TT
+CLASS="filename"
+>indexer.conf</TT
+> from being indexed. <SPAN
+CLASS="application"
+>indexer</SPAN
+> will do both.
+    So you can define some non-changing URLs in the <TT
+CLASS="filename"
+>indexer.conf</TT
+> file, and
+    put the URLs that tend to come and go into your custom Server table.
+    You can also write some scripts that copy URLs from
+    your own database into your custom Server table used by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="srvtable-structure"
+>Server table structure</A
+></H3
+><P
+>&#13;    See <A
+HREF="msearch-dbschema.html"
+>the Section called <I
+>Database schema</I
+> in Chapter 12</A
+> for the meaning of various columns in the Server tables.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="flushsrvtable"
+>FlushServerTable
+    <A
+NAME="AEN1998"
+></A
+></A
+></H2
+><P
+>&#13;   Flush server sets active field to inactive for all ServerTable records. 
+   Use this command to deactivate all commands in ServerTable before loading
+   new commands from <TT
+CLASS="filename"
+>indexer.conf</TT
+> or from other ServerTable.
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-content-enc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-syslog.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Content-Encoding support
+    <A
+NAME="AEN1461"
+></A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-indexing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using syslog
+  <A
+NAME="AEN2005"
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

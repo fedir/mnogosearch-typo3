@@ -1,0 +1,323 @@
+<sect2 id="follow">
+
+  <title>
+    Specifying the Web space for indexing
+  </title>
+  
+  <para>
+    When &indexer; found a new URL during crawling,
+    &indexer; checks whether the URL has
+    a corresponding Web space definition command
+    <command><xref linkend="cmdref-server"/></command>,
+    <command><xref linkend="cmdref-realm"/></command> or
+    <command><xref linkend="cmdref-subnet"/></command>
+    given in &indexer.conf;.
+    URLs which do not have a corresponding Web space definition
+    command are not added into the database.
+    Also, the URLs which already present in the search database
+    and appear not to have corresponding Web space definition commands
+    are deleted from the database. This can happen after removing of
+    some of the definition commands from &indexer.conf;.
+  </para>
+  
+  <para>The Web definiton commands have the following format: 
+<programlisting>
+Server [Method] [SubSection] &lt;pattern&gt; [alias]
+Realm [Method] [CaseType] [MatchType] [CmpType] &lt;pattern&gt; [alias]
+Subnet [Method] [MatchType] &lt;pattern&gt;
+</programlisting>
+  </para>
+
+  <para>The mandatory parameter <option>pattern</option> specifies an URL,
+   or its part, or a pattern.
+  </para>
+  
+  <para>The optional parameter <option>method</option>
+  specifies the action for this command.
+  It can take one of the following values:
+    <literal>Allow</literal>,
+    <literal>Disallow</literal>,
+    <literal>HrefOnly</literal>, 
+    <literal>CheckOnly</literal>,
+    <literal>Skip</literal>,
+    <literal>CheckMP3</literal>,
+    <literal>CheckMP3Only</literal>.
+    By default, the value <literal>Allow</literal> is used.
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>
+          <command>Allow</command>
+          <indexterm><primary>Parameter <option>method</option></primary><secondary>Allow</secondary></indexterm>
+        </para>
+        <para>
+          <literal>Allow</literal> specifies that all corresponding
+          documents will be indexed and scanned for new links.
+          Depending on <literal>Content-Type</literal>,
+          an external parser can be executed if needed.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <command>Disallow</command>
+          <indexterm><primary>Parameter <option>method</option></primary><secondary>Disallow</secondary></indexterm>
+        </para>
+        <para>
+          <literal>Disallow</literal> specifies that all corresponding
+          documents will be ignored and deleted from the database.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <command>HrefOnly</command>
+          <indexterm><primary>Parameter <option>method</option></primary><secondary>HrefOnly</secondary></indexterm>
+        </para>
+        <para>
+          <literal>HrefOnly</literal> specifies that all corresponding
+          documents will only be scanned for new links, but their
+          content won't be indexed. This is useful, for example,
+          when indexing mail archives, when the index pages are only
+          scanned for links to new messages.
+<programlisting>
+Server HrefOnly Page http://www.mail-archive.com/general%40mnogosearch.org/
+Server Allow    Path http://www.mail-archive.com/general%40mnogosearch.org/
+</programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <command>CheckOnly</command>
+          <indexterm><primary>Parameter <option>method</option></primary><secondary>CheckOnly</secondary></indexterm>
+        </para>
+        <para>
+          <literal>CheckOnly</literal> specifies that all corresponding
+          documents will be requested using the <literal>HEAD</literal>
+          HTTP method instead of the default <literal>GET</literal> method.
+          When using <literal>CheckOnly</literal>, only brief information
+          about the documents (such as size, last modification time,
+          content type) will be fetched. This method can be helpful
+          to detect broken links on your site. For example:
+<programlisting>
+Server HrefOnly  http://www.mnogosearch.org/
+Realm  CheckOnly *
+</programlisting>
+        </para>
+        <para>These commands instruct <command>indexer</command>
+        to scan all documents on the site <literal>www.mnogosearch.org</literal>
+        and collect all outgoing links. Brief info about every document
+        outside <literal>www.mnogosearch.org</literal> will be requested
+        using the <literal>HEAD</literal> method. After indexing is done,
+        use <command>indexer -S</command> command to see if there are
+        any pages with status <literal>404 Not found</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <command>Skip</command>
+          <indexterm><primary>Parameter <option>method</option></primary><secondary>Skip</secondary></indexterm>
+        </para>
+        <para>
+          <literal>Skip</literal> specifies that all corresponding
+          documents will be skipped while indexing. This is useful
+          when you need to disable temporarily reindexing of some sites,
+          but to keep them available for search with their previous content.
+          &indexer;  will mark these documents as "fresh"
+          and put in the end of its queue.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <command>CheckMP3</command>
+          <indexterm><primary>Parameter <option>method</option></primary><secondary>CheckMP3</secondary></indexterm>
+        </para>
+        <para>
+          <literal>CheckMP3</literal> specifies that the corresponding
+          documents will be checked for MP3 tags even if the
+          <literal>Content-Type</literal> is not equal
+          to <literal>audio/mpeg</literal>. This is useful if the remote
+          server sends <literal>application/octet-stream</literal> as
+          <literal>Content-Type</literal> for MP3 files. In case when
+           MP3 tags are found in some document, they will be indexed,
+           otherwise the document will be further processed according
+           to the <literal>Content-Type</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <command>CheckMP3Only</command>
+          <indexterm><primary>Parameter <option>method</option></primary><secondary>CheckMP3Only</secondary></indexterm>
+        </para>
+
+        <para>
+          This method is very similar to <literal>CheckMP3</literal>,
+          but in case when MP3 tags are not found in a document,
+          the document is not further processed.
+        </para>
+      </listitem>
+    </orderedlist>
+  </para>
+
+  <para>
+      The optional <option>SubSection</option> parameter specifies
+      the pattern match method, which can be one of the following values:
+      <literal>page</literal>, <literal>path</literal>,
+      <literal>site</literal>, <literal>world</literal>,
+      with <literal>path</literal> being the default.
+
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para><literal>Server path</literal></para>
+        <para>
+          All URLs from the same directory match. For example, if:
+          <literal>Server path http://localhost/path/to/index.html</literal>
+          is given, all URLs starting with
+          <literal>http://localhost/path/to/</literal>
+          will match this command.
+        </para>
+        <para>The following commands have the same effect
+        when searching for a matching Web space definition command:
+        </para>
+        <para>
+          <programlisting>
+Server path http://localhost/path/to/index.html
+Server path http://localhost/path/to/index
+Server path http://localhost/path/to/index.cgi?q=bla
+Server path http://localhost/path/to/index?q=bla
+</programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para><literal>Server site</literal></para>
+        <para>
+        All URLs from the same host match.
+        For example, <literal>Server site http://localhost/path/to/a.html</literal>
+        will allow to index the entire site
+        <literal>http://localhost/</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <para> <literal>Server world</literal></para>
+        <para>If <literal>world</literal> subsection is specified,
+        then absolutely any URL will correspond
+        to this definiton command. See the explanation below.
+        </para>
+      </listitem>
+      <listitem>
+        <para> <literal>Server page</literal></para>
+        <para>Means exact match, only the given URL will match this command.
+        </para>
+      </listitem>
+      <listitem>
+        <para>subsection in <literal>news://</literal> schema</para>
+        <para>Subsection is always considered as <literal>site</literal>
+        for the <literal>news://</literal> URL schema.
+        This is because unlike <literal>ftp://</literal> or
+        <literal>http://</literal>, the <literal>news://</literal> schema
+        has no recursive paths.
+        Use <literal>Server news://news.server.com/</literal> to index
+        the whole news server or, for example,
+        <literal>Server news://news.server.com/udm</literal> to index all
+        messages from the <literal>/udm</literal> hierarchy.</para>
+      </listitem>
+    </orderedlist>
+  </para>
+
+
+  <para>
+    The optional parameter <literal>CaseType</literal> specifies case
+    sensitivity for string comparison, it can take one of the following
+    values:  <literal>case</literal> - case insensitive comparison,
+    or <literal>nocase</literal> - case sensitive comparison.
+  </para>
+
+  <para>The optional parameter <literal>CmpType</literal> specifies
+  comparison type and can take two values:
+  <literal>Regex</literal> and <literal>String</literal>.
+  <literal>String</literal> wildcards are the default match type.
+  You can use ? and * signs in the <literal>patter</literal>,
+  they mean "one character" and "any number of characters" respectively.
+  For example, if you want to index all HTTP sites in the
+  <literal>.ru</literal> domain, you can use this command: 
+<programlisting>
+Realm http://*.ru/*
+</programlisting>
+  </para>
+  <para>The <literal>regex</literal> comparison type says that
+  the pattern is a regular expression. For example, you can describe
+  everything in the <literal>.ru</literal> domain using the
+  <literal>regex</literal> comparison type:
+<programlisting>
+Realm Regex ^http://.*\.ru/
+</programlisting>
+  </para>
+  <para>The optional parameter <literal>MatchType</literal>
+  can be  <literal>Match</literal> or <literal>NoMatch</literal>,
+  with <literal>Match</literal> as default.
+  <literal>Realm NoMatch</literal> has reverse effect.
+  It means that URLs not matching the given <option>pattern</option>
+  will correspond to this <command>Realm</command> command.
+  For example, use this command to index everything but the
+  <literal>.com</literal> domain:
+<programlisting>
+Realm NoMatch http://*.com/*
+</programlisting>
+  </para>
+  <para>The optional <option>alias</option> argument provides
+  URL rewrite rules, described in details in <xref linkend="aliases"/>.
+  </para>
+
+
+  <sect3 id="follow-difparam">
+    <title>Using different parameters for a server and its subsections</title>
+    <para>&indexer; examines the
+    Web space definition command in order of their appearance
+    in &indexer.conf;.
+    Thus, if you want to give different parameters to
+    a site and its subsections, you can add the command
+    describing a subsection before the command describing
+    the entire site. Imagine that you have a subdirectory
+    which contains news articles and want those articles
+    to be reindexed more often than the rest of the site.
+    The following combination can be useful in this cases:</para>
+    <para>
+      <programlisting>
+# Add subsection
+Period 200000
+Server http://servername/news/
+
+# Add server
+Period 600000
+Server http://servername/
+</programlisting>
+    </para>
+    <para>These commands give different reindexing periods for the
+    <filename>/news/</filename> subdirectory and the rest of the site.
+    &indexer; will choose the first command for
+    the URL <filename>http://servername/news/page1.html</filename>.
+    </para>
+  </sect3>
+  <sect3 id="follow-default">
+    <title>The default indexer behavior</title>
+    <para>The default behavior of indexer is to follow through
+    the links found having correspondent Web space definition commands
+    given in the &indexer.conf; file.
+    &indexer; jumps between sites if both
+    of them have a corresponding Web definition command.
+    For example, there are two commands:</para>
+    <para>
+<programlisting>
+Server http://www/
+Server http://web/
+</programlisting>
+    </para>
+    <para>When indexing <filename>http://www/page1.html</filename>
+    indexer WILL follow the link <filename>http://web/page2.html</filename>.
+    Note that although these pages are on different sites, BOTH of
+    them have a correspondent Web space definition command.
+    </para>
+    <para>If we delete one of the commands, &indexer;
+    will remove all expired URLs from this server during the next
+    crawling sessions.
+    </para>
+  </sect3>
+
+</sect2>

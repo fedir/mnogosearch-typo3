@@ -1,0 +1,117 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+ImportEnv UDM_TEST_DBADDR1
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single&wf=$(wf0)&MaxResults=$(MaxResults0)
+DBAddr $(UDM_TEST_DBADDR1)?dbmode=single&wf=$(wf1)&MaxResults=$(MaxResults1)
+
+SaveSectionSize no
+
+# Uncomment this line to enable search result cache
+#Cache yes
+
+#  Uncomment this line if you do not want to detect and show clones
+#DetectClones	no
+
+# Use proper local and browser charsets
+# Default charset is iso-8859-1 (latin1)
+# which is suitable for the most Western European languages
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+# Load stopwords file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#StopwordFile stopwords/en.sl
+#StopwordFile stopwords/ru.sl
+#
+
+#
+# Minimum and maximum word lengths
+#
+#MinWordLen 1
+#MaxWordLen 32
+
+# Number of pages in navigator bar
+#
+#PagesPerScreen 10
+
+# Load synonyms file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#Synonym synonym/english.syn
+#Synonym synonym/russian.syn
+#
+
+#
+# How to hilight searched words.
+#
+HlBeg	<b>
+HlEnd	</b>
+
+# Uncomment this line to enable error loging to stderr
+Log2stderr yes
+LogLevel 6
+#
+
+# Uncomment this line to change default URL basis for storedoc.cgi
+#StoredocURL     /cgi-bin/storedoc
+#
+
+# Uncoment this line to change default maximal excerpt size. Default value is 256.
+#ExcerptSize 1024
+#
+
+# Uncomment this line to change Last-Modified format output
+# Use strftime function meta variables
+#DateFormat %d %b %Y %X %Z
+
+-->
+
+<!--top-->
+<!--/top-->
+
+
+<!--restop-->
+Search results: $(W)
+Results $(first)-$(last) of $(total).
+<!--/restop-->
+
+
+<!--res-->
+$(Order). $&(Title)
+- $&(Body)
+- $(URL)
+- $(Content-Length) bytes
+<!IFNOT NAME="PerSite" CONTENT="0">More from this site ($(PerSite) total)<!ENDIF>
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+<!--clone-->
+<!--/clone-->
+<!--navleft-->
+<!--/navleft-->
+<!--navleft_nop-->
+<!--/navleft_nop-->
+<!--navbar1-->
+<!--/navbar1-->
+<!--navbar0-->
+<!--/navbar0-->
+<!--navright-->
+<!--/navright-->
+<!--navright_nop-->
+<!--/navright_nop-->
+<!--notfound-->
+Sorry, your search for <b>$&(q)</b> did not find any results.
+No documents were found containing <b>"$&(q)"</b>.
+<!--/notfound-->
+<!--noquery-->
+<!--/noquery-->
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+<!--bottom-->
+---------------------
+<!--/bottom-->

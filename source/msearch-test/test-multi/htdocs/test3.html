@@ -1,0 +1,3627 @@
+<HTML
+><HEAD
+><TITLE
+>indexer configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.73
+"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.2.16 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Indexing"
+HREF="msearch-indexing.html"><LINK
+REL="PREVIOUS"
+TITLE="Content-Encoding support
+
+"
+HREF="msearch-content-enc.html"><LINK
+REL="NEXT"
+TITLE="Extended indexing features"
+HREF="msearch-extended-indexing.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>mnoGoSearch 3.2.16 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-content-enc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Indexing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-extended-indexing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="indexer-configuration"
+>indexer configuration</A
+></H1
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="follow"
+>Specifying WEB space to be indexed</A
+></H2
+><P
+>When indexer tries to insert a new URL into database or
+is trying to index an existing one, it first of all checks whether
+this URL has corresponding <B
+CLASS="command"
+>Server</B
+>, <B
+CLASS="command"
+>Realm</B
+> or <B
+CLASS="command"
+>Subnet</B
+> command given in
+<TT
+CLASS="filename"
+>indexer.conf</TT
+>. URLs without corresponding <B
+CLASS="command"
+>Server</B
+>, <B
+CLASS="command"
+>Realm</B
+>
+or <B
+CLASS="command"
+>Subnet</B
+> command are not indexed. By default those URLs which are
+already in database and have no Server/Realm/Subnet commands will be deleted
+from database. It may happen for example after removing some
+Server/Realm/Subnet commands from <TT
+CLASS="filename"
+>indexer.conf</TT
+>.</P
+><P
+>These commands have following format:
+<PRE
+CLASS="programlisting"
+>[Server | Realm | Subnet] [method] [subsection] [CaseType] [MatchType] [CmpType] pattern [alias]</PRE
+>
+</P
+><P
+>Mandatory parameter <TT
+CLASS="option"
+>pattern</TT
+> specify an URL, or it part, or pattern to compare.
+</P
+><P
+>&#13;			Optional parameter <TT
+CLASS="option"
+>method</TT
+> specify an document action for this command.
+May take values:
+			<TT
+CLASS="literal"
+>Allow</TT
+>, <TT
+CLASS="literal"
+>Disallow</TT
+>, <TT
+CLASS="literal"
+>HrefOnly</TT
+>, 
+			<TT
+CLASS="literal"
+>CheckOnly</TT
+>, <TT
+CLASS="literal"
+>Skip</TT
+>, 	<TT
+CLASS="literal"
+>CheckMP3</TT
+>,
+			<TT
+CLASS="literal"
+>CheckMP3Only</TT
+>. By default, the value <TT
+CLASS="literal"
+>Allow</TT
+> is used.
+		<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>&#13;					<B
+CLASS="command"
+>Allow</B
+>
+<A
+NAME="AEN986"
+></A
+>
+				</P
+><P
+>&#13;					Value <TT
+CLASS="literal"
+>Allow</TT
+> specify that all corresponding documets will be indexed
+ and scaned for new links. Depends on <TT
+CLASS="literal"
+>Content-Type</TT
+> appropriate external parser is executed if need.
+				</P
+></LI
+><LI
+><P
+>&#13;					<B
+CLASS="command"
+>Disallow</B
+>
+<A
+NAME="AEN996"
+></A
+>
+				</P
+><P
+>&#13;					Value <TT
+CLASS="literal"
+>Disallow</TT
+> specify that all corresponding documents will be ignored and
+deleted from database, if its was placed into before.
+				</P
+></LI
+><LI
+><P
+>&#13;					<B
+CLASS="command"
+>HrefOnly</B
+>
+<A
+NAME="AEN1005"
+></A
+>
+				</P
+><P
+>&#13;					Value <TT
+CLASS="literal"
+>HrefOnly</TT
+> specify that all corresponding documents will be only
+scaned for new links (not indexed). This is useful, for example, for mail archives indexing, when index pages is only scaned to
+detect new messages for indexing. 
+<PRE
+CLASS="programlisting"
+>&#13;Server HrefOnly Page http://www.mail-archive.com/general%40mnogosearch.org/
+Server Allow    Path http://www.mail-archive.com/general%40mnogosearch.org/
+</PRE
+>
+				</P
+></LI
+><LI
+><P
+>&#13;					<B
+CLASS="command"
+>CheckOnly</B
+>
+<A
+NAME="AEN1015"
+></A
+>
+				</P
+><P
+>&#13;					Value <TT
+CLASS="literal"
+>CheckOnly</TT
+> specify that all corresponding documents wiil be
+requested by HTTP HEAD request, not HTTP GET, i.e. inly brief info about documents (size, last modified, content type) will be
+ fetched. This allow, for example, check links on your site:
+<PRE
+CLASS="programlisting"
+>&#13;Server HrefOnly  http://www.mnogosearch.org/
+Realm  CheckOnly *
+</PRE
+>
+</P
+><P
+>&#13;These commands instruct <B
+CLASS="command"
+>indexer</B
+> to scan all documents on <TT
+CLASS="literal"
+>www.mnogosearch.org</TT
+> site and
+collect all links. Brief info about every document found will be requested by HEAD method.
+After indexing done, <B
+CLASS="command"
+>indexer -S</B
+> command will show status for all documents from this site.
+				</P
+></LI
+><LI
+><P
+>&#13;					<B
+CLASS="command"
+>Skip</B
+>
+<A
+NAME="AEN1029"
+></A
+>
+				</P
+><P
+>&#13;					Value <TT
+CLASS="literal"
+>Skip</TT
+> specify that all corresponding documents will be skiped
+while indexing. This is useful when need temporaly disable reindexing several sites, but able search on.
+These documents will maked as expired.
+				</P
+></LI
+><LI
+><P
+>&#13;					<B
+CLASS="command"
+>CheckMP3</B
+>
+<A
+NAME="AEN1038"
+></A
+>
+				</P
+><P
+>&#13;					Value <TT
+CLASS="literal"
+>CheckMP3</TT
+> specify that corresponding documents will be checked
+for MP3 tags along if its <TT
+CLASS="literal"
+>Conten-Type</TT
+> is equal to <TT
+CLASS="literal"
+>audio/mpeg</TT
+>.
+This is useful, for example, if remote server supply <TT
+CLASS="literal"
+>application/octet-stream</TT
+> as 
+<TT
+CLASS="literal"
+>Content-Type</TT
+> for MP3 files. If this tag is present, these files will indexed as MP3 file, otherwise its
+will be processed according to <TT
+CLASS="literal"
+>Content-Type</TT
+>.
+				</P
+></LI
+><LI
+><P
+>&#13;					<B
+CLASS="command"
+>CheckMP3Only</B
+>
+<A
+NAME="AEN1052"
+></A
+>
+				</P
+><P
+>&#13;					This value is equal to <TT
+CLASS="literal"
+>CheckMP3</TT
+>, but if MP3 tag is not present,
+processing on <TT
+CLASS="literal"
+>Content-Type</TT
+> will not be taken.
+				</P
+></LI
+></OL
+>
+		</P
+><P
+>&#13;  Use optional <TT
+CLASS="option"
+>subsection</TT
+>
+parameter to specify server's checking behavior. Values of subsection
+are the same with "Follow" command arguments. Subsection value must be
+one of the following: page, path, site, world and has "path" value by
+default. If subsection is not specified, current "Follow" value will
+be used. So, the only <TT
+CLASS="literal"
+>Server site http://localhost/</TT
+>
+command and combination of <TT
+CLASS="literal"
+>Follow site</TT
+> and
+<TT
+CLASS="literal"
+>Server http://localhost/</TT
+> have the same
+effect.
+		<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>&#13;					<TT
+CLASS="literal"
+>path</TT
+> subsection</P
+><P
+>When indexer seeks for a
+"Server" command corresponding to an URL it checks that the discovered
+URL starts with URL given in Server command argument but without
+trailing file name. For example, if <TT
+CLASS="literal"
+>Server path
+http://localhost/path/to/index.html</TT
+> is given, all URLs which
+have <TT
+CLASS="literal"
+>http://localhost/path/to/</TT
+> at the beginning
+correspond to this Server command.</P
+><P
+>The following commands have the same effect except that they insert different URLs into database:</P
+><P
+>&#13;					<PRE
+CLASS="programlisting"
+>&#13;Server path http://localhost/path/to/index.html
+Server path http://localhost/path/to/index
+Server path http://localhost/path/to/index.cgi?q=bla
+Server path http://localhost/path/to/index?q=bla
+</PRE
+>
+				</P
+></LI
+><LI
+><P
+>&#13;					<TT
+CLASS="literal"
+>site</TT
+> subsection</P
+><P
+>indexer checks that the
+discovered URL have the same hostname with URL given in Server
+command. For example, <TT
+CLASS="literal"
+>Server site
+http://localhost/path/to/a.html</TT
+> will allow to index whole
+<TT
+CLASS="literal"
+>http://localhost/</TT
+> server. </P
+></LI
+><LI
+><P
+>&#13;					<TT
+CLASS="literal"
+>world</TT
+> subsection</P
+><P
+>If world subsection is specified
+in Server command, it has the same effect that URL is considered to
+match this Server command. See explanation below.</P
+></LI
+><LI
+><P
+>&#13;					<TT
+CLASS="literal"
+>page</TT
+> subsection</P
+><P
+>This subsection describes the only one URL given in Server argument.</P
+></LI
+><LI
+><P
+>subsection in <TT
+CLASS="literal"
+>news://</TT
+> schema</P
+><P
+>Subsection is always considered
+as "site" for news:// URL schema. This is because news:// schema has
+no nested paths like ftp:// or http://  Use  <TT
+CLASS="literal"
+>Server
+news://news.server.com/</TT
+> to index whole news server or for
+example <TT
+CLASS="literal"
+>Server news://news.server.com/udm</TT
+> to index
+all messages from "udm" hierarchy.</P
+></LI
+></OL
+>
+</P
+><P
+>&#13;Optional parameter <TT
+CLASS="literal"
+>CaseType</TT
+> is specify the case sensivity for string comparison, it can take one of follow value: 
+<TT
+CLASS="literal"
+>case</TT
+> - caseinsensitive comparison, or <TT
+CLASS="literal"
+>nocase</TT
+> - casesensitive comparison.
+</P
+><P
+>&#13;Optional parameter <TT
+CLASS="literal"
+>CmpType</TT
+> is specify the type of comparison and can take two value:
+<TT
+CLASS="literal"
+>Regex</TT
+> and <TT
+CLASS="literal"
+>String</TT
+>.
+<TT
+CLASS="literal"
+>String</TT
+> wildcards is default
+match type. You can use ? and * signs in URLMask parameters, they
+means "one character" and "any number of characters" respectively. For
+example, if you want to index all HTTP sites in .ru domain, use this
+command:<PRE
+CLASS="programlisting"
+>Realm http://*.ru/*</PRE
+>
+		</P
+><P
+>Regex comparison type takes a regular expression
+as it's argument. Activate regex comparison type using <TT
+CLASS="option"
+>Regex</TT
+>
+keyword. For example, you can describe everything in .ru domain using
+regex comparison type: <PRE
+CLASS="programlisting"
+>Realm Regex ^http://.*\.ru/</PRE
+>
+		</P
+><P
+>Optional parameter <TT
+CLASS="literal"
+>MatchType</TT
+> means match type. There
+are <TT
+CLASS="literal"
+>Match</TT
+> and <TT
+CLASS="literal"
+>NoMatch</TT
+> possible values with <TT
+CLASS="literal"
+>Match</TT
+> as
+default. <TT
+CLASS="literal"
+>Realm NoMatch</TT
+> has reverse effect. It means
+that URL that does not match given <TT
+CLASS="option"
+>pattern</TT
+> will correspond to this
+<B
+CLASS="command"
+>Realm</B
+> command. For example, use this command to index everything
+without .com domain:<PRE
+CLASS="programlisting"
+>Realm NoMatch http://*.com/*</PRE
+>
+		</P
+><P
+>Optional <TT
+CLASS="option"
+>alias</TT
+> argument allows providing very
+complicated URL rewrite more powerful than other aliasing
+mechanism. Take a look <A
+HREF="msearch-indexer-configuration.html#aliases"
+>the Section called <I
+>Aliases</I
+></A
+> for <TT
+CLASS="option"
+>alias</TT
+> argument usage
+explanation. <TT
+CLASS="option"
+>Alias</TT
+> works only with <TT
+CLASS="option"
+>Regex</TT
+> comparison type and has no
+effect with <TT
+CLASS="option"
+>String</TT
+> type.</P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-server"
+>Server command
+<A
+NAME="AEN1125"
+></A
+></A
+></H3
+><P
+>This is the main command of the
+<TT
+CLASS="filename"
+>indexer.conf</TT
+> file. It is used to add servers or
+their parts to be indexed. 
+
+This command also says indexer to insert given URL into database at startup.</P
+><P
+>E.g. command <TT
+CLASS="literal"
+>Server
+http://localhost/</TT
+>  allows  to index whole
+<TT
+CLASS="literal"
+>http://localhost/</TT
+> server. It also makes indexer
+insert given URL into database at startup.  You can also specify some
+path to index server subsection: <TT
+CLASS="literal"
+>Server
+http://localhost/subsection/</TT
+>. It also says indexer to insert
+given URL at startup.</P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>You can suppress indexer behavior to add
+URL given in Server command by using -q indexer command line
+argument. It is useful when you have hundreds or thousands Server
+commands and their URLs are already in database. This allows having
+more quick indexer startup.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-realm"
+>Realm command
+<A
+NAME="AEN1138"
+></A
+></A
+></H3
+><P
+>Realm command is a more powerful means of describing web area to be indexed.
+
+It works almost like <B
+CLASS="command"
+>Server</B
+> command but takes
+a regular expression or string wildcards as it's <TT
+CLASS="option"
+>pattern</TT
+> parameter and
+do not insert any URL into database for indexing.
+		</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-subnet"
+>Subnet command
+<A
+NAME="AEN1146"
+></A
+></A
+></H3
+><P
+>Subnet command is another way to describe web area to be indexed.
+
+It works almost like <B
+CLASS="command"
+>Server</B
+> command but takes
+a string wildcards as it's <TT
+CLASS="option"
+>pattern</TT
+> argument which is compared against IP
+address instead of URL. Argument may have * and ? signs, they means
+"one character" and "any number of characters" respectively. For
+example, if you want to index all HTTP sites in your local subnet,
+use this command:<PRE
+CLASS="programlisting"
+>Subnet 192.168.*.*</PRE
+>
+		</P
+><P
+>You may use "NoMatch" optional argument. For
+example, if you want to index everything without
+<TT
+CLASS="literal"
+>195.x.x.x</TT
+> subnet, use:<PRE
+CLASS="programlisting"
+>Subnet NoMatch 195.*.*.*</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-difparam"
+>Using different parameter for server and it's subsections</A
+></H3
+><P
+>Indexer seeks for "Server" and "Realm" commands
+in order of their appearance. Thus if you want to give different
+parameters to e.g. whole server and its subsection you should add
+subsection line before whole server's. Imagine that you have server
+subdirectory which contains news articles. Surely those articles are
+to be reindexed more often than the rest of the server. The following
+combination may be useful in such cases:</P
+><P
+>&#13;			<PRE
+CLASS="programlisting"
+>&#13;# Add subsection
+Period 200000
+Server http://servername/news/
+
+# Add server
+Period 600000
+Server http://servername/
+</PRE
+>
+		</P
+><P
+>These commands give different reindexing period
+for <TT
+CLASS="filename"
+>/news/</TT
+> subdirectory comparing with the period
+of server as a whole. indexer will choose the first "Server" record
+for the <TT
+CLASS="filename"
+>http://servername/news/page1.html</TT
+> as far
+as it matches and was given first.</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-default"
+>Default indexer behavior</A
+></H3
+><P
+>The default behavior of indexer is to follow
+through links having correspondent Server/Realm command in the
+<TT
+CLASS="filename"
+>indexer.conf</TT
+> file. It also jumps between servers
+if both of them are present in <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+either directly in Server command or indirectly in Realm command. For
+example, there are two Server commands:</P
+><P
+>&#13;			<PRE
+CLASS="programlisting"
+>&#13;Server http://www/
+Server http://web/
+</PRE
+>
+		</P
+><P
+>When indexing
+<TT
+CLASS="filename"
+>http://www/page1.html</TT
+> indexer WILL follow the
+link <TT
+CLASS="filename"
+>http://web/page2.html</TT
+> if the last one has
+been found. Note that these pages are on different servers, but BOTH
+of them have correspondent Server record.</P
+><P
+>If one of the Server command is deleted, indexer
+will remove all expired URLs from this server during next
+reindexing.</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="follow-f"
+>Using <TT
+CLASS="userinput"
+><B
+>indexer -f &#60;filename&#62;</B
+></TT
+></A
+></H3
+><P
+>The third scheme is very useful for
+<TT
+CLASS="literal"
+>indexer -i -f url.txt</TT
+> running. You may maintain
+required servers in the <TT
+CLASS="filename"
+>url.txt</TT
+>. When new URL is
+added into <TT
+CLASS="filename"
+>url.txt</TT
+> indexer will index the server
+of this URL during next startup. </P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="aliases"
+>Aliases</A
+></H2
+><P
+>mnoGoSearch has an alias support making it possible to
+index sites taking information from another location. For example, if
+you index local web server, it is possible to take pages directly from
+disk without involving your web server in indexing process. Another
+example is building of search engine for primary site and using its
+mirror while indexing. There are several ways of using aliases.</P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-conf"
+>Alias indexer.conf command
+<A
+NAME="AEN1187"
+></A
+></A
+></H3
+><P
+>Format of "Alias" <TT
+CLASS="filename"
+>indexer.conf</TT
+> command:
+		<PRE
+CLASS="programlisting"
+>&#13;Alias &#60;masterURL&#62; &#60;mirrorURL&#62;
+</PRE
+>
+</P
+><P
+>E.g. you wish to index
+<TT
+CLASS="literal"
+>http://search.mnogo.ru/</TT
+> using nearest German mirror
+<TT
+CLASS="literal"
+>http://www.gstammw.de/mirrors/mnoGoSearch/</TT
+>. Add
+these lines in your indexer.conf:
+
+		<PRE
+CLASS="programlisting"
+>&#13;Server http://search.mnogo.ru/
+Alias  http://search.mnogo.ru/  http://www.gstammw.de/mirrors/mnoGoSearch/
+</PRE
+>
+		</P
+><P
+>&#13;			<TT
+CLASS="filename"
+>search.cgi</TT
+> will display
+URLs from master site <TT
+CLASS="literal"
+>http://search.mnogo.ru/</TT
+> but
+indexer will take corresponding page from mirror site
+<TT
+CLASS="literal"
+>http://www.gstammw.de/mirrors/mnoGoSearch/</TT
+>.</P
+><P
+>Another example. If you want to index everything
+in udm.net domain and one of servers, for example
+<TT
+CLASS="literal"
+>http://home.udm.net/</TT
+> is stored on local machine in
+<TT
+CLASS="literal"
+>/home/httpd/htdocs/</TT
+> directory. These commands will
+be useful:
+		<PRE
+CLASS="programlisting"
+>&#13;Realm http://*.udm.net/
+Alias http://home.udm.net/ file:/home/httpd/htdocs/
+</PRE
+>
+		</P
+><P
+>Indexer will take <TT
+CLASS="literal"
+>home.udm.net</TT
+> from local disk and index other sites using HTTP.</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="aliases-diff"
+>Different aliases for server parts</A
+></H3
+><P
+>Aliases are searched in the order of their
+appearance in <TT
+CLASS="filename"
+>indexer.conf</TT
+>. So, you can create
+different aliases for server and its parts:
+
+		<PRE
+CLASS="programlisting"
+>&#13;# First, create alias for example for /stat/ directory which
+# is not under common location:
+Alias http://home.udm.net/stat/  file:/usr/local/stat/htdocs/
+
+# Then create alias for the rest of the server:
+Alias http://home.udm.net/ file:/usr/local/apache/htdocs/
+</PRE
+>
+		</P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>if you change the order of these
+commands, alias for <TT
+CLASS="filename"
+>/stat/</TT
+> directory will never
+be found.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-server"
+>Using alias in Server command</A
+></H3
+><P
+>You may specify location used by indexer as an optional argument for Server command:
+		<PRE
+CLASS="programlisting"
+>&#13;Server  http://home.udm.net/  file:/home/httpd/htdocs/
+</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-realm"
+>Using alias in Realm command</A
+></H3
+><P
+>Aliases in Realm command is a very powerful
+feature based on regular expressions. The idea of aliases in Realm
+command implementation is similar to how PHP
+<TT
+CLASS="function"
+>preg_replace()</TT
+> function works. Aliases in Realm
+command work only if "regex" match type is used and does not work with
+"string" match type.</P
+><P
+>Use this syntax for Realm aliases:
+		<PRE
+CLASS="programlisting"
+>&#13;Realm regex &#60;URL_pattern&#62; &#60;alias_pattern&#62;
+</PRE
+>
+		</P
+><P
+>Indexer searches URL for matches to URL_pattern
+and builds an URL alias using alias_pattern. alias_pattern may contain
+references of the form $n. Where n is a number in the range of
+0-9. Every such reference will be replaced by text captured by the
+n'th parenthesized pattern. $0 refers to text matched by the whole
+pattern. Opening parentheses are counted from left to right (starting
+from 1) to obtain the number of the capturing subpattern.</P
+><P
+>Example: your company hosts several hundreds
+users with their domains in the form of
+<TT
+CLASS="literal"
+>www.username.yourname.com</TT
+>. Every user's site is
+stored on disk in "htdocs" under user's home directory:
+<TT
+CLASS="literal"
+>/home/username/htdocs/</TT
+>.</P
+><P
+>You may write this command into indexer.conf
+(note that dot '.' character has a special meaning in regular
+expressions and must be escaped with '\' sign when dot is used in
+usual meaning):
+		<PRE
+CLASS="programlisting"
+>&#13;Realm regex (http://www\.)(.*)(\.yourname\.com/)(.*)  file:/home/$2/htdocs/$4
+</PRE
+>
+		</P
+><P
+>Imagine indexer process
+<TT
+CLASS="filename"
+>http://www.john.yourname.com/news/index.html</TT
+>
+page. It will build patterns from $0 to $4:</P
+><P
+CLASS="literallayout"
+><br>
+&nbsp;&nbsp;&nbsp;$0&nbsp;=&nbsp;'http://www.john.yourname.com/news/index.htm'&nbsp;(whole&nbsp;patter&nbsp;match)<br>
+&nbsp;&nbsp;&nbsp;$1&nbsp;=&nbsp;'http://www.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subpattern&nbsp;matches&nbsp;'(http://www\.)'<br>
+&nbsp;&nbsp;&nbsp;$2&nbsp;=&nbsp;'john'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subpattern&nbsp;matches&nbsp;'(.*)'<br>
+&nbsp;&nbsp;&nbsp;$3&nbsp;=&nbsp;'.yourname.com/'&nbsp;&nbsp;&nbsp;subpattern&nbsp;matches&nbsp;'(\.yourname\.com/)'<br>
+&nbsp;&nbsp;&nbsp;$4&nbsp;=&nbsp;'/news/index.html'&nbsp;subpattern&nbsp;matches&nbsp;'(.*)'<br>
+</P
+><P
+>Then indexer will compose alias using $2 and $4 patterns:
+		<PRE
+CLASS="programlisting"
+>&#13;file:/home/john/htdocs/news/index.html
+</PRE
+>
+		</P
+><P
+>and will use the result as document location to fetch it.</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-prog"
+>AliasProg command
+<A
+NAME="AEN1239"
+></A
+></A
+></H3
+><P
+>You may also specify "AliasProg" command for
+aliasing purposes. AliasProg is useful for major web hosting companies
+which want to index their web space taking documents directly from a
+disk without having to involve web server in indexing
+process. Documents layout may be very complex to describe it using
+alias in Realm command. AliasProg is an external program that can be
+called, that takes a URL and returns one string with the appropriate
+alias to stdout. Use $1 to pass URL to command line.</P
+><P
+>For example this AliasProg command uses
+'replace' command from MySQL distribution and replaces URL substring
+<TT
+CLASS="literal"
+>http://www.apache.org/</TT
+> to
+<TT
+CLASS="literal"
+>file:/usr/local/apache/htdocs/</TT
+>:
+
+		<PRE
+CLASS="programlisting"
+>&#13;AliasProg  "echo $1 | /usr/local/mysql/bin/mysql/replace http://www.apache.org/ file:/usr/local/apache/htdocs/"
+</PRE
+>
+		</P
+><P
+>You may also write your own very complex program to process URLs.</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-reverse"
+>ReverseAlias command
+<A
+NAME="AEN1250"
+></A
+></A
+></H3
+><P
+>The ReverseAlias
+<TT
+CLASS="filename"
+>indexer.conf</TT
+> command allows URL mapping before
+URL is inserted into database. Unlike Alias command, that triggers
+mapping right before a document is downloaded, ReverseAlias command
+triggers mapping after the link is found. 
+
+		<PRE
+CLASS="programlisting"
+>&#13;ReverseAlias http://name2/   http://name2.yourname.com/
+Server       http://name2.yourname.com/
+</PRE
+>
+		</P
+><P
+>All links with short server name will be mapped
+to links with full server name before they are inserted into
+database.</P
+><P
+>One of the possible use is cutting various unnecessary strings like <TT
+CLASS="literal"
+>PHPSESSION=XXXX</TT
+>
+		</P
+><P
+>E.g. cutting from URL like
+<TT
+CLASS="literal"
+>http://www/a.php?PHPSESSION=XXX</TT
+>, when PHPSESSION is
+the only parameter. The question sign is deleted as well:
+
+		<PRE
+CLASS="programlisting"
+>&#13;ReverseAlias regex  (http://[^?]*)[?]PHPSESSION=[^&#38;]*$          $1$2
+</PRE
+>
+		</P
+><P
+>Cutting from URL like
+<TT
+CLASS="literal"
+>w/a.php?PHPSESSION=xxx&#38;..</TT
+>, i.e. when PHPSESSION
+is the first parameter, but there are other parameters following
+it. The '&#38;' sign after PHPSESSION is deleted as well. Question
+mark is not deleted:
+
+		<PRE
+CLASS="programlisting"
+>&#13;ReverseAlias regex  (http://[^?]*[?])PHPSESSION=[^&#38;]*&#38;(.*)      $1$2
+</PRE
+>
+		</P
+><P
+>Cutting from URL like
+<TT
+CLASS="literal"
+>http://www/a.php?a=b&#38;PHPSESSION=xxx</TT
+> or
+<TT
+CLASS="literal"
+>http://www/a.php?a=b&#38;PHPSESSION=xxx&#38;c=d</TT
+>,
+where PHPSESSION is not the first parameter. The '&#38;' sign before
+PHPSESSION is deleted:
+
+		<PRE
+CLASS="programlisting"
+>&#13;ReverseAlias regex  (http://.*)&#38;PHPSESSION=[^&#38;]*(.*)         $1$2
+</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="alias-search"
+>Alias in search.htm search template
+<A
+NAME="AEN1271"
+></A
+></A
+></H3
+><P
+>It is also possible to define aliases in search
+template (<TT
+CLASS="filename"
+>search.htm</TT
+>). The Alias command in
+<TT
+CLASS="filename"
+>search.htm</TT
+> is identical to the one in
+<TT
+CLASS="filename"
+>indexer.conf</TT
+>, however it is active during
+searching and not indexation.</P
+><P
+>The syntax of the
+<TT
+CLASS="filename"
+>search.htm</TT
+> Alias command is the same as in
+<TT
+CLASS="filename"
+>indexer.conf</TT
+>:
+
+		<PRE
+CLASS="programlisting"
+>&#13;Alias &#60;find-prefix&#62; &#60;replace-prefix&#62;
+</PRE
+>
+		</P
+><P
+>For example, there is the following command in <TT
+CLASS="filename"
+>search.htm</TT
+>:
+		<PRE
+CLASS="programlisting"
+>&#13;Alias http://localhost/ http://www.mnogo.ru/
+</PRE
+>
+		</P
+><P
+>Search returned a page with the following URL:
+		<PRE
+CLASS="programlisting"
+>&#13;http://localhost/news/article10.html
+</PRE
+>
+		</P
+><P
+>As a result, the $(DU) variable will be replace NOT with this URL:
+		<PRE
+CLASS="programlisting"
+>&#13;http://localhost/news/article10.html
+</PRE
+>
+		</P
+><P
+>but with the following URL (that results in processing with Alias):
+		<PRE
+CLASS="programlisting"
+>&#13;http://www.mnogo.ru/news/article10.html
+</PRE
+>
+		</P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="srvtable"
+>ServerTable
+<A
+NAME="AEN1293"
+></A
+></A
+></H2
+><P
+>Since version 3.2.7 <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> has "ServerTable"
+<TT
+CLASS="filename"
+>indexer.conf</TT
+> command. </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="srvtable-load"
+>Loading servers table</A
+></H3
+><P
+>When <B
+CLASS="command"
+>ServerTable mysql://user:pass@host/dbname/tablename[?srvinfo=infotablename]</B
+>
+is specified, indexer will load
+servers information from given <TT
+CLASS="literal"
+>tablename</TT
+> SQL table, and will load servers parameters
+from given <TT
+CLASS="literal"
+>infotablename</TT
+> SQL table. If <TT
+CLASS="literal"
+>srvinfo</TT
+> parameter is not specified,
+parameters will be loaded from <TT
+CLASS="literal"
+>srvinfo</TT
+> table. Check the structure for <TT
+CLASS="literal"
+>server</TT
+> and
+<TT
+CLASS="literal"
+>srvinfo</TT
+> tables in <TT
+CLASS="filename"
+>create/mysql/create.txt</TT
+> file. If there is no
+structure example for your database, take it as an example. Please
+send us structure for your database at
+<TT
+CLASS="email"
+>&#60;<A
+HREF="mailto:devel@mnogosearch.org"
+>devel@mnogosearch.org</A
+>&#62;</TT
+>!</P
+><P
+>You may use several <B
+CLASS="command"
+>ServerTable</B
+> command to load servers information from different tables. </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="srvtable-structure"
+>Server table structure</A
+></H3
+><P
+>Servers table consists of all necessary fields which
+describe servers parameters. Field names have correspondent
+<TT
+CLASS="filename"
+>indexer.conf</TT
+> commands. For example, "period"
+field corresponds "Period" <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+command. Default field values are the same with default
+<TT
+CLASS="filename"
+>indexer.conf</TT
+> parameters.</P
+><P
+>"gindex" field corresponds "Index" command. Name is slightly changed to avoid SQL reserved word usage.</P
+><P
+>Description for several fields see in <A
+HREF="msearch-dbschema.html"
+>the Section called <I
+>Database schema</I
+> in Chapter 9</A
+>.</P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>Only those servers are read from the table where "active"
+field has 1 value and "parent" field has 0 value. This is useful to allow users to submit new URLs
+into servers table and give administrator a possibility to approve
+added URLs.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="flushsrvtable"
+>FlushServerTable
+<A
+NAME="AEN1326"
+></A
+></A
+></H2
+><P
+>&#13; Flush server.active to inactive for all server table records. 
+Use this command to diactivate all command in servertable before load new from <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+or from other servertable.
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="pars"
+>External parsers
+<A
+NAME="AEN1333"
+></A
+></A
+></H2
+><P
+>mnoGoSearch indexer can use external parsers to index various file types (mime types).</P
+><P
+>Parser is an executable program which converts one of
+the mime types to <TT
+CLASS="literal"
+>text/plain</TT
+> or
+<TT
+CLASS="literal"
+>text/html</TT
+>. For example, if you have postscript
+files, you can use ps2ascii parser (filter), which reads postscript
+file from stdin and produces ascii to stdout.</P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="pars-sup"
+>Supported parser types</A
+></H3
+><P
+>Indexer supports four types of parsers that can:</P
+><P
+></P
+><UL
+><LI
+><P
+>read data from stdin and send result to stdout</P
+></LI
+><LI
+><P
+>read data from file  and send result to stdout</P
+></LI
+><LI
+><P
+>read data from file  and send result to file</P
+></LI
+><LI
+><P
+>read data from stdin and send result to file</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="pars-setup"
+>Setting up parsers</A
+></H3
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Configure mime types</P
+><P
+>Configure your web server to
+send appropriate "Content-Type" header. For apache, have a look at
+<TT
+CLASS="filename"
+>mime.types</TT
+> file, most mime types are already
+defined there.</P
+><P
+>&#13;<A
+NAME="AEN1359"
+></A
+>
+If you want to index local files or via <TT
+CLASS="literal"
+>ftp</TT
+>
+use "AddType" command in <TT
+CLASS="filename"
+>indexer.conf</TT
+> to
+associate file name extensions with their mime types. For
+example:
+
+				<PRE
+CLASS="programlisting"
+>&#13;AddType text/html *.html
+</PRE
+>
+				</P
+></LI
+><LI
+><P
+>&#13;<A
+NAME="AEN1367"
+></A
+>
+Add parsers</P
+><P
+>Add lines with parsers definitions. Lines have the following format with three arguments:
+				<PRE
+CLASS="programlisting"
+>&#13;Mime &#60;from_mime&#62; &#60;to_mime&#62; &#60;command line&#62;
+</PRE
+>
+				</P
+><P
+>For example, the following line defines parser for man pages:
+				<PRE
+CLASS="programlisting"
+>&#13;# Use deroff for parsing man pages ( *.man )
+Mime  application/x-troff-man   text/plain   deroff
+</PRE
+>
+				</P
+><P
+>This parser will take data from stdin and output result to stdout.</P
+><P
+>Many parsers can not operate on
+stdin and require a file to read from. In this case indexer creates a
+temporary file in /tmp and will remove it when parser exits. Use $1
+macro in parser command line to substitute file name. For example,
+Mime command for "catdoc" MS Word to ASCII converters may look like
+this:
+
+				<PRE
+CLASS="programlisting"
+>&#13;Mime application/msword text/plain "/usr/bin/catdoc -a $1"
+</PRE
+>
+				</P
+><P
+>If your parser writes result
+into output file, use $2 macro. indexer will replace $2 by temporary
+file name, start parser, read result from this temporary file then
+remove it. For example:
+				<PRE
+CLASS="programlisting"
+>&#13;Mime application/msword text/plain "/usr/bin/catdoc -a $1 &#62;$2"
+</PRE
+>
+				</P
+><P
+>The parser above will read data
+from first temporary file and write result to second one. Both
+temporary files will be removed when parser exists. Note that result
+of usage of this parser will be absolutely  the same with the previous
+one, but they use different execution mode: file-&#62;stdout and
+file-&#62;file correspondingly.</P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="ParserTimeOut"
+>Avoid indexer hang on parser execution</A
+></H3
+><P
+>&#13;<A
+NAME="AEN1383"
+></A
+>
+To avoid a indexer hang on parser execution you may specify in your <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+amount of time in seconds for parser execution by <TT
+CLASS="literal"
+>ParserTimeOut</TT
+> commnad. For example:
+		<PRE
+CLASS="programlisting"
+>&#13;ParserTimeOut 600
+</PRE
+>
+</P
+><P
+>&#13;Default value is 300 seconds, i.e. 5 minutes.
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="pars-pipes"
+>Pipes in parser's command line</A
+></H3
+><P
+>You can use pipes in parser's command line. For
+example, these lines will be useful to index gzipped man pages from
+local disk:
+		<PRE
+CLASS="programlisting"
+>&#13;AddType  application/x-gzipped-man  *.1.gz *.2.gz *.3.gz *.4.gz
+Mime     application/x-gzipped-man  text/plain  "zcat | deroff"
+</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="pars-char"
+>Charsets and parsers
+<A
+NAME="AEN1396"
+></A
+></A
+></H3
+><P
+>Some parsers can produce output in other charset
+than given in LocalCharset command. Specify charset to make indexer
+convert parser's output to proper one. For example, if your catdoc is
+configured to produce output in windows-1251 charset but LocalCharset
+is koi8-r, use this command for parsing MS Word documents:
+		<PRE
+CLASS="programlisting"
+>&#13;Mime  application/msword  "text/plain; charset=windows-1251" "catdoc -a $1"
+</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="pars-udmurl"
+>UDM_URL variable</A
+></H3
+><P
+>When executing a parser indexer creates UDM_URL
+environment variable with an URL being processed as a value. You can
+use this variable in parser scripts.</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="pars-links"
+>Some third-party parsers
+<A
+NAME="AEN1406"
+></A
+></A
+></H3
+><P
+></P
+><UL
+><LI
+><P
+>RPM parser by Mario Lang <TT
+CLASS="email"
+>&#60;<A
+HREF="mailto:lang@zid.tu-graz.ac.at"
+>lang@zid.tu-graz.ac.at</A
+>&#62;</TT
+></P
+><P
+>        /usr/local/bin/rpminfo:
+
+<PRE
+CLASS="programlisting"
+>&#13;#!/bin/bash
+/usr/bin/rpm -q --queryformat="&#60;html&#62;&#60;head&#62;&#60;title&#62;RPM: %{NAME} %{VERSION}-%{RELEASE}
+(%{GROUP})&#60;/title&#62;&#60;meta name=\"description\" content=\"%{SUMMARY}\"&#62;&#60;/head&#62;&#60;body&#62;
+%{DESCRIPTION}\n&#60;/body&#62;&#60;/html&#62;" -p $1
+</PRE
+>
+</P
+><P
+>indexer.conf:
+
+<PRE
+CLASS="programlisting"
+>&#13;Mime application/x-rpm text/html "/usr/local/bin/rpminfo $1"
+</PRE
+>
+</P
+><P
+>It renders to such nice RPM information:
+
+<PRE
+CLASS="programlisting"
+>&#13;3. RPM: mysql 3.20.32a-3 (Applications/Databases) [4]
+       Mysql is a SQL (Structured Query Language) database server.
+       Mysql was written by Michael (monty) Widenius. See the CREDITS
+       file in the distribution for more credits for mysql and related
+       things....
+       (application/x-rpm) 2088855 bytes
+</PRE
+>
+</P
+></LI
+><LI
+><P
+>catdoc MS Word to text converter</P
+><P
+>&#13;					<A
+HREF="http://freshmeat.net/redir/catdoc/1055/url_homepage/"
+TARGET="_top"
+>Home page</A
+>, also listed on <A
+HREF="http://freshmeat.net/"
+TARGET="_top"
+>Freshmeat</A
+>
+				<PRE
+CLASS="programlisting"
+>&#13;indexer.conf:
+
+Mime application/msword         text/plain      "catdoc $1"
+</PRE
+>
+</P
+></LI
+><LI
+><P
+>xls2csv MS Excel to text converter</P
+><P
+>It is supplied with catdoc.
+				<PRE
+CLASS="programlisting"
+>&#13;indexer.conf:
+
+Mime application/vnd.ms-excel   text/plain      "xls2csv $1"
+</PRE
+>
+</P
+></LI
+><LI
+><P
+>pdftotext Adobe PDF converter</P
+><P
+>Supplied with xpdf project.</P
+><P
+>&#13;					<A
+HREF="http://freshmeat.net/redir/xpdf/12080/url_homepage/"
+TARGET="_top"
+>Homepage</A
+>, also listed on <A
+HREF="http://freshmeat.net/"
+TARGET="_top"
+>Freshmeat</A
+>
+				<PRE
+CLASS="programlisting"
+>&#13;indexer.conf:
+
+Mime application/pdf            text/plain      "pdftotext $1 -"
+</PRE
+>
+</P
+></LI
+><LI
+><P
+>unrtf RTF to html converter</P
+><P
+>&#13;					<A
+HREF="ftp://ftp.gnu.org/pub/gnu/unrtf/"
+TARGET="_top"
+>Homepage</A
+>
+				<PRE
+CLASS="programlisting"
+>&#13;indexer.conf:
+
+Mime text/rtf*        text/html                 "/usr/local/mnogosearch/sbin/unrtf --html $1
+Mime application/rtf        text/html           "/usr/local/mnogosearch/sbin/unrtf --html $1
+</PRE
+>
+</P
+></LI
+></UL
+><P
+>Please feel free to contribute your scripts and
+parsers configuration to
+<TT
+CLASS="email"
+>&#60;<A
+HREF="mailto:general@mnogosearch.org"
+>general@mnogosearch.org</A
+>&#62;</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="indexcmd"
+>Other commands uses in <TT
+CLASS="filename"
+>indexer.conf</TT
+></A
+></H2
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="include_cmd"
+><B
+CLASS="command"
+>Include</B
+> command</A
+></H3
+><A
+NAME="AEN1449"
+></A
+><P
+>You may include another configuration file in any place of the <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+using <TT
+CLASS="userinput"
+><B
+>Include &#60;filename&#62;</B
+></TT
+> command.
+Absolute path if &#60;<TT
+CLASS="filename"
+>filename</TT
+>&#62; starts with "/":
+<PRE
+CLASS="programlisting"
+>&#13;Include /usr/local/mnogosearch/etc/inc1.conf
+</PRE
+></P
+><P
+>Relative path else:
+
+<PRE
+CLASS="programlisting"
+>&#13;Include inc1.conf
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="dbaddr_cmd"
+><B
+CLASS="command"
+>DBAddr</B
+> command</A
+></H3
+><A
+NAME="AEN1462"
+></A
+><P
+><B
+CLASS="command"
+>DBAddr</B
+> command is URL-style database description.
+It specify options (type, host, database name, port, user and password)
+to connect to <SPAN
+CLASS="application"
+>SQL</SPAN
+> database.
+Should be used before any other commands. You may specify several <B
+CLASS="command"
+>DBAddr</B
+> commands.
+In this case <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> will merge result from every database specified.
+Command have global effect for whole config file.
+Format:
+<PRE
+CLASS="programlisting"
+>&#13;DBAddr &#60;DBType&#62;:[//[DBUser[:DBPass]@]DBHost[:DBPort]]/DBName/[?[dbmode=mode]{&#38;&#60;parameter name&#62;=&#60;parameter value&#62;}]
+</PRE
+>
+</P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>ODBC related.
+       Use DBName to specify ODBC data source name (DSN)
+       DBHost does not matter, use "localhost".
+</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>Solid related.
+       Use DBHost to specify Solid server
+       DBName does not matter for Solid
+</P
+></BLOCKQUOTE
+></DIV
+><P
+> Currently supported <TT
+CLASS="option"
+>DBType</TT
+> values are
+mysql, pgsql, msql, solid, mssql, oracle, ibase, sqlite.
+Actually, it does not matter for native libraries support.
+But ODBC users should specify one of supported values.
+If your database type is not supported, you may use "unknown" instead.
+</P
+><P
+><SPAN
+CLASS="application"
+>MySQL</SPAN
+> users can specify path to Unix socket when connecting to localhost:
+<TT
+CLASS="userinput"
+><B
+>&#13;mysql://foo:bar@localhost/mnogosearch/?socket=/tmp/mysql.sock
+</B
+></TT
+>
+</P
+><P
+>If you are using <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> and do not specify hostname,
+       e.g. <TT
+CLASS="userinput"
+><B
+>pgsql://user:password@/dbname/</B
+></TT
+>
+then <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> will not work via TCP, but will use Unix socket.
+</P
+><P
+><TT
+CLASS="literal"
+>dbmode parameter</TT
+>. You may also select database mode of words storage.
+When "<TT
+CLASS="option"
+>single</TT
+>" is specified, all words are stored in the same table (file).
+If "<TT
+CLASS="option"
+>multi</TT
+>" is selected, words will be located in different tables (files)
+depending of their lengths. "<TT
+CLASS="option"
+>multi</TT
+>" mode is usually faster but requires more
+tables (files).
+If "<TT
+CLASS="option"
+>crc</TT
+>" mode is selected, mnoGoSearch will store 32 bit integer
+word IDs calculated by CRC32 algorythm instead of words. This mode requres
+less disk space and it is faster comparing with "single" and "multi" modes,
+however it doesn't support subsrting searches.
+"<TT
+CLASS="option"
+>crc-multi</TT
+>" uses the same storage structure with the "crc" mode, but also
+stores words in different tables (files) depending on words lengths like
+"multi" mode. Default mode is "single".
+</P
+><P
+><TT
+CLASS="literal"
+>stored parameter</TT
+>. Format:<TT
+CLASS="userinput"
+><B
+>&#13;stored=StoredHost[:StoredPort]</B
+></TT
+>.
+This parameter is used to specify host and port, if specified, where <B
+CLASS="command"
+>stored</B
+> daemon is runned, if you plan
+to use document excerpts and chached copies.
+</P
+><P
+><TT
+CLASS="literal"
+>cached parameter</TT
+>. Format:<TT
+CLASS="userinput"
+><B
+>&#13;cached=CachedHost[:CachedPort]</B
+></TT
+>.
+Use <B
+CLASS="command"
+>cached</B
+> at given host and port if specified.
+It is required for <TT
+CLASS="literal"
+>cache</TT
+> storage mode only (see <A
+HREF="msearch-cachemode.html"
+>the Section called <I
+>Cache mode storage</I
+> in Chapter 5</A
+>).
+Each <B
+CLASS="command"
+>indexer</B
+> will connect to <TT
+CLASS="filename"
+>cached</TT
+> on given address at startup.
+</P
+><P
+>Example:
+<PRE
+CLASS="programlisting"
+>&#13;DBAddr          mysql://foo:bar@localhost/mnogosearch/?dbmode=single
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="vardir_cmd"
+><B
+CLASS="command"
+>VarDir</B
+> command</A
+></H3
+><A
+NAME="AEN1508"
+></A
+><P
+>You may choose alternative working directory for cache mode:
+<PRE
+CLASS="programlisting"
+>&#13;VarDir /usr/local/mnogosearch/var
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="newsextensions_cmd"
+><B
+CLASS="command"
+>NewsExtensions</B
+> command</A
+></H3
+><A
+NAME="AEN1516"
+></A
+><P
+>Whether to enable news extensions. Default value is no.
+<PRE
+CLASS="programlisting"
+>&#13;NewsExtensions yes
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="syslogfacility_cmd"
+><B
+CLASS="command"
+>SyslogFacility</B
+> command</A
+></H3
+><A
+NAME="AEN1524"
+></A
+><P
+> This is used if indexer was compiled with syslog support and if you
+don't like the default value. Argument is the same as used in syslog.conf
+file. For list of possible facilities see syslog.conf(5)
+<PRE
+CLASS="programlisting"
+>&#13;SyslogFacility local7
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="localcharset_cmd"
+><B
+CLASS="command"
+>LocalCharset</B
+> command</A
+></H3
+><A
+NAME="AEN1532"
+></A
+><P
+>Defines the charset which will be used to store data in database.
+All other character sets will be recoded into given charset.
+Take a look into <A
+HREF="msearch-international.html#charset"
+>the Section called <I
+>Character sets
+<A
+NAME="AEN2629"
+></A
+></I
+> in Chapter 7</A
+> for detailed explanation 
+how to choose a LocalCharset depending on languages used on your site(s).
+This command should be used once and takes global effect for the config file.
+Only most popular charsets used in Internet are written here.
+Take a look into documentation to check whole list of supported charsets.
+Default LocalCharset is iso-8859-1 (latin1).
+<PRE
+CLASS="programlisting"
+>&#13;LocalCharset koi8-r
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="forceiischarset1251_cmd"
+><B
+CLASS="command"
+>ForceIISCharset1251</B
+> command</A
+></H3
+><A
+NAME="AEN1541"
+></A
+><P
+>This option is useful for users which deals with Cyrillic content and broken
+(or misconfigured?) Microsoft IIS web servers, which tends to not report
+charset correctly. This is really dirty hack, but if this option is turned on
+it is assumed that all servers which reports as 'Microsoft' or 'IIS' have
+content in Windows-1251 charset.
+This command should be used only once in configuration file and takes global
+effect.
+Default: no
+<PRE
+CLASS="programlisting"
+>&#13;ForceIISCharset1251 yes
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="stopwordfile_cmd"
+><B
+CLASS="command"
+>StopwordFile</B
+> command</A
+></H3
+><A
+NAME="AEN1549"
+></A
+><P
+>Load stop words from the given text file. You may specify either absolute 
+file name or a name relative to <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> <TT
+CLASS="filename"
+>/etc</TT
+> directory. You may use
+several <B
+CLASS="command"
+>StopwordFile</B
+> commands.
+<PRE
+CLASS="programlisting"
+>&#13;StopwordFile stopwords/en.sl
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="langmapfile_cmd"
+><B
+CLASS="command"
+>LangMapFile</B
+> command</A
+></H3
+><A
+NAME="AEN1560"
+></A
+><P
+>Load language map for charset and language guesser from the given file. 
+You may specify either absolute file name or a name relative to <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+<TT
+CLASS="filename"
+>/etc</TT
+> directory. You may use several <B
+CLASS="command"
+>LangMapFile</B
+> commands.
+<PRE
+CLASS="programlisting"
+>&#13;LangMapFile langmap/en.ascii.lm
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="wordlengths_cmd"
+>Word length commands</A
+></H3
+><A
+NAME="AEN1570"
+></A
+><A
+NAME="AEN1573"
+></A
+><P
+>Word lengths. You may change default length range of words
+stored in database. By default, words with the length in the
+range from 1 to 32 are stored.
+<PRE
+CLASS="programlisting"
+>&#13;MinWordLength 1
+MaxWordLength 32
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="maxdocsize_cmd"
+><B
+CLASS="command"
+>MaxDocSize</B
+> command</A
+></H3
+><A
+NAME="AEN1581"
+></A
+><P
+>This command is used for specify maximal document size.
+Default value 1048576 (1 Mb). Takes global effect for whole config file.
+<PRE
+CLASS="programlisting"
+>&#13;MaxDocSize 1048576
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="urlselectcachesize_cmd"
+><B
+CLASS="command"
+>URLSelectCacheSize</B
+> command</A
+></H3
+><A
+NAME="AEN1589"
+></A
+><P
+>Select number of targets to index at once. Default value is 128.
+<PRE
+CLASS="programlisting"
+>&#13;URLSelectCacheSize 1024
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="httpheader_cmd"
+><B
+CLASS="command"
+>HTTPHeader</B
+> command</A
+></H3
+><A
+NAME="AEN1597"
+></A
+><P
+>You may add your desired headers in indexer HTTP request.
+You should not use "If-Modified-Since","Accept-Charset" headers,
+these headers are composed by indexer itself.
+"User-Agent: mnoGoSearch/version" is sent too, but you may override it.
+Command has global effect for all configuration file.
+<PRE
+CLASS="programlisting"
+>&#13;HTTPHeader "User-Agent: My_Own_Agent"
+HTTPHeader "Accept-Language: ru, en"
+HTTPHeader "From: webmaster@mysite.com"
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="allow_cmd"
+><B
+CLASS="command"
+>Allow</B
+> command</A
+></H3
+><A
+NAME="AEN1605"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Allow [Match|NoMatch] [NoCase|Case] [String|Regex] &#60;arg&#62; [&#60;arg&#62; ... ]
+</PRE
+><P
+>Use this command to allow URLs that match (doesn't match) given argument.
+First three optional parameters describe the type of comparison.
+Default values are Match, NoCase, String.
+Use <TT
+CLASS="option"
+>NoCase</TT
+> or <TT
+CLASS="option"
+>Case</TT
+> values to choose case insensitive or case sensitive
+comparison.
+Use <TT
+CLASS="option"
+>Regex</TT
+> to choose regular expression comparison. 
+Use <TT
+CLASS="option"
+>String</TT
+> to choose string with wildcards comparison.
+Widlcards are '*' for any number of characters and '?' for one character.
+Note that '?' and '*' have special meaning in <TT
+CLASS="option"
+>String</TT
+> match type. Please use
+<TT
+CLASS="option"
+>Regex</TT
+> to describe documents with '?' and '*' signs in URL.
+<TT
+CLASS="option"
+>String</TT
+> match is much faster than <TT
+CLASS="option"
+>Regex</TT
+>. Use <TT
+CLASS="option"
+>String</TT
+> where it 
+is possible.
+You may use several arguments for one <B
+CLASS="command"
+>Allow</B
+> command.
+You may use this command any times.
+Takes global effect for config file.
+Note that <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> automatically adds one "Allow regex .*"
+command after reading config file. It means that allowed everything
+that is not disallowed.
+</P
+><P
+>Examples
+<PRE
+CLASS="programlisting"
+>&#13;#  Allow everything:
+Allow *
+#  Allow everything but .php .cgi .pl extensions case insensitively using regex:
+Allow NoMatch Regex \.php$|\.cgi$|\.pl$
+#  Allow .HTM extension case sensitively:
+Allow Case *.HTM
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="disallow_cmd"
+><B
+CLASS="command"
+>Disallow</B
+> command</A
+></H3
+><A
+NAME="AEN1626"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Disallow [Match|NoMatch] [NoCase|Case] [String|Regex] &#60;arg&#62; [&#60;arg&#62; ... ]
+</PRE
+><P
+>&#13;Use this command to disallow URLs that match (doesn't match) given argument.
+The meaning of first three optional parameters is exactly the same 
+with <B
+CLASS="command"
+>Allow</B
+> command.
+You can use several arguments for one <B
+CLASS="command"
+>Disallow</B
+> command.
+Takes global effect for config file.
+Examples:
+<PRE
+CLASS="programlisting"
+>&#13;# Disalow URLs that are not in udm.net domains using "string" match:
+Disallow NoMatch *.udm.net/*
+# Disallow any except known extensions and directory index using "regex" match:
+Disallow NoMatch Regex \/$|\.htm$|\.html$|\.shtml$|\.phtml$|\.php$|\.txt$
+# Exclude cgi-bin and non-parsed-headers using "string" match:
+Disallow */cgi-bin/* *.cgi */nph-*
+# Exclude anything with '?' sign in URL. Note that '?' sign has a 
+# special meaning in "string" match, so we have to use "regex" match here:
+Disallow Regex  \?
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="checkonly_cmd"
+><B
+CLASS="command"
+>CheckOnly</B
+> command</A
+></H3
+><A
+NAME="AEN1637"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;CheckOnly [Match|NoMatch] [NoCase|Case] [String|Regex] &#60;arg&#62; [&#60;arg&#62; ... ]
+</PRE
+><P
+>&#13;The meaning of first three optional parameters is exactly the same 
+with <B
+CLASS="command"
+>Allow</B
+> command.
+Indexer will use HEAD instead of GET HTTP method for URLs that
+match/do not match given regular expressions. It means that the file 
+will be checked only for being existing and will not be downloaded. 
+Useful for zip,exe,arj and other binary files.
+Note that you can disallow those files with commands given below.
+You may use several arguments for one <B
+CLASS="command"
+>CheckOnly</B
+> commands.
+Useful for example for searching through the URL names rather than
+the contents (a la FTP-search).
+Takes global effect for config file.
+Examples:
+<PRE
+CLASS="programlisting"
+>&#13;# Check some known non-text extensions using "string" match:
+CheckOnly *.b	  *.sh   *.md5
+# or check ANY except known text extensions using "regex" match:
+CheckOnly NoMatch Regex \/$|\.html$|\.shtml$|\.phtml$|\.php$|\.txt$
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="hrefonly_cmd"
+><B
+CLASS="command"
+>HrefOnly</B
+> command</A
+></H3
+><A
+NAME="AEN1648"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;HrefOnly [Match|NoMatch] [NoCase|Case] [String|Regex] &#60;arg&#62; [&#60;arg&#62; ... ]
+</PRE
+><P
+>&#13;The meaning of first three optional parameters is exactly the same 
+with <B
+CLASS="command"
+>Allow</B
+> command.
+
+Use this to scan a HTML page for "href" tags but not to index the contents
+of the page with an URLs that match (doesn't match) given argument.
+Commands have global effect for all configuration file.
+
+When indexing large mail list archives for example, the index and thread
+index pages (like mail.10.html, thread.21.html, etc.) should be scanned 
+for links but shouldn't be indexed:
+<PRE
+CLASS="programlisting"
+>&#13;HrefOnly */mail*.html */thread*.html
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="checkmp3_cmd"
+><B
+CLASS="command"
+>CheckMp3</B
+> command</A
+></H3
+><A
+NAME="AEN1658"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;CheckMp3 [Match|NoMatch] [NoCase|Case] [String|Regex] &#60;arg&#62; [&#60;arg&#62; ...]
+</PRE
+><P
+>&#13;The meaning of first three optional parameters is exactly the same 
+with <B
+CLASS="command"
+>Allow</B
+> command.
+If an URL matches given rules, indexer will download only a little part
+of the document and try to find MP3 tags in it. On success, indexer
+will parse MP3 tags, else it will download whole document then parse
+it as usual.
+Notes:
+This works only with those servers which support HTTP/1.1 protocol.
+It is used "Range: bytes" header to download mp3 tag.
+<PRE
+CLASS="programlisting"
+>&#13;CheckMp3Tag *.bin *.mp3
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="checkmp3only_cmd"
+><B
+CLASS="command"
+>CheckMp3Only</B
+> command</A
+></H3
+><A
+NAME="AEN1668"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;CheckMP3Only [Match|NoMatch] [NoCase|Case] [String|Regex] &#60;arg&#62; [&#60;arg&#62; ...]
+</PRE
+><P
+>&#13;The meaning of first three optional parameters is exactly the same 
+with <B
+CLASS="command"
+>Allow</B
+> command.
+If an URL matches given rules, indexer, like in the case CheckMP3 command,
+will download only a little part of the document and try to find MP3 tags.
+On success, indexer will parse MP3 tags, else it will NOT download whole 
+document.
+<PRE
+CLASS="programlisting"
+>&#13;CheckMP3TagOnly *.bin *.mp3
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="holdbadhrefs_cmd"
+><B
+CLASS="command"
+>HoldBadHrefs</B
+> command</A
+></H3
+><A
+NAME="AEN1678"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;HoldBadHrefs &#60;time&#62;
+</PRE
+><P
+>&#13;How much time to hold URLs with erroneous status before deleting them
+from the database. For example, if host is down, indexer will not delete
+pages from this site immediately and search will use previous content
+of these pages.. However if site doesn't respond for a month, probably 
+it's time to remove these pages from the database.
+For &#60;time&#62; format see description of <B
+CLASS="command"
+>Period</B
+> command in <A
+HREF="msearch-indexer-configuration.html#period_cmd"
+>the Section called <I
+><B
+CLASS="command"
+>Period</B
+> command</I
+></A
+>.
+<PRE
+CLASS="programlisting"
+>&#13;HoldBadHrefs 30d
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="useremotecontenttype_cmd"
+><B
+CLASS="command"
+>UseRemoteContentType</B
+> command</A
+></H3
+><A
+NAME="AEN1689"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;UseRemoteContentType yes/no
+</PRE
+><P
+>&#13;This command specifies if the indexer should get content type
+from http server headers (yes) or from it's AddType settings (no).
+If set to 'no' and the indexer could not determine content-type
+by using its AddType settings, then it will use http header.
+Default: yes
+<PRE
+CLASS="programlisting"
+>&#13;UseRemoteContentType yes
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="addtype_cmd"
+><B
+CLASS="command"
+>AddType</B
+> command</A
+></H3
+><A
+NAME="AEN1698"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;AddType [String|Regex] [Case|NoCase] &#60;mime type&#62; &#60;arg&#62; [&#60;arg&#62;...]
+</PRE
+><P
+>&#13;This command associates filename extensions (for services
+that don't automatically include them) with their mime types.
+Currently "file:" protocol uses these commands.
+Use optional first two parameter to choose comparison type.
+Default type is "String" "NoCase" (case insensitive string match with
+'?' and '*' wildcards for one and several characters correspondently).
+<PRE
+CLASS="programlisting"
+>&#13;AddType image/x-xpixmap	*.xpm
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="parsertimeout_cmd"
+><B
+CLASS="command"
+>ParserTimeOut</B
+> command</A
+></H3
+><A
+NAME="AEN1707"
+></A
+><P
+>Use <B
+CLASS="command"
+>ParserTimeOut</B
+> comamnd to specify amount of time for perser execution
+to avoid possible indexer hang.
+<PRE
+CLASS="programlisting"
+>&#13;ParserTimeOut 300
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="period_cmd"
+><B
+CLASS="command"
+>Period</B
+> command</A
+></H3
+><A
+NAME="AEN1716"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Period &#60;time&#62;
+</PRE
+><P
+>&#13;Set reindex period.
+&#60;time&#62; is in the form 'xxxA[yyyB[zzzC]]'                                   
+ (Spaces are allowed between xxx and A and yyy and so on)                     
+   there xxx, yyy, zzz are numbers (can be negative!)                         
+         A, B, C can be one of the following:                                 
+		s - second                                                      
+		M - minute                                                      
+		h - hour                                                        
+		d - day                                                         
+		m - month                                                       
+		y - year                                                        
+      (these letters are the same as in strptime/strftime functions)                   
+                                                                              
+Examples:
+<PRE
+CLASS="programlisting"
+>&#13; 15s - 15 seconds
+ 4h30M - 4 hours and 30 minutes
+ 1y6m-15d - 1 year and six month minus 15 days
+ 1h-10M+1s - 1 hour minus 10 minutes plus 1 second
+</PRE
+>
+</P
+><P
+>&#13; If you specify only number without any character, it is assumed
+ that time is given in seconds.
+
+ Can be set many times before <B
+CLASS="command"
+>Server</B
+> command and
+ takes effect till the end of config file or till next <B
+CLASS="command"
+>Period</B
+> command.
+<PRE
+CLASS="programlisting"
+>&#13;Period 7d
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="tag_cmd"
+><B
+CLASS="command"
+>Tag</B
+> command</A
+></H3
+><A
+NAME="AEN1729"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Tag &#60;string&#62;
+</PRE
+><P
+>&#13;Use this field for your own purposes. For example for grouping
+some servers into one group, etc... During search you'll be able to
+limit URLs to be searched through by their tags.
+Can be set multiple times before <B
+CLASS="command"
+>Server</B
+> command and
+takes effect till the end of config file or till next <B
+CLASS="command"
+>Tag</B
+> command.
+Default values is an empty sting
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="category_cmd"
+><B
+CLASS="command"
+>Category</B
+> command</A
+></H3
+><A
+NAME="AEN1739"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Category &#60;string&#62;
+</PRE
+><P
+>&#13;You may distribute documents between nested categories. Category
+is a string in hex number notation. You may have up to 6 levels with
+256 members per level. Empty category means the root of category tree.
+Take a look into <A
+HREF="msearch-subsections.html#categories"
+>the Section called <I
+>Categories
+<A
+NAME="AEN2575"
+></A
+></I
+> in Chapter 6</A
+> for more information.
+<PRE
+CLASS="programlisting"
+>&#13;# This command means a category on first level:
+Category AA
+# This command meand a category on 5th level:
+Category FFAABBCCDD
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="defaultlang_cmd"
+><B
+CLASS="command"
+>DefaultLang</B
+> command</A
+></H3
+><A
+NAME="AEN1749"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;DefaultLang &#60;string&#62;
+</PRE
+><P
+>Default language for server. Can be used if you need language
+restriction while doing search.
+<PRE
+CLASS="programlisting"
+>&#13;DefaultLang en
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="maxhops_cmd"
+><B
+CLASS="command"
+>MaxHops</B
+> command</A
+></H3
+><A
+NAME="AEN1758"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;MaxHops &#60;number&#62;
+</PRE
+><P
+>Maximum way in "mouse clicks" from start url.
+Default value is 256.
+Can be set multiple times before "Server" command and
+takes effect till the end of config file or till next MaxHops command.
+<PRE
+CLASS="programlisting"
+>&#13;MaxHops 256
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="maxneterrors_cmd"
+><B
+CLASS="command"
+>MaxNetErrors</B
+> command</A
+></H3
+><A
+NAME="AEN1767"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;MaxNetErrors &#60;number&#62;
+</PRE
+><P
+>&#13;Maximum network errors for each server.
+Default value is 16. Use 0 for unlimited errors number.
+If there too many network errors on some server 
+(server is down, host unreachable, etc) <B
+CLASS="command"
+>indexer</B
+> will try to do 
+not more then <TT
+CLASS="option"
+>'number'</TT
+> attempts to connect to this server.
+Takes effect till the end of config file or till next <B
+CLASS="command"
+>MaxNetErrors</B
+> command.
+<PRE
+CLASS="programlisting"
+>&#13;MaxNetErrors 16
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="readtimeout_cmd"
+><B
+CLASS="command"
+>ReadTimeOut</B
+> command</A
+></H3
+><A
+NAME="AEN1779"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;ReadTimeOut &#60;time&#62;
+</PRE
+><P
+>&#13;Connect timeout and stalled connections timeout.
+For <TT
+CLASS="option"
+>&#60;time&#62;</TT
+> format see <A
+HREF="msearch-indexer-configuration.html#period_cmd"
+>the Section called <I
+><B
+CLASS="command"
+>Period</B
+> command</I
+></A
+>.
+Default value is 30 seconds.
+Can be set any times before <B
+CLASS="command"
+>Server</B
+> command and
+takes effect till the end of config file or till next <B
+CLASS="command"
+>ReadTimeOut</B
+> command.
+<PRE
+CLASS="programlisting"
+>&#13;ReadTimeOut 30s
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="doctimeout_cmd"
+><B
+CLASS="command"
+>DocTimeOut</B
+> command</A
+></H3
+><A
+NAME="AEN1792"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;DocTimeOut &#60;time&#62;
+</PRE
+><P
+>&#13;Maximum amount of time indexer spends for one document downloading.
+For <TT
+CLASS="option"
+>&#60;time&#62;</TT
+> format see <A
+HREF="msearch-indexer-configuration.html#period_cmd"
+>the Section called <I
+><B
+CLASS="command"
+>Period</B
+> command</I
+></A
+>.
+Default value is 90 seconds.
+Can be set any times before <B
+CLASS="command"
+>Server</B
+> command and
+takes effect till the end of config file or till next <B
+CLASS="command"
+>DocTimeOut</B
+> command.
+<PRE
+CLASS="programlisting"
+>&#13;DocTimeOut 1m30s
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="neterrordelaytime_cmd"
+><B
+CLASS="command"
+>NetErrorDelayTime</B
+> command</A
+></H3
+><A
+NAME="AEN1805"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;NetErrorDelayTime &#60;time&#62;
+</PRE
+><P
+>&#13;Specify document processing delay time if network error has occured.
+For <TT
+CLASS="option"
+>&#60;time&#62;</TT
+> format see <A
+HREF="msearch-indexer-configuration.html#period_cmd"
+>the Section called <I
+><B
+CLASS="command"
+>Period</B
+> command</I
+></A
+>.
+Default value is one day
+<PRE
+CLASS="programlisting"
+>&#13;NetErrorDelayTime 1d
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="robots_cmd"
+><B
+CLASS="command"
+>Robots</B
+> command</A
+></H3
+><A
+NAME="AEN1816"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Robots yes/no
+</PRE
+><P
+>&#13;Allows/disallows using <TT
+CLASS="filename"
+>robots.txt</TT
+> and &#60;META NAME="robots" ...&#62;
+exclusions. Use <TT
+CLASS="option"
+>no</TT
+>, for example for link validation of your server(s).
+Command may be used several times before <B
+CLASS="command"
+>Server</B
+> command and
+takes effect till the end of config file or till next <B
+CLASS="command"
+>Robots</B
+> command.
+Default value is "yes".
+<PRE
+CLASS="programlisting"
+>&#13;Robots yes
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="detectclones_cmd"
+><B
+CLASS="command"
+>DetectClones</B
+> command</A
+></H3
+><A
+NAME="AEN1829"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;DetectClones yes/no
+</PRE
+><P
+>&#13;Allow/disallow clone detection and eliminating. If alowed, indexer will 
+detect the same documents under different location, such as
+mirrors, and will index only one document from the group of
+such equal documents. "DetectClones yes" also allows to reduce space usage.
+Default value is "yes".
+<PRE
+CLASS="programlisting"
+>&#13;DetectClones no
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="section_cmd"
+><B
+CLASS="command"
+>Section</B
+> command</A
+></H3
+><A
+NAME="AEN1838"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Section &#60;string&#62; &#60;number&#62; &#60;maxlen&#62;
+</PRE
+><P
+>&#13;where <TT
+CLASS="option"
+>&#60;string&#62;</TT
+> is a section name and <TT
+CLASS="option"
+>&#60;number&#62;</TT
+> is section ID
+between 0 and 255. Use 0 if you don't want to index some of 
+these sections. It is better to use different sections IDs
+for different documents parts. In this case during search 
+time you'll be able to give different weight to each part
+or even disallow some sections at a search time.
+<TT
+CLASS="option"
+>&#60;maxlen&#62;</TT
+> argument contains a maximum length of section
+which will be stored in database.
+<PRE
+CLASS="programlisting"
+>&#13;# Standard HTML sections: body, title
+Section	body			1	256
+Section title			2	128
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="index_cmd"
+><B
+CLASS="command"
+>Index</B
+> command</A
+></H3
+><A
+NAME="AEN1850"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Index yes/no
+</PRE
+><P
+>&#13;Prevent indexer from storing words into database.
+Useful for example for link validation.
+Can be set multiple times before <B
+CLASS="command"
+>Server</B
+> command and
+takes effect till the end of config file or till next <B
+CLASS="command"
+>Index</B
+> command.
+Default value is "yes".
+<PRE
+CLASS="programlisting"
+>&#13;Index no
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="remotecharset_cmd"
+><B
+CLASS="command"
+>RemoteCharset</B
+> command</A
+></H3
+><A
+NAME="AEN1861"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;RemoteCharset &#60;charset&#62;
+</PRE
+><P
+>&#13;<TT
+CLASS="option"
+>&#60;RemoteCharset&#62;</TT
+> is default character set for the server in next <B
+CLASS="command"
+>Server</B
+>
+command(s).
+This is required only for "bad" servers that do not send information
+about charset in header: "Content-type: text/html; charset=some_charset"
+and do not have &#60;META NAME="Content" Content="text/html; charset="some_charset"&#62;
+Can be set before every <B
+CLASS="command"
+>Server</B
+> command and
+takes effect till the end of config file or till next <B
+CLASS="command"
+>RemoteCharset</B
+> command.
+Default value is iso-8859-1 (latin1).
+<PRE
+CLASS="programlisting"
+>&#13;RemoteCharset iso-8859-5
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="proxyauthbasic_cmd"
+><B
+CLASS="command"
+>ProxyAuthBasic</B
+> command</A
+></H3
+><A
+NAME="AEN1874"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;ProxyAuthBasic login:passwd
+</PRE
+><P
+>&#13;Use http proxy basic authorization.
+Can be used before every <B
+CLASS="command"
+>Server</B
+> command and
+takes effect only for next one <B
+CLASS="command"
+>Server</B
+> command!
+It should be also before <B
+CLASS="command"
+>Proxy</B
+> command.
+Examples:
+<PRE
+CLASS="programlisting"
+>&#13;ProxyAuthBasic somebody:something  
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="proxy_cmd"
+><B
+CLASS="command"
+>Proxy</B
+> command</A
+></H3
+><A
+NAME="AEN1886"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Proxy your.proxy.host[:port]
+</PRE
+><P
+>&#13;Use proxy rather then connect directly.
+One can index ftp servers when using proxy
+Default port value if not specified is 3128 (Squid)
+If proxy host is not specified direct connect will be used.
+Can be set before every <B
+CLASS="command"
+>Server</B
+> command and
+takes effect till the end of config file or till next <B
+CLASS="command"
+>Proxy</B
+> command.
+If no one <B
+CLASS="command"
+>Proxy</B
+> command specified indexer will use direct connect.
+Examples:
+<PRE
+CLASS="programlisting"
+>&#13;#           Proxy on atoll.anywhere.com, port 3128:
+Proxy atoll.anywhere.com
+#           Proxy on lota.anywhere.com, port 8090:
+Proxy lota.anywhere.com:8090
+#           Disable proxy (direct connect):
+Proxy
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="authbasic_cmd"
+><B
+CLASS="command"
+>AuthBasic</B
+> command</A
+></H3
+><A
+NAME="AEN1898"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;AuthBasic login:passwd
+</PRE
+><P
+>&#13;Use basic http authorization.
+Can be set before every <B
+CLASS="command"
+>Server</B
+> command and
+takes effect only for next one <B
+CLASS="command"
+>Server</B
+> command!
+Examples:
+<PRE
+CLASS="programlisting"
+>&#13;AuthBasic somebody:something  
+
+# If you have password protected directory(ies), but whole server is open,use:
+AuthBasic login1:passwd1
+Server http://my.server.com/my/secure/directory1/
+AuthBasic login2:passwd2
+Server http://my.server.com/my/secure/directory2/
+Server http://my.server.com/
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="serverweight_cmd"
+><B
+CLASS="command"
+>ServerWeight</B
+> command</A
+></H3
+><A
+NAME="AEN1909"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;ServerWeight &#60;number&#62;
+</PRE
+><P
+>&#13;Server weight for Popularity Rank calculation (see <A
+HREF="msearch-rel.html#poprank"
+>the Section called <I
+>Popularity rank<A
+NAME="AEN3932"
+></A
+></I
+> in Chapter 8</A
+>) . Defult value is 1.
+<PRE
+CLASS="programlisting"
+>&#13;ServerWeight 1
+</PRE
+>
+</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-content-enc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-extended-indexing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Content-Encoding support
+<A
+NAME="AEN934"
+></A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-indexing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Extended indexing features</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

@@ -1,0 +1,114 @@
+<sect2 id="dump-restore">
+  <title>Dumping and restoring the search database
+  <indexterm><primary>Dump</primary><primary>Restore</primary></indexterm>
+  </title>
+
+
+  <sect3 id="dump">
+    <title>Dumping the search database
+    </title>
+  
+    <para>
+    It is possible to dump and restore a &mnogo; &sql; database
+    using standard tools supplied with the database software,
+    such as <application>mysqldump</application> or 
+    <application>pg_dump</application>. This approach works fine
+    in case of a single &sql; database.
+    </para>   
+
+    <para>
+    However, if you use multiple &sql; databases to store &mnogo; data,
+    or use <link linkend="cluster">&mnogo; cluster</link> solution and
+    want to re-distribute data between more &sql; databases
+    (say, when adding a new machine into cluster), or
+    want to reduce the number of separate &sql; databases (say, when removing
+    a machine from cluster), the standard method of dumping and restoring
+    &sql; data will not work because of conflicts in auto-generated values
+    (<literal>auto_increment</literal> values, <literal>SEQUENCE</literal>
+     values, <literal>IDENTITY</literal> values and so so).
+    </para>
+
+    <para>
+    Starting from the version <literal>3.3.9</literal>, &mnogo;
+    includes dump and restore tools which allows to workaround this problem.
+    <note>
+    <para>
+    As of version <literal>3.3.9</literal>, &mnogo; dump and restore
+    tools work only with &app-mysql;. Support for the other databases
+    will be added in the future releases.
+    </para>
+    </note>
+    In order to create a dump of your &mnogo; database, you can run:
+<programlisting>
+indexer -Edumpdata > dumpfile.sql
+</programlisting>
+or pipe data to <application>gzip</application>:
+<programlisting>
+indexer -Edumpdata | gzip > dumpfile.sql.gz
+</programlisting>
+to reduce the dump size.
+    </para>
+
+    <para>
+    The dump file created by <userinput>indexer -Edump</userinput>
+    is a usual &sql; dump file, which does not include auto-generated
+    values. A piece of a dump file in case of &app-mysql; database
+    looks like:
+
+<programlisting>
+--seed=39
+INSERT INTO url (...all columns except rec_id...) VALUES (...);
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'body','Modules Directives FAQ...');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'CachedCopy','eNrtWc1v2zgWv+ev...');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'Charset','utf-8');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'Content-Language','en');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'Content-Type','text/html');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'title','Apache HTTP Server Ver...');
+INSERT INTO bdicti VALUES(last_insert_id(),1,0x6B6F00011EC296170000726577726974696E6700017E4D,0...');
+</programlisting>
+    
+    The dump file consists of chunks of <literal>INSERT</literal> instructions for every document.
+    The structure of the dump file forces &app-mysql; to assign a new auto-increment 
+    value for the column <varname>url.rec_id</varname> and use this value to insert data
+    into the child tables <varname>urlinfo</varname> and <varname>bdicti</varname> at restore time.
+    </para>
+    <para>
+    Additionally, every chunk consists of the comment <literal>--seed=xxx</literal> which
+    is used to distribute data between multiple database properly at restore time.
+    </para>
+    <para>
+    By default, <userinput>indexer -Edump</userinput> dumps data from all databases
+    specified in &indexer.conf; file. You can use the <option>-D</option> command
+    line argument to dump data from a certain database only. For example:
+<programlisting>
+indexer -Edump -D2
+</programlisting>
+    will dump data from the database described by the second command
+    <command><xref linkend="cmdref-dbaddr"/></command> in &indexer.conf;.
+    </para>
+  </sect3>
+
+
+  <sect3 id="restore">
+    <title>Restoring the search database
+    </title>
+  
+    <para>
+    To restore a search database from a dump file, use:
+<programlisting>
+indexer -Esql -v2 &lt; dumpfile.sql
+</programlisting>
+or in case of <filename>.gz</filename> file:
+<programlisting>
+zcat dumpfile.sql.gz | indexer -Esql -v2
+</programlisting>
+    &indexer; will load the data back to the &sql; database.
+    In case if you have two or more <command><xref linkend="cmdref-dbaddr"/></command>
+    commands in the current &indexer.conf; file, &indexer; will also properly
+    distribute the data between the corresponding &sql; databases.
+    </para>
+
+  </sect3>
+
+</sect2>
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>http://site/</loc>
+      <lastmod>2005-01-01</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>http://site/catalog?item=12&amp;desc=vacation_hawaii_sitemap1</loc>
+      <changefreq>weekly</changefreq>
+   </url>
+   <url>
+      <loc>http://site/catalog?item=73&amp;desc=vacation_new_zealand_sitemap1</loc>
+      <lastmod>2004-12-23</lastmod>
+      <changefreq>weekly</changefreq>
+   </url>
+</urlset>
+

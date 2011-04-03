@@ -1,0 +1,148 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single
+
+SaveSectionSize no
+
+# Uncomment this line to enable search result cache
+#Cache yes
+
+#  Uncomment this line if you do not want to detect and show clones
+#DetectClones	no
+
+# Use proper local and browser charsets
+# Default charset is iso-8859-1 (latin1)
+# which is suitable for the most Western European languages
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+# Load stopwords file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#StopwordFile stopwords/en.sl
+#StopwordFile stopwords/ru.sl
+#
+
+#
+# Minimum and maximum word lengths
+#
+#MinWordLen 1
+#MaxWordLen 32
+
+# Number of pages in navigator bar
+#
+#PagesPerScreen 10
+
+# Load synonyms file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#Synonym synonym/english.syn
+#Synonym synonym/russian.syn
+#
+
+#
+# How to hilight searched words.
+#
+HlBeg	<b>
+HlEnd	</b>
+
+# Uncomment this line to enable error loging to stderr
+#Log2stderr yes
+#
+
+# Uncomment this line to change default URL basis for storedoc.cgi
+#StoredocURL     /cgi-bin/storedoc
+#
+
+# Uncoment this line to change default maximal excerpt size. Default value is 256.
+#ExcerptSize 1024
+#
+
+# Uncomment this line to change Last-Modified format output
+# Use strftime function meta variables
+#DateFormat %d %b %Y %X %Z
+
+-->
+
+<!--top-->
+--------------------
+<!--/top-->
+
+
+<!--restop-->
+Search for "$&(q)".
+Search results: $(W).
+Results $(first)-$(last) of $(total).
+
+<!--/restop-->
+
+
+<!--res-->
+Order: $(Order).
+URL: $(URL)
+Title: $&(Title)
+Score: $(Score)
+Body: $&(Body)...
+Content-Length: $(Content-Length)
+Content-Type: $(Content-Type)
+<!IFNOT NAME="sitelimit_href" CONTENT="">
+More result from this site:
+$(self)$(sitelimit_href)
+<!IFNOT NAME="PerSite" CONTENT="0"> ($(PerSite) total)<!ENDIF>
+<!ENDIF>
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+
+
+<!--clone-->
+<!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
+<li>
+<small>
+  <A HREF="$(URL)" TARGET="_blank">$(URL:40)</A>
+  <font color="#008800">
+  - $(Content-Length) bytes
+  - $(Last-Modified) 
+  </font>
+</small>
+<!--/clone-->
+
+
+<!--navleft-->
+<!--/navleft-->
+
+<!--navleft_nop-->
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<!--/navbar1-->
+
+<!--navbar0-->
+<!--/navbar0-->
+
+<!--navright-->
+<!--/navright-->
+
+<!--navright_nop-->
+<!--/navright_nop-->
+
+<!--notfound-->
+Search for: $&(q).
+Search results: $(W)
+Sorry, your search for "$&(q)" did not find any results.
+No documents were found containing "$&(q)".
+<!--/notfound-->
+
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

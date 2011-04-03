@@ -1,0 +1,2293 @@
+<appendix id="changelog">
+  <title>mnoGoSearch change history</title>
+
+  <sect1 id="changelog-3-3">
+    <title>Changes in 3.3</title>
+
+    <sect2 id="changelog-3-3-11">
+      <title>Changes in 3.3.11 (January 27, 2011)</title>
+      <itemizedlist>
+
+        <listitem><para>
+        Bug#4346 "QCache does not differentiate on Sections" was fixed.
+        ${sl.*} was added into default QueryCacheID format.
+        </para></listitem>
+
+        <listitem><para>
+        The &lt;!--variables--&gt; search template section is now executed earlier,
+        so <varname>tmplt</varname>, 
+        <command><xref linkend="cmdref-locale"/></command>
+        and <varname>StdoutBufferSize</varname> can be set dynamically.
+        </para></listitem>
+ 
+        <listitem><para>
+        Bug#4256 "Install include headers fails due to duplicated entry of udm_http.h" was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        GNU-style long options are now understood. For example,
+        <command><literal>indexer --rewritelimits</literal></command> is
+        a synonym for the old command <command><literal>indexer -Erewritelimits</literal></command>.
+        The new long options are intended to replace the old <literal>-Exxx</literal> options.
+        See <userinput>&indexer; -?</userinput> for the list of the new options.
+        </para></listitem>
+
+        <listitem><para>
+        A few performance improvements in handling information in
+        the <filename>server</filename> and <filename>srvinfo</filename> tables were made.
+          <itemizedlist>
+          <listitem><para>
+          The tables are now updated in transactions (or under locking, e.g. in &app-mysql;).
+          </para></listitem>
+          <listitem><para>
+          The default values for <option>match_type</option>, <option>case_sense</option>,
+          <option>nomatch</option>, <option>follow</option>, <option>Method</option>
+          are not written to the <filename>server</filename> and <filename>srvinfo</filename>
+          tables any more.
+          </para></listitem>
+          <listitem><para>
+           The tables are not updated if no changes in &indexer.conf; 
+           have been made since last &indexer; startup.
+          </para></listitem>
+          </itemizedlist>
+        These improvements make &indexer; start about 3-12 times faster 
+        (depending on database software) with an &indexer.conf; file
+        having <literal>4096</literal> &cmd-server; commands.
+        </para></listitem>
+
+        <listitem><para>
+        &sql; scripts to create tables for &app-mysql; now have the <literal>ENGINE=MyISAM</literal>
+        option, to address the default storage engine change in &app-mysql; version <literal>5.5</literal>.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed a &app-valgrind; warning when a template variable didn't end with right parenthesis properly, e.g.
+        <literal>$(name</literal>.
+        </para></listitem>
+
+        <listitem><para>
+        Non-standard RSS tags inside the <literal>&lt;item&gt;</literal> tag can now be parsed
+        when defined using a &cmd-section; command.
+        Cluster &xml; search results can also transfer
+        the non-default user section values to the front-end point.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that the default &app-php; frontend (<filename>php/index.php</filename>) did not highlight
+        non-Latin searched words when displaying cached copies. 
+        </para></listitem>
+
+        <listitem><para>
+        The <option>--enable-fhs-layout</option> option to <filename>configure</filename>
+        is now available, to build and install with layout which suites File Hierarchy Layout
+        standard better. When <option>--enable-fhs-layout</option>, mnoGoSearch installs:
+        <itemizedlist>
+          <listitem><para>
+          &indexer; into <filename>/bin</filename> rather than <filename>/sbin</filename>
+          (as &indexer; is not really limited to be run by the superuser only).
+          </para></listitem>
+          <listitem><para>
+          language map files into <filename>/share/langmap/*.lm</filename> rather than <filename>/etc/langmap/*.lm</filename>.
+          </para></listitem>
+          <listitem><para>
+          stopword files into <filename>/share/stopwords/*.sl</filename> rather than <filename>/etc/stopwords/*.sl</filename>.
+          </para></listitem>
+          <listitem><para>
+          synonym files into <filename>/share/synonym/*.syn</filename> rather than <filename>/etc/synonym/*.syn</filename>.
+          </para></listitem>
+          <listitem><para>
+          frequency files (for Asian word segmenters) into <filename>/share/freq/*.freq</filename> rather than <filename>/etc/*.freq</filename>.
+          </para></listitem>
+          <listitem><para>
+          &sql; scripts into <filename>/share/create/dbname/*.sql</filename> rather than <filename>/share/dbname/*.sql</filename>.
+          </para></listitem>
+        </itemizedlist>
+        For backward compatibility, the traditional &mnogo; layout is created when no <option>--enable-fhs-layout</option> is given.
+        </para></listitem>
+
+        <listitem><para>
+        Correct path to &app-mysql; client library is now detected by <command>configure</command>
+        on 64-bit &os-linux; platforms.
+        </para></listitem>
+
+        <listitem><para>
+        &app-oracle;'s <literal>11g</literal> client include and library layout
+        is now detected by <command>configure</command> on 64-bit &os-linux; platforms.
+        </para></listitem>
+
+        <listitem><para>
+        An error message is now displayed when &indexer; can not find a create or drop &sql; script.
+        Earlier &indexer; exited silently.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that a few files from the <filename>msearch-test</filename> directory were not included
+        into the distribution, so <command><literal>make check</literal></command> did not work
+        outside &mnogo; &app-cvs; tree.
+        </para></listitem>
+
+<!--
+        <listitem><para>
+        </para></listitem>
+        <listitem><para>
+        </para></listitem>
+
+-->
+
+      </itemizedlist>
+   </sect2>
+
+    <sect2 id="changelog-3-3-10">
+      <title>Changes in 3.3.10 (November 23, 2010)</title>
+      <itemizedlist>
+      
+        <listitem><para>
+        <varname>Content-Length</varname> is now stored into
+        the database for &ftp; protocol when 
+        <command><xref linkend="cmdref-checkonly"/></command> access
+        method is used. Previous it was set to <literal>0</literal>.
+        </para></listitem>
+        
+        <listitem><para>
+        <application>mconv</application> conversion utility improvements
+        were made. Input buffer size was changed to <literal>1Mb</literal> 
+        to avoid breaking apart multibyte characters when processing
+        a file with long lines. <option>-x</option> command line option
+        was added to display characters that can not be converted to
+        the target character set using <emphasis>hexadecimal</emphasis>
+        &sgml; entities (e.g. <literal>&amp;#x123;</literal>).
+        </para></listitem>
+
+        <listitem><para>
+        <filename>zh-hans.utf8.lm</filename> and
+        <filename>zh-hant.utf8.lm</filename> language maps were added
+        to detect Simplified and Traditional Chinese in
+        <literal>UTF-8</literal>.
+        </para></listitem>
+
+        <listitem><para>
+        Displaying <command><link linkend="stored">Cached copies</link></command>
+        now works with <application>mnoGoSearch PHP extension module</application>.
+        </para></listitem>
+
+        <listitem><para>
+        Date formats "<literal>1997-07-16T19:20:30+01:00</literal>"
+        and "<literal>1997-07-16T19:20:30-01:00</literal>" are now
+        understood in protocol headers and when parsing &xml; files.
+        </para></listitem>
+        
+        <listitem><para>
+        The <emphasis>
+        <ulink url="http://en.wikipedia.org/wiki/Sitemaps">Sitemap Protocol</ulink>
+        </emphasis> is now supported to fetch the list of &urls; available
+        for crawling on a website. A new command
+        <command><xref linkend="cmdref-usesitemap"/></command>
+        was added to specify whether to use
+        <emphasis>Sitemap Protocol</emphasis>
+        (<literal>yes</literal> by default).
+        </para></listitem>
+        
+        <listitem><para>
+        Fixed that binding of integer parameters in &sql; driver
+        didn't work well on 64-bit platforms which might cause
+        <command><literal>indexer -Eblob</literal></command> failures.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that <application>ctlib</application>
+        (&app-sybase; and &app-mssql; client library) driver returned
+        <literal>CS_ROW_FAIL</literal> error on float numbers with
+        high precision.
+        </para></listitem>
+        
+        <listitem><para>
+        <link linkend="cmdref-dbaddr-qcache">QCache=yes</link>
+        and <xref linkend="cmdref-suggest"/> now work with &app-mssql;.
+        </para></listitem>
+
+        <listitem><para>
+        Running <link linkend="general-parallel">multiple &indexer;
+        crawling processes</link> is now possible with &app-mssql;.
+        &indexer; uses the
+        <emphasis><literal>(TABLOCKX)</literal> table hint</emphasis>
+        when fetching targets from the database to avoid crawling
+        of the same documents by multiple &indexer; instances.
+        Previously running multiple crawling processes was possible only with
+        &app-mysql;, &app-pgsql; and &app-oracle;.
+        </para></listitem>
+
+        <listitem><para>
+        <command><literal>indexer -Eblob</literal></command>
+        now runs in non-locking mode (i.e. without search down time)
+        when working with &app-mssql;.
+        Previously non-locking re-indexing was possible only with
+        &app-mysql;, &app-pgsql; and &app-oracle;.
+        </para></listitem>
+        
+        <listitem><para>
+        Bug#4220 "one-character HTML titles are not indexed" was fixed.
+        </para></listitem>
+        
+        <listitem><para>
+        Bug#501 "HoldBadHrefs don't work" was fixed.
+        </para></listitem>
+        
+        <listitem><para>
+        &indexer; now respects the <option>-D</option> command line
+        option when dumping data. For example,
+        <command><literal>indexer -Edumpdata -D2</literal></command>
+        will dump data from the second &cmd-dbaddr; command in &indexer.conf;.
+        </para></listitem>
+        
+        <listitem><para>
+        New grouping mode 
+        <command><literal>
+        <link linkend="cmdref-groupbysite">GroupBySite rank</link>
+        </literal></command> was added.
+        </para></listitem>
+
+        <listitem><para>
+         &app-monetdb; and &app-virtuoso; databases are now supported.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#3963 "SQL injection possible with tag and URL parameter" was fixed.
+        Protection against &sql; injection in other search parameters was improved.
+        </para></listitem>
+
+        <listitem><para>
+        New parameter
+        <option><link linkend="cmdref-dbaddr-mysql-specific-multiinsert">MultiInsert=yes</link></option>
+        was added to the &cmd-dbaddr; command,
+        to enable inserting of multiple records in a single
+        <command><literal>INSERT</literal></command> &sql;
+        statement when running
+        "<command><literal>indexer -Eblob</literal></command>"
+        with a &app-mysql; database.
+        </para></listitem>
+
+        <listitem><para>
+        Verbose output was improved to give more information
+        about time spent on various indexing steps
+        (when running <command><literal>indexer -Eblob</literal></command>)
+        and search steps (when running &search.cgi;), to find performance
+        bottlenecks easier.
+        </para></listitem>
+
+        <listitem><para>
+        Minor <command><literal>indexer -Eblob</literal></command>
+        performance improvement was made: more records are now
+        inserted per single prepared statement call.
+        </para></listitem>
+
+        <!--
+        <listitem><para>
+TODO: adding "HrefVarAppend" action into XMLDataHook.
+        </para></listitem>
+        -->
+
+        <listitem><para>
+         An <acronym>XSS</acronym> problem was fixed:
+         typing this &url; in <application>Internet Explorer</application>
+         address bar popped up an alert message window:
+<programlisting>
+http://localhost/cgi-bin/search.cgi?q=who&gt;"&gt;&lt;script&gt;alert(123)&lt;/script&gt;&lt;"=Search!
+</programlisting>
+        </para></listitem>
+
+        <listitem><para>
+        It's now possible to specify an alternative name for the
+        <varname>bdict</varname> table using the <varname>bdict</varname>
+        parameter to &cmd-dbaddr;:
+<programlisting>
+DBADdr mysql://root@localhost/test/?bdict=bdict_name
+</programlisting>
+        This can be used to build multiple search indexes in the same
+        database, for example, using different subsection filters.
+        </para></listitem>
+
+        <!--
+        <listitem><para>
+TODO:    Listen?
+        </para></listitem>
+        -->
+
+        <listitem><para>
+        Bug#3792 "URL limit for htdb causes inefficient SQL query" was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#3806 "wrong usage of memset function" was fixed.
+        </para></listitem>
+
+        <!--
+        <listitem><para>
+TODO:   Adding Dsum_nodistance, will use to skip calculation of distance.
+        </para></listitem>
+        -->
+
+        <listitem><para>
+        The <xref linkend="cmdref-userscore"/> command can now be written
+        in &indexer.conf;, so its result is cached in the database
+        during <command><literal>indexer -Eblob</literal></command> time
+        to be used by &search.cgi; at search time.
+        This improves performance in case of a complex &sql; query given in
+        <xref linkend="cmdref-userscore"/>.
+        </para></listitem>
+
+        <listitem><para>
+        <application>Tika</application> MSWord-to-text converter
+        <link linkend="pars-msword">configuration instructions</link>
+        were added into the manual.
+        </para></listitem>
+
+      </itemizedlist>
+    </sect2>
+
+
+    <sect2 id="changelog-3-3-9">
+      <title>Changes in 3.3.9 (29 October 2009)</title>
+      <itemizedlist>
+        <listitem>
+        <para>
+        <command><xref linkend="cmdref-dbaddr"/></command> now unserstands
+        the <literal>ClientMultiStatements=yes</literal> parameter
+        when connecting to &app-mysql;, which makes it possible to
+        use stored procedure calls in
+        <command><xref linkend="cmdref-userscore"/></command>
+        and <command><xref linkend="cmdref-usersitescore"/></command>
+        commands.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+         A bug was fixed: a missing <literal>&lt;link&gt;...&lt;link/&gt;</literal>
+         tag made &indexer; crash when parsing a broken
+         <acronym>RSS</acronym> file.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        Fixed that <literal>indexer -Eblob</literal> wrote
+        unsorted &url; data into table <varname>bdicti</varname>,
+        which made &search.cgi; return <literal>"no documents found"</literal>
+        and other kinds of unexpected results when running
+        with <literal>GroupBySite=yes</literal>.
+        <!--TODO: Bug since?-->
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        &mnogo; now uses <emphasis>prepared statements</emphasis>
+        when working with &app-pgsql;
+        (<acronym>API</acronym> functions
+        <methodname>PQprepare()</methodname>,
+        <methodname>PQexecPrepared()</methodname>).
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        When compiled with &app-mysql; &gt;=<literal>4.1</literal> client library
+        and connecting to an older &app-mysql; server
+        (without native <acronym>PS API</acronym>),
+        &mnogo; now automatically switches not to use
+        prepared statements.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+         Bug#3789 was fixed. <filename>russian.dict</filename>
+         from Lebedev's &app-ispell; package was incorrectly
+         detected as &mnogo; hash file.
+         More accurate &mnogo; ispell hash file detection was made.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        Improvements in word distance calculation were made.
+        If a distance between two searched words is longer than
+        <literal>64</literal>, then this distance is considered to
+        be equal to <literal>64</literal>.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+         The <literal>${total}</literal> variable is now
+         available in <command><xref linkend="cmdref-usercachequery"/></command>.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        &search.cgi; now does not execute an empty 
+        <command><xref linkend="cmdref-usercachequery"/></command> query.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        It's now possible to use dot (<literal>.</literal>) and
+        dash (<literal>-</literal>) characters as separators in
+        <command><xref linkend="cmdref-wf"/></command>
+        vector for easier readability.
+        For example, <literal>wf=FFFF-9999-2221</literal> is
+        now the same to <literal>wf=FFFF99992221</literal>.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        &indexer; now understands the <literal>--exec</literal>
+        command line parameter to execute a single &sql; query,
+        for example:
+<programlisting>
+indexer -Esql --exec="select url from url"
+</programlisting>
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        <literal>indexer -Esqlmon</literal> now understands
+        the <literal>-D</literal> parameter to connect
+        to a certain database in multi-database environment.
+        For example:
+<programlisting>
+indexer -Esqlmon -D2
+</programlisting>
+connects to the database specified in the second &cmd-dbaddr; command
+in &indexer.conf;.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        <command>ServerTable</command> <acronym>HOWTO</acronym> was
+        added into the manual. See <xref linkend="srvtable"/>.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        Fixed that &search.cgi; didn't work with <literal>ps</literal>
+        values larger than <literal>500</literal> because of 
+        query buffer overflow.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        The <command><xref linkend="cmdref-resultslimit"/></command>
+        &search.htm; command now understands <literal>0</literal>
+        as <emphasis>unlimited</emphasis> number of results displayed
+        to the user.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        Fixed a bug that some documents with very low score could
+        be excluded from search results.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        New <literal>recursive</literal> and <literal>final</literal> synonym modes
+        were added. See <xref linkend="synonyms"/>.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        <literal>indexer -Eblob</literal> now uses a temporary table
+        <literal>bdict_tmp</literal> and renames it to 
+        <literal>bdict</literal> after search index is ready
+        with &app-pgsql; <literal>8.2.4</literal>, &app-oracle;,
+        &app-sqlite; and &app-db2;. This reduces search service down
+        time when recreating search index just to less than a second.
+        Previously, temporary table was used only with &app-mysql;.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        <literal>indexer -Ecrawl</literal> was added as a synonym
+        for <literal>indexer -Eindex</literal>. The latter is now
+        deprecated and will eventually removed.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        Fixed that &mnogo; did not work with &app-sybase; via &app-odbc;.
+        The call for
+        <literal>SQLSetConnectOption(hDbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)</literal>
+        expected only <literal>SQL_SUCCESS</literal> to be returned, while
+        <literal>SQL_SUCCESS_WITH_INFO</literal> is also possible with &app-sybase;.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        A minor crawling performance improvement was made: &indexer;
+        could execute empty &sql; transactions in some cases.
+        Now it does not.
+        </para>
+        </listitem>
+
+
+        <listitem>
+        <para>
+        A minor crawling performance improvement  was made: &indexer;
+        does not send <literal>DELETE FROM dict WHERE url_id=xxx</literal>,
+        <literal>DELETE FROM urlinfo WHERE url_id=xxx</literal> &sql; queries
+        when crawling a document for the very first time.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        A minor crawling performance improvement was made: &indexer;
+        now does not send <literal>DELETE FROM links WHERE...</literal> &sql; queries
+        when <xref linkend="cmdref-collectlinks"/> is set to <literal>no</literal>.
+        </para>
+        </listitem>
+
+
+        <listitem>
+        <para>
+        The <link linkend="cmdref-section">special purpose section</link>
+        <literal>User.Date</literal>
+        now understands <emphasis>Unix Timestamp format</emphasis>.
+        For example:
+<programlisting>
+&lt;meta name="Date" content="1104537600"&gt;
+</programlisting>
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        A description of the <literal>offs</literal>
+        <link linkend="search-params">search parameter</link>
+        was added into the manual.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        Fixed that the <literal>offs</literal>
+        <link linkend="search-params">search parameter</link>
+        did not work in cluster mode.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        A new &search.htm; command <command><xref linkend="cmdref-idffactor"/></command>
+        was added to diminish the weight of words that occur very frequently
+        in the document collection (such as <literal>the</literal>) and
+        increase the weight of words that occur rarely.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        <command><xref linkend="cmdref-worddensityfactor"/></command>
+        now works smother.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        A new query language syntax was added to set 
+        <link linkend="search-wordimportance">importance</link>
+        for individual query words, for example:
+        <userinput>importance200:star importance200:wars importance10:movie</userinput>.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        <emphasis>phrase-to-word</emphasis> and <emphasis>phrase-phrase</emphasis>
+        synonym types are now supported.
+        A new &search.htm; command <command><xref linkend="cmdref-complexsynonyms"/></command>
+        was added.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        If <userinput>indexer -qq</userinput> is given, then
+        &indexer; switches to even faster start-up 
+        comparing to <userinput>indexer -q</userinput>.
+        Additionally, <userinput>indexer -qq</userinput> does not
+        synchronize the <command><xref linkend="cmdref-server"/></command>
+        and <command><xref linkend="cmdref-realm"/></command>
+        commands found in &indexer.conf; with the table "<literal>server</literal>"
+        content. It can be useful for those having complex &indexer.conf; file
+        with many 
+        <command><xref linkend="cmdref-server"/></command> / 
+        <command><xref linkend="cmdref-realm"/></command> commands.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        The <command><xref linkend="cmdref-syslogfacility"/></command>
+        command now understands <literal>none</literal> as a possible value, which means
+        <emphasis>suppress logging to <application>syslog</application></emphasis>.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        Improvements in word distance calculation were made.
+        Now search additionally detects if all query words appear
+        in a frame with length <literal>2*number_of_query_words</literal>
+        words. For example, documents with text fragments:
+<programlisting>
+.... w1 . w2 . w3  ....
+
+.... w1 . . w2 w3  ....   
+
+.... w1 w2 . . w3  ....
+</programlisting>
+        are now ranked better.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        <literal>indexer -Eblob</literal> now does not put
+        information about popularity rank into search index
+        if all <literal>pop_rank</literal> values are empty
+        (i.e. when <literal>indexer -R</literal> has never been run).
+        This slightly improves performance.
+        </para>
+        </listitem>
+
+<!--
+        <listitem>
+        <para>
+TODO: Adding SkipWordDistanceThreshold
+        </para>
+        </listitem>
+-->
+        <listitem>
+        <para>
+        Tools to <link linkend="dump-restore">dump and restore</link>
+        search databases were added. An article how to 
+        <link linkend="cluster-addnode">add a cluster node with help
+        of dump/restore</link> tools was added into the manual.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        &indexer; now can limit documents by seed: <userinput>indexer --seed=10</userinput>,
+        where <literal>seed</literal> is a value in the range <literal>0..255</literal>.
+        Seed range is also understood: <userinput>indexer --seed=10-20</userinput>.
+        You can use seed limit, for example, to distribute crawler work through the week:
+        run <literal>indexer --seed=0-36</literal> on Sundays,
+        <literal>indexer --seed=37-75</literal> on Mondays, ..., 
+        <literal>indexer --seed=220-255</literal> on Saturdays.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        &sql; monitor tool (<literal>indexer -Esql</literal>)
+        now reports line numbers when displaying errors.
+        </para>
+        </listitem>
+
+        <listitem>
+        <para>
+        A description of <literal>MS Word 2007 *.docx</literal>
+        <link linkend="pars-msword-docx">external parser</link>
+        was added into the manual.
+        </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+    
+    <sect2 id="changelog-3-3-8">
+      <title>Changes in 3.3.8 (13 February 2009)</title>
+      <itemizedlist>
+        <listitem>
+        <para>
+        The <command><xref linkend="cmdref-userorder"/></command>
+        command was added to &indexer.conf;
+        to create helper data for fast ordering by a
+        user defined section.
+        </para>
+        </listitem>
+        <listitem>
+        <para>
+        New implementation of <firstterm>search results cache</firstterm>
+        was added. Use the <option>QCache=yes</option> parameter
+        to &cmd-dbaddr; to activate the new search result cache.
+        Along with fast retrival of the results for the cached queries,
+        the new search result cache also supports
+        the <firstterm>search in found</firstterm> feature.
+        Also, the new search result cache does not need manual
+        cleaning after recreating of the search index.
+        </para>
+        </listitem>      
+        <listitem>
+          <para>
+          A new "<literal>-D number</literal>" command line option is
+          now understood by &indexer;. This options
+          makes &indexer; connect only to the given
+          database (when running a multi-database environment).
+          For example, when started with <literal>-D2</literal>,
+          &indexer; will crawl only those targets
+          stored in the database corresponding to the second
+          <command><xref linkend="cmdref-dbaddr"/></command> command of
+          &indexer.conf;.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          <command><xref linkend="cmdref-urlselectskiplock"/></command> - a new
+          &indexer.conf; command was added.
+          By default, &indexer; sends a
+          <literal>LOCK TABLE url</literal> &sql; query when
+          fetching a set of new crawler targets from
+          a <application>MySQL</application> database to avoid
+          multiple &indexer; instances crawling
+          into the same URLs. As fetching targets can take up
+          to a few seconds in a huge database, it can make
+          simultaneous search queries stall and wait
+          for &indexer; to finish fetching targets.
+          <command><xref linkend="cmdref-urlselectskiplock"/></command>
+          helps to avoid this kind of delays in search queries when
+          you're running only a single instance of
+          &indexer; at the same time.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Prepared statements support for
+          <application>MySQL</application> and
+          <application>PostgreSQL</application> 
+          client-server protocols was added, which
+          slightly improves crawling and indexing performance.
+          Use the <option>ps=yes</option> parameter
+          to <command><xref linkend="cmdref-dbaddr"/></command>
+          to activate using of prepared statements.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          <command><literal>indexer -Eblob</literal></command> now doesn't put
+           information about the URLs not matching
+           the command line filters (e.g. on status or URL),
+           for performance purposes.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new command
+          <command><xref linkend="cmdref-crawlerthreads"/></command>
+          is now understood in &indexer.conf;
+          to specify the number of crawler threads to start by default
+          when <literal>-N</literal> command line option is
+          not given to &indexer;.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Fixed that &search.cgi; and
+          &indexer; crashed in some cases when using
+          <command><xref linkend="cmdref-userscore"/></command>
+          on a 64-bit platform.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Fixed that
+          "<command><literal>indexer -a -f urllist.txt</literal></command>"
+          incorrectly used "prefix match" instead of "exact match"
+          when marking documents with the URLs listed in the given
+          file as expired.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new <command><xref linkend="cmdref-addencoding"/></command>
+          command is now understood in &indexer.conf;.
+          <command><xref linkend="cmdref-addencoding"/></command>
+          associates file names and extensions with Mime content
+          encoding types. For example:
+          <programlisting>AddEncoding gzip *.html.gz</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new <command><xref linkend="cmdref-crawldelay"/></command>
+          &indexer.conf; command was added.
+          <command><xref linkend="cmdref-crawldelay"/></command>
+          sets the number of seconds to wait between
+          subsequent requests to the same server.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            &search.cgi; now understands <literal>-d</literal>
+            command line argument to pass a template file name to load.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          <literal>$base64(varname)</literal> template format was added to print content
+          of a variable using base64 encoding.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Better score results for documents containing full long search phrases.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new command <command><xref linkend="cmdref-uselocalcachedcopy"/></command>
+          was added into &search.htm;.
+          Use this command to generate excerpts and "Cached Copy"
+          documents from the original copy of a document when indexing
+          local file system. This command helps to avoid storing of
+          cached copies in the database and thus makes the database smaller.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new command
+          <command><xref linkend="cmdref-loadurlbasicinfo"/></command>
+          was added into &search.htm;. Use this command
+          to improve performance in case when you only need to output
+          document IDs and score values in search results and don't need
+          the other basic information about the documents such as URL,
+          last modification date, document size (and other columns from
+          the table "<literal>URL</literal>"). 
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new command
+          <command><xref linkend="cmdref-usersitescore"/></command>
+          is now understood in &search.htm;.
+          It works similarly to
+          <command><xref linkend="cmdref-userscore"/></command>,
+          but sets the desired score factor for the entire host
+          name instead of a single document.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          New phrase segmenter types <literal>cjk</literal> and
+          <literal>cjk-phrase</literal> were added to make
+          &mnogo; suit East-Asian
+          languages better.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          &search.cgi; automatically switches to
+          <literal>chj-phrase</literal> segmenter mode when
+          <literal>m=phrase</literal> query string parameter
+          is given and segmenter mode  is <literal>cjk</literal>.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new template variable <literal>$(SEGMENTER.QUERY_STRING)</literal>
+          was added. This variable contains the query string after being
+          processed by segmenter and can be used for testing and debugging
+          the search template.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Fixed that <application>mnoGoSearch PHP extension module</application>
+          could crash when using <application>Ispell</application> files
+          for stemming.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          It's now possible to use
+          <command><xref linkend="cmdref-spell"/></command> and
+          <command><xref linkend="cmdref-affix"/></command>
+          commands in <application>PHP extension module's</application>
+          function <literal>udm_set_agent_param_ex()</literal>.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+           A new <command><xref linkend="cmdref-dbaddr"/></command> parameter
+           <literal>step=number</literal> was added.
+           It makes &indexer; load not more than
+           "<literal>number</literal>" documents at the same time when creating
+           fast search index. Use this command if you have a huge database
+           which doesn't fit into RAM, or you want to limit memory consumed
+           by <command><literal>indexer -Eblob</literal></command>.
+           This parameter can also be useful when using &mnogo; with a &app-mysql;
+           server with a small <option>max_allowed_packet</option> value.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Fixed that &indexer; and &search.cgi;
+          crashed in some cases due to wrong use of
+          <literal>OCILobGetLength()</literal> in the code.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          The <command><xref linkend="cmdref-dbaddr"/></command> parameter
+          <literal>setnames=charsetname</literal> is now understood when
+          connecting to <application>MySQL</application> and
+          <application>PostgreSQL</application> via <application>ODBC</application>.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Bug#3773 "Phrase excerpts do not work in some cases" was fixed.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Bug#3791 "indexer exits even though content encoding is known" was fixed.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new <command><xref linkend="cmdref-usercachequery"/></command>
+          &indexer.conf; command was added to store
+          search results in the database. This can help to use
+          &mnogo; as an external full-text
+          solution together with your database driven application.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Improvements in <command><xref linkend="cmdref-excerptpadding"/></command>
+          were made to generate nicer excerpts from East-Asian texts.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A new <command><xref linkend="cmdref-dbaddr"/></command> parameter
+          <literal>Compress=yes</literal> was added to activate
+          compression in <application>MySQL's</application> client-server
+          protocol by using
+          <literal>mysql_options(&amp;mydb->mysql, MYSQL_OPT_COMPRESS, 0)</literal>
+          API's call. This option improves indexing and search performance
+          when connecting to a <application>MySQL</application> server
+          on a remote host.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Fixed that &search.cgi; tried to load a sorting
+          section even when "<literal>su</literal>" search parameter was empty,
+          which caused performance problems.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          <application>configure --with-docs</application> now automatically
+          searches for the <application>DocBook's</application> catalog
+          in a number of common locations. Previously one had to fix
+          the file <filename>doc/catalog</filename> manually to build
+          the &html; manual.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Log level for "Unsupported Content-Type" and
+          "Unsupported Content-Encoding" messages was changed
+          from <literal>ERROR</literal> to
+          <literal>WARNING</literal> to avoid excessive flood
+          of <application>syslog</application> logs
+          when running &indexer; with <literal>-l1</literal>
+          command line option.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          A description how to use <application>rtfx</application> (a nice
+          RTF-to-XML converter) was added into the manual and
+          &indexer.conf-dist;.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          The <literal>HIGH_PRIORITY</literal> keyword was added into more
+          &sql; <literal>SELECT</literal> queries sent to
+          <application>MySQL</application> during search time to
+          give a higher priority to &search.cgi; over
+          the simultaneosly runnig &indexer; instances.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          &indexer; now adds the <literal>FIRST N</literal>
+          clause into the &sql; <literal>SELECT</literal> query when fetching
+          crawler targets from a <application>Firebird</application> database.
+          This slightly improves crawling performance, as well as offloads
+          the <application>Firebird</application> server.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          The command <command><xref linkend="cmdref-pagesperscreen"/></command>
+          was added into the manual.
+          </para>
+        </listitem>
+        
+      </itemizedlist>
+    </sect2>
+
+
+    <sect2 id="changelog-3-3-7">
+      <title>Changes in 3.3.7 (11 April 2008)</title>
+      <itemizedlist>
+
+        <listitem>
+          <para>
+          New synonym file command "Mode: return" was added.
+          The words written on the same line in a synonym file are
+          expanded only to the leftmost words in this mode.
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>
+          Synonym file command "Mode: roundtrip" was added
+          as a synonym to "Mode: reverse" to avoid ambiguity.
+          The old version (e.g. reverse) will be removed eventually.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          &search.cgi; now can work as an
+          <application>inetd</application> or <application>xinetd</application> service.
+          See <xref linkend="inetd"/> for details.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          -s flag now understands status range, e.g.
+          "<command>indexer -s200-299</command>" will
+          crawl documents having status in the range  200..299. 
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            C-API description was added into the manual.
+            See <xref linkend="c-api"/> for details.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            A possibility to debug score values was added.
+            See <xref linkend="score-debug"/> for details.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <application>ppthtml</application> PPT-to-HTML parser configuration
+            instructions were added into the manual.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Performance improvement: when processing wild-card patterns
+          like *.txt or *.htm (e.g. file extensions in the
+          <command>AddType</command>, <command>Allow</command>,
+          <command>Disallow</command> commands etc), comparison code now
+          automatically switches from "wild-card comparison"
+          to "string ending comparison" for this type of patterns.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Performance improvements were made in creating
+          search index ("<command>indexer -Eblob</command>"), 
+          which is now about 30% faster with Firebird, 80% faster
+          with SQLite3, 60% faster with Mimer, 30% faster with Sybase ASE.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Minor performance improvements were made in various
+          pieces of the sources.
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>
+          Search now returns at most 1000 results by default,
+          to avoid flood attacks.
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>
+           Fixed that user-defined sections didn't respect
+           <programlisting>&lt;META NAME="Robots" CONTENT="NOINDEX"&gt;</programlisting>
+           tags.
+          </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="changelog-3-3-6">
+      <title>Changes in 3.3.6 (27 November 2007)</title>
+      <itemizedlist>
+
+        <listitem>
+          <para>
+          The default word storage mode was changed to DBMode=blob.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          DBMode=blob now works with SQLite3.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Fixed that the "<command>flags</command>" commands in Ispell affix files were
+          expected to start immediately after the "new line" character.
+          Some affix files available on the Internet have leading spaces
+          and tabs before these commands. Previously mnoGoSearch didn't
+          read these files correctly.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#2023 "--disable-mysql-fulltext-plugin doesn't work" was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Fixed that "GroupBySite=yes" didn't work with DBMode=multi
+          correctly.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Search and indexing performance improvements were made.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          &search.cgi; now uses less memory in DBMode=blob,
+          especially for huge results.
+          </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+
+
+    <sect2 id="changelog-3-3-5">
+      <title>Changes in 3.3.5 (17 October 2007)</title>
+      <itemizedlist>
+
+        <listitem>
+          <para>
+          Fixed an XSS (cross-site scripting) security problem in the default template
+          &search.htm-dist;.
+          Passing special values of the <literal>"t"</literal> query string
+          variable to &search.cgi;
+          resulted in bad code injection near the <literal>OPTION</literal> tags
+          of the <literal>&lt;SELECT NAME="t"&gt;</literal>
+          option list in extended search form.
+          </para>
+          <para>
+          This problem happened only with
+          <literal>&lt;SELECT NAME="t"&gt;</literal> which is inside a
+          &html; comment in the default template. Other <literal>SELECT</literal>
+          lists were not affected, if you didn't put them into a &html;
+          comment.
+          </para>
+          <para>To prevent this problem, &search.cgi;
+          was modified to understand variable references with "HTML-encoded" output format:
+<programlisting>
+&lt;OPTION VALUE="val" SELECTED="$&amp;(var)"&gt;
+</programlisting>
+          Previously only non-encoded variable references worked in
+          <literal>OPTION</literal> tags:
+<programlisting>
+&lt;OPTION VALUE="val" SELECTED="$(var)"&gt;
+</programlisting>
+          The default template &search.htm-dist;
+          was modified to use &html;-encoded output format in 
+          variable references in all <literal>OPTION</literal> tags.
+          </para>
+          <para>
+          After upgrade to this release, modify the existing templates
+          by replacing all <literal>&lt;OPTION VALUE="val" SELECTED="$(var)"&gt;</literal>
+          to <literal>&lt;OPTION VALUE="val" SELECTED="$&amp;(var)"&gt;</literal>.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Thread concurrency for resolving host names and processing
+           robot.txt files was significantly improved, which makes
+           "indexer -Nnum" work much faster when indexing multiple sites.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          The <xref linkend="cmdref-substringmatchminwordlength"/>
+          &search.htm; command was added.
+          Thanks to Matthias Pigulla for contribution.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           The <xref linkend="cmdref-skip"/> &indexer.conf;
+           command was added.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           The <xref linkend="cmdref-casefolding"/> command was added to allow alternative
+           lower case mapping for some languages (e.g. Turkish).
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          In search queries with boolean operator <command>~</command> (NOT),
+          e.g. "<literal>usa &amp; ~chicago</literal>",
+          boolean operator <command>&amp;</command> (AND) is not
+          required anymore. This syntax now works as well:
+          "<literal>usa ~chicago</literal>".
+          &search.cgi; automatically assumes
+           <command>&amp;</command> before <command>~</command>.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Udm_Set_Agent_Param_Ex() function in PHP extension module
+           now understands &search.htm; compatible commands:
+<programlisting>            
+   Udm_Set_Agent_Param_Ex($udm_agent, "Section body  1 1");
+   Udm_Set_Agent_Param_Ex($udm_agent, "Section title 2 1");
+</programlisting>             
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           The default value of the <xref linkend="cmdref-varylang"/> was changed from "en" to empty.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Cluster now honors the <xref linkend="cmdref-readtimeout"/> command in &search.htm;
+           to skip the nodes which currently are not available, e.g. because of
+           network problems. Previously, search waited 30 seconds
+           before returning results if one of the nodes was unavailable.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Performance improvements in phrase search were made.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           &search.cgi; now doesn't try to find clones for
+           a document if value of its "url.crc32" is 0.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Column type of "qcache.doclist" was changed from <literal>BLOB</literal>
+           to <literal>LONGBLOB</literal> in <application>MySQL</application> structure,
+           to allow storing of longer cached results.
+          </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Fixed that &indexer; crashed
+         in some cases when running with many threads.
+         </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            Fixed that &lt;!INCLUDE&gt; didn't work when the
+            <literal>CONTENT</literal>
+            parameter started with a variable reference, e.g.:
+<programlisting>            
+  &lt;!SET NAME="x" CONTENT="http://hostname/"&gt;
+  &lt;!INCLUDE CONTENT="$(x)"&gt;
+</programlisting>            
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1903 "$(tag) doesn't work in cluster" was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1959 "Confusing message "Unable to find working zlib library"
+          on missing libdmalloc" was fixed.
+          Configure parameter "--enable-dmalloc" was changed to
+          "--with-dmalloc", to be able to specify non-standard
+          dmalloc location.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#2022 "&search.cgi; crashes when searching for a single word 
+          with 'Dehyphenate yes' and DBMode=blob" was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Fixed a bug in &http; content negotiation which made indexer
+          after receiving a <literal>"Vary: accept-language"</literal>
+          response header download the same URL several times again, even though
+          &indexer.conf; didn't specify any languages
+          to vary (i.e. when the <xref linkend="cmdref-varylang"/>
+          command was not set or was empty).
+          </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="changelog-3-3-4">
+      <title>Changes in 3.3.4 (27 July 2007)</title>
+      <itemizedlist>
+
+        <listitem>
+          <para>
+           mnoGoSearch now works better for huge documents.
+           Maximum number of words collected from  each document
+           was changed from "64K words per section" to "2048K words per section".
+           Data format in DBMode=single was changed, users of DBMode=single
+           have to reindex their documents from the beginning.
+           Data format in DBMode=multi and DBMode=blob was not changed,
+           reindexing in these modes is only necessary for huge documents
+           (bigger than approximately 512K) - to make indexer collect more
+           words from these documents.  New limit allows to fully index
+           documents with text size up to about 16Mb.
+          </para>
+        </listitem>
+                                              
+        <listitem>
+          <para>
+          The <command>LoadTagInfo</command> &search.htm;
+          command was added, to make tag values available in search
+          results using $(tag).
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          The <command>LoadURLInfo</command> &search.htm;
+          command was added, to switch off loading extra section values
+          from the <filename>urlinfo</filename> table for performance purposes.
+          </para>
+        </listitem>
+        
+        <listitem>
+         <para>
+         The <command>StripAccents yes/no</command> command
+         was added into &indexer.conf;
+         and &search.htm; to make
+         accent insensitive searches possible with the
+         databases not supporting accent insensitive
+         collations. When <command>StripAccent</command>
+         is set to <literal>yes</literal>, all accented
+         letters are converted to their non-accented
+         counterparts when writing or looking up
+         the word index.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Content-Type "application/http" is now understood -
+         a &http; response with headers.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Content-Type "application/http" now work external parsers:
+         if result type of a parser is "application/http", then indexer
+         consider it is a full &http; response and parses both headers
+         and content.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         PostgreSQL driver now understands the "setnames" DBAddr parameter
+         to set client encoding. If a non-empty "setnames" parameter is given,
+         PQsetClientEncoding() is executed immediately after establishing
+         a connection to the server.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Fixed that highlighting didn't work in some cases
+         when a search query contained two or more phrases.
+         </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="changelog-3-3-3">
+      <title>Changes in 3.3.3 (8 May 2007)</title>
+      <itemizedlist>
+
+        <listitem>
+         <para>
+         Performance improvement: the "sorting results by score"
+         step is now much faster on big results (0.01 second vs 1.00
+	 second on results returning one million documents).
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Performance improvement: searching for a single 
+         word is now about three times faster on big results.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Some indexes were added into &sql; schema to make
+         searches with tag and category limit faster
+         (Feature request #772).
+         </para>
+        </listitem>
+        
+        <listitem>
+         <para>
+         Feature request #1364 "highlight collation matches" was
+         implemented. Now when using an accent insensitive collations
+         (for example, <literal>latin1_general_ci</literal> with MySQL),
+         &search.cgi; will take into account
+         all word forms for excerpts and highlighting. For example,
+         searches for French "cote" will also highlight "cot&eacute;"
+         and vice versa, if the non-exact word form generated hits.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         MySQL driver now understands <literal>setnames</literal>
+         parameter in <literal>DBAddr</literal> (feature request #1326).
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         MySQL driver now understands <literal>sqllogbin</literal>
+         parameter in <literal>DBAddr</literal> (feature request #697).
+         </para>
+        </listitem>
+
+        <listitem>
+        <para>
+         <literal>DebugSQL</literal> parameter to <literal>DBAddr</literal>
+         is now understood. When <literal>DebugSQL</literal> is set to
+         <literal>yes</literal>, &indexer;
+         and &search.cgi; print all &sql; queries
+         sent to the database. mnoGoSearch must be compiled using
+         <literal>./configure --with-debug ...</literal> to make this
+         feature work.
+        </para>
+        </listitem>
+        <listitem>
+         <para>
+         MinCoordFactor and MaxCoordFactor impact is
+	 now calculated separately for each section.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         "nwf" parameter is now understood in DBAddr string,
+         to set its value per database.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         "HoldBadHrefs 0" now means never delete unavailable
+         documents from the database automatically (e.g. when
+         remote host is down), which improves indexing speed,
+         and which is now default behavior. Only positive HoldBadHrefs
+         values activate automatic deletion.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Data type of urlinfo.sval was changed from TEXT to MEDIUMTEXT
+         in MySQL table structure, to allow storing sections longer
+         than 64K.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Bug#1733 "'indexer -Ewordstat' problem with PostgreSQL" was fixed.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Bug #1054 "indexer does not index html files without body tag"
+         was fixed. A new special section with name "nobody" is now
+         understood. If this section is configured, then indexer collects
+         words outside the &lt;body&gt;...&lt;/body&gt; tags.
+         The default behavior is still not to index words outside these tags.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Bug#768 "User defined section is too short (1Kb limit)" was fixed.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Bug#1654 "SQLWordForms doesn't work with cluster"
+         was fixed. Those using cluster should upgrade node.xml
+         using the latest version of node.xml-dist.
+         </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1713 "Square brackets in DOCTYPE makes XML parser fail"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Bug#1739 "indexer doesn't understand Content-Encoding for robots.txt"
+         was fixed.
+         </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1740 "'UseRemoteContentType yes' doesn't work."
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1741 "'indexer.conf -Eblob -t tag' fails with 'Unknown
+          table 's' in WHERE clause'"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Fixed that &indexer; ignored the
+         <command>LogLevel</command> command.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Fixed that popularity rank calculation didn't work with
+         Interbase/Firebird. A missing column "url.shows" was added
+         into &sql; schema.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>
+         Fixed that phrase search didn't work in some cases (a bug since 3.3.0).
+         </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="changelog-3-3-2">
+      <title>Changes in 3.3.2 (19 April 2007)</title>
+      <itemizedlist>
+
+        <listitem>
+         <para>"<command>ResultContentType none</command>" is now understood
+           to suppress printing of the "Content-Type" &http; header by
+           &search.cgi;.
+           This is useful if you execute &search.cgi;
+           from another Web application which sends &http; headers itself.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para><command>ue</command> &search.cgi;
+	 is now understood again to exclude documents with the given URL
+	 pattern from search results. This feature was broken in 3.2.x.
+         </para>
+        </listitem>
+
+        <listitem>
+         <para>&indexer; now uses
+         <literal>UDM_TMP_DIR</literal> and <literal>TMPDIR</literal>
+         environment variables when creating temporary files (e.g for
+         external parsers) instead of the default /tmp.
+         </para>
+        </listitem>
+        
+        <listitem>
+          <para>Fixed that standalone dash character was considered as a
+           separate word with "Dehyphenate yes", so for the queries like "a - b",
+           &search.cgi; incorrectly searched for three words: "a", "-", "b",
+           which never returned results in "find all words" mode.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Fixed that "UseCookie yes" made &indexer;
+          crash when fetching data from HTDB sources.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Fixed that excerpts generated from cached copy of TEXT
+           files didn't work (bug since 3.3.0).
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Bug#746 "Stopwords in a long boolean query" was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1016 "Indexer is selecting wrong Content-Type"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1024 "Clear database limitations do not work: error ORA-01795"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1044 "-Ewordstat: incorrect unicode sequence"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1110 "'invalid UTF-8 byte sequence detected' when INSERT INTO
+          dictXX" was fixed. This error happened when indexing into PostgreSQL
+          with DBMode=multi. The "intag" column type was changed from TEXT to
+          BYTEA in the tables "dict00".."dictFF".
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1182 "Indexer crashes with -a -y 'content/type'" was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1427 "ORA-01785: maximum number of expressions in a list is 1000"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1436 "Cannot run -Ewordstat, ORA-01400: cannot insert NULL"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Bug#1615 "The identifier "PATH_MAX" is undefined" wad fixed.
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>Bug#1641 "Documentation problem" was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Bug#1659 "GroupBySite doesn't work in cluster mode"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Bug#1679 "&search.cgi; dumps core on OpenBSD 4.0 when I search
+          for non existing word" was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1693 "User defined sections don't work for text/plain files"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1716 "Can't limit indexer to documents matching language"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1725 "Navigation doesn't work when using a single cluster node"
+          was fixed.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Bug#1726 "DateFormat doesn't work in cluster"
+          was fixed.
+          </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+
+
+    <sect2 id="changelog-3-3-1">
+      <title>Changes in 3.3.1 (18 March 2007)</title>
+      <itemizedlist>
+
+        <listitem>
+          <para>Relevancy improvement:
+          Fixed that average word distance was considered to be very big
+          in the case when words were found in different sections
+          (e.g. one word in "body" and one word in "title").
+          Word pairs from different sections are not taken into account
+          anymore for distance calculation.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Relevancy improvement:
+          Average word distance is now calculated taking into account "wf"
+          values for the sections - the final score is now more sensitive
+          to word distances in the sections with higher "wf" values.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          DBMode=blob&amp;LiveUpdates=yes is now understood in
+          DBAddr parameter. If LiveUpdates=yes is specified,
+          it's possible to crawl up to several thousand documents
+          without full recreating of search index by running
+          "indexer -Eblob". Thanks to Oz Basarir and Natural
+          Capital Institute for sponsoring this feature.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          The "text" and "html" keywords were added into the "Section"
+          command syntax, to apply either text or &html; parser for data
+          returned from a "simple" HTDBDoc query. This option is useful
+          if the source &sql; table stores data in &html; format. The default
+          value is "text". Thanks to Oz Basarir and Natural
+          Capital Institute for sponsoring this feature.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Column with name "last_mod_time" is now considered 
+          as modification time of the documents, returned from
+          "simple" HTDBDoc queries.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           A new syntax to display N rightmost characters from
+           a template variable was added. For example, $(URL:-10).
+           Thanks to Eggert Ehmke for the idea and the original patch.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Performance improvements in score calculation
+           with non-empty "nwf" parameter were made.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Fixed that "simple" HTDBDoc queries didn't work
+          with Interbase/Firebird, because the driver returned
+          empty column names.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Fixed a bug which made &search.cgi; crash when generating
+          a link to "cached copy" with a template having multiple DBAddr
+          commands.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+           Fixed a bug in character set conversion,
+           which made indexer crash in rare cases.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Fixed that "indexer -Cw" didn't empty the "bdict" table.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+          Fixed a bug in cluster code which made &search.cgi; crash
+          on processing of a front-end template with "Suggest yes"
+          when search didn't return any results.
+          </para>
+        </listitem>
+
+      </itemizedlist>
+    </sect2>
+
+
+    <sect2 id="changelog-3-3-0">
+      <title>Changes in 3.3.0 (06 March 2007)</title>
+      <itemizedlist>
+
+        <listitem>
+          <para>
+Cluster support was added. A typical cluster
+consists of several database machines and a
+single front-end machine. The front-end machine
+receives &http; requests from a user's browser,
+forwards search queries to the database machines
+using &http; protocol, receives back a limited number
+of top best search results (using a simple XML format,
+based on OpenSearch specifications) from every database machine,
+then parses and merges the results, and displays them according
+to score and applying &html; template.
+This approach distributes operations with high
+CPU and hard disk consumption between the database
+machines in parallel, leaving simple merge and &html;
+template processing functions to the the front-end machine.
+As of version 3.3.0, mnoGoSearch allows to join up
+to 256 database machines into a single cluster.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+node.xml-dist is now installed into /etc directory -
+an XML template for a cluster database machine.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"DBAddr http://hostname/search.cgi/node.xml" &search.htm;
+command was added, to specify an URL of a cluster database
+machine interface with XML format.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"DBAddr file:///path/to/node.xml" &search.htm;
+command was added, to specify a static XML search response.
+This is mostly for test purposes.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Two cluster types were implemented - a merge cluster
+to join results from several independent databases,
+each created by its own &indexer.conf;, as well as
+a distributed cluster - created by a single &indexer.conf;
+when indexer automatically distributes search index
+between database machines.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Changing default distribution type from "reminder" to "quotient".
+Thus, for &indexer.conf; having three DBAddr command,
+distribution is done as follows:
+<itemizedlist>
+<listitem><para>URLs with seed 0..85 go to the first DBAddr</para></listitem>
+<listitem><para>URLs with seed 85..170 go to the second DBAddr</para></listitem>
+<listitem><para>URLs with seed 171..255 go to the third DBAddr</para></listitem>
+</itemizedlist>
+This distribution style simplifies manual redistribution
+of an existing clustered database when adding a new DBAddr
+(i.e. a new database machine). Future releases will provide an automatic
+tool for redistribution when adding and deleting machines in an existing
+cluster, as well as more configuration commands to control distribution.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Maximum amount of words collected from a document
+was changed from 64K words per document to 64K words
+per section - positions are now enumerated per section,
+starting from the beginning of each section separately.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"SaveSectionSize yes/no" &indexer.conf; and &search.htm;
+command was added. When SaveSectionSize is set to yes,
+indexer stores additional information about section sizes,
+making it possible to generate better score values, as
+well as to do "exact section match" searches.
+Default value is "yes".
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Relevancy improvement: "WordDensityFactor num" &search.htm;
+command was added. Num is a number in the range 0..255
+to specify impact of word frequency on the result score.
+This feature works with "SaveSectionSize yes".
+The default value is 25.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Exact section match syntax was added:
+<programlisting>            
+title="Apache web server"
+</programlisting>                              
+This feature works with "SaveSectionSize yes".
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"WordFormFactor num" &search.htm; command was added
+to give more weight to the word forms originally
+written in the search query and less weight to
+generated word forms using ispell dictionaries
+and synonyms. Use with a number 0..255.
+Default value is 255. 255 means to give the same
+weight to the original and generated forms.
+0 means maximum effect, i.e. weight for a generated
+word form is much smaller than weight for the original
+word form. 
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Excerpt generating code performance improvements
+were done. Excerpt generation from CachedCopy is
+now about 6-12% faster.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Using URL and Tag limits is now possible with "indexer -Eblob", e.g.:
+<programlisting>            
+./indexer -Eblob -u "%subdir%"
+./indexer -Eblob -t tag
+</programlisting>                              
+This is to generate a search index over a subset of
+all documents collected during crawling.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Using "Limit" command is also possible with "indexer -Eblob", e.g.:
+          </para>
+          <para>
+indexer.conf command:
+<programlisting>            
+Limit subdir "SELECT rec_id FROM url WHERE url LIKE '%/subdir/%'"
+</programlisting>                              
+          </para>
+  
+          <para>
+command line:
+<programlisting>            
+./indexer -Eblob --fl=subdir
+</programlisting>                              
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"ResultContentType type" &search.htm; command
+was added to specify Content-Type header generated by
+&search.cgi;. The default value is "text/html".
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"Dehyphenate yes/no" &search.htm; command was added.
+When "Dehyphenate yes" is specified, searching for "peace-making"
+also will return documents having "peacemaking".
+Thanks to Oz Basarir and Natural
+Capital Institute for sponsoring this feature.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Clone template variables were changed: clones are now returned
+in the same row with the document itself, using CloneN prefix, e.g.:
+$(Clone0.URL). The "&lt;!--clone--&gt;" &search.htm; section and the $(CL)
+variable are not supported anymore.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+DetectClones is now "no" by default, for performance purposes.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"CollectLinks yes/no" &indexer.conf; command was added.
+The default value is "no" which improves indexing performance
+by not pupulating the "links" table. As a side effect
+PopRank calculation is not possible in the default configuration.
+If PopRank is important for your installation, specify
+"CollectLinks yes" in &indexer.conf;.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Default sort order was changed from "RP" (score, then popularity)
+to "R" (score). This change improves search performance for
+the installations where PopRank is not important.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Indexer now honors &lt;a rel="nofollow"&gt; tags.
+Thanks to Jeff Veit for contribution.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+A simplified format of HTDBDoc command was added:
+
+<programlisting>            
+HTDBDoc "SELECT title, body FROM docs WHERE id=$2"
+</programlisting>                              
+
+SQL column names are associated with "Section" names.
+Thanks to Oz Basarir and Natural
+Capital Institute for sponsoring this feature.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+It's now possible to specify wf as a parameter for
+DBAddr &search.htm; command, which is useful when
+merging two or more databases - to give more score
+to results coming from a desired database.
+<programlisting>            
+DBAddr mysql://root@localhost/db1/?wf=FFFF
+DBAddr mysql://root@localhost/db2/?wf=1111
+DBAddr mysql://root@localhost/db3/?wf=1111
+</programlisting>                              
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+MaxResults parameter was added for DBAddr, which is
+useful to add a limited number of sponsored links
+in the top of search results:
+<programlisting>
+DBAddr mysql://root@localhost/avd/?wf=FFFF&amp;MaxResults=1
+DBAddr mysql://root@localhost/db1/?wf=1111
+DBAddr mysql://root@localhost/db2/?wf=1111
+</programlisting>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+$(DBOrder) template variable was added to display
+the original order of a document in its database result,
+before multiple DBAddr search results were merged into
+the final result. It is equal to $(Order) when using
+only a single DBAddr command in &search.htm;.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+FOR template operator was added. Loop limits
+can be both constants:
+
+<programlisting>
+  &lt;!FOR NAME="a" FROM="10" TO="20"&gt;a=$(a)&lt;!ENDFOR&gt;
+</programlisting>
+
+  and variables that were previously set, for example by the SET operator:
+
+<programlisting>
+  &lt;!SET NAME="from" CONTENT="80"&gt;
+  &lt;!SET NAME="to" CONTENT="90"&gt;
+  &lt;!FOR NAME="a" FROM="$(from)" TO="$(to)"&gt;a=$(a)&lt;!ENDFOR&gt;
+</programlisting>
+
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"[no title]" is not added automatically anymore:
+an empty string is printed instead. One can use IF
+template operator to reproduce 3.2.x behaviour:
+<programlisting>
+&lt;!IF NAME="title" CONTENT=""&gt;[no title]&lt;!ELSE&gt;$&(title)&lt;!ENDIF&gt;
+</programlisting>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Various indexing and search performance improvements were made.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Fixed that indexer didn't work with MySQL-5.1.15-GPL.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+"indexer -?" now prints its help page to &stdout; instead of &stderr;.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+A "#version" record is now put into the table "bdict" when
+running "indexer -Eblob". mnoGoSearch version ID is put
+as its value. For example, mnoGoSearch 3.3.0 will put "30300" string.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+Preliminary implementation for DBMode=rawblob
+in &search.htm; was added. This mode is designed for
+direct search from the table "bdicti" without having
+to run "indexer -Eblob" and is intended for use with
+small search databases as a replacement for DBMode=single.
+In the future releases it will also be reused for real-time
+index updates - to avoid running "indexer -Eblob" when
+only a small number of documents were changed.
+          </para>
+        </listitem>
+	
+      </itemizedlist>
+    </sect2>
+    
+  </sect1>
+  
+</appendix>

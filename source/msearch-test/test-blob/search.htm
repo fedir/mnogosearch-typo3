@@ -1,0 +1,117 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=$(raw)blob&LiveUpdates=$(LiveUpdates)&$(ENV.UDM_TEST_DBADDR_PARAM)
+
+# Uncomment this line to enable search result cache
+#Cache yes
+
+#  Uncomment this line if you do not want to detect and show clones
+#DetectClones	no
+
+# Use proper local and browser charsets
+# Default charset is iso-8859-1 (latin1)
+# which is suitable for the most Western European languages
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+# Load stopwords file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#StopwordFile stopwords/en.sl
+#StopwordFile stopwords/ru.sl
+#
+
+#
+# Minimum and maximum word lengths
+#
+#MinWordLen 1
+#MaxWordLen 32
+
+# Number of pages in navigator bar
+#
+#PagesPerScreen 10
+
+# Load synonyms file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#Synonym synonym/english.syn
+#Synonym synonym/russian.syn
+#
+
+#
+# How to hilight searched words.
+#
+HlBeg	<b>
+HlEnd	</b>
+
+# Uncomment this line to enable error loging to stderr
+#Log2stderr yes
+#
+
+# Uncomment this line to change default URL basis for storedoc.cgi
+#StoredocURL     /cgi-bin/storedoc
+#
+
+# Uncoment this line to change default maximal excerpt size. Default value is 256.
+#ExcerptSize 1024
+#
+
+# Uncomment this line to change Last-Modified format output
+# Use strftime function meta variables
+DateFormat "%d %b %Y %X"
+
+UserScore score1 "SELECT rec_id, docsize/2 FROM url WHERE docsize<1000"
+UserScore score2 "SELECT rec_id, -docsize/2 FROM url WHERE docsize <1000"
+
+LogLevel 6
+
+CurrentTime 1130402580
+DateFactor $(DateFactor)
+LoadTagInfo yes
+-->
+
+<!--top-->
+<!--/top-->
+<!--restop-->
+Search for: $&(q)
+Search results: $(W)
+Results $(first)-$(last) of $(total)
+<!--/restop-->
+<!--res-->
+<!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
+$(Order). $&(Title)
+$(URL) [$(Score)]
+Tag=$(tag)
+$&(Body)...
+- $(Content-Length) bytes
+- $(Last-Modified)
+<!--/res-->
+<!--resbot-->
+<!--/resbot-->
+<!--clone-->
+<!--/clone-->
+<!--navleft-->
+<!--/navleft-->
+<!--navleft_nop-->
+<!--/navleft_nop-->
+<!--navbar1-->
+<!--/navbar1-->
+<!--navbar0-->
+<!--/navbar0-->
+<!--navright-->
+<!--/navright-->
+<!--navright_nop-->
+<!--/navright_nop-->
+<!--notfound-->
+Sorry, your search for $&(q) did not find any results.
+<!--/notfound-->
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+<!--error-->
+Error: $(E)
+<!--/error-->
+<!--bottom-->
+---------------------
+<!--/bottom-->

@@ -1,0 +1,6 @@
+User-Agent: *
+Sitemap: http://non-existent-domain/sitemap.xml
+Sitemap: http://site/sitemap1.xml
+Sitemap: http://site/sitemap2.xml
+Sitemap: http://site/sitemap-non-existent.xml
+Disallow: /test2.html?

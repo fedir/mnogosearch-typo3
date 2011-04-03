@@ -1,0 +1,16 @@
+<rss version="2.0" xmlns="http://site/rss/hhvac/scheme/">
+<channel>
+<title>RSS title</title>
+<link>http://headhunter.ru/</link>
+<description>RSS Description</description>
+
+<item>
+<title>title1</title>
+<link>http://site1/1.xml</link>
+<hhvac:companyName>Company1</hhvac:companyName>
+<hhvac:areaName>Moscow</hhvac:areaName>
+<data><![CDATA[cd1<b/>cd2]]></data>
+</item>
+
+</channel>
+</rss>

@@ -1,0 +1,557 @@
+<sect1 id="fuzzy">
+  <title>Fuzzy search</title>
+
+  <sect2 id="ispell">
+    <title>Ispell
+    <indexterm><primary>Ispell</primary></indexterm>
+    </title>
+    <para>&mnogo; can use
+    <application>Ispell</application> dictionaries for
+    <emphasis>stemming</emphasis> purposes, i.e. to find different grammatical forms of the
+    same words. Word forms are generated only at search time,
+    &indexer; stores all words in the database "as is".
+    &search.cgi; generates all forms of the search words
+    given in the query, and takes all of them in account.
+    For example, when
+    processing a search query having the word <literal>test</literal>,
+    &search.cgi; will also find other forms of
+    this word, such as <literal>testing</literal>,
+    <literal>tests</literal>, <literal>tested</literal>.
+    </para>
+
+    <sect3 id="typesispellfiles">
+    <title>Two types of Ispell files</title>
+    <para>&mnogo; understands
+    two types of <application>Ispell</application> files:
+    <emphasis>affixes</emphasis> and <emphasis>dictionaries</emphasis>.
+    An <application>Ispell</application> affix file contains
+    rules for word form generating, and has approximately
+    the following format:
+<programlisting>
+Flag V:
+       E   &gt; -E, IVE      # As in create&gt; creative
+      [&circ;E] &gt; IVE          # As in prevent &gt; preventive
+Flag *N:
+       E   &gt; -E, ION      # As in create &gt; creation
+       Y   &gt; -Y, ICATION  # As in multiply &gt; multiplication
+     [&circ;EY] &gt; EN           # As in fall &gt; fallen
+</programlisting>
+    </para>
+
+
+    <para>An <application>Ispell</application> dictionary file
+    contains a list of the words with rule references,
+    and has the following format:
+    <programlisting>
+wop/S
+word/DGJMS
+wordage/S
+wordbook
+wordily
+wordless/P
+    </programlisting>
+    </para>
+    <note>
+      <para>
+      &mnogo; cannot load 
+      <application>Ispell</application> hash files generated
+      with help of <application>buildhash</application>. Only the
+      original <application>Ispell</application> dicitionaries
+      in text format are understood.
+      </para>
+    </note>
+  </sect3>
+  
+  <sect3 id="using-ispell">
+    <title>Using Ispell</title>
+    <indexterm><primary>Command</primary><secondary>Affix</secondary></indexterm>
+    <indexterm><primary>Command</primary><secondary>Spell</secondary></indexterm>
+    <para>To start using &mnogo; with
+    stemming, you need to download and extract an <application>Ispell</application>
+    language package and specify
+    <command><xref linkend="cmdref-affix"/></command>
+    and <command><xref linkend="cmdref-spell"/></command>
+    commands in the &search.htm; file.
+    
+    The format of the commands is:
+<programlisting>
+Affix {lang} {charset} {Ispell affixes file name}
+Spell {lang} {charset} {Ispell dictionary filename}
+</programlisting>
+    </para>
+    
+    <para>The first parameter of both commands is a two-letter
+    language abbreviation. The second parameter is the
+    Ispell file character set. The third one is the filename.
+    File names are relative to the &mnogo;
+    <literal>/etc</literal> directory. Absolute paths can also be specified.
+    </para>
+
+    <note>
+      <para>Simultaneous loading of multiple languages is possible, e.g.:
+      <programlisting>
+Affix en iso-8859-1 en.aff
+Spell en iso-8859-1 en.dict
+Affix de iso-8859-1 de.aff
+Spell de iso-8859-1 de.dict
+</programlisting>
+      </para>
+      <para>...will load stemming information for both
+        English and German languages.
+      </para>
+    </note>
+  </sect3>
+
+  <sect3 id="addwords-dict">
+    <title>Customizing Ispell dictionaries</title>
+    <para>It is possible that some rare words found
+    on your site may not present in <application>Ispell</application>
+    dictionaries. You can create the list of these words in a plain
+    text file with the following format (one word per line):
+<programlisting>
+rare.dict:
+----------
+webmaster
+intranet
+---------
+</programlisting>
+    </para>
+    <para>Then, you can add Ispell flags into this file
+    using the existing words as examples. Find an existing word
+    with similar grammatical rules and copy its flag to the new word.
+    For example, English dictionary has this line:
+    </para>
+
+    <para>
+      <literal>postmaster/MS</literal>
+    </para>
+    <para>So, <literal>webmaster</literal> with the <literal>MS</literal>
+    flags should be OK:</para>
+    <para>
+      <literal>webmaster/MS</literal>
+    </para>
+    <para>Then copy this file to the <filename>/etc</filename>
+    directory of you &mnogo; 
+    installation and add it with help of the <command><xref
+    linkend="cmdref-spell"/></command>. 
+    </para>
+  </sect3>
+</sect2>
+
+
+<sect2 id="synonyms">
+  <title>Synonyms
+    <indexterm><primary>Synonyms</primary></indexterm>
+  </title>
+
+  <para>Starting from the version 3.2,
+  &mnogo; supports
+  synonyms-based fuzzy search.
+  </para>
+
+  <para>Synonym files are installed into the
+  <filename>etc/synonym</filename> subdirectory
+  of the &mnogo; installation.
+  </para>
+
+  <para><indexterm><primary>Command</primary><secondary>Synonym</secondary></indexterm>
+  To enable synonyms, use the <command><xref linkend="cmdref-synonym"/></command>
+  command in your search template file. For example:
+<programlisting>
+Synonym synonym/english.syn
+Synonym synonym/russian.syn
+</programlisting>
+  </para>
+
+  <para>The file names are relative to the <filename>/etc</filename>
+  directory of your &mnogo; installation,
+  or are absolute, if begin with <literal>/</literal>.
+  </para>
+
+  <para>Please feel free to send us your own synonym lists to
+  <email>general@mnogosearch.org</email>.
+  </para>
+  
+  <para>
+  When creating your own synonym file, you can the English synonym
+  file as an example. A synonym file must beginning with the following two commands:
+<programlisting>
+Language: en
+Charset:  us-ascii
+</programlisting>
+  </para>
+
+  <itemizedlist>
+    <listitem>
+      <para>
+        <varname>Language</varname> - standard
+          (ISO 639) two-letter language abbreviation.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        <varname>Charset</varname> - any
+         charset supported by &mnogo; (see <xref linkend="charset"/>).
+      </para>
+    </listitem>
+  </itemizedlist>
+
+  <para>
+  The further lines contain synonyms, one group of synonyms per line.
+  For example:
+<programlisting>
+car auto automobile
+</programlisting>
+  </para>
+
+  <para>
+  All words written on the same line are considered to be equal.
+  If you type one of the words in the search form,
+  all other words from the same line will also be found.
+  </para>
+
+  <para>
+  An optional <command>Mode</command> command can also be used
+  inside a synonym file. It understands three mode values:
+  <literal>roundtrip</literal>, <literal>oneway</literal>
+  and <literal>return</literal>, with the <literal>roundtrip</literal>
+  value as default, and also two <emphasis>recursion</emphasis>
+  flags: <literal>recursive</literal> and <literal>final</literal>,
+  with <literal>recursive</literal> as default.
+  </para>
+
+  <para>
+  If "<command>Mode: oneway</command>" is specified, then the words
+  written on the same line are not considered as equal synonyms anymore.
+  Only the leftmost word is expanded to other words. For example:
+<programlisting>
+Mode: oneway
+car auto automobile
+</programlisting>
+  Searching for the word <literal>car</literal> will also search
+  for <literal>auto</literal> and <literal>automobile</literal>,
+  but searching for <literal>auto</literal> will not find neither
+  <literal>car</literal> nor <literal>automobile</literal>,
+  and searching for <literal>automobile</literal> will not find
+  neither <literal>car</literal> not <literal>auto</literal>.
+</para>
+
+  <para>
+  If "<command>Mode: return</command>" is specified, then all words
+  are expanded only to the leftmost word, while the leftmost word
+  itself is not expanded.
+  For example:
+<programlisting>
+Mode: return
+car auto automobile
+</programlisting>
+  Searching for <literal>car</literal> won't search neither for
+  <literal>auto</literal> nor for <literal>automobile</literal>,
+  but searching for <literal>auto</literal> will also search
+  for <literal>car</literal>, and searching for
+  <literal>automobile</literal>  will also search for <literal>car</literal>.
+</para>
+
+  <para>
+  If "<command>Mode: recursive</command>" is specified, then any found
+  synonym is further passed to word form generator to get more word forms
+  (synonyms, ispell forms, etc).
+  If "<command>Mode: final</command>" is specified, then the found
+  synonyms are no longer passed to form generator.
+  For example:
+<programlisting>
+Mode: final
+09 2009
+09 september
+</programlisting>
+  If you search for <literal>2009</literal>, &search.cgi; will also find
+  <literal>09</literal> and vice versa. However, if you search for 
+  <literal>2009</literal>, it will not find <literal>september</literal>.
+  In other words, <literal>09</literal> is a synonym for both
+  <literal>2009</literal> and <literal>september</literal>, but
+  <literal>2009</literal> and <literal>september</literal> are not
+  synonyms to each other.
+  </para>
+
+  <para>
+  It's possible to use multiple <command>Mode</command> commands in the
+  same synonym file and thus switch between the
+  <literal>oneway</literal>, <literal>return</literal> and
+  <literal>roundtrip</literal> style of synonyms for different lines:
+<programlisting>
+Mode: roundtrip
+colour color
+Mode: oneway
+car auto automobile
+</programlisting>
+  </para>
+
+  <para>
+  Starting with the version <literal>3.2.34</literal>, &mnogo;
+  supports a simple type of phrase synonyms:
+<programlisting>
+president "george bush"
+</programlisting>
+  </para>
+
+  <para>
+  That means, if you type the word <literal>president</literal>,
+  the phrase "<literal>george bush</literal>" will also be searched. 
+  </para>
+
+  <para>
+  Starting from the version <literal>3.3.9</literal>,
+  you can additionally specify 
+  <command><literal><link linkend="cmdref-complexsynonyms">ComplexSynonyms yes</link></literal></command>
+  to activate using of complex synonym types <emphasis>phrase-to-word</emphasis>
+  and <emphasis>phrase-to-phrase</emphasis>, so if you
+  type the query "<literal>george bush</literal>",
+  then the word <literal>president</literal> will also be searched.
+  </para>
+</sect2>
+
+<sect2 id="dehyphenation">
+  <title>Dehyphenation
+  <indexterm><primary>Dehyphenation</primary></indexterm>
+  </title>
+  <para>
+  Searching for both hyphenated and dehyphenated compound words
+  at the same time is also possible. For example, when searching
+  for the compound word  "<literal>peace-making</literal>",
+  the word <literal>peacemaking</literal> will also be found.
+  Please refer to the <xref linkend="cmdref-dehyphenate"/>
+  command description for details.
+  </para>
+</sect2>
+
+
+<sect2 id="sqlwordforms">
+  <title>Loading synonyms and word forms from the &sql; database
+  <indexterm><primary>Loading synonyms and word forms from the &sql; database</primary></indexterm>
+  </title>
+  <para>
+  It is also possible to load synonyms or word forms from
+  the database. Refer to <xref linkend="cmdref-sqlwordforms"/>
+  command description for details.
+  </para>
+</sect2>
+
+
+<sect2 id="dumpspell">
+  <title>Dumping Ispell data
+  <indexterm><primary>Dumping Ispell data</primary></indexterm>
+  </title>
+  <para>
+  To dump Ispell data in a format suitable for loading
+  into an &sql; table for further use with 
+  <xref linkend="cmdref-sqlwordforms"/>, copy all Affix and Spell
+  commands from &search.htm; into
+  &indexer.conf; then run
+  <literal>indexer -Edumpspell &gt; dump.txt</literal>.
+  &indexer; will write all word forms to
+  the given file <filename>dump.txt</filename> in this format:
+</para>
+
+  <para>
+<programlisting>
+...
+abate/abate
+abate/abating
+abate/abated
+abate/abater
+abate/abates
+...
+</programlisting>
+  </para>
+
+  <para>
+  Use the database specific tools and &sql; syntax to load
+  the newly created dump file into a &sql; table. For
+  example, in case of <application>MySQL</application>:
+<programlisting>
+CREATE TABLE spell
+(
+  word varchar(64) not null,
+  form varchar(64) not null,
+  key(word),
+  key(form)
+);
+LOAD DATA INFILE 'dump.txt' INTO TABLE spell FIELDS TERMINATED BY '/';
+</programlisting>
+  </para>
+
+</sect2>
+
+
+<sect2 id="translit">
+  <title>Transliteration
+  <indexterm><primary>Transliteration</primary></indexterm>
+  </title>
+  <para>Starting from the version 3.2.34,
+    &mnogo; supports
+  <emphasis>transliteration</emphasis>.
+  </para>
+  <para>
+  Use the <literal>tl=yes</literal> parameter to
+  &search.cgi; to activate transliteration.
+  </para>
+
+  <para>
+  Currently, Latin-to-Cyrillic and Cyrillic-to-Latin transliteration
+  is implemented. I.e. if you type a word in the Latin script,
+  a Cyrillic word with the same spelling is also searched, and vice versa.
+  </para>
+</sect2>
+
+
+<sect2 id="numericoperators">
+  <title>Searching numbers
+  <indexterm><primary>Searching numbers</primary></indexterm>
+  </title>
+  
+  <para>
+  Starting from the version 3.2.36, &mnogo;
+  supports numeric operators.
+  </para>
+  
+  <para>
+  When <xref linkend="cmdref-usenumericoperators"/> is set to
+  <literal>yes</literal>,
+  the "<literal>&lt;</literal>" and "<literal>&gt;</literal>"
+  signs are treated as numeric comparison operators,
+  e.g. "<literal>&lt;100</literal>" finds all documents which have
+  numbers less than <literal>100</literal> in their body or title
+  or other sections according to the
+  <command><xref linkend="cmdref-wf"/></command>" settings.
+  Numeric operators can currently work only with the databases
+  which support automatic data type comparison between
+  VARCHAR and INT and do not require an explicit type cast.
+  <application>MySQL</application>,
+  <application>PostgreSQL</application> and
+  <application>SQLite</application> are know to work.
+  </para>
+  
+  <para>
+  If you specify two numeric operators in the same search query,
+  e.g. "<literal>&gt;100 &lt;200</literal>", then the documents
+  having numbers more than <literal>100</literal> and, at the same time,
+  having numbers less than <literal>200</literal> will be found.
+  I.e. the above query does not strictly mean
+  "a number between 100 and 200".  A "between"-alike operator
+  will be implemented later.
+  </para>
+</sect2>
+
+
+<sect2 id="accentinsensitive">
+  <title>Accent insensitive search
+  <indexterm><primary>Accent insensitive search</primary></indexterm>
+  </title>
+  
+  <para>
+  When doing searches, &mnogo; relies
+  on the database collation settings, thus accent insensitive searches
+  will be available if your database software
+  supports and is configured to use an accent insensitive collation.
+  </para>
+
+<sect3 id="accentmysql">
+  <title>Accent insensitive search with MySQL</title>
+  <para>
+  To configure &mnogo;
+  for accent insensitive searches for German, French, Italian,
+  Portuguese and some other Western languages, use
+  the <literal>latin1_german1_ci</literal> collation when
+  creating the database you're going to use with
+  &mnogo;:
+<programlisting>
+CREATE DATABASE mnogosearch CHARACTER SET latin1 COLLATE latin1_german1_ci;
+</programlisting>
+  With this collation, <application>MySQL</application> totally ignores
+  all diacritic marks, so for example, searches for the French
+  word <literal>cote</literal> will also find <literal>cot&eacute;</literal>
+  and vice versa.
+</para>
+</sect3>
+
+
+<sect3 id="accentfirebird">
+  <title>Accent insensitive search with Firebird</title>
+  <para>
+  To configure &mnogo;
+  for accent insensitive searches for German, French, Italian,
+  Portuguese etc.
+  with <application>Firebird</application>, use the
+  <literal>PT_BR</literal> collation.
+  <application>Firebird</application> doesn't have the global
+  database default collation, so it must
+  be set in the <literal>CREATE TABLE</literal> statement for
+  the table <literal>bdict</literal>. In order to do so, open the file
+  <filename>/usr/local/mnogosearch/share/ibase/create.blob.sql</filename>
+  in your favorite text editor and add the <literal>CHARACTER SET</literal>
+  and the <literal>COLLATE</literal> clauses into the definition of the
+  column <literal>word</literal>:
+<programlisting>
+CREATE TABLE bdict (
+        word VARCHAR(64) CHARACTER SET ISO8859_1 NOT NULL COLLATE PT_BR,
+        ...
+);
+</programlisting>
+  </para>
+</sect3>
+
+
+<sect3 id="accenthilight">
+  <title>Highlighting collation matches</title>
+  <para>
+  Starting with the version 3.3.3, &mnogo;
+  can recognize the word forms returned by the underlying &sql; collation,
+  and use them for generating excerpts and highlighting. For example,
+  if your database is configured to use German <literal>DIN-2</literal>
+  based collation (e.g. <literal>latin1_german2_ci</literal> in
+  <application>MySQL</application>), then searches
+  for the word <literal>gross</literal> will also return
+  <literal>gro&#xdf;</literal>. Both word forms will
+  be highlighted. Prior to 3.3.3, only the exact word forms were
+  used for excerpts and highlighting.
+  <note>
+    <para>
+    Highlighting collation matches works only with
+    <literal>DBMode=blob</literal>.
+    Adding this feature for <literal>DBMode=single</literal>
+    and <literal>DBMode=multi</literal> would
+    have serious search performance impact.
+    </para>
+  </note>
+  </para>
+</sect3>
+
+
+<sect3 id="accentstrip">
+  <title>Accent insensitive search with other databases</title>
+  <para>
+  To make accent insensitive searches possible with databases not supporting
+  accent insensitive collations,
+  &mnogo; provides the
+  <command><xref linkend="cmdref-stripaccents"/></command>
+  command.  When <xref linkend="cmdref-stripaccents"/> is set
+  to <literal>yes</literal>,  &mnogo;
+  converts all accented letters to their non-accented counterparts.
+  Conversion happens both during indexing (before storing data into
+  the word index), and during search (before looking up in the word index).
+  For example, the French word <literal>cot&eacute;</literal> is
+  converted into <literal>cote</literal>.
+  </para>
+  <para>
+  Removing accents is only done for the word index. Accents are not
+  removed from section values, so sections
+  (e.g. <literal>title</literal>, <literal>body</literal>,
+  <literal>CachedCopy</literal> are stored with their original
+  accented letters, providing correct search results presentation.
+  </para>
+</sect3>
+
+
+</sect2>
+
+</sect1>

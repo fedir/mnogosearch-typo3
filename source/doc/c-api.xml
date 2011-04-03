@@ -1,0 +1,824 @@
+<refentry id="c-api-UdmEnvInit">
+ <refnamediv>
+  <refname>UdmEnvInit</refname>
+  <refpurpose>Allocates or initializes a search context variable</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+    <type>UDM_ENV*</type><methodname>UdmEnvInit</methodname>
+    <methodparam><type>UDM_ENV*</type><parameter>Env</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+  Allocates or initializes an <type>UDM_ENV</type> variable (search context).
+  Search context is later associated with a set of configuration commands.
+  </para>
+  <para>
+  If <parameter>Env</parameter> is a <literal>NULL</literal> pointer,
+  the function allocates, initializes, and returns a new variable.
+  Otherwise, the variable is initialized and
+  the address of the variable is returned. If <function>UdmEnvInit()</function>
+  allocates a new variable, it is freed when <function>UdmEnvFree()</function>
+  is called to close search context.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>Env</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_ENV</type>,
+       or <literal>NULL</literal>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Pointer to the initialized <type>UDM_ENV</type> variable on success,
+   or <literal>NULL</literal> if there was insufficient memory to allocate
+   a new variable.
+  </para>
+ </refsect1>
+
+<!-- 
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   None
+  </para>
+ </refsect1>
+-->
+
+<!--
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>Write the PHP version here (Ex. PHP 5.2.0)</entry>
+       <entry>
+        Describe the change
+       </entry>
+      </row>
+      <row>
+       <entry>...</entry>
+       <entry>
+        ...
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+-->
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>UdmEnvInit</function> example #1</title>
+    <programlisting>
+<![CDATA[
+UDM_ENV *Env;
+
+if (!(Env= UdmEnvInit(NULL)))
+{
+  printf('Fatal error: could not allocate Env');
+  exit(1);
+}
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>UdmEnvInit</function> example #2</title>
+    <programlisting>
+<![CDATA[
+UDM_ENV Env;
+
+if (!UdmEnvInit(&Env))
+{
+  printf('Fatal error: could not initialize Env');
+  exit(1);
+}
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <para>
+   Even if <parameter>Env</parameter> points to an existing
+   variable of <type>UDM_ENV</type> type, <function>UdmFree()</function>
+   should still be called in the end of your program.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function><xref linkend="c-api-UdmEnvFree"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentFree"/></function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+
+<refentry id="c-api-UdmEnvFree">
+ <refnamediv>
+  <refname>UdmEnvFree</refname>
+  <refpurpose>Closes a search context</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>void</type><methodname>UdmEnvFree</methodname>
+   <methodparam><type>UDM_ENV*</type><parameter>Env</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+  Closes a previously initialized search context, and deallocated
+  the variable if it was allocated by <function>UdmEnvInit()</function>.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>Env</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_ENV</type>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   None.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>UdmEnvFree</function> example #1</title>
+    <programlisting>
+<![CDATA[
+UDM_ENV *Env;
+
+if (!(Env= UdmEnvInit(NULL)))
+{
+  printf('Fatal error: could not allocate Env');
+  exit(1);
+}
+...
+UdmEnvFree(Env);
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>UdmEnvFree</function> example #2</title>
+    <programlisting>
+<![CDATA[
+UDM_ENV Env;
+
+if (!UdmEnvInit(&Env))
+{
+  printf('Fatal error: could not initialize Env');
+  exit(1);
+}
+...
+UdmEnvFree(&Env);
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+<!--
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <para>
+  </para>
+ </refsect1>
+-->
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function><xref linkend="c-api-UdmEnvInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentFree"/></function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+
+<refentry id="c-api-UdmAgentInit">
+ <refnamediv>
+  <refname>UdmAgentInit</refname>
+  <refpurpose>Allocates or initializes a search session variable</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>UDM_AGENT*</type><methodname>UdmAgentInit</methodname>
+   <methodparam><type>UDM_AGENT*</type><parameter>Agent</parameter></methodparam>
+   <methodparam><type>UDM_ENV*</type><parameter>Env</parameter></methodparam>
+   <methodparam><type>int</type><parameter>id</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+  Allocates or initializes an <type>UDM_AGENT</type> variable (search session).
+  </para>
+  <para>
+   If <parameter>Agent</parameter> is a <literal>NULL</literal> pointer,
+   the function allocates, initializes, and returns a new variable.
+   Otherwise, the variable is initialized and the address of the
+   variable is returned. If <function>UdmAgentInit()</function>
+   allocates a new variable, it is freed when
+   <function>UdmAgentFree()</function> is called to close search
+   session.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>Agent</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_AGENT</type>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>Env</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_ENV</type>,
+       should be the address of an existing <type>UDM_ENV</type> structure.
+       Before calling <function>UdmAgentInit()</function>
+       you must previously call <function>UdmEnvInit()</function>
+       to initialize the <type>UDM_ENV</type> structure.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>id</parameter></term>
+     <listitem>
+      <para>
+       Thread id - an unique positive integer for a multi-thread application,
+       or <literal>0</literal> in a non-thread application.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   Pointer to initialized <type>UDM_AGENT</type> variable on success,
+   or <literal>NULL</literal> if there was
+   insufficient memory to allocate a new variable.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>UdmAgentInit</function> example #1</title>
+    <programlisting>
+<![CDATA[
+UDM_AGENT *Agent;
+
+if (!(Agent= UdmAgentInit(NULL, Env, 0)))
+{
+  printf('Fatal error: could not allocate Agent');
+  exit(1);
+}
+...
+UdmAgentFree(Agent);
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>UdmAgentInit</function> example #2</title>
+    <programlisting>
+<![CDATA[
+UDM_AGENT Agent;
+
+if (!UdmEnvInit(&Agent))
+{
+  printf('Fatal error: could not initialize Agent');
+  exit(1);
+}
+...
+UdmAgentFree(&Agent);
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <para>
+  In a multi-threaded application, multiple search session variables
+  can share the same search context variable.
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function><xref linkend="c-api-UdmEnvInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmEnvFree"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentFree"/></function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+
+<refentry id="c-api-UdmAgentFree">
+ <refnamediv>
+  <refname>UdmAgentFree</refname>
+  <refpurpose>Closes a search session</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>void</type><methodname>UdmAgentFree</methodname>
+   <methodparam><type>UDM_AGENT*</type><parameter>Agent</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+  Closes a previously initialized search session, and deallocated
+  the variable if it was allocated by <function>UdmAgentInit()</function>.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>Agent</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_ENV</type>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   None.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>UdmAgentFree</function> example #1</title>
+    <programlisting>
+<![CDATA[
+UDM_ENV *Agent;
+
+if (!(Agent= UdmAgentInit(NULL)))
+{
+  printf('Fatal error: could not allocate Agent');
+  exit(1);
+}
+...
+UdmAgentFree(Agent);
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>UdmAgentFree</function> example #2</title>
+    <programlisting>
+<![CDATA[
+UDM_ENV Agent;
+
+if (!UdmAgentInit(&Agent))
+{
+  printf('Fatal error: could not initialize Agent');
+  exit(1);
+}
+...
+UdmAgentFree(&Agent);
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function><xref linkend="c-api-UdmEnvInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmEnvFree"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentInit"/></function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+
+<refentry id="c-api-UdmAgentAddLine">
+ <refnamediv>
+  <refname>UdmAgentAddLine</refname>
+  <refpurpose>Adds a configuration command</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int </type><methodname>UdmAgentAddLine</methodname>
+   <methodparam><type>UDM_AGENT*</type><parameter>Agent</parameter></methodparam>
+   <methodparam><type>const char*</type><parameter>line</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Adds a configuration command into the search context of the search
+  session, pointed by the <parameter>Agent</parameter> variable.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>Agent</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_AGENT</type>,
+       should be the address of an existing variable
+       of <type>UDM_AGENT</type> type, previously initialized
+       using a <function>UdmAgentInit()</function> call.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>line</parameter></term>
+     <listitem>
+      <para>
+       A configuration line, using the same syntax with 
+       mnoGoSearch &search.htm; commands.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   <literal>UDM_OK</literal> on success,
+   <literal>UDM_ERROR</literal> on error.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <para>
+  <function>UdmAgentAddLine()</function> can fail if there
+  was insufficient memory to complete the operation,
+  or there was a syntax error in the line.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>UdmAgentAddLine</function> example</title>
+    <programlisting>
+<![CDATA[
+if (UDM_OK != UdmAgentAddLine(Agent, "DBAddr mysql://root@localhost/test/"))
+{
+  printf('Error: UdmAgentAddLine failed');
+  exit(1);
+}
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function><xref linkend="c-api-UdmEnvInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmEnvFree"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentFree"/></function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+
+<refentry id="c-api-UdmFind2">
+ <refnamediv>
+  <refname>UdmFind2</refname>
+  <refpurpose>Executes a search query</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>UDM_RESULT*</type><methodname>UdmFind2</methodname>
+   <methodparam><type>UDM_AGENT*</type><parameter>Agent</parameter></methodparam>
+   <methodparam><type>const char*</type><parameter>query</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   Executes a search query in the search session,
+   pointed by the <parameter>Agent</parameter> variable,
+   and returns search results.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>Agent</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_AGENT</type>,
+       should be the address of an existing variable
+       of <type>UDM_AGENT</type> type.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>query</parameter></term>
+     <listitem>
+      <para>
+       Search query, using the same format with
+       &search.cgi;
+       <varname>QUERY_STRING</varname>
+       described in <xref linkend="search-params"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   A pointer to an allocated variable of <type>UDM_RESULT</type> type,
+   or <literal>NULL</literal> on error.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <para>
+  <function>UdmFind2()</function> can fail if the search session
+  could not open a connection to the database specified by
+  the <command><xref linkend="cmdref-dbaddr"/></command> command,
+  or if some of the SQL queries which were sent to the database
+  returnd on error.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>UdmFind2</function> example</title>
+    <programlisting>
+<![CDATA[
+UDM_RESULT *Res;
+
+if (!(Res= UdmFind2(Agent, "q=search+words&ps=10"))
+{
+  printf('Error: UdmFind2 failed');
+  exit(1);
+}
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>UdmFind2</function> - a complete search application example</title>
+    <programlisting>
+<![CDATA[
+#include <stdio.h>
+#include <udmsearch.h>
+
+
+int main(int ac, char **av)
+{
+  UDM_ENV Env;
+  UDM_AGENT Agent;
+  UDM_RESULT *Res;
+  size_t row;
+  char query[256];
+  
+  if (ac < 2)
+  {
+    printf("Usage: %s query\n", av[0]);
+    exit(1);
+  }
+  
+  if (!UdmEnvInit(&Env) ||
+      !UdmAgentInit(&Agent, &Env, 0))
+    goto err;
+  
+  if (UDM_OK != UdmAgentAddLine(&Agent, "DBAddr mysql://root@localhost/msdn33/"))
+    goto err;
+  
+  udm_snprintf(query, sizeof(query), "q=%s", av[1]);
+  if (!(Res= UdmFind2(&Agent, query)))
+    goto err;
+  
+  printf("Documents %d-%d from %d total found\n", Res->first, Res->last, Res->total_found);
+  for (row= 0; row < Res->num_rows; row++)
+  {
+    UDM_DOCUMENT *Doc= &Res->Doc[row];
+    printf("ResultNo: %d\n", UdmVarListFindInt(&Doc->Sections, "Order", 0));
+    printf("ID      : %d\n", UdmVarListFindInt(&Doc->Sections, "ID", 0));
+    printf("Size    : %d bytes\n", UdmVarListFindInt(&Doc->Sections, "Content-Length", 0));
+    printf("Type    : '%s'\n", UdmVarListFindStr(&Doc->Sections, "Content-Type", ""));
+    printf("Title   : '%s'\n", UdmVarListFindStr(&Doc->Sections, "title", ""));
+    printf("Body    : '%s'\n", UdmVarListFindStr(&Doc->Sections, "body", ""));
+    printf("\n");
+  }
+  UdmResultFree(Res);
+  
+  UdmAgentFree(&Agent);
+  UdmEnvFree(&Env);
+  
+  return 0;
+  
+err:
+  fprintf(stderr, "Error: '%s'\n", UdmEnvErrMsg(&Env));
+  return 1;
+}
+
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>Makefile</function> example</title>
+    <programlisting>
+<![CDATA[
+CFLAGS=-I/usr/local/mnogosearch/include -Wall
+LDFLAGS=-L/usr/local/mnogosearch/lib -lmnogosearch -Wl,--rpath -Wl,/usr/local/mnogosearch/lib
+
+CC=gcc
+all: search
+
+search.o: search.c
+        $(CC) $(CFLAGS) -c search.c -o search.o
+        
+search: search.o
+        $(CC) $(LDFLAGS) search.o -o search
+                
+clean:
+        rm -rf search search.o
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function><xref linkend="c-api-UdmEnvInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmEnvFree"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentFree"/></function></member>
+    <member><xref linkend="search-params"/></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+
+<refentry id="c-api-UdmResultFree">
+ <refnamediv>
+  <refname>UdmResultFree</refname>
+  <refpurpose>Frees a search result</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>void</type><methodname>UdmResultFree</methodname>
+   <methodparam><type>UDM_RESULT*</type><parameter>Result</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+  Frees a search result, previously returned by
+  <function>UdmFind2()</function>.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>Result</parameter></term>
+     <listitem>
+      <para>
+       Pointer to a variable of type <type>UDM_RESULT</type>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   None.
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>UdmResultFree</function> example #1</title>
+    <programlisting>
+<![CDATA[
+
+if (!(Result= UdmFind2(&Agent, "q=search+words")))
+{
+  printf('Error: UdmFind2 failed');
+  exit(1);
+}
+...
+UdmResultFree(Result);
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function><xref linkend="c-api-UdmEnvInit"/></function></member>
+    <member><function><xref linkend="c-api-UdmEnvFree"/></function></member>
+    <member><function><xref linkend="c-api-UdmAgentInit"/></function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>

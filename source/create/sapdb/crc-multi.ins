@@ -1,0 +1,291 @@
+SAY --- Installing UdmSearch Database Objects for CRC-multi mode
+/
+AUTOCOMMIT OFF
+/
+IF $RC (EXISTS TABLE ndict2) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict2 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict2_url_ind ON ndict2
+(
+       url_id
+)
+/
+CREATE INDEX ndict2_word_ind ON ndict2
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict3) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict3 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict3_url_ind ON ndict3
+(
+       url_id
+)
+/
+CREATE INDEX ndict3_word_ind ON ndict3
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict4) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict4 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict4_url_ind ON ndict4
+(
+       url_id
+)
+/
+CREATE INDEX ndict4_word_ind ON ndict4
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict5) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict5 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict5_url_ind ON ndict5
+(
+       url_id
+)
+/
+CREATE INDEX ndict5_word_ind ON ndict5
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict6) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict6 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict6_url_ind ON ndict6
+(
+       url_id
+)
+/
+CREATE INDEX ndict6_word_ind ON ndict6
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict7) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict7 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict7_url_ind ON ndict7
+(
+       url_id
+)
+/
+CREATE INDEX ndict7_word_ind ON ndict7
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict8) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict8 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict8_url_ind ON ndict8
+(
+       url_id
+)
+/
+CREATE INDEX ndict8_word_ind ON ndict8
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict9) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict9 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict9_url_ind ON ndict9
+(
+       url_id
+)
+/
+CREATE INDEX ndict9_word_ind ON ndict9
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict10) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict10 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict10_url_ind ON ndict10
+(
+       url_id
+)
+/
+CREATE INDEX ndict10_word_ind ON ndict10
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict11) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict11 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict11_url_ind ON ndict11
+(
+       url_id
+)
+/
+CREATE INDEX ndict11_word_ind ON ndict11
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict12) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict12 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict12_url_ind ON ndict12
+(
+       url_id
+)
+/
+CREATE INDEX ndict12_word_ind ON ndict12
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict16) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict16 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict16_url_ind ON ndict16
+(
+       url_id
+)
+/
+CREATE INDEX ndict16_word_ind ON ndict16
+(
+       word_id
+)
+/
+END
+/
+IF $RC (EXISTS TABLE ndict32) <> 0
+THEN
+    BEGIN
+/
+CREATE TABLE ndict32 (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict32_url_ind ON ndict32
+(
+       url_id
+)
+/
+CREATE INDEX ndict32_word_ind ON ndict32
+(
+       word_id
+)
+/
+END
+/
+COMMIT

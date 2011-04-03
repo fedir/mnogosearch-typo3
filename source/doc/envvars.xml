@@ -1,0 +1,87 @@
+<sect1 id="envvars">
+<title>Environment variables</title>
+
+  <para>&mnogo; understands
+a number of environment variables. 
+  </para>
+
+  <para>
+    <table>
+      <title>Environment variables
+        &mnogo; understands
+      </title>
+      <tgroup cols="3">
+        <tbody>
+          <row>
+            <entry>Variable</entry>
+            <entry>Application</entry>
+            <entry>Purpose</entry>
+          </row>
+
+          <row>
+            <entry>
+              <varname>UDM_CONF_DIR</varname>,
+              <varname>UDM_ETC_DIR</varname>
+            </entry>
+            <entry>
+              &indexer;,
+              &search.cgi;
+            </entry>
+            <entry>
+            Changes the location of the <filename>/etc</filename> directory.
+            These two variables are synonyms.
+            If both variables are set,
+            then <varname>UDM_ETC_DIR</varname> is ignored.
+            </entry>
+          </row>
+
+          <row>
+            <entry>
+              <varname>UDM_TMP_DIR</varname>,
+              <varname>TMPDIR</varname>
+            </entry>
+            <entry>
+              &indexer;,
+            </entry>
+            <entry>
+            Changes the directory of the temporary files
+            (e.g. created for external parsers) 
+            instead of the default location at <filename>/tmp</filename>.
+            If both variables are set,
+            then <varname>TMPDIR</varname> is ignored.
+            </entry>
+          </row>
+
+          <row>
+            <entry>
+              <varname>UDM_SHARE_DIR</varname>
+            </entry>
+            <entry>
+              &indexer;,
+              &search.cgi;
+            </entry>
+            <entry>
+            Changes the location of the <filename>/share</filename> directory.
+            </entry>
+          </row>
+
+          <row>
+            <entry>
+              <varname>UDMSEARCH_TEMPLATE</varname>
+            </entry>
+            <entry>
+              &search.cgi;
+            </entry>
+            <entry>
+            Specifies the template file to use, instead of the
+            default file at <filename>etc/search.htm</filename>.
+            See also <xref linkend="search-templates"/>.
+            </entry>
+          </row>
+
+        </tbody>
+      </tgroup>
+    </table>
+  </para>
+
+</sect1>

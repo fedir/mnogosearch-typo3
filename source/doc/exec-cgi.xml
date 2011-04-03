@@ -1,0 +1,128 @@
+<sect2 id="exec">
+  <title>Indexing a program output
+  (<literal>exec:/</literal> and <literal>cgi:/</literal> virtual URL schemes)
+  <indexterm><primary>Indexing binaries output</primary></indexterm>
+  </title>
+  <para>&mnogo; offers special
+  virtual URL methods
+  <literal>exec:/</literal> and <literal>cgi:/</literal>.
+  These methods allow to use output of an external program
+  as a source for indexing. &mnogo;
+  can work with any executable program that returns results
+  to &stdout;. The result must be conform to the
+  &http; standard and return full &http; response headers
+  (including &http; status line and at least the <literal>Content-Type</literal>
+   &http; response header) followed by the document content.
+  </para>
+
+  <para>For example, when indexing both
+  <literal>cgi:/usr/local/bin/myprog</literal> and
+  <literal>exec:/usr/local/bin/myprog</literal>, 
+  &indexer; will execute
+  the <filename>/usr/local/bin/myprog</filename> program.
+  </para>
+
+  <sect3 id="exec-cgi">
+    <title>Passing parameters to the <literal>cgi:/</literal> virtual scheme</title>
+    <para>When executing a program given in a <literal>cgi:/</literal> URL,
+    &indexer; emulates environment in the way
+    this program would run in when executed under a &http; server. It
+    creates the <varname>REQUEST_METHOD=GET</varname> environment variable,
+    and the <varname>QUERY_STRING</varname> variable according to the HTTP
+    standards. For example, if
+    <literal>cgi:/usr/local/apache/cgi-bin/test-cgi?a=b&amp;d=e</literal>
+    is being indexed, &indexer; creates
+    <literal>QUERY_STRING</literal> with
+    <literal>a=b&amp;d=e</literal> value. <literal>cgi:/</literal> virtual
+    URL scheme allows indexing your site without having to invoke web
+    servers even if you want to index CGI scripts. For example, you have
+    a web site with static documents under
+    <filename>/usr/local/apache/htdocs/</filename> and with CGI scripts
+    under
+    <filename>/usr/local/apache/cgi-bin/</filename>. You can use the following
+    configuration:
+<programlisting>
+Server http://localhost/
+Alias  http://localhost/cgi-bin/  cgi:/usr/local/apache/cgi-bin/
+Alias  http://localhost/    file:///usr/local/apache/htdocs/
+</programlisting>
+    </para>
+  </sect3>
+
+
+  <sect3 id="exec-exec">
+    <title>
+      Passing parameters to the <literal>exec:/</literal> virtual scheme
+    </title>
+    <para>
+    In case of an <literal>exec:/</literal> URL, &indexer;
+    does not create the <literal>QUERY_STRING</literal> variable, instead
+    it passes all parameters in the command line. For example, when indexing
+<literal>exec:/usr/local/bin/myprog?a=b&amp;d=e</literal>, this
+command will be executed:
+<programlisting>
+/usr/local/bin/myprog "a=b&amp;d=e" 
+</programlisting>
+    </para>
+  </sect3>
+
+
+  <sect3 id="exec-ext">
+    <title>
+      Using the <literal>exec:/</literal> virtual scheme as an external retrieval system
+    </title>
+    <para>The <literal>exec:/</literal> virtual scheme can be used as an
+    external retrieval system. It allows using protocols which are not
+    supported natively by &mnogo;.
+    For example, you can use <application>curl</application> program which is available
+    from <ulink url="http://curl.haxx.se/">http://curl.haxx.se/</ulink>
+    to index HTTPS sites when &mnogo;
+    is compiled without built-in HTTPS support.
+    </para>
+
+    <para>Put this short script to
+    <literal>/usr/local/mnogosearch/bin/</literal> under
+    name <filename>curl.sh</filename>.
+<programlisting>
+#!/bin/sh
+/usr/local/bin/curl -i $1 2>/dev/null
+</programlisting>
+</para>
+    <para>This script takes an URL given as a command line parameter
+    and executes <application>curl</application> to download the given URL.
+    The <literal>-i</literal> argument tells <application>curl</application>
+    to output result together with &http; response headers.
+    </para>
+    
+    <para>Add these commands into  &indexer.conf;:
+    <programlisting>
+Server https://some.https.site/
+Alias  https://  exec:/usr/local/mnogosearch/etc/curl.sh?https://
+</programlisting>
+    </para>
+
+    <para>When indexing
+    <filename>https://some.https.site/path/to/page.html</filename>,
+    &indexer; will translate this URL to 
+<programlisting>
+exec:/usr/local/mnogosearch/etc/curl.sh?https://some.https.site/path/to/page.html
+</programlisting>
+    </para>
+    <para>then execute the <filename>curl.sh</filename> script:
+<programlisting>
+/usr/local/mnogosearch/etc/curl.sh "https://some.https.site/path/to/page.html"
+</programlisting>
+    </para>
+    <para>and load its output for indexing.
+    <note>
+    <para>
+    &indexer; loads up to
+    <command><xref linkend="cmdref-maxdocsize"/></command> bytes
+    when executing an <literal>exec:/</literal> or
+    <literal>cgi:/</literal>.
+    </para>
+    </note>
+    </para>
+  </sect3>
+</sect2>
+

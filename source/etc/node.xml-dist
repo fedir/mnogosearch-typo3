@@ -1,0 +1,180 @@
+<!--
+
+    This is default template file for mnoGoSearch 3.3
+    (C) 1999-2006, mnoGoSearch developers team <devel@mnogosearch.org>
+
+    Please rename to search.htm and edit as desired.
+    See doc/msearch-templates.html for detailed information.
+    You may want to keep the original file for future reference.
+
+    WARNING: Use proper chmod to protect your passwords!
+-->
+<!--variables
+# Database parameters are to be used with SQL backend
+# and do not matter for built-in text files support
+# Format: <DBType>:[//[DBUser[:DBPass]@]DBHost[:DBPort]]/DBName/[?dbmode=mode]
+
+DBAddr	mysql://root@localhost/test/?dbmode=blob
+
+# Uncomment this line if you do not want to detect and show clones
+DetectClones	no
+
+# Use proper local and browser charsets
+# Default charset is iso-8859-1 (latin1)
+# which is suitable for the most Western European languages
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+# Load stopwords file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#StopwordFile stopwords/en.sl
+#StopwordFile stopwords/ru.sl
+#
+
+#
+# Minimum and maximum word lengths
+#
+#MinWordLength 1
+#MaxWordLength 32
+
+# Number of pages in navigator bar
+#
+#PagesPerScreen 10
+
+# Load synonyms file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#Synonym synonym/english.syn
+#Synonym synonym/russian.syn
+#
+
+#
+# How to hilight searched words.
+# Don't change, they must be '<b>' and '</b>' in cluster node templates,
+# Otherwise highlighting won't work correctly on front-end machine.
+#
+HlBeg	'<b>'
+HlEnd	'</b>'
+
+# Uncomment this line to enable error logging to stderr
+#Log2stderr yes
+#LogLevel 6
+#
+
+# Uncomment this line to change default maximal excerpt size. Default value is 256.
+#ExcerptSize 1024
+#
+
+# Uncomment this line to change number of characters before and after search words
+# in excerpts. Default value is 40.
+#ExcerptPadding 64
+#
+
+# Uncomment this line to change Last-Modified format output
+# Use strftime function meta variables
+#DateFormat '%d %b %Y %X %Z'
+
+DateFormat '%Y-%m-%dT%XZ'
+
+# Uncomment this line if you want to generate misspelled
+# search word suggestions. You need to run "indexer -Ewrdstat"
+# before using this feature.
+#
+#Suggest yes
+
+# Change Content-Type header
+#
+ResultContentType text/xml
+
+-->
+
+<!--top-->
+<rss>
+  <channel>
+     <mnoGoSearch:WordStatList>
+       <!FOR NAME="i" FROM="1" TO="$(nwords)"
+       ><!SET NAME="i0" CONTENT="$(i)"
+       ><!DEC NAME="i0"
+       ><!COPY NAME="it.word" CONTENT="word$(i0).word"
+       ><!COPY NAME="it.order" CONTENT="word$(i0).order"
+       ><!COPY NAME="it.count" CONTENT="word$(i0).count"
+       ><!COPY NAME="it.origin" CONTENT="word$(i0).origin"
+       ><mnoGoSearch:WordStatItem order="$(it.order)" origin="$(it.origin)" count="$(it.count)" word="$&(it.word)" />
+       <!ENDFOR>
+     </mnoGoSearch:WordStatList>
+     
+<!--/top-->
+<!--restop-->
+
+    <openSearch:totalResults>$(total)</openSearch:totalResults>
+    <openSearch:startIndex>$(first)</openSearch:startIndex>
+
+<!--/restop-->
+<!--res-->
+
+    <item>
+      <id>$(ID)</id>
+      <score>$(Score)</score>
+      <title>$&(title)</title>
+      <description>$&(body)</description>
+      <link>$&(URL)</link>
+      <updated>$&(Last-Modified)</updated>
+      <content-length>$&(Content-Length)</content-length>
+      <content-type>$&(Content-Type)</content-type>
+      <cached>$(stored_href)</cached>
+      <persite>$(PerSite)</persite>
+      <siteid>$(site_id)</siteid>
+    </item>
+
+<!--/res-->
+<!--resbot-->
+<!--/resbot-->
+<!--clone-->
+<!--/clone-->
+<!--navleft-->
+<!--/navleft-->
+<!--navleft_nop-->
+<!--/navleft_nop-->
+<!--navbar1-->
+<!--/navbar1-->
+<!--navbar0-->
+<!--/navbar0-->
+<!--navright-->
+<!--/navright-->
+<!--navright_nop-->
+<!--/navright_nop-->
+<!--notfound-->
+<!--/notfound-->
+<!--noquery-->
+<!--/noquery-->
+<!--error-->
+<!--/error-->
+<!--bottom-->
+  </channel>
+</rss>
+<!--/bottom-->
+
+<!--storedoc_top-->
+<rss>
+  <channel>
+<!--/storedoc_top-->
+<!--storedoc-->
+    <item>
+      <id>$(ID)</id>
+      <title>$&(title)</title>
+      <description>$&(body)</description>
+      <link>$&(URL)</link>
+      <updated>$&(Last-Modified)</updated>
+      <content-length>$&(Content-Length)</content-length>
+      <content-type>$&(Content-Type)</content-type>
+      <cached-content>
+        $(CachedCopyBase64)
+      </cached-content>
+    </item>
+<!--/storedoc-->
+<!--storedoc_bottom-->
+  </channel>
+</rss>
+<!--/storedoc_bottom-->

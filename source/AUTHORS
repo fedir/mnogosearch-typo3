@@ -1,0 +1,173 @@
+Present core developers
+=======================
+
+	* Alexander Barkov <bar[at]mnogosearch[dot]org>
+	* Mark Napartovich <nmark[at]mnogosearch[dot]org>
+	* Sergey Kartashoff <gluke[at]mnogosearch[dot]org>
+	* Sergei Vojtovich <svoj[at]mnogosearch[dot]org>
+	* Roman Pletenev <prv[at]mnogosearch[dot]org>
+
+
+Core developers which have been in the team in the past
+=======================================================
+	* Kir Kolyshkin <kir[at]asplinux[dot]ru>
+	* Vladas Lapinskas <lapinskas[at]mail[dot]iae[dot]lt>
+	* Ramil Kalimullin <ram[at]udm[dot]net>
+	* Alexey Botchkov <bycha[at]udm[dot]net>
+	* Strange Alex <strange[at]unicon[dot]ru>
+	* Anton Zemlyanov <az[at]hotmail[dot]ru> 
+	* Igor Suhih <igor[at]sever[dot]net>
+	* Maxim Zakharov <maxime[at]sochi[dot]com>
+	* Dmitry Tkachenko <dim[at]lavtech[dot]ru>
+
+
+Contributors (in no particular order)
+============
+
+	* Michael Widenius <monty[at]analytikerna[dot]se>
+	Greatest MySQL database which gave an initial idea to
+	build SQL based search engine. Solaris and Linux Makefiles
+
+	* Gunther Stammwitz <gstammw[at]gmx[dot]net>
+	Most active beta tester
+
+	* Mustapha MOUGHIT <emoughit[at]cie[dot]fr>
+	Initial porting search.phtml to PHP3.
+
+	* Paolo Romano
+        <paolo[at]risc220[dot]piaggio[dot]cba[dot]unige[dot]it>
+	IBM C for AIX Makefile
+
+	* Jingyi Zhou <jzhou[at]airbridge[dot]net>
+	Active beta tester
+
+	* Alexey Zelenin <alzel[at]izhcom[dot]ru>
+	Idea generator
+
+	* Rudolf Eichhorn  <re116[at]bingo-ev[dot]de>
+	Active beta tester
+
+	* Ilya Nakvasin <jin[at]akvilon[dot]ru>
+	Original version of ForceIISCharset command in indexer.conf.
+
+	* Mart Laak <Mart[dot]Laak[at]active[dot]ee>
+	php3 frontends speed improvements
+
+	* Manfred Bathelt <Bathelt[at]3SOFT[dot]de>
+	Fixes of the bug in external parsers support
+
+	* Rohan Baxter <rohan[at]ultimode[dot]com>
+	perl frontend
+
+	* ZioBudda <michel[at]michel[dot]enter[dot]it>
+	search.php3 PHP frontend for PostgreSQL 
+	porting from MySQL version
+
+	* Michael Ansley <Michael[dot]Ansley[at]intec[dot]co[dot]za>
+	Binary stopwords scan
+
+	* Charlie Hornberger <charlie[at]pressflex[dot]com>
+	Active idea generator. The idea and implementation 
+	of -i and -w indexer options.
+
+	* carmelo <carmelo[at]melting-soft[dot]com>
+	"Language guesser" implementation
+
+	* The Hermit Hacker <scrappy[at]hub[dot]org>
+	PostgreSQL optimization issues
+
+	* Christophe Lauer <clauer[at]citeweb[dot]net>
+	French stoplist
+
+	* Vadim Tkachenko <vvtk[at]stealthcomp[dot]com>
+	Ukranian stoplist
+
+	* Francisco Jose Montilla <pacopepe[at]raudo[dot]dhis[dot]org>
+	Spanish stoplist
+
+	* Builder <cbob[at]ms[dot]anet[dot]cz>
+	Czech stoplist
+
+	* Joao Silva <JRSilva[at]somague[dot]pt>
+	Portuguese stoplist
+
+	* Heiko Stoermer <stoermer[at]innominate[dot]de>
+	Extended NEWS archiving mode
+
+	* Marcin Marszałek <azzie[at]staszic[dot]waw[dot]pl>
+	URL filter in search.cgi for built-in text mode.
+
+	* Kirill Maximov <kir[at]astrive[dot]ru>
+	Oracle7 native support
+
+	* Bob Smith <bob[at]cs[dot]csoft[dot]net>
+	udm-config script
+
+	* Randy Winch <gumby[at]cafes[dot]net>
+	Subtle bug report ('break' instead of 'continue' in main.c).
+
+	* Murray Jensen <Murray[dot]Jensen[at]cmst[dot]csiro[dot]au>
+	udm_snprintf (Solaris 2.5 doesn't have one)
+
+	* Thomas Hepper <hepper[at]hdi[dot]de>
+	Bugs in external parsers code fixes
+
+	* Maciek Uhlig <muhlig[at]us[dot]edu[dot]pl>
+	Polish stoplist
+
+	* Willem Brown <willem[at]brwn[dot]org>
+	A bug in URL cache fixes.
+
+	* Maxim Zakharov <maxime[at]tnet[dot]sochi[dot]net>
+	news:// and nntp:// URL schemes improvements
+	Several bug fixes. Some nice ideas and suggestions.
+
+	* Peter Hanecak <hanecak[at]megaloman[dot]com>
+	Slovak stop-list
+
+	* Joerg Zanger <joerg[dot]zanger[at]schoeck[dot]de>
+	URL parser bug fix.
+
+	* Peter Hanecak <hanecak[at]megaloman[dot]com>
+	"indexer -c seconds" command line argument.
+
+	* Hans Kejser Hansen <hans[at]zaiz[dot]dk>
+	Danish stop-list.
+
+	* Shane Wegner <shane[at]cm[dot]nu>
+	Another English stop-list.
+	
+	* Dimitri Bougoulias <dbougo[at]eexi[dot]gr>
+	Greek character sets support.
+
+	* Craig Small <csmall[at]eye-net[dot]com[dot]au>
+	An idea of multi-language search templates.
+
+	* Oyku Gencay" <oyku[dot]gencay[at]veezy[dot]com>
+	Turkish iso-8859-9 and windows-1254 support.
+
+	* mordicus <mordicus[at]free[dot]fr>
+	Fix for memory leak in InterBase driver.
+
+	* Laurent LEVIER <llevier[at]argosnet[dot]com>
+	Active tester, author of "udm-gw" parsers integrator,
+	many other.
+
+	* Tõnu Samuel
+          <tonu[at]please[dot]do[dot]not[dot]remove[dot]this[dot]spam[dot]ee>
+	MySQL related impovements.
+
+	* Caffeinate The World <mochaexpress[at]yahoo[dot]com>
+	Active tester and mailing list member.
+
+	* Zenon Panoussis <lrh[at]xs4all[dot]nl>]
+	Active tester and mailing list member.
+
+	* Dubun Guillaume <gdubun[at]gecko[dot]fr>
+	https support
+
+	* Ivan Mikhnevich <vano[at]red[dot]by>
+	Many bug fixes
+
+	* Andrey A. Chernov <ache[at]nagual[dot]pp[dot]ru>
+	Many bug fixes

@@ -1,0 +1,758 @@
+<chapter id="install">
+  <title>Installing &mnogo;
+    <indexterm><primary>Installation</primary><secondary>requirements</secondary></indexterm>
+  </title>
+
+
+  <sect1 id="sqlreq">
+    <title>&sql; database requirements
+    </title>
+    
+    <para>Note that, if you want to compile
+    &mnogo; with
+    one of the supported &sql; databases,
+    you must have the database software already
+    installed before installing
+    &mnogo;.
+    </para>
+    
+    <note>
+    <para>Starting from the version <literal>3.2</literal>,
+    it is possible to compile &mnogo; with
+    multiple &sql; databases at the same time.
+    </para>
+    </note>
+    
+    <para>You will need enough permissions to create a new
+    &sql; database or to write into
+    an existing database.
+    </para>
+    
+    <para>
+      <emphasis>&app-mysql; notes</emphasis>:
+      &mnogo; is known to work
+      with &app-mysql; versions
+      <literal>3.23</literal>,
+      <literal>4.0</literal>,
+      <literal>4.1</literal>,
+      <literal>4.1</literal>,      
+      <literal>5.0</literal>, 
+      <literal>5.1</literal>, 
+      <literal>6.0</literal>.
+      The <application>zlib</application> library must be installed.
+      On a &os-linux; system you'll
+      need the <application>zlib-devel</application> &rpm; to
+      compile &mnogo; &app-mysql;.
+    </para>
+    
+    <para>
+      <emphasis>&app-pgsql; notes</emphasis>:
+      &app-pgsql;-<literal>7.3.x</literal> or later is required.
+    </para>
+    
+    <para>
+      <emphasis>&app-sqlite; notes</emphasis>:
+       The versions <literal>2.x</literal> 
+       and <literal>3.x</literal> are known to work.
+       The <literal>blob</literal> mode is supported
+       with the version <literal>3.x</literal> only.
+    </para>
+
+    <para>
+      <emphasis>&app-odbc; notes</emphasis>:
+      <application>&app-iodbc;-2.50.22a</application> is known to work.
+    </para>
+    
+    <para>
+      <emphasis>&app-unixodbc; notes</emphasis>:
+      <application>&app-unixodbc;</application> versions
+      <literal>1.7</literal> and <literal>2.2.12</literal>
+      are known to work.
+    </para>
+
+<!--    
+    <para>
+      <emphasis>Solid notes</emphasis>: 03.00.0043 version is known to work.
+    </para>
+-->
+    
+    <para>
+      <emphasis>&app-interbase;</emphasis>:
+    </para>
+    
+    <itemizedlist>
+      <listitem>
+        <para><literal>Interbase 4.0</literal> is known to work.
+        </para>
+      </listitem>
+      <listitem>
+        <para><literal>Interbase CS 6.0</literal> is known to work.
+        </para>
+      </listitem>
+      <listitem>
+        <para><literal>Firebird CS-0.9-4</literal> is known to work.
+        </para>
+      </listitem>
+      <listitem>
+        <para><literal>FirebirdCS-2.0.4</literal> is known to work.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+      <emphasis>&app-mimer; notes</emphasis>:
+      the versions <literal>9.1.x</literal> 
+      and  <literal>9.3.8</literal> are known to work.
+    </para>
+
+    <para>
+      <emphasis>&app-freetds; notes</emphasis>: version <literal>0.52</literal>
+       is known to work with &app-mssql; version <literal>7.0</literal>.
+    </para>
+
+    <para>
+      <emphasis>&app-oracle; notes</emphasis>:
+      the versions
+      <literal>9.0.1</literal> and
+      <literal>xe-univ-10.2.0.1</literal>
+      are known to work.
+    </para>
+    
+    <para>
+      <emphasis>&app-db2; notes</emphasis>:
+      <literal>V8.1 EE</literal> is known to work.
+    </para>
+    
+    <para>
+      <emphasis>&app-sybase; notes</emphasis>:
+      <literal>ASE 12.5</literal> is known to work.
+    </para>
+
+    <para>
+      <emphasis>&app-virtuoso; notes</emphasis>:
+      <literal>Virtuoso-opensource-6.1.0</literal> is known to work.
+    </para>
+
+    <para>
+      <emphasis>&app-monetdb; notes</emphasis>:
+      <literal>MonetDB-Oct2010</literal> is known to work.
+    </para>
+
+  </sect1>
+  
+  
+  <sect1 id="opsys">
+    <title>Supported operating systems</title>
+    <para>We use <application>GNU Autoconf</application> so
+    it is possible to compile &mnogo;
+    on almost any modern &os-unix; system with
+    a <application>C</application> compiler. We develop &mnogo;
+    using the &os-freebsd; and &os-linux; operating systems.
+  </para>
+  
+  <para>&mnogo; has been
+  reported to compile and work fine on the following
+  operating systems:
+  </para>
+    <itemizedlist>
+      <listitem>
+        <para>FreeBSD 2.2.x, 3.x, 4.x, 5.x
+       </para>
+      </listitem>
+      <listitem>
+        <para>Linux 2.x
+        </para>
+      </listitem>
+      <listitem>
+        <para>sun4u sparc SunOS 5.6
+        </para>
+      </listitem>
+      <listitem>
+        <para>Solaris7 x86
+        </para>
+      </listitem>
+      <listitem>
+        <para>OpenSolaris 2008
+        </para>
+      </listitem>
+      <listitem>
+        <para>BSDI 4.1
+        </para>
+      </listitem>
+      <listitem>
+        <para>OpenBSD 2.5
+         </para>
+      </listitem>
+      <listitem>
+        <para>HP-UX B.10.20 (<application>GNU sed</application> required)
+        </para>
+      </listitem>
+      <listitem>
+        <para>Digital Unix V4.0 (aka Compaq Tru64 UNIX)
+        </para>
+      </listitem>
+      <listitem>
+        <para>SCO UnixWare 7.x
+        </para>
+      </listitem>
+      <listitem>
+        <para>AIX 4.2
+        </para>
+      </listitem>
+      <listitem>
+        <para>SGI Irix 6.5
+        </para>
+      </listitem>
+      <listitem>
+        <para>YellowDog Linux for PPC on Mac G3
+        </para>
+      </listitem>
+      <listitem>
+        <para>Mac OS X 10.0.0, Mac OS X 10.2(.4)
+        </para>
+      </listitem>
+      <listitem><para>Debian Linux for PPC on Mac G3</para></listitem>
+      <listitem><para>Debian Linux for PPC on Mac iBook</para></listitem>
+      <listitem><para>Suse Linux for PPC on Mac iBook</para></listitem>
+    </itemizedlist>
+    <para>We hope &mnogo; will
+    compile and work on other &os-unix; platforms as well.
+    Please report successful platforms
+    to <ulink url="mailto:devel@mnogosearch.org">devel@mnogosearch.org</ulink>.
+  </para>
+  </sect1>
+  
+  
+  <sect1 id="toolsreq">
+    <title>Tools required for installation</title>
+    <para>You need the following tools to build and
+    install &mnogo; from sources:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+        <ulink url="http://www.gnu.org/software/gzip/gzip.html">GNU gunzip</ulink>
+        to uncompress the distribution.
+       </para>
+      </listitem>
+      <listitem>
+        <para>A reasonable <application>tar</application> to
+        unpack the distribution.
+        <ulink url="http://www.gnu.org/software/tar/tar.html">GNU tar</ulink>
+        is known to work.
+        </para>
+      </listitem>
+      <listitem>
+        <para>A working <application>ANSI C compiler</application>.
+        <ulink url="http://gcc.gnu.org/">GNU gcc</ulink> is known to work.
+        </para>
+      </listitem>
+      <listitem>
+        <para>A good <application>make</application> program.
+        <ulink url="http://www.gnu.org/software/make/make.html">GNU make</ulink>
+        is recommended and sometimes is required.
+        </para>
+      </listitem>
+      <listitem>
+        <para><application>sed</application> - stream editor.
+       </para>
+      </listitem>
+      <listitem>
+        <para>Optionally: <application>Perl</application> interpreter,
+        if you're going to use <application>install.pl</application> 
+        (a helper script).
+        </para>
+      </listitem>
+      <listitem>
+        <para>Optionally:
+        <application>jade</application> or
+        <application>openjade</application> 
+        to build the manual
+        from the <acronym>XML</acronym> sources,
+        </para> 
+      </listitem>
+    </itemizedlist>
+  </sect1>
+  
+  
+  <sect1 id="installing">
+    <title>Installing &mnogo;
+      <indexterm><primary>Installation</primary><secondary>steps</secondary></indexterm>
+    </title>
+    <orderedlist>
+      <listitem>
+        <para>Unpack the source distribution and change directory
+        to the unpacked sources. For example:
+        </para>
+        <para>
+          <userinput>tar -zxf mnogosearch-3.3.8.tar.gz</userinput>
+        </para>
+        <para>
+          <userinput>cd mnogosearch-3.3.8</userinput>
+       </para>
+      </listitem>
+      <listitem>
+        <para>Configure the package</para>
+        <note>
+        <para>To simplify the configuration process,
+        &mnogo; source
+        distribution includes an optional configuration
+        script <filename>install.pl</filename>.
+        You can run <filename>install.pl</filename> and
+        select &mnogo; configuration
+        options in the <emphasis>question-and-answer</emphasis> manner.
+        After you answer all the questions,
+        the script will run <literal>./configure</literal>
+        with the options you chose. It will also create the
+        <filename>install.options</filename> file containing
+        your configuration preferences that you can use to run
+        the script later, bypassing questions.
+        </para>
+        <para>If you decided to use <application>install.pl</application>,
+        go to the section <literal>3</literal> after configuration
+        is finished.
+        </para>
+        </note>
+        
+        <para>In case you prefer to
+          configure &mnogo; 
+          in the traditional way
+          (without using <application>install.pl</application>),
+          do the following:
+        </para>
+        <para>
+          <userinput>sh$ ./configure --with-mysql</userinput>
+        </para>
+        <para>or
+        </para>
+        <para>
+          <userinput>sh$ ./configure --with-pgsql</userinput>
+        </para>
+        <para>or with another database on your choice,
+        </para>
+        <para>or with multiple databases:
+        </para>
+        <para>
+          <userinput>sh$ ./configure --with-mysql --with-pgsql --with-freetds</userinput>
+        </para>
+        <para>By default, &mnogo; is
+        installed into the <filename>/usr/local/mnogosearch</filename>
+        directory with the following subdirectories:
+        </para>
+
+        <informaltable>
+          <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry>Directory</entry>
+                <entry>Contents</entry>
+              </row>
+              <row>
+                <entry>bin</entry>
+                <entry>
+                  <filename>mconv</filename>,
+                  <filename>mguesser</filename>,
+                  <filename>search.cgi</filename>,
+                  <filename>udm-config</filename>
+                </entry>
+              </row>
+              <row>
+                <entry>lib</entry>
+                <entry>
+                  <filename>libmnogocharset.a(so)</filename>,
+                  <filename>libmnogosearch.a(so)</filename>
+                </entry>
+              </row>
+              <row>
+                <entry>sbin</entry>
+                <entry>
+                  <filename>indexer</filename>,
+                </entry>
+              </row>
+              <row>
+                <entry>etc</entry>
+                <entry>
+                  &indexer.conf-dist;, &search.htm-dist;,
+                  <filename>langmap.conf-dist</filename>,
+                  <filename>stopwords.conf-dist</filename>
+                </entry>
+              </row>
+              <row>
+                <entry>man</entry>
+                <entry>
+                  <filename>indexer.1, indexer.conf.5</filename>
+                </entry>
+              </row>
+              <row>
+                <entry>doc</entry>
+                <entry>various documentation</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+        <para>If you have no permission to write to that directory
+        or just want to install &mnogo; to
+        another location, you can use configure
+        with the <option>--prefix</option> option, for example:
+        </para>
+        <para>
+          <userinput>./configure --prefix=/user/home/mnogo --with-mysql</userinput>
+        </para>
+        <para>To install &mnogo; with
+        <acronym>HTTPS</acronym> support use
+        <application>configure</application> with the following option:
+        </para>
+        <para>
+          <userinput>./configure --with-openssl</userinput>
+         </para>
+        <para>or in case when the <application>OpenSSL</application>
+        library is installed in a non-standard location:
+        </para>
+        <para>
+          <userinput>./configure --with-openssl=/path/to/library</userinput>
+        </para>
+        <note>
+          <para>The <application>OpenSSL</application>
+          library is required to build
+          &mnogo; with
+          <acronym>HTTPS</acronym> support.
+        </para>
+        </note>
+        <para>You can see all available options by typing
+        <userinput>./configure --help</userinput>
+        </para>
+        <para>If you want to add some specific flags to the
+        <application>C compiler</application>
+        (for example, <literal>'-O7 -mpentium'</literal> to build a
+        highly optimized binary for <trademark>Pentium</trademark>
+        processors if you use <application>egcs</application> or
+        <application>pgcc</application>), you can do so using
+        </para>
+        <para>
+          <userinput>sh$  CFLAGS="-O7 -mpentium" ./configure 
+          </userinput>
+        </para>
+<!--
+        <para>To compile &mnogo; on
+        FreeBSD with Solid in old aout format use
+        </para>
+        <para>
+          <userinput>sh$ CFLAGS="-aout"</userinput>
+        </para>
+        <para>
+          <emphasis>prior to</emphasis> running configure.
+        </para>
+-->
+        <para>
+          <indexterm><primary>DMALLOC</primary></indexterm>
+          To enable the <ulink url="http://sourceforge.net/projects/dmalloc/">DMALLOC memory debugger</ulink>
+          support for debugging purposes, use the  <option>--with-dmalloc</option>.
+          Don't forget to set a proper value to the
+          <envar>DMALLOC_OPTION</envar> environment variable before
+          debugging 
+          &indexer; or
+          &search.cgi;
+          (see the <application>dmalloc</application> manual for details).
+        </para>
+        <para>The
+        <literal>euc-kr</literal>,
+        <literal>big5</literal>,
+        <literal>gb2312</literal> and
+        <literal>shift-jis</literal> character sets are not
+        supported by default.
+        To build &mnogo; with
+        support for these charsets, use <application>configure</application>
+        with the <option>--with-extra-charsets</option> option.
+        </para>
+        <para>To build &mnogo; with
+        support for all additional character sets, use:
+        </para>
+        <para>
+          <userinput>./configure --with-extra-charsets=all</userinput>
+        </para>
+        <para>To build &mnogo; with
+        a single additional character set use:
+        </para>
+        <para>
+          <userinput>./configure --with-extra-charsets=shift-jis</userinput>
+        </para>
+        <para>To build &mnogo; with
+        multiple additional character sets, use a comma separated
+        list of the character sets you want:
+        </para>
+        <para>
+          <userinput>./configure --with-extra-charset=big5,gb2312</userinput>
+        </para>
+        <para>If you run into problems with
+        <application>configure</application>, please
+        see <xref linkend="installproblem"/>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Building and installing the package.
+        </para>
+        <para>
+          <userinput>sh$ make</userinput>
+        </para>
+        <para>
+          <userinput>sh$ make install</userinput>
+        </para>
+        <para>If you run into problems at this step,
+        please see <xref linkend="installproblem"/>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Create a new database &mnogo;
+        will use to store data in. For example, <literal>mnogosearch</literal>.
+       </para>
+        <para>You can use an existing database.
+        In this case, skip this step.
+        </para>
+        <para>For <application>MySQL</application>:
+       </para>
+        <para>
+          <userinput>sh$ mysqladmin create mnogosearch</userinput>
+        </para>
+        <para>For <application>PostgreSQL</application>:
+        </para>
+        <para>
+          <userinput>sh$ createdb mnogosearch</userinput>
+        </para>
+        <para>See the database specific documentation for
+        the other database software.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Create the file &indexer.conf; and
+        set the <command><xref linkend="cmdref-dbaddr"/></command> command.
+        </para>
+        <para>Change directory to
+        <filename>/usr/local/mnogosearch/etc/</filename>.
+        </para>
+        <para>Copy &indexer.conf-dist; into
+        &indexer.conf;:
+        </para>
+        <para>
+        <userinput>cp indexer.conf-dist indexer.conf</userinput>
+        </para>
+        <para>Open &indexer.conf; in your
+        favorite text editor and edit
+        the <command><xref linkend="cmdref-dbaddr"/></command>
+        command to set the proper database connection string.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Create &search.htm;
+        and set <command><xref linkend="cmdref-dbaddr"/></command>
+        </para>
+        <para>Change dir to <literal>/etc</literal>
+        directory of your &mnogo; installation,
+        typically <literal>/usr/local/mnogosearch/etc/</literal>.
+        </para>
+        <para>Copy &search.htm-dist; into &search.htm;:
+        </para>
+        <para>
+        <userinput>cp search.htm-dist search.htm</userinput>
+        </para>
+        <para>Open &search.htm; in your favorite editor,
+        and edit the <command><xref linkend="cmdref-dbaddr"/></command>
+         to set the database connection strings,
+         similarly to what you've done at the previous step.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Create tables
+        </para>
+        <para>Change dir to the <filename>/sbin</filename> directory
+        of the installation,
+        typically <literal>/usr/local/mnogosearch/sbin</literal>,
+        and create the database structure:
+        </para>
+        <para>
+          <userinput>sh$ ./indexer -Ecreate</userinput>
+        </para>
+      </listitem>
+      <listitem>
+        <para>Installing search scripts
+        </para>
+        <para>Copy &search.cgi; to your
+        Web server <filename>cgi-bin</filename> directory or
+        add an <application>Apache</application> alias
+        to &mnogo; bin directory. 
+        </para>
+      </listitem>
+    </orderedlist>
+  </sect1>
+  
+  
+  
+  <sect1 id="inetd">
+    <title>Running &search.cgi; from
+    <application>inetd</application> / <application>xinetd</application>
+    </title>
+    <para>
+    Starting from the version <literal>3.3.7</literal>, it is
+    possible to run &search.cgi; as
+    an <application>inetd</application> / <application>xinetd</application>
+    service without having to install a <acronym>HTTP</acronym> server
+    (such as <application>Apache</application>) on the search machine.
+    </para>
+    
+    <para>To start using &search.cgi;
+    as an <application>inetd</application> / <application>xinetd</application>
+    service, choose an available <acronym>TCP</acronym> port
+    (say <literal>9999</literal>) and  do the following:
+      <orderedlist>
+        <listitem>
+          <para>Add this line to <filename>/etc/services</filename>:
+<programlisting>
+mnogosearch 9999/tcp
+</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          In case of <application>xinetd</application>
+          create a new file with name <filename>mnogosearch</filename>
+          with this content:
+<programlisting>
+# default: on
+# description: The MNOGOSEARCH service allows remote users
+# to access the \
+#              mnoGoSearch search front-end without having
+# to run a \
+#              HTTP server
+service mnogosearch
+{
+        disable = no
+        port            = 9999
+        socket_type     = stream
+        wait            = no
+        user            = root
+        server          =  /usr/local/mnogosearch/bin/search.cgi
+        server_args     = -x
+        log_on_failure  += USERID
+        protocol        = tcp
+}
+</programlisting>
+          and put it into <filename>/etc/xinetd.d/</filename>.
+          </para>
+          <para>
+          In case of <application>inetd</application>,
+          add this line into  <filename>/etc/inetd</filename>:
+<programlisting>
+mnogosearch stream tcp nowait root /usr/local/mnogosearch/bin/search.cgi search.cgi -x
+</programlisting>
+          </para>
+        </listitem>
+        <listitem> 
+          <para>
+          Run "<userinput>killall -HUP xinetd</userinput>" or
+          "<userinput>killall -HUP inetd</userinput>".
+          </para>
+        </listitem>
+      </orderedlist>
+      Now you can point your browser to
+      <filename>http://hostname:9999/search.htm</filename>.
+      The file name part in the <acronym>URL</acronym> tells
+      &search.cgi;
+      which template file to open.
+      For example, the above <acronym>URL</acronym> will tell 
+      &search.cgi; to
+      open &search.htm; as its template.
+      </para>
+    
+      <para>
+        <note>
+        <para>
+        For security purposes you can also use a
+        non-privileged user instead
+        of <literal>root</literal> on step <literal>2</literal>.
+        </para>
+        </note>
+        <note>
+        <para>
+        You can use another port on your choice
+        instead of <literal>9999</literal>.
+        In this case change the port number on
+        the steps <literal>1</literal> and <literal>2</literal>.
+        </para>
+        </note>
+      </para>
+  </sect1>
+  
+  
+  <sect1 id='installproblem'>
+    <title>Possible installation
+      problems <indexterm><primary>Installation</primary><secondary>problems</secondary></indexterm>
+    </title>
+    <itemizedlist>
+      <listitem>
+        <para>Every time you run <application>configure</application>,
+        you must run <application>make</application> again to recompile.
+        </para>
+        <para>To prevent old configuration information or
+        object files from being used, run these commands
+        before re-running <application>configure</application>:
+        </para>
+        <para>
+          <userinput>sh$ rm config.cache</userinput>
+        </para>
+        <para>
+          <userinput>sh$ make clean</userinput>
+        </para>
+      </listitem>
+      <listitem>
+        <para>If the installing process fails
+        with <application>make</application> errors,
+        it can be because of using an incompatible
+        version of <application>make</application>.
+        The behavior of Solaris, FreeBSD, OpenBSD
+        <application>make</application> programs is
+        slightly different from the
+        <ulink url="http://www.gnu.org/software/make/make.html">GNU make</ulink>.
+        If you have <application>make</application>-related problems
+        you should use the
+        <ulink url="http://www.gnu.org/software/make/make.html">GNU make</ulink>
+        instead (often installed as <application>gmake</application>).
+        </para>
+        <para>GNU <filename>make</filename> version <literal>3.77</literal>
+        is known to work.
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>If the above information does not help,
+    please feel free to contact the
+    <emphasis>&mnogo; mailing lists</emphasis>
+    at <email>general@mnogosearch.org</email> (in English) or
+    to <email>ru@mnogosearch.org</email> (in Russian).
+    </para>
+  </sect1>
+  
+  
+  <sect1 id="binarydistrib">
+    <title>Creating a binary package</title>
+    <para>You can create a binary distribution for your
+     platform and share it with us. We'll put the contributed binaries
+     for various platforms to our site to make them available
+     for other users. To create a binary distribution,
+     please type <userinput>make bin-dist</userinput>,
+     then put the newly created <filename>tar.gz</filename> file
+     somewhere on the <application>Internet</application> and
+     send an e-mail to <email>general@mnogosearch.org</email>
+     (in English) or to <email>ru@mnogosearch.org</email>
+     (in Russian).
+  </para>
+  </sect1>
+  
+  <sect1 id="register">
+    <title>Installation registration</title>
+    <para>If you use &mnogo; to build
+    a search engine on a public <application>Internet</application> site,
+    you may wish to register your search engine on the
+    <ulink url="http://www.mnogosearch.org/users.html">mnoGoSearch users</ulink>
+    page.
+    </para>
+  </sect1>
+</chapter>
+

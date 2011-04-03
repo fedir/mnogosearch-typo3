@@ -1,0 +1,353 @@
+<!--variables
+ImportEnv UDM_TEST_DIR
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)
+
+# Uncomment this line to enable search result cache
+#Cache yes
+
+#  Uncomment this line if you do not want to detect and show clones
+#DetectClones	no
+
+# Use proper local and browser charsets
+# Default charset is iso-8859-1 (latin1)
+# which is suitable for the most Western European languages
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+# Load stopwords file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#StopwordFile stopwords/en.sl
+#StopwordFile stopwords/ru.sl
+#
+
+#
+# Minimum and maximum word lengths
+#
+#MinWordLen 1
+#MaxWordLen 32
+
+# Number of pages in navigator bar
+#
+#PagesPerScreen 10
+
+# Load synonyms file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#Synonym synonym/english.syn
+#Synonym synonym/russian.syn
+#
+
+#
+# How to hilight searched words.
+#
+HlBeg	<b>
+HlEnd	</b>
+
+# Uncomment this line to enable error loging to stderr
+#Log2stderr yes
+#
+
+# Uncomment this line to change default URL basis for storedoc.cgi
+#StoredocURL     /cgi-bin/storedoc
+#
+
+# Uncoment this line to change default maximal excerpt size. Default value is 256.
+#ExcerptSize 1024
+#
+
+# Uncomment this line to change Last-Modified format output
+# Use strftime function meta variables
+#DateFormat %d %b %Y %X %Z
+
+-->
+
+<!--top-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+   
+  <!-- INCLUDE was broken in 3.2.32 -->
+<!INCLUDE CONTENT="file:///$(UDM_TEST_DIR)/test.cmd">
+  
+  <!--  bug610: search.cgi crashes displaying $%(var) when var is empty -->
+  <a href="/search?q=$%(somevar)">test</a>
+  <!--  /bug610 -->
+
+  <!-- Check that HTML and URL encoding works in comments -->
+  <!URLDECODE NAME="a" Content="%22">
+  <!-- $(a) $&(a) $%(a) -->
+  
+  <!SET  NAME="a" CONTENT="abcd">
+  <!COPY NAME="b" CONTENT="a">
+  a=$(a) b=$(b)
+  <OPTION NAME="a" VALUE="abcd" SELECTED="$(a)">a==abcd</OPTION>
+  <OPTION NAME="a" VALUE="abce" SELECTED="$(a)">a!=abcd</OPTION>
+  <OPTION NAME="a" VALUE="abcd" SELECTED="$&(a)">a==abcd</OPTION>
+  <OPTION NAME="a" VALUE="abce" SELECTED="$&(a)">a!=abcd</OPTION>
+    
+  <!IF NAME="a" CONTENT="abcd">
+  test11
+  <!ELSE>
+  test12
+  <!ENDIF>
+  
+  <!IFNOT NAME="a" CONTENT="abcde">
+  test21
+  <!ELSEIF NAME="a" CONTENT="abcd">
+  test22
+  <!ELSE>
+  test23
+  <!ENDIF>
+  
+  <!-- The second condition is true -->
+  <!IF NAME="a" CONTENT="abcde">
+  test221
+  <!ELSEIF NAME="a" CONTENT="abcd">
+  test222
+  <!ELSE>
+  test223
+  <!ENDIF>
+  
+  <!IF NAME="a" CONTENT="abcde">
+  test31
+   <!IF NAME="a" CONTENT="abcd">
+   test32
+   <!ELSE>
+   test33
+   <!ENDIF>
+  <!ELSE>
+   <!IF NAME="a" CONTENT="abcd">
+   test34
+   <!ELSE>
+   test35
+   <!ENDIF>
+  <!ENDIF>
+
+  <!IFLIKE NAME="a" CONTENT="ab*">
+  test41
+  <!ENDIF>
+  
+  <!SET NAME="a" CONTENT="a">
+  <!SET NAME="b" CONTENT="a">
+  <!IF NAME="a" CONTENT="$(b)">
+  test51
+  <!ELSE>
+  test52
+  <!ENDIF>
+  
+  <!-- Don't process SELECTED written without a variable -->
+  <OPTION VALUE="a" SELECTED>
+  <!SET NAME="a" CONTENT="a">
+  <OPTION VALUE="$(a)" SELECTED>
+  
+  <!-- Check HTML encoding for dangerous characters -->
+  <!SET NAME="a" CONTENT="& &amp; &quot; &lt; &gt;">
+  $&(a)
+  
+  <!-- Check functions -->
+  <!SET      NAME="a0" CONTENT="abcd">
+  <!STRBCUT  NAME="a1" CONTENT="$(a0)">$(a1)
+  <!STRPCASE NAME="a2" CONTENT="$(a0)">$(a2)
+  <!STRLEFT  NAME="a3" CONTENT="$(a0)">$(a3)
+  <!STRLCASE NAME="a4" CONTENT="ABCD">$(a4)
+  
+  <!-- Case sensitive comparison -->
+  <!SET  NAME="a" CONTENT="a">
+  <!IFCS NAME="a" CONTENT="A">A<!ENDIF>
+  <!IFCS NAME="a" CONTENT="a">a<!ENDIF>
+  
+  <!-- URLDECODE -->
+  <!SET NAME="a" CONTENT="http://Alpha?url=http%3A%2F%2FBeta%2F">
+  <!URLDECODE NAME="a" CONTENT="$(a)">
+  $(a)
+  
+  <!-- Bug#718 incorrect parsing of XHTML isolated tags in search templates -->
+  <!-- Check that there is no space between slash and closing lt -->
+  <INPUT>
+  <INPUT />
+  <INPUT TYPE="TEXT" NAME="q" VALUE="" />
+  
+  <!-- HTMLENCODE -->
+  <!SET NAME="a" CONTENT="test %26%3C%3E%22 sgml %26%3C%3E%22 encode %26%3C%3E%22">
+  <!URLDECODE NAME="a" CONTENT="$(a)">a='$(a)'
+  <!HTMLENCODE NAME="a" CONTENT="$(a)">a='$(a)'
+  
+  <!-- Numeric operations -->
+  <!SET NAME="b" CONTENT="20">
+  <!SET NAME="a" CONTENT="10">
+  <!MUL NAME="a" CONTENT="$(b)">$(a)
+  <!SET NAME="a" CONTENT="10">
+  <!ADD NAME="a" CONTENT="$(b)">$(a)
+  <!SET NAME="a" CONTENT="10">
+  <!SUB NAME="a" CONTENT="$(b)">$(a)
+  
+  <!SET NAME="a" CONTENT="1">
+  <!IFLE NAME="a" CONTENT="1">1 le 1<!ENDIF>
+  <!IFLT NAME="a" CONTENT="2">1 lt 2<!ENDIF>
+  <!IFLE NAME="a" CONTENT="0"><!ELSE>1 not le 0<!ENDIF>
+  <!IFLT NAME="a" CONTENT="0"><!ELSE>1 not lt 0<!ENDIF>
+  <!IFGE NAME="a" CONTENT="1">1 ge 1<!ENDIF>
+  <!IFGT NAME="a" CONTENT="0">1 gt 0<!ENDIF>
+  <!IFGE NAME="a" CONTENT="2"><!ELSE>1 not ge 2<!ENDIF>
+  <!IFGT NAME="a" CONTENT="2"><!ELSE>1 not gt 2<!ENDIF>
+
+  <!-- Regular expressions -->
+  <!EREG NAME="a"
+     CONTENT="http://www.host.com/path/file.ext"
+     MATCH="^([a-z]*)://([^/]*)/(.*)"
+     RESULT="$1 $2 $3">a=$(a)
+
+<!-- FOR loop -->
+<!FOR NAME="a" FROM="10" TO="20">$(a)
+<!ENDFOR>
+
+<!-- Nested FOR loop -->
+<!FOR NAME="a" FROM="10" TO="20">$(a):
+<!FOR NAME="b" FROM="50" TO="60"> $(b)<!ENDFOR>
+<!ENDFOR>
+
+<!-- FOR loop with variables -->
+<!SET NAME="from" CONTENT="80">
+<!SET NAME="to" CONTENT="90">
+<!FOR NAME="a" FROM="$(from)" TO="$(to)">a=$(a)
+<!ENDFOR>
+  
+<!-- bug#1010: check that "<" and ">" work insuide RESULT -->
+<!SET NAME="a" CONTENT="a,b">
+<!EREG NAME="a" CONTENT="$(a)" MATCH="(.*),(.*)" RESULT="$1<br>$2">$(a)
+<!SET NAME="a" CONTENT="<tag/>">$(a)
+<!-- /bug#1010 -->
+
+<!-- bug#708,part2 -->
+<!SET NAME="a" CONTENT="xxx">
+<!-- check that <!XXX> commands are ignored inside a comment -->
+<!--
+<!SET NAME="a" CONTENT="yyy">
+<!SET NAME="a" CONTENT="zzz">
+-->
+$(a)
+<!-- /bug#708,part2 -->
+
+<!-- base64 format -->
+<!SET NAME="a" content="http://some.url.com">
+$base64(a)
+
+<!-- left and right format tests -->
+<!SET NAME="a" CONTENT="1 &quot; &#1023; &#xAABB; 1234">
+'$&(a)'
+'$&(a:0)'
+'$&(a:1)'
+'$&(a:2)'
+'$&(a:3)'
+'$&(a:4)'
+'$&(a:5)'
+'$&(a:6)'
+'$&(a:7)'
+'$&(a:8)'
+'$&(a:9)'
+'$&(a:10)'
+'$&(a:11)'
+'$&(a:12)'
+'$&(a:13)'
+'$&(a:14)'
+'$&(a:15)'
+'$&(a:16)'
+'$&(a:17)'
+'$&(a:18)'
+'$&(a:19)'
+'$&(a:20)'
+'$&(a:21)'
+'$&(a:22)'
+'$&(a:23)'
+'$&(a:24)'
+'$&(a:25)'
+'$&(a:26)'
+'$&(a:27)'
+'$&(a:28)'
+'$&(a:29)'
+'$&(a:30)'
+'$&(a:31)'
+'$&(a:32)'
+
+'$&(a:-0)'
+'$&(a:-1)'
+'$&(a:-2)'
+'$&(a:-3)'
+'$&(a:-4)'
+'$&(a:-5)'
+'$&(a:-6)'
+'$&(a:-7)'
+'$&(a:-8)'
+'$&(a:-9)'
+'$&(a:-10)'
+'$&(a:-11)'
+'$&(a:-12)'
+'$&(a:-13)'
+'$&(a:-14)'
+'$&(a:-15)'
+'$&(a:-16)'
+'$&(a:-17)'
+'$&(a:-18)'
+'$&(a:-19)'
+'$&(a:-20)'
+'$&(a:-21)'
+'$&(a:-22)'
+'$&(a:-23)'
+'$&(a:-24)'
+'$&(a:-25)'
+'$&(a:-26)'
+'$&(a:-27)'
+'$&(a:-28)'
+'$&(a:-29)'
+'$&(a:-30)'
+'$&(a:-31)'
+'$&(a:-32)'
+<!-- /left and right formats tests -->
+
+<!-- no trailing ')' character in a variable name -->
+$(aaaa
+$(aaaa
+<!--/top-->
+
+<!--restop-->
+<!--/restop-->
+
+<!--res-->
+<!--/res-->
+
+<!--resbot-->
+<!--/resbot-->
+
+<!--clone-->
+<!--/clone-->
+
+<!--navleft-->
+<!--/navleft-->
+
+<!--navleft_nop-->
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<!--/navbar1-->
+
+<!--navbar0-->
+<!--/navbar0-->
+
+<!--navright-->
+<!--/navright-->
+
+<!--navright_nop-->
+<!--/navright_nop-->
+
+<!--notfound-->
+<!--/notfound-->
+
+<!--noquery-->
+<!--/noquery-->
+
+<!--error-->
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

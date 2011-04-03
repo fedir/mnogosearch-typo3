@@ -1,0 +1,1517 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Indexing</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Installation registration"
+HREF="msearch-register.html"><LINK
+REL="NEXT"
+TITLE="
+  HTTP response codes mnoGoSearch understands
+  "
+HREF="msearch-http-codes.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-register.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-http-codes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="indexing"
+></A
+>Chapter 3. Indexing</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="msearch-indexing.html#general"
+>Indexing in general</A
+></DT
+><DT
+><A
+HREF="msearch-http-codes.html"
+>HTTP response codes <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> understands</A
+></DT
+><DT
+><A
+HREF="msearch-content-enc.html"
+>Content-Encoding support
+    <A
+NAME="AEN1461"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-indexer-configuration.html"
+>indexer configuration</A
+></DT
+><DT
+><A
+HREF="msearch-syslog.html"
+>Using syslog
+  <A
+NAME="AEN2005"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-itips.html"
+>Disabling Apache logging</A
+></DT
+><DT
+><A
+HREF="msearch-stored.html"
+>Cached copies
+    <A
+NAME="AEN2101"
+></A
+></A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="general"
+>Indexing in general</A
+></H1
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-conf"
+>Configuration</A
+></H2
+><P
+>&#13;    Indexer configuration is covered mostly by the <TT
+CLASS="filename"
+>indexer.conf-dist</TT
+> file.
+    You can find it in the <TT
+CLASS="filename"
+>/etc</TT
+> directory
+    of the <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> installation
+    directory. Also, you may want to take a look into the
+    other <TT
+CLASS="filename"
+>*.conf</TT
+> samples
+    in the <TT
+CLASS="filename"
+>doc/samples</TT
+> directory of
+    the <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> source distribution.
+    </P
+><P
+>To set up <TT
+CLASS="filename"
+>indexer.conf</TT
+> file,
+    go to the <TT
+CLASS="literal"
+>/etc</TT
+> directory of your
+    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> installation,
+    copy <TT
+CLASS="filename"
+>indexer.conf-dist</TT
+> to
+    <TT
+CLASS="filename"
+>indexer.conf</TT
+> and edit it using a text editor.
+    Typically, the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+>
+    command needs to be modified according to your database connection
+    parameters, as well as a new command
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+>
+    describing your Web site needs to be added. The other default
+    <TT
+CLASS="filename"
+>indexer.conf</TT
+> commands are usually suitable
+    in most cases and do not need changes. The file 
+    <TT
+CLASS="filename"
+>indexer.conf</TT
+> is well-commented and
+    contains examples for the most important commands, so
+    you will find it easy to configure.
+    </P
+><P
+>&#13;    To configure the search front-end <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>,
+    copy the file <TT
+CLASS="filename"
+>search.htm-dist</TT
+> to <TT
+CLASS="filename"
+>search.htm</TT
+> and edit it.
+    Typically, only <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+>
+    needs to be modified according to your database connection parameters,
+    similar to <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    See <A
+HREF="msearch-templates.html"
+>the Section called <I
+>How to write search result templates
+    <A
+NAME="AEN5144"
+></A
+></I
+> in Chapter 10</A
+> for more detailed description.
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-create-tables"
+>Creating <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> table structure
+      <A
+NAME="AEN1056"
+></A
+></A
+></H2
+><P
+>To create <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables required for
+    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>, use <TT
+CLASS="literal"
+>indexer -Ecreate</TT
+>.
+    When started with this argument, <SPAN
+CLASS="application"
+>indexer</SPAN
+> opens the file
+    containing the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> statements necessary for creating all <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables
+    according to the database type and storage mode given in
+    the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> command
+    in <TT
+CLASS="filename"
+>indexer.conf</TT
+>. The files with the SQL
+    scripts are typically installed to the <TT
+CLASS="filename"
+>/share</TT
+>
+    directory of the <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> installation,
+    which is usually <TT
+CLASS="filename"
+>/usr/local/mnogosearch/share/mnogosearch/</TT
+>.
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-drop-tables"
+>Dropping <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> table structure
+      <A
+NAME="AEN1075"
+></A
+></A
+></H2
+><P
+>To drop all <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables created by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>,
+    use <TT
+CLASS="literal"
+>indexer -Edrop</TT
+>. The files with the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> statements
+    required to drop all tables previously created by
+    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> is installed in the <TT
+CLASS="filename"
+>/share</TT
+>
+    directory of the <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> installation.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    In some cases when you need to remove all existing data
+    from the search database and to crawl your sites from the very beginning, 
+    you can use <TT
+CLASS="literal"
+>indexer -Edrop</TT
+> followed
+    by <TT
+CLASS="literal"
+>indexer -Ecreate</TT
+> instead of 
+    truncating the existing tables (<TT
+CLASS="literal"
+>indexer -C</TT
+>).
+    In some databases recreating the tables work faster than
+    truncating data from the existing tables.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-run"
+>Running <SPAN
+CLASS="application"
+>indexer</SPAN
+></A
+></H2
+><P
+>&#13;      Run <SPAN
+CLASS="application"
+>indexer</SPAN
+> periodically
+      (once a week, a day, an hour...), depending
+      on how often changes on your sites happen.
+      You may find useful adding  <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+      into <SPAN
+CLASS="application"
+>cron</SPAN
+> job.
+    </P
+><P
+>&#13;    If you run <SPAN
+CLASS="application"
+>indexer</SPAN
+> without any command
+    line arguments, it crawls only new and expired documents, while
+    fresh documents are not crawled. You can change expiration time
+    with help of the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-period.html"
+>Period</A
+></B
+>
+    <TT
+CLASS="filename"
+>indexer.conf</TT
+> command.
+    The default expiration period is one week.
+    If you need to crawl all documents, including the fresh ones,
+    (i.e. without having to wait for their expiration period),
+    use the <TT
+CLASS="literal"
+>-a</TT
+> command line option.
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> will mark all documents as expired at startup.
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="AEN1105"
+>HTTP redirects</A
+></H2
+><P
+>If <SPAN
+CLASS="application"
+>indexer</SPAN
+> gets a redirect
+    response (<TT
+CLASS="literal"
+>301</TT
+>, <TT
+CLASS="literal"
+>302</TT
+>,
+    <TT
+CLASS="literal"
+>303</TT
+> <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status), the URL from
+    the <TT
+CLASS="literal"
+>Location:</TT
+> <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> header is added
+    into the database.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    puts the redirect target
+    into its queue. It does not follow the redirect target
+    immediately after processing an URL with a redirect response.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-crawling-optimization"
+>Crawling time optimization</A
+></H2
+><A
+NAME="AEN1120"
+></A
+><P
+>When downloading documents, <SPAN
+CLASS="application"
+>indexer</SPAN
+> tries
+    to do some optimization. It sends the
+    <TT
+CLASS="literal"
+>If-Modified-Since</TT
+> <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> header for the
+    documents it have already downloaded (during the previous crawling
+    sessions). If the <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> server replies "<TT
+CLASS="literal"
+>304 Not
+    modified</TT
+>", then only minor updates in the database are done.
+    </P
+><P
+>&#13;    When <SPAN
+CLASS="application"
+>indexer</SPAN
+> downloads a document
+    (i.e. when it gets a "<TT
+CLASS="literal"
+>HTTP 200 Ok</TT
+>" response)
+    it calculates the document checksum using the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>crc32</I
+></SPAN
+> algorithm.
+    If checksum is the same to the previous checksum stored in the database,
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> will not do full updates in the database
+    with the new information about this document.
+    This is also done for optimization purposes to improve
+    crawling performance.
+    </P
+><P
+>&#13;    The <TT
+CLASS="literal"
+>-m</TT
+> command line option prevents
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> from sending the
+    <TT
+CLASS="literal"
+>If-Modified-Since</TT
+> headers and forces
+    full updating the database even if the checksum is the same.
+    It can be useful if you have modified <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    For example, when the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-allow.html"
+>Allow</A
+></B
+>,
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-disallow.html"
+>Disallow</A
+></B
+> rules were
+    changed, or new <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+>
+    commands were added, and therefore you need <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    to parse the old documents once again and add new links which
+    were ignored in the previous configuration.
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    Sometimes you may need to <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>force</I
+></SPAN
+> reindexing of some document 
+    (or a group of documents), that is force both document downloading
+    (even when it is not expired yet) and updating the information about
+    the document in the database (even if the checksum has not modified).
+    You may find this command useful:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -am -u http://site/some/document.html
+</PRE
+>
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-subsect"
+>Subsection control</A
+></H2
+><P
+><SPAN
+CLASS="application"
+>indexer</SPAN
+> understand the <TT
+CLASS="literal"
+>-t, -u, -s</TT
+>
+    command line options to limit actions to only a part of the database.
+    <TT
+CLASS="literal"
+>-t</TT
+> forces a limit on
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-tag.html"
+>Tag</A
+></B
+>,
+    <TT
+CLASS="literal"
+>-u</TT
+> forces a limit on URL substring
+    (using <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> LIKE wildcards).
+    <TT
+CLASS="literal"
+>-s</TT
+> forces a limit on <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status.
+    All limit command can be specified multiple times.
+    All limit options of the same group are <TT
+CLASS="literal"
+>OR</TT
+>-ed,
+    and the groups are <TT
+CLASS="literal"
+>AND</TT
+>-ed. For example,
+    if you run <KBD
+CLASS="userinput"
+>indexer -s200 -s304 -u http://site1/% -u
+    http://site2/%</KBD
+>, <SPAN
+CLASS="application"
+>indexer</SPAN
+> will re-crawl
+    the documents having <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status <TT
+CLASS="literal"
+>200</TT
+> or
+    <TT
+CLASS="literal"
+>304</TT
+>, only from the site
+    <TT
+CLASS="literal"
+>http://site1/</TT
+> or from the site
+    <TT
+CLASS="literal"
+>http://site2/</TT
+>.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    The above command line will be internally interpreted
+    into this <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query when fetching URLs from the queue:
+<PRE
+CLASS="programlisting"
+>&#13;SELECT
+  &#60;columns&#62;
+FROM
+  url
+WHERE
+  status IN (200,304)
+AND
+  (url LIKE 'http://site1/%' OR url LIKE 'http://site2/%'
+AND
+  next_index_time &#62;= &#60;current_time&#62;
+</PRE
+>
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-cleardb"
+>How to clear the database
+      <A
+NAME="AEN1177"
+></A
+></A
+></H2
+><P
+>To clear all information from the database,
+    use <KBD
+CLASS="userinput"
+>indexer -C</KBD
+>.
+    </P
+><P
+>&#13;    By default, <SPAN
+CLASS="application"
+>indexer</SPAN
+> asks 
+    for a confirmation if you are sure to delete data
+    from the database.
+<PRE
+CLASS="programlisting"
+>&#13;$ indexer -C
+You are going to delete content from the database(s):
+pgsql://root@/root/?dbmode=blob
+Are you sure?(YES/no)
+</PRE
+>
+    You can use the <TT
+CLASS="literal"
+>-w</TT
+> command line option
+    together with <TT
+CLASS="literal"
+>-C</TT
+> to force deleting data
+    without asking for confirmation: <KBD
+CLASS="userinput"
+>indexer -Cw</KBD
+>.
+    </P
+><P
+>&#13;    You may also delete only a part of the database.
+    All subsection control options are taking into account
+    when deleting data. For example:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -Cw -u http://site/% 
+</PRE
+>
+    will delete infomation about all documents from the
+    site <TT
+CLASS="literal"
+>http://site/</TT
+> without asking
+    for confirmation.
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-dbstat"
+>Database Statistics
+      <A
+NAME="AEN1192"
+></A
+></A
+></H2
+><P
+>If you run <TT
+CLASS="literal"
+>indexer -S</TT
+>,
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> will display the current database statistics,
+    including the number of total and expired documents for each HTTP
+    status:
+<PRE
+CLASS="programlisting"
+>&#13;$indexer -S
+
+          Database statistics [2008-12-21 15:35:34]
+
+    Status    Expired      Total
+   -----------------------------
+         0        883        971 Not indexed yet
+       200          0        891 OK
+       404          0       1585 Not found
+   -----------------------------
+     Total        883       3447
+</PRE
+>
+    It is also possible to see database statistic for a certain
+    moment of time in the future with help of the <TT
+CLASS="literal"
+>-j</TT
+>
+    command line argument, to check expiration period of the documents.
+    <TT
+CLASS="literal"
+>-j</TT
+> understands time in the format
+    <TT
+CLASS="literal"
+>YYYY-MM[-DD[ HH[:MM[:SS]]]]</TT
+>, or time offset
+    from the current time using the same format with the
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-period.html"
+>Period</A
+></B
+> command.
+    For example, 7d12h means <TT
+CLASS="literal"
+>seven days and 12 hours:</TT
+>
+<PRE
+CLASS="programlisting"
+>&#13;$indexer -S -j 7d12h
+
+          Database statistics [2008-12-29 03:44:19]
+
+    Status    Expired      Total
+   -----------------------------
+         0        971        971 Not indexed yet
+       200        891        891 OK
+       404       1585       1585 Not found
+   -----------------------------
+     Total       3447       3447
+</PRE
+>
+    From the above output we know that after
+    the given period of time all documents
+    in the database will have expired.
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    All subsection control options work together with <TT
+CLASS="literal"
+>-S</TT
+>.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+><P
+>The meaning of the various status values is given in this
+    list:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="literal"
+>0</TT
+> - a new document (not visited yet)
+    </P
+></LI
+></UL
+><P
+>If status is not <TT
+CLASS="literal"
+>0</TT
+>,
+    then it's a <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> response code <SPAN
+CLASS="application"
+>indexer</SPAN
+> got
+    when downloading this document. Some of the <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> codes are:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>200</TT
+> - <TT
+CLASS="literal"
+>OK</TT
+>
+          (the document was successfully downloaded)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>301</TT
+> - <TT
+CLASS="literal"
+>Moved Permanently</TT
+>
+            (redirect to another URL)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>302</TT
+> - <TT
+CLASS="literal"
+>Moved Temporarily</TT
+>
+          (redirect to another URL)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>303</TT
+> - <TT
+CLASS="literal"
+>See Other</TT
+>
+          (redirect to another URL)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>304</TT
+> - <TT
+CLASS="literal"
+>Not modified</TT
+>
+          (the document has not been modified since last visit)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>401</TT
+> - <TT
+CLASS="literal"
+>Authorization required</TT
+>
+          (use login/password for the given URL)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>403</TT
+> - <TT
+CLASS="literal"
+>Forbidden</TT
+>
+          (you have no access to this URL)
+        </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>404</TT
+> - <TT
+CLASS="literal"
+>Not found</TT
+>
+          (the document does not exist)
+        </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>500</TT
+> - <TT
+CLASS="literal"
+>Internal Server Error</TT
+>
+          (an error in a CGI script, etc)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>503</TT
+> - <TT
+CLASS="literal"
+>Service Unavailable</TT
+>
+          (host is down, connection timed out)
+    </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>504</TT
+> - <TT
+CLASS="literal"
+>Gateway Timeout</TT
+>
+          (read timeout happened during downloading the document)
+    </P
+></LI
+></UL
+><P
+>&#13;      <A
+NAME="AEN1264"
+></A
+>
+      <TT
+CLASS="literal"
+>HTTP 401</TT
+> means that this URL is password protected.
+      You can use the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-authbasic.html"
+>AuthBasic</A
+></B
+>
+      command in <TT
+CLASS="filename"
+>indexer.conf</TT
+> to specify the
+      <TT
+CLASS="literal"
+>login:password</TT
+> pair for this URL.
+    </P
+><P
+> <TT
+CLASS="literal"
+>HTTP 404</TT
+> means that you have a broken link
+      in one of your document (a reference to a resource that does not exist).
+    </P
+><P
+>Take a look at
+    <A
+HREF="http://www.w3.org/Protocols/"
+TARGET="_top"
+>HTTP specific documentation</A
+>
+    for the further information on <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status codes.
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-linkval"
+>Using <SPAN
+CLASS="application"
+>indexer</SPAN
+> for site validation
+      <A
+NAME="AEN1280"
+></A
+></A
+></H2
+><P
+>Run <KBD
+CLASS="userinput"
+>indexer -I</KBD
+> to display the 
+    list of URLs together with their referrers. It can be useful
+    to find broken links on your site.
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    If <A
+HREF="msearch-cmdref-holdbadhrefs.html"
+>HoldBadHrefs</A
+> is set to <TT
+CLASS="literal"
+>0</TT
+>,
+    link validation won't work.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    All subsection control options work together with <TT
+CLASS="literal"
+>-I</TT
+>.
+    For example, <TT
+CLASS="literal"
+>indexer -I -s 404</TT
+> will display
+    the list of the documents with <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status <TT
+CLASS="literal"
+>404 Not
+    found</TT
+> together with their referrers where the links to the
+    missing documents were found.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    You can use <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+    especially for link validation purposes.
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-parallel"
+>Running multiple <SPAN
+CLASS="application"
+>indexer</SPAN
+> instances for crawling
+      <A
+NAME="AEN1298"
+></A
+></A
+></H2
+><P
+>It is always safe to run multiple <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    processes with different <TT
+CLASS="filename"
+>indexer.conf</TT
+> 
+    files configured to use different databases
+    in the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+>.
+    </P
+><P
+>Some databases also allow to run multiple
+     <SPAN
+CLASS="application"
+>indexer</SPAN
+> crawling processes with the same
+     <TT
+CLASS="filename"
+>indexer.conf</TT
+> file. As of
+    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> version
+    <TT
+CLASS="literal"
+>3.3.8</TT
+>, it is possible with
+      <SPAN
+CLASS="application"
+>MySQL</SPAN
+>, <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="application"
+>Oracle</SPAN
+>.
+      Starting from version <TT
+CLASS="literal"
+>3.3.10</TT
+>,
+      multiple running <SPAN
+CLASS="application"
+>indexer</SPAN
+> crawling
+      processes is also possible with <SPAN
+CLASS="application"
+>Microsoft SQL Server</SPAN
+>.
+      <SPAN
+CLASS="application"
+>indexer</SPAN
+> uses locking mechanisms
+      provided by the database software
+      (such as <TT
+CLASS="literal"
+>SELECT FOR UPDATE</TT
+>,
+      <TT
+CLASS="literal"
+>LOCK TABLE</TT
+>, <TT
+CLASS="literal"
+>(TABLOCKX)</TT
+>)
+      when fetching crawling targets from the database.
+      This is done to avoid double crawling of the same documents
+      by simultaneous <SPAN
+CLASS="application"
+>indexer</SPAN
+> processes.
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> is known to work fine
+    with <TT
+CLASS="literal"
+>30</TT
+> simultaneous crawling
+    processes with <SPAN
+CLASS="application"
+>MySQL</SPAN
+>.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>It is not recommended to use the same database with
+    different <TT
+CLASS="filename"
+>indexer.conf</TT
+> files.
+    The first process can add new documents to the database,
+    while the second process can delete the same documents
+    because of different configuration. This process can never stop.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="general-parallel-threads"
+>Running <SPAN
+CLASS="application"
+>indexer</SPAN
+> with multiple threads
+      <A
+NAME="AEN1332"
+></A
+></A
+></H2
+><P
+>&#13;    You can start <SPAN
+CLASS="application"
+>indexer</SPAN
+> with multiple threads
+    using the <TT
+CLASS="literal"
+>-N</TT
+> command line option. For example,
+    <KBD
+CLASS="userinput"
+>indexer -N10</KBD
+> will start <TT
+CLASS="literal"
+>10</TT
+>
+    crawling threads, which means <TT
+CLASS="literal"
+>10</TT
+> documents
+    from different locations will be downloaded at the same time,
+    which improves crawling performance significantly.
+    </P
+><P
+>&#13;    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    Running <TT
+CLASS="literal"
+>10</TT
+> instances of <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    is effectively very similar to running a single <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    with <TT
+CLASS="literal"
+>10</TT
+> threads. You may notice some difference
+    though if you terminate (using <TT
+CLASS="literal"
+>Ctrl-Break</TT
+>)
+    or kill (using <SPAN
+CLASS="application"
+>kill(1)</SPAN
+>) <SPAN
+CLASS="application"
+>indexer</SPAN
+>,
+    or if <SPAN
+CLASS="application"
+>indexer</SPAN
+> crashes for some reasons (e.g. when
+    it hits some bug in the sources).  In case of separate processes
+    only one process will die and the alive processes will continue
+    crawling, while in case of a multi-threaded <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    all threads die and crawling completely stops.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-register.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-http-codes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Installation registration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>HTTP response codes <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> understands</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

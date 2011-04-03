@@ -1,0 +1,259 @@
+<sect1 id="templates-oper">
+  <title>Template operators</title>
+  <para>&mnogo;
+  template language provides a set of operators
+  making it possible to create templates with some logic.
+  </para>
+
+  <sect2 id="templates-if">
+    <title>Conditional operators</title>
+    <para>&mnogo;
+    supports a number of conditional operators in search templates:
+    <literal>IF</literal>,
+    <literal>IFCS</literal>,
+    <literal>IFNOT</literal>,
+    <literal>IFLIKE</literal>,
+    <literal>ELSEIF</literal> (<literal>ELIF</literal>),
+    <literal>ELSELIKE</literal> (<literal>ELIKE</literal>),
+    <literal>IFLE</literal>,
+    <literal>IFLT</literal>,
+    <literal>IFGE</literal>,
+    <literal>IFGT</literal>.
+    </para>
+    <para>
+    Comparison is performed case insensitively
+    for the operators
+    <literal>IF</literal>,
+    <literal>IFNOT</literal>,
+    <literal>IFLIKE</literal>,
+    <literal>ELSEIF</literal>,
+    <literal>ELSELIKE</literal>,
+    and case sensitively for
+    <literal>IFCS</literal>.
+    The operators
+    <literal>IFLE</literal>,
+    <literal>IFLT</literal>,
+    <literal>IFGE</literal>,
+    <literal>IFGT</literal> perform numeric comparison:
+    less-or-equal, less, greater-or-equal and greater
+    comparison correspondingly.
+    </para>
+
+    <para>
+      <title>Examples:</title>
+      <programlisting>
+&lt;!IF   NAME="Content-Type" Content="application/pdf"&gt;
+&lt;img src="pdf.png"&gt;
+&lt;!ELIF NAME="Content-Type" Content="text/plain"&gt;
+&lt;img src="text.png"&gt;
+&lt;!ENDIF&gt;
+
+&lt;!IFLIKE NAME="URL" CONTENT="http*"&gt;
+This is an HTTP address
+&lt;!ELIKE  NAME="URL" CONTENT="ftp*"&gt;
+This is an FTP address
+&lt;!ELSE&gt;
+This is an unknown address type&gt;
+&lt;!ENDIF&gt;
+</programlisting>
+    </para>
+
+    <para>It is possible to use nested conditional operators.
+    This gives much power for search template construction.
+    You can find some examples in the default template &search.htm-dist;.
+    </para>
+  </sect2>
+
+
+
+  <sect2 id="templates-oper-set">
+    <title>The <emphasis>SET</emphasis> operator</title>
+    <para>This operator is designed to set a variable value
+    from a constant, from another variable, or from
+    a more complex expression.
+    </para>
+    <para>
+      <title>Examples:</title>
+
+      <programlisting>
+&lt;!SET NAME="a" Content="Some string"&gt;
+&lt;!SET NAME="b" Content="Another string"&gt;
+&lt;!SET NAME="c" Content="$(a)"&gt;
+&lt;!SET NAME="d" Content="a is '$(a)', b is '$(b)', c is '$(c)'"&gt;
+      </programlisting>
+    </para>
+  </sect2>
+
+
+
+  <sect2 id="templates-oper-copy">
+    <title>The <emphasis>COPY</emphasis> operator</title>
+    <para>The <emphasis>COPY</emphasis> operator calculates the expression
+    given in the attribute <emphasis>CONTENT</emphasis>,
+    then treats this value as a name of another variable,
+    whose value is then copied into to the variable
+    with the name given in the attribute <emphasis>NAME</emphasis>.
+    </para>
+    <para>
+      <title>Examples:</title>
+<programlisting>
+&lt;!SET NAME="v1" CONTENT="The first value"&gt;
+&lt;!SET NAME="v2" CONTENT="The second value"&gt;
+&lt;!SET NAME="v3" CONTENT="The third value"&gt;
+&lt;!SET NAME="i"  CONTENT="2"&gt;
+&lt;!COPY NAME="value" CONTENT="v$(i)"&gt;
+Value="$(value)"
+</programlisting>
+      The above code will display this text:
+<programlisting>
+Value="The second value"
+</programlisting>
+    </para>
+  </sect2>
+
+
+  <sect2 id="templates-oper-inc">
+    <title>Arithmetic operators</title>
+    <para>Arithmetic operators
+    <literal>INC</literal> and <literal>DEC</literal>
+    respectively increment and decrement a variable value
+    treating it as an <emphasis>integer</emphasis> number.
+    </para>
+    <para>
+      <title>Examples:</title>
+<programlisting>
+&lt;!SET NAME="a" Content="10"&gt;a is $(a)
+&lt;!INC NAME="a"&gt;After increment, a is $(a)
+&lt;!DEC NAME="a"&gt;After decrement, a is $(a)
+</programlisting>
+    </para>
+    <para>Arithmetic operators
+    <literal>ADD</literal>,
+    <literal>SUB</literal>,
+    <literal>MUL</literal> perform integer addition,
+    subtraction and multiplication of two variables
+    specified in the <option>NAME</option> and
+    <option>CONTENT</option> attributes and write
+    the result back into the variable
+    specified in the <option>NAME</option> attribute.
+    </para>
+    <para>
+      <title>Examples:</title>
+<programlisting>
+&lt;!SET NAME="b" CONTENT="20"&gt;
+&lt;!SET NAME="a" CONTENT="10"&gt;
+&lt;!MUL NAME="a" CONTENT="$(b)"&gt;a*b=$(a)
+&lt;!SET NAME="a" CONTENT="10"&gt;
+&lt;!ADD NAME="a" CONTENT="$(b)"&gt;a+b=$(a)
+&lt;!SET NAME="a" CONTENT="10"&gt;
+&lt;!SUB NAME="a" CONTENT="$(b)"&gt;a-b=$(a)             
+</programlisting>
+    </para>
+  </sect2>
+
+
+
+  <sect2 id="templates-oper-loop">
+    <title>Loop operators</title>
+    <para>Three loop operators
+    <literal>WHILE</literal>,
+    <literal>WHILENOT</literal> and
+    <literal>FOR</literal> are available.
+    The <literal>FOR</literal> operator was
+    introduced in &mnogo;
+    <literal>3.3.0</literal>.
+    </para>
+    <para>
+      <title>Examples:</title>
+<programlisting>
+&lt;!SET      NAME="a" Content="10"&gt;
+&lt;!WHILENOT NAME="a" Content="0"&gt;
+  a is $(a)
+&lt;!DEC NAME="a"&gt;
+&lt;!ENDWHILE&gt;
+</programlisting>
+
+<programlisting>
+&lt;!FOR NAME="a" FROM="10" TO="20"&gt;a=$(a)&lt;!ENDFOR&gt;
+
+&lt;!SET NAME="from" CONTENT="80"&gt;
+&lt;!SET NAME="to" CONTENT="90"&gt;
+&lt;!FOR NAME="a" FROM="$(from)" TO="$(to)"&gt;a=$(a)&lt;!ENDFOR&gt;
+</programlisting>
+    </para>
+  </sect2>
+
+
+  <sect2 id="templates-oper-misc">
+    <title>Miscellaneous operators and functions</title>
+    <para>
+      <title><function>URLDECODE</function> -
+      decodes an <acronym>URL</acronym>-encoded string.</title>
+      All instances of the <literal>%##</literal> encoding
+      in the given string are decoded and the decoded
+      string is written into the variable specified in
+      the <option>NAME</option> attribute.
+    </para>
+    <para>
+      <title>Examples:</title>
+<programlisting>
+&lt;!URLDECODE NAME="decoded" Content="$(url)"&gt;URL is $(decoded)
+      </programlisting>
+    </para>
+    <para>
+     <title><function>HTMLENCODE</function> - converts
+    special characters to <acronym>HTML</acronym> entities</title>.
+    The conversion rules are:</para>
+    <itemizedlist>
+    <listitem><para><literal>&amp;</literal> becomes <literal>&amp;amp;</literal></para></listitem>
+    <listitem><para><literal>&lt;</literal> becomes <literal>&amp;lt;</literal></para></listitem>
+    <listitem><para><literal>&gt;</literal> becomes <literal>&amp;gt;</literal></para></listitem>
+    <listitem><para><literal>&quot;</literal> becomes <literal>&amp;quot;</literal></para></listitem>
+    </itemizedlist>
+    <para>
+      <title>Examples:</title>
+      <programlisting>
+&lt;!HTMLENCODE NAME="encoded" Content="$(url)"&gt;URL is $(encoded)
+      </programlisting>
+    </para>
+
+    <para>
+      <title><function>EREG</function> - Replaces a regular expression.
+      </title>
+<programlisting>
+&lt;!EREG NAME=&quot;a&quot; CONTENT=&quot;string&quot; MATCH=&quot;pattern&quot; RESULT=&quot;replacement&quot;&gt;
+</programlisting>
+    </para>
+    <para>
+    <function>EREG</function> scans the string given
+    in the <option>CONTENT</option> attribute for matches to the
+    string given in <option>MATCH</option> and stores
+    the matched text into variable given in
+    <option>NAME</option> using the <option>RESULT</option>
+    value as a replacement pattern. The replacement string can contain
+    substrings in the form <varname>$N</varname>,
+    where <varname>N</varname> is a decimal
+    digit <literal>0</literal>..<literal>9</literal>,
+    which is replaced to the text matching
+    the <literal>N-th</literal> parenthesized substring.
+    <varname>$0</varname> produces the entire
+    contents of matching string. The <option>CONTENT</option>
+    string can have references to other variables.
+    </para>
+    <para>
+      <title>Examples:</title>
+<programlisting>
+&lt;!SET NAME=&quot;str&quot; CONTENT=&quot;http://www.host.com/path/file.ext&quot;&gt;
+&lt;!EREG NAME=&quot;a&quot; CONTENT=&quot;$(str)&quot;
+MATCH=&quot;^([a-z]*)://([^/]*)/(.*)&quot; RESULT=&quot;scheme=$1; host=$2
+path+file=$3&quot;&gt;$(a)
+</programlisting>
+    will display:
+<programlisting>
+scheme=http host=www.host.com path=path/file.ext
+</programlisting>
+    </para>
+  </sect2>
+
+
+</sect1>

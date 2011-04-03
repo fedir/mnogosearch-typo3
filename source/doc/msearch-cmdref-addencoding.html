@@ -1,0 +1,315 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>AddEncoding</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="mnoGoSearch command reference"
+HREF="msearch-cmdref.html"><LINK
+REL="PREVIOUS"
+TITLE="AddType"
+HREF="msearch-cmdref-addtype.html"><LINK
+REL="NEXT"
+TITLE="Affix"
+HREF="msearch-cmdref-affix.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-addtype.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-affix.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="cmdref-addencoding"
+></A
+>AddEncoding</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN7241"
+></A
+><H2
+>Name</H2
+><B
+CLASS="command"
+>AddEncoding</B
+>&nbsp;--&nbsp;associates file names or extensions with encoding types<P
+><B
+></B
+><TT
+CLASS="filename"
+>indexer.conf</TT
+></P
+></DIV
+><DIV
+CLASS="refsynopsisdiv"
+><A
+NAME="AEN7247"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="command"
+>AddEncoding</B
+>  [String | Regex] [Case | NoCase] {encoding type} {pattern...}</P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN7258"
+></A
+><H2
+>Description</H2
+><P
+>The <B
+CLASS="command"
+>AddEncoding</B
+> command associates
+    the given file names or extensions (for the services that don't
+    automatically include them, like <TT
+CLASS="literal"
+>ftp://</TT
+> or <TT
+CLASS="literal"
+>file:///</TT
+>)
+    with the specified
+    <A
+HREF="msearch-content-enc.html"
+><I
+CLASS="firstterm"
+>content
+    encoding</I
+></A
+> types.
+    </P
+><P
+>The first two optional parameters specify comparison type.
+    The default comparison type is <TT
+CLASS="literal"
+>String</TT
+>
+    and <TT
+CLASS="literal"
+>Case</TT
+> (case insensitive string pattern match with
+                            <TT
+CLASS="literal"
+>?</TT
+> and <TT
+CLASS="literal"
+>*</TT
+>
+                            wildcards meaning <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>one character</I
+></SPAN
+>
+                            and
+                            <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>any number of characters</I
+></SPAN
+>
+                            correspondingly).
+    </P
+><P
+>&#13;    The <CODE
+CLASS="parameter"
+>pattern</CODE
+> parameter can be repeated multiple
+    times, to associate a content encoding type with multiple
+    extensions in a single command.
+    </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN7275"
+></A
+><H2
+>Scope</H2
+><P
+>&#13;     <B
+CLASS="command"
+>AddEncoding</B
+> takes global effect for the entire
+                                  configuration file and can be used
+                                  multiple times.
+    </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN7279"
+></A
+><H2
+>Examples</H2
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN7281"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;AddEncoding gzip      *.txt.gz
+AddEncoding compress  *.txt.Z
+    </PRE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN7283"
+></A
+><H2
+>See also</H2
+><P
+>&#13;      <A
+HREF="msearch-cmdref-addtype.html"
+>AddType</A
+>,
+      <A
+HREF="msearch-cmdref-mime.html"
+>Mime</A
+>,
+      <A
+HREF="msearch-cmdref-useremotecontenttype.html"
+>UseRemoteContentType</A
+>.
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-addtype.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-affix.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>AddType</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-cmdref.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Affix</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

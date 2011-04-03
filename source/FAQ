@@ -1,0 +1,91 @@
+Frequently Asked Questions
+--------------------------------------------------------------------------------
+
+How can I contribute to the project?
+There are several ways you can help. Visit "Help us" page. 
+--------------------------------------------------------------------------------
+
+If I have pages with no keywords in the META description, will the document 
+get indexed? 
+Yes. By default mnoGoSearch does index whole document. 
+By changing the default values you can give different weights to different 
+parts of the document: body, title, keywords, description. 
+--------------------------------------------------------------------------------
+
+
+
+When searching words in spanish (accentuated characters) with search.cgi 
+I get results like the following: If I search for "Espan~a", search.cgi 
+breaks the word in two parts, searching  for "Espa" and also for "a",
+ignoring "n~" (small Latin letter with tilde).
+
+Have you set local charset to 8859-1? If not, do so in both 
+indexer.conf and search.htm .
+
+--------------------------------------------------------------------------------
+
+
+Why indexer fails with the message like indexer: can't load library 
+'libmysqlclient.so.xxx'?  
+
+Most likely MySQL libraries are not in the linker search path.
+Find which directory libmysqlclient.so.xxx is installed into.
+Then
+- on Linux, add this directory into /etc/ld.so.conf,
+  and run ldconfig as root.
+
+- on FreeBSD, run ldconfig as a root, this way:
+  ldconig -m /usr/local/lib/mysql/lib/
+
+You can also set the value of environment variable LD_LIBRARY_PATH with
+the path to required dynamic libraries. This works on any OS. 
+
+Note that this is a general UNIX configuration issue, not only mnoGoSearch 
+specific. 
+
+
+--------------------------------------------------------------------------------
+
+What is the maximum size of server(s) mnoGoSearch can run with?
+
+Cache storage mode, introduced in 3.1.x, is able to index and search through 
+several millions documents. 
+--------------------------------------------------------------------------------
+
+I want to index multiple virtual domains on a single box. What settings do I 
+need to change for that? 
+
+It is fully supported. No special settings are required. 
+--------------------------------------------------------------------------------
+
+Is it possible to use different templates for searches, i.e. view search 
+results in the design of different sites without having to recompile 
+search.cgi?  There are actually several ways to do it. They are given here 
+in the order how search.cgi detects template name. 
+
+search.cgi checks environment variable UDMSEARCH_TEMPLATE. Thus you can 
+enter a path to desired search template into this variable. 
+
+search.cgi also supports Apache internal redirect. It checks REDIRECT_STATUS 
+and REDIRECT_URL environment variables. To activate this template option you 
+may add these lines to Apache srm.conf: 
+
+AddType text/html .zhtml
+AddHandler zhtml .zhtml
+Action zhtml /cgi-bin/search.cgi
+
+Put search.cgi into your /cgi-bin/ directory. Then put HTML template into 
+your site directory structure under any name with .zhtml extension, for 
+example template.zhtml. Now you may open search page: 
+http://www.site.com/path/to/template.zhtml 
+Of course you may use any available extension instead of .zhtml. 
+
+If the above two ways fail, search.cgi will open a template which has the 
+same name with the script being executed using SCRIPT_NAME environment 
+variable. search.cgi will open a template ETC/search.htm, search1.cgi will 
+open ETC/search1.htm and so on, where ETC is mnoGoSearch /etc directory 
+(usually /usr/local/mnogosearch/etc). So, you can use the same search.cgi 
+with different templates without having to recompile it. Just create one or 
+several hard or symbolic links for search.cgi or copy it under different 
+names then put correspondent search templates into /etc directory of 
+mnoGoSearch installation. 

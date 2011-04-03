@@ -1,0 +1,155 @@
+<sect1 id="http-codes">
+  <title>
+  HTTP response codes &mnogo; understands
+  </title>
+  <para>This sections describes how
+    &mnogo;
+    processes various HTTP codes at crawling time.
+  </para>
+  <itemizedlist>
+    <listitem>
+      <para><literal>200 OK</literal></para>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <para>If the <option>-m</option> command line argument
+           ("force reindex") specified, GOTO 4.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Comparing the new checksum with the old one stored in database
+          </para>
+        </listitem>
+        <listitem>
+          <para>If the checksum are the equal,
+           <varname>next_index_time</varname>=
+           <literal>Now()</literal> +
+           <command><xref linkend="cmdref-period"/></command>, GOTO 7.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Parsing the document, creating word list and
+            adding all found links into the <literal>url</literal>
+            table.
+            </para>
+        </listitem>
+        <listitem>
+          <para>
+           Updating all information about the document
+           in the database.
+          </para>
+        </listitem>
+        <listitem>
+          <para>Done</para>
+        </listitem>
+      </orderedlist>
+    </listitem>
+    <listitem>
+      <para><literal>304 Not Modified</literal></para>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <para>
+            <varname>next_index_time</varname>=<literal>now()</literal>
+            + <command><xref linkend="cmdref-period"/></command>.
+           </para>
+        </listitem>
+        <listitem>
+          <para>Done</para>
+        </listitem>
+      </orderedlist>
+    </listitem>
+    <listitem>
+      <literallayout>
+<literal>301 Moved Permanently</literal>
+<literal>302 Moved Temporarily</literal>
+<literal>303 See Other</literal>
+      </literallayout>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <para>
+          Deleting word and section information about the document.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <varname>next_index_time</varname> = 
+            <literal>Now()</literal> +
+            <command><xref linkend="cmdref-period"/></command>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Adding the URL from the <literal>Location: </literal> header
+            into the database.
+          </para>
+        </listitem>
+        <listitem>
+          <para>Done</para>
+        </listitem>
+      </orderedlist>
+    </listitem>
+    <listitem>
+      <literallayout>
+<literal>300 Multiple Choices</literal>
+<literal>305 Use Proxy (proxy redirect)</literal>
+<literal>400 Bad Request</literal>
+<literal>401 Unauthorized</literal>
+<literal>402 Payment Required</literal>
+<literal>403 Forbidden</literal>
+<literal>404 Not found</literal>
+<literal>405 Method Not Allowed</literal>
+<literal>406 Not Acceptable</literal>
+<literal>407 Proxy Authentication Required</literal>
+<literal>408 Request Timeout</literal>
+<literal>409 Conflict</literal>
+<literal>410 Gone</literal>
+<literal>411 Length Required</literal>
+<literal>412 Precondition Failed</literal>
+<literal>413 Request Entity Too Large</literal>
+<literal>414 Request-URI Too Long</literal>
+<literal>415 Unsupported Media Type</literal>
+<literal>500 Internal Server Error</literal>
+<literal>501 Not Implemented</literal>
+<literal>502 Bad Gateway</literal>
+<literal>505 Protocol Version Not Supported</literal>
+</literallayout>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <para>
+            Deleting all word and section information
+            about this document.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <varname>next_index_time</varname>=
+            <literal>Now()</literal> + 
+            <command><xref linkend="cmdref-period"/></command>
+          </para>
+        </listitem>
+        <listitem>
+          <para>Done</para>
+        </listitem>
+      </orderedlist>
+    </listitem>
+    <listitem>
+<literallayout>
+<literal>503 Service Unavailable</literal>
+<literal>504 Gateway Timeout</literal>
+</literallayout>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <para>
+            <varname>next_index_time</varname>=
+            <literal>Now()</literal> + 
+            <command><xref linkend="cmdref-neterrordelaytime"/></command>
+          </para>
+        </listitem>
+        <listitem>
+          <para>Done</para>
+        </listitem>
+      </orderedlist>
+    </listitem>
+  </itemizedlist>
+</sect1>

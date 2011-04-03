@@ -1,0 +1,143 @@
+--
+-- Use:
+--     db2 -td";" -vf create.sql 
+--
+
+CREATE TABLE DICT (
+	URL_ID INTEGER NOT NULL,
+	WORD   VARCHAR (32) NOT NULL,
+	INTAG  INTEGER NOT NULL )
+DATA CAPTURE NONE;
+CREATE INDEX DICT_URL_ID ON DICT (URL_ID ASC) PCTFREE 10 MINPCTUSED 10;
+CREATE INDEX DICT_WORD ON DICT (WORD ASC) PCTFREE 10 MINPCTUSED 10;
+
+CREATE TABLE crossdict (
+  url_id INT NOT NULL,
+  ref_id INT NOT NULL,
+  word  varchar(32) NOT NULL,
+  intag  INT NOT NULL
+);
+CREATE INDEX crossdict_url_id ON crossdict (url_id);
+CREATE INDEX crossdict_ref_id ON crossdict (ref_id);
+CREATE INDEX crossdict_word   ON crossdict (word);
+	
+
+CREATE TABLE bdict (
+	word VARCHAR(255) NOT NULL,
+	secno INT NOT NULL,
+	intag BLOB(128M) NOT NULL
+);
+CREATE INDEX bdict_word ON bdict (word);
+
+CREATE TABLE qcache (
+  id       INT NOT NULL,
+  tm       INT NOT NULL,
+  doclist  BLOB(128M) NOT NULL,
+  wordinfo CLOB(128M) NOT NULL,
+  PRIMARY KEY (id,tm)
+);
+CREATE INDEX key_qcache_tmstamp ON qcache(tm);
+
+
+CREATE TABLE URL (
+	"REC_ID"  INTEGER  NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1,INCREMENT BY 1, NO CACHE), 
+	"STATUS"  INTEGER  NOT NULL WITH DEFAULT 0, 
+	"DOCSIZE" INTEGER  NOT NULL WITH DEFAULT 0,
+	"NEXT_INDEX_TIME" INTEGER  NOT NULL  WITH DEFAULT 0, 
+	"LAST_MOD_TIME" INTEGER  NOT NULL  WITH DEFAULT 0, 
+	"REFERRER" INTEGER  NOT NULL  WITH DEFAULT 0, 
+	"HOPS" INTEGER  NOT NULL  WITH DEFAULT 0, 
+	"CRC32" INTEGER  NOT NULL  WITH DEFAULT -1,
+	"SEED"  INTEGER  NOT NULL  WITH DEFAULT 0,
+	"BAD_SINCE_TIME" INTEGER NOT NULL WITH DEFAULT 0,
+	"SITE_ID" INTEGER NOT NULL WITH DEFAULT 0,
+	"SERVER_ID" INTEGER NOT NULL WITH DEFAULT 0,
+	"SHOWS" INTEGER NOT NULL WITH DEFAULT 0,
+	"POP_RANK" FLOAT NOT NULL WITH DEFAULT 0,
+	"URL" VARCHAR (128)  NOT NULL  WITH DEFAULT , 
+	PRIMARY KEY (REC_ID))  
+DATA CAPTURE NONE;
+
+CREATE UNIQUE INDEX URL_URL      ON URL (URL ASC) PCTFREE 10 MINPCTUSED 10;
+CREATE INDEX URL_CRC32           ON URL (CRC32 ASC) PCTFREE 10 MINPCTUSED 10;
+CREATE INDEX URL_SEED            ON URL (SEED ASC) PCTFREE 10 MINPCTUSED 10;
+CREATE INDEX URL_REFERRER        ON URL (referrer);
+CREATE INDEX url_next_itime      ON url (next_index_time);
+CREATE INDEX url_status          ON url (status);
+CREATE INDEX url_bad_since_time  ON url (bad_since_time);
+CREATE INDEX url_hops            ON url (hops);
+CREATE INDEX url_siteid          ON url (site_id);
+CREATE INDEX url_server_id       ON url (server_id);
+
+CREATE TABLE URLINFO (
+    URL_ID  INTEGER      NOT NULL,
+    SNAME   VARCHAR(96)   NOT NULL,
+    SVAL    CLOB NOT NULL
+);
+CREATE INDEX urlinfo_id ON URLINFO (URL_ID);
+
+CREATE TABLE SERVER (
+    rec_id     int           not null primary key,
+    enabled    int           not null default 0,
+    url        varchar(2000) not null default '',
+    tag        varchar(96)   not null default '',
+    category   int           not null default 0,
+    command    char(1)       not null default 'S',
+    ordre      int           not null default 0,
+    parent     int           not null default 0,
+    weight     float         not null default 1,
+    pop_weight float         not null default 0
+);
+CREATE INDEX srv_ordre    ON SERVER (ordre);
+CREATE INDEX srv_parent   ON SERVER (parent);
+CREATE INDEX srv_command  ON SERVER (command);
+CREATE INDEX srv_tag      ON SERVER (tag);
+CREATE INDEX srv_category ON SERVER (category);
+
+CREATE TABLE srvinfo (
+  srv_id int           NOT NULL,
+  sname  varchar(96)   NOT NULL,
+  sval   varchar(2000) NOT NULL
+);
+CREATE INDEX srvinfo_id ON srvinfo (srv_id);
+
+CREATE TABLE links (
+ ot     int   not null,
+ k      int   not null,
+ weight float not null default 0
+);
+CREATE UNIQUE INDEX links_links ON links (ot, k);
+CREATE INDEX links_ot ON links (ot);
+CREATE INDEX links_k ON links (k);
+
+CREATE TABLE categories (
+ rec_id     INTEGER  NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1,INCREMENT BY 1, NO CACHE),
+ path   varchar(10)  NOT NULL DEFAULT '',
+ link   varchar(10)  NOT NULL DEFAULT '',
+ name   varchar(64)  NOT NULL  DEFAULT ''
+);
+
+CREATE TABLE wrdstat (
+  word varchar(64) NOT NULL,
+  snd varchar(64) NOT NULL,
+  cnt int NOT NULL
+);
+CREATE INDEX wrdstat_word ON wrdstat (word);
+CREATE INDEX wrdstat_snd  ON wrdstat (snd);
+
+CREATE TABLE qtrack (
+  "REC_ID"  INTEGER  NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1,INCREMENT BY 1, NO CACHE), 
+  ip     VARCHAR(16)    NOT NULL,
+  qwords VARCHAR(2000) NOT NULL,
+  qtime  INT            NOT NULL,
+  wtime  INT            NOT NULL,
+  found  INT            NOT NULL
+);
+CREATE INDEX qtrack_ipt ON qtrack(ip,qtime);
+				
+CREATE TABLE qinfo (
+  q_id  INT NOT NULL,
+  name    VARCHAR(64),
+  sval    VARCHAR(2000)
+);
+CREATE INDEX qinfo_id ON qinfo (q_id);

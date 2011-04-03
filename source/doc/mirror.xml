@@ -1,0 +1,141 @@
+<sect2 id="mirror">
+  <title>Mirroring
+  <indexterm><primary>Mirroring</primary></indexterm>
+  </title>
+
+
+  <sect3 id="mirror-creating">
+    <title>Creating a mirror
+    </title>
+  
+    <para>
+      <indexterm><primary>Command</primary><secondary>MirrorRoot</secondary></indexterm>
+      &mnogo; supports some mirroring functionality.
+      To enable mirroring, you can specify the path where &indexer;
+      will create the mirrors of your sites with help of the
+      <xref linkend="cmdref-mirrorroot"/> command. For example: 
+<programlisting>
+MirrorRoot /path/to/mirror
+</programlisting>
+    </para>
+    <para>
+      <indexterm><primary>Command</primary><secondary>MirrorHeadersRoot</secondary></indexterm>
+      You can also configure &indexer; to store &http; headers on the disk.
+      This can be helpful if you want to use the local mirror for quick
+      reindexing of the remote site. Use the <xref linkend="cmdref-mirrorroot"/> command
+      to activate storing the &http; headers. For example:
+<programlisting>
+MirrorHeadersRoot /path/to/headers
+</programlisting>
+    </para>
+    <note>
+     <para>
+      <xref linkend="cmdref-mirrorroot"/> and
+      <xref linkend="cmdref-mirrorheadersroot"/> can point to the same directory.
+     </para>
+    </note>
+  
+    <note>
+    <para>&indexer; 
+    does not download more than <xref linkend="cmdref-maxdocsize"/>
+    bytes from every documents. If a document is larger,
+    it will be only partially downloaded. Make sure
+    that <xref linkend="cmdref-maxdocsize"/> is large enough if you
+    want to use the mirror created by <application></application> as a real
+    site mirror.
+    </para>
+    </note>
+  </sect3>
+
+
+  
+  <sect3 id="mirror-as-cache">
+    <title>Using a mirror as crawler cache.
+    <indexterm><primary>Mirroring</primary></indexterm>
+    </title>
+  
+    <para>
+      <indexterm><primary>Command</primary><secondary>MirrorPeriod</secondary></indexterm>
+      &mnogo; can use a previously created
+      mirror as a crawler cache. It can be useful when you do experiments
+      with &mnogo; to find the best 
+      configuration: you modify your &indexer.conf;,
+      then clear the database and index the same sites again.
+      To reduce Internet traffic you can activate loading documents
+      from the mirror using the <xref linkend="cmdref-mirrorperiod"/> command.
+      For example:
+<programlisting>
+MirrorPeriod 2h
+</programlisting>
+    </para>
+  
+    <para>
+     <xref linkend="cmdref-mirrorperiod"/> specify the period of time
+     when &indexer; considers the local mirrored copy
+     of a document as valid. If &indexer; finds that
+     the local mirrored copy is fresh enough, it will not download
+     the same document again and use the local copy instead.
+     If the local is older than <xref linkend="cmdref-mirrorperiod"/> says,
+     then &indexer; will download the document
+     from its original location again, and update the locally mirrored copy.
+    </para>
+  
+    <para> If <xref linkend="cmdref-mirrorheadersroot"/> is not specified
+    and therefore the original &http; headers are not available,
+    then &indexer; will detect <literal>Content-Type</literal>
+    of a document using the <xref linkend="cmdref-addtype"/> commands.
+    </para>
+  
+    <para>The parameter <xref linkend="cmdref-mirrorperiod"/>
+    should be in the form: <literal>xxxA[yyyB[zzzC]]</literal>, where
+    <literal>xxx</literal>, <literal>yyy</literal>,
+    <literal>zzz</literal> are numbers (can be negative!).
+    Spaces are allowed between <literal>xxx</literal> and
+    <literal>A</literal> and <literal>yyy</literal> and so on.
+    <literal>A</literal>, <literal>B</literal>,
+    <literal>C</literal> can be one of the following:
+<programlisting>
+    s - second
+    M - minute
+    h - hour
+    d - day
+    m - month
+    y - year
+</programlisting>
+    </para>
+
+    <note>
+    <para>The letters are similar to the
+     descriptors understood by the
+     <function>strptime()</function>
+     and <function>strftime()</function> C functions.
+    </para>
+    </note>
+    <para>Examples:
+<programlisting>
+15s - 15 seconds
+4h30M - 4 hours and 30 minutes
+1y6m-15d - 1 year and six month minus 15 days
+1h-10M+1s - 1 hour minus 10 minutes plus 1 second
+</programlisting>
+    </para>
+    <para>If you specify only a number without any characters,
+    it is assumed that the time is given in seconds.
+    </para>
+
+    <note>
+    <para>If you start mirroring in a already existing
+    database, &indexer; will refuse
+    to create the mirror immediately because of the
+    traffic optimization method described at
+    <xref linkend="general-crawling-optimization"/>.
+    You can run <userinput>indexer -am</userinput> once
+    to turn off optimization, or clear the database
+    using <userinput>indexer -C</userinput> and then
+    run &indexer; without any arguments.
+    </para>
+    </note>
+  </sect3>
+
+</sect2>
+

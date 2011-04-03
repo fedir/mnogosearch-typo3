@@ -1,0 +1,294 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" [
+  <!ENTITY intro SYSTEM "intro.xml">
+  <!ENTITY install SYSTEM "install.xml">
+  <!ENTITY general SYSTEM "general.xml">
+  <!ENTITY httpcodes SYSTEM "httpcodes.xml">
+  <!ENTITY content-enc SYSTEM "content-enc.xml">
+  <!ENTITY htmlparser SYSTEM "htmlparser.xml">
+  <!ENTITY follow SYSTEM "follow.xml">
+  <!ENTITY aliases SYSTEM "aliases.xml">
+  <!ENTITY servertable SYSTEM "servertable.xml">
+  <!ENTITY parsers SYSTEM "parsers.xml">
+  <!ENTITY news SYSTEM "news.xml">
+  <!ENTITY mp3 SYSTEM "mp3.xml">
+  <!ENTITY htdb SYSTEM "htdb.xml">
+  <!ENTITY exec SYSTEM "exec-cgi.xml">
+  <!ENTITY mirror SYSTEM "mirror.xml">
+  <!ENTITY dump-restore SYSTEM "dump-restore.xml">
+  <!ENTITY syslog SYSTEM "syslog.xml">
+  <!ENTITY itips SYSTEM "itips.xml">
+  <!ENTITY stored SYSTEM "stored.xml">
+  <!ENTITY sql-stor SYSTEM "sql-stor.xml">
+  <!ENTITY cachemode SYSTEM "cachemode.xml">
+  <!ENTITY cluster SYSTEM "cluster.xml">
+  <!ENTITY perf SYSTEM "perf.xml">
+  <!ENTITY oracle SYSTEM "oracle.xml">
+  <!ENTITY db2 SYSTEM "db2.xml">
+  <!ENTITY categories SYSTEM "categories.xml">
+  <!ENTITY tags SYSTEM "tags.xml">
+  <!ENTITY charset SYSTEM "charset.xml">
+  <!ENTITY negotiation SYSTEM "negotiation.xml">
+  <!ENTITY search SYSTEM "search.xml">
+  <!ENTITY tmpl SYSTEM "templates.xml">
+  <!ENTITY html-design SYSTEM "html-design.xml">
+  <!ENTITY operators SYSTEM "operators.xml">
+  <!ENTITY relevancy SYSTEM "relevancy.xml">
+  <!ENTITY tracking SYSTEM "tracking.xml">
+  <!ENTITY cache SYSTEM "cache.xml">
+  <!ENTITY fuzzy SYSTEM "fuzzy.xml">
+  <!ENTITY bugs SYSTEM "bugs.xml">
+  <!ENTITY lib SYSTEM "lib.xml">
+  <!ENTITY index SYSTEM "index.xml">
+  <!ENTITY cjk SYSTEM "cjk.xml">
+  <!ENTITY dbschema SYSTEM "dbschema.xml">
+  <!ENTITY envvars SYSTEM "envvars.xml">
+  <!ENTITY vary SYSTEM "vary.xml">
+  <!ENTITY indexcmd SYSTEM "indexcmd.xml">
+  <!ENTITY cmdref SYSTEM "cmdref.xml">
+  <!ENTITY udmstemmer SYSTEM "udmstemmer.xml">
+  <!ENTITY changelog SYSTEM "changelog.xml">
+  <!ENTITY c-api SYSTEM "c-api.xml">
+
+  <!ENTITY Version           "Version">
+  <!ENTITY Description       "Description">
+
+  <!ENTITY reftitle.changelog    '<title>ChangeLog</title>'>
+  <!ENTITY reftitle.classes      '<title>Predefined Classes</title>'>
+  <!ENTITY reftitle.constants    '<title>Predefined Constants</title>'>
+  <!ENTITY reftitle.constructor  '<title>Constructor</title>'>
+  <!ENTITY reftitle.description  '<title>Description</title>'>
+  <!ENTITY reftitle.examples     '<title>Examples</title>'>
+  <!ENTITY reftitle.exceptions   '<title>Exceptions</title>'>
+  <!ENTITY reftitle.install      '<title>Installation</title>'>
+  <!ENTITY reftitle.intro        '<title>Introduction</title>'>
+  <!ENTITY reftitle.methods      '<title>Methods</title>'>
+  <!ENTITY reftitle.parameters   '<title>Parameters</title>'>
+  <!ENTITY reftitle.properties   '<title>Properties</title>'>
+  <!ENTITY reftitle.required     '<title>Requirements</title>'>
+  <!ENTITY reftitle.resources    '<title>Resource Types</title>'>
+  <!ENTITY reftitle.runtime      '<title>Runtime Configuration</title>'>
+  <!ENTITY reftitle.returnvalues '<title>Return Values</title>'>
+  <!ENTITY reftitle.seealso      '<title>See Also</title>'>
+  <!ENTITY reftitle.notes        '<title>Notes</title>'>
+  <!ENTITY reftitle.errors       '<title>Errors</title>'>
+  <!ENTITY example.outputs.similar '<para>The above example will output something similar to:</para>'>
+
+  <!ENTITY mnogo                 '<application>mnoGoSearch</application>'>
+  <!ENTITY indexer               '<application>indexer</application>'>
+  <!ENTITY search.cgi            '<application>search.cgi</application>'>
+  <!ENTITY indexer.conf          '<filename>indexer.conf</filename>'>
+  <!ENTITY indexer.conf-dist     '<filename>indexer.conf-dist</filename>'>
+  <!ENTITY search.htm            '<filename>search.htm</filename>'>
+  <!ENTITY search.htm-dist       '<filename>search.htm-dist</filename>'>
+  <!ENTITY site                  'http://www.mnogosearch.org/'>
+
+  <!ENTITY stdin                 '<filename>STDIN</filename>'>
+  <!ENTITY stdout                '<filename>STDOUT</filename>'>
+  <!ENTITY stderr                '<filename>STDERR</filename>'>
+
+  <!ENTITY http                  '<acronym>HTTP</acronym>'>
+  <!ENTITY https                 '<acronym>HTTPS</acronym>'>
+  <!ENTITY ftp                   '<acronym>FTP</acronym>'>
+  <!ENTITY htdb                  '<acronym>HTDB</acronym>'>
+  <!ENTITY sql                   '<acronym>SQL</acronym>'>
+  <!ENTITY url                   '<acronym>URL</acronym>'>
+  <!ENTITY urls                  '<acronym>URLs</acronym>'>
+  <!ENTITY html                  '<acronym>HTML</acronym>'>
+  <!ENTITY sgml                  '<acronym>SGML</acronym>'>
+  <!ENTITY xml                   '<acronym>XML</acronym>'>
+  <!ENTITY cgi                   '<acronym>CGI</acronym>'>
+  <!ENTITY ssi                   '<acronym>SSI</acronym>'>
+  <!ENTITY ram                   '<acronym>RAM</acronym>'>
+  <!ENTITY cpu                   '<acronym>CPU</acronym>'>
+  <!ENTITY rpm                   '<acronym>RPM</acronym>'>
+  <!ENTITY rss                   '<acronym>RSS</acronym>'>
+
+  <!ENTITY crc32                 '<function>CRC32</function>'>
+
+  <!ENTITY id                    '<varname>ID</varname>'>
+
+  <!ENTITY scheme-http           '<literal>http://</literal>'>
+  <!ENTITY scheme-https          '<literal>https://</literal>'>
+  <!ENTITY scheme-ftp            '<literal>ftp://</literal>'>
+  <!ENTITY scheme-file           '<literal>file:///</literal>'>
+  <!ENTITY scheme-exec           '<literal>exec:/</literal>'>
+  <!ENTITY scheme-cgi            '<literal>cgi:/</literal>'>
+  <!ENTITY scheme-htdb           '<literal>htdb:/</literal>'>
+
+
+  <!ENTITY os-linux              '<application>Linux</application>'>
+  <!ENTITY os-unix               '<application>UNIX</application>'>
+  <!ENTITY os-windows            '<application>Windows</application>'>
+  <!ENTITY os-freebsd            '<application>FreeBSD</application>'>
+
+  <!ENTITY app-mysql             '<application>MySQL</application>'>
+  <!ENTITY app-pgsql             '<application>PostgreSQL</application>'>
+  <!ENTITY app-oracle            '<application>Oracle</application>'>
+  <!ENTITY app-sqlite            '<application>SQLite</application>'>
+  <!ENTITY app-db2               '<application>IBM DB2</application>'>
+  <!ENTITY app-sybase            '<application>Sybase</application>'>
+  <!ENTITY app-mssql             '<application>Microsoft SQL Server</application>'>
+  <!ENTITY app-interbase         '<application>Interbase</application>'>
+  <!ENTITY app-mimer             '<application>MimerSQL</application>'>
+  <!ENTITY app-virtuoso          '<application>OpenLink Virtuoso</application>'>
+  <!ENTITY app-monetdb           '<application>MonetDB</application>'>
+  <!ENTITY app-freetds           '<application>FreeTDS</application>'>
+  <!ENTITY app-odbc              '<application>ODBC</application>'>
+  <!ENTITY app-php               '<application>PHP</application>'>
+  <!ENTITY app-ispell            '<application>Ispell</application>'>
+  <!ENTITY app-iodbc             '<application>iODBC</application>'>
+  <!ENTITY app-unixodbc          '<application>unixODBC</application>'>
+  <!ENTITY app-valgrind          '<application>Valgrind</application>'>
+  <!ENTITY app-cvs               '<application>CVS</application>'>
+
+  <!ENTITY def-is                'The default value is'>
+  <!ENTITY def-is-yes            'The default value is <literal>yes</literal>'>
+  <!ENTITY def-is-no             'The default value is <literal>no</literal>'>
+  <!ENTITY def-is-0              'The default value is <literal>0</literal>'>
+  <!ENTITY def-is-1              'The default value is <literal>1</literal>'>
+
+  <!ENTITY scope-global-multiple 'takes global effect for the entire
+                                  configuration file and can be used
+                                  multiple times'>
+  <!ENTITY scope-global-single   'takes global effect for the entire
+                                  configuration file and should be used
+                                  only one time'>
+  <!ENTITY scope-server-until-next 'affects all
+                                    &cmd-server; and &cmd-realm; commands
+                                    until the end of the configuration file,
+                                    or until the next'>
+
+  <!ENTITY arg-yesno     '<group choice="req"><arg>yes</arg><arg>no</arg></group>'>
+  <!ENTITY match-nomatch '<group><arg>Match</arg><arg>NoMatch</arg></group>'>
+  <!ENTITY case-nocase   '<group><arg>Case</arg><arg>NoCase</arg></group>'>
+  <!ENTITY string-regex  '<group><arg>String</arg><arg>Regex</arg></group>'>
+  <!ENTITY prefix-regex  '<group><arg>Prefix</arg><arg>Regex</arg></group>'>
+  <!ENTITY ci-wild-pattern 'case insensitive string pattern match with
+                            <literal>?</literal> and <literal>*</literal>
+                            wildcards meaning <emphasis>one character</emphasis>
+                            and
+                            <emphasis>any number of characters</emphasis>
+                            correspondingly'>
+
+  <!ENTITY cmd-server '<command><xref linkend="cmdref-server"/></command>'>
+  <!ENTITY cmd-section '<command><xref linkend="cmdref-section"/></command>'>
+  <!ENTITY cmd-realm  '<command><xref linkend="cmdref-realm"/></command>'>
+  <!ENTITY cmd-dbaddr '<command><xref linkend="cmdref-dbaddr"/></command>'>
+  <!ENTITY sec-search-parameters '<link linkend="search-params">search parameters</link>'>
+  <!ENTITY hdr-content-type '<varname>Content-Type</varname> &http; response header'>
+
+]>
+<book>
+  <bookinfo>
+    <title>&mnogo; 3.3.11 reference manual</title>
+    <subtitle>Full-featured search engine software</subtitle>
+    <copyright>
+      <year>2001-2010</year>
+      <holder>Lavtech.com corp.</holder>
+    </copyright>
+  </bookinfo>
+
+&intro;
+&install;
+
+<chapter id="indexing">
+  <title>Indexing</title>
+  &general;
+  &httpcodes;
+  &content-enc;
+
+  <sect1 id="indexer-configuration">
+    <title>indexer configuration</title>
+    &follow;
+    &aliases;
+    &servertable;
+    <!--&parsers;-->
+  </sect1>
+  &syslog;
+  &itips;
+  &stored;
+</chapter>
+
+<chapter id="extended-indexing">
+  <title>Extended indexing features</title>
+    &news;
+    &mp3;
+    &htdb;
+    &exec;
+    &mirror;
+    &dump-restore;
+</chapter>
+
+&htmlparser;
+&parsers;
+
+<chapter id="howstore">
+  <title>Storing &mnogo; data </title>
+  &sql-stor;
+  &cachemode;
+  &perf;
+  &oracle;
+  &db2;
+</chapter>
+
+
+<chapter id="subsections">
+  <title>Subsections</title>
+  &categories;
+  &tags;
+</chapter>
+
+
+<chapter id="international">
+  <title>Multiple languages support</title>
+  &charset;
+  &negotiation;
+  &cjk;
+  &vary;
+</chapter>
+
+
+<chapter id="doingsearch">
+  <title>Searching documents</title>
+  &search;
+  &tmpl;
+  &html-design;
+  &operators;
+  &relevancy;
+  &tracking;
+  &cache;
+  &fuzzy;
+</chapter>
+
+
+&cluster;
+
+
+<chapter id="misc">
+  <title>Miscellaneous</title>
+  &envvars;
+  &lib;
+  &udmstemmer;
+  &dbschema;
+  &bugs;
+</chapter>
+
+<part id="reference">
+  <title>Reference</title>
+
+  <reference id="cmdref">
+  <title>&mnogo; command reference</title>
+  &cmdref;
+  </reference>
+
+  <reference id="c-api">
+  <title>&mnogo; C API function reference</title>
+  &c-api;
+  </reference>
+
+</part>
+
+&changelog;
+&index;
+
+</book>

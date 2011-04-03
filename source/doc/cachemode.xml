@@ -1,0 +1,22 @@
+<sect1 id="cachemode">
+  <title>Cache mode storage</title>
+  <indexterm><primary>Storage modes</primary><secondary>cache mode</secondary></indexterm>
+
+  <para>
+   Starting from version 3.2.16 &mnogo;
+   does not support the so called cache mode anymore. Cache mode used its own
+   storage engine to store the words index. It was in many cases faster
+   than the SQL-based words index, but it was very buggy and unstable,
+   and in fact it was almost impossible to use it in a serious production environment.
+   The decision was made to stop supporting cache mode and to concentrate on improving
+   the SQL-based modes.
+  </para>
+
+  <para>
+   Starting from version 3.2.36 &mnogo;
+   supports <literal>DBMode=blob</literal> for both indexing and search. It is a replacement
+   for the old cache mode, which is both fast and stable.
+  </para>
+
+</sect1>
+

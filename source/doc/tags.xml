@@ -1,0 +1,151 @@
+<sect1 id="tags">
+
+  <title>Tags</title>
+  <indexterm><primary>Tags</primary></indexterm>
+  <para>Tag is a special character string parameter
+    which can be assigned to a set
+    of documents to group them into a logical subsection of the
+    search database. At search time you can specify a
+    tag value to limit searches to only a desired group.
+    You can also pass the tag limit to 
+    &indexer; to have it
+    re-crawl only the given group of the documents,
+    or perform any other actions on the group,
+    like watching statistics for the group,
+    deleting the documents belonging to the group and so on.
+  </para>
+
+  <sect2 id="tags-adding">
+    <title>Adding tags</title>
+    <para>
+    Use the <command><xref linkend="cmdref-tag"/></command>
+    command in &indexer.conf; to assign
+    a tag value to a site, a site part, or a group of sites.
+    For example:
+<programlisting>
+Tag cars
+Server http://www.ford.com/
+Server http://www.toyota.com/
+
+Tag computers
+Server http://www.sun.com/
+Server http://www.apple.com/
+</programlisting>
+    </para>
+  </sect2>
+    
+  <sect2 id="tags-search">
+    <title>Using tags at search time</title>
+    <para>
+    When sending a search query, you can specify a tag value
+    to limit searches to the desired subsection of the database
+    with help of the <parameter>t</parameter> parameter
+    to &search.cgi;.
+    You may find useful to add a <literal>SELECT</literal>
+    search form variable into the search form
+    in &search.htm;:
+<programlisting>
+Search through:
+&lt;SELECT NAME="t"&gt;
+  &lt;OPTION VALUE=""&gt;All sites&lt;/OPTION&gt;
+  &lt;OPTION VALUE="cars"&gt;Cars&lt;/OPTION&gt;
+  &lt;OPTION VALUE="computers"&gt;Computers&lt;/OPTION&gt;
+&lt;/SELECT&gt;
+</programlisting>
+    Take a look into <xref linkend="cmdref-tag"/>,
+    &indexer.conf-dist; and &search.htm-dist; for more details and examples.
+    </para>
+  </sect2>
+   
+  <sect2 id="tags-substring">
+    <title>Using substring tag match</title>
+    <para>
+    Starting from the version <literal>3.1.x</literal>,
+    tags are stored in the database as character strings
+    and support patterns with help of <acronym>SQL</acronym>
+    <command>LIKE</command> operator with
+    <literal>_</literal> and <literal>%</literal> wildcards
+    and thus support substring searches on tags.
+    </para>
+    <para>
+    <title>Nested tags</title>
+    <acronym>SQL</acronym> <command>LIKE</command> patterns
+    also make possible to have nested tag. For example,
+    the documents with the tag value <literal>computers-hardware</literal>
+    can be found using any of the following tag patters:
+    <literal>computers-%</literal>, <literal>computers-hardware</literal>,
+    <literal>%-hardware</literal>.
+    </para>
+  </sect2>
+  
+  <sect2 id="tags-multiple"> 
+    <title>Multiple selections</title>
+    <para>
+     Playing with <command>LIKE</command>  wildcards 
+     you can make a document match multiple tag selections.
+     For example, the tag <literal>ABCDE</literal> will match
+     all of the following patterns:
+<programlisting>
+_BCDE
+A_CDE
+AB_DE
+ABC_E
+ABCD_
+</programlisting>
+    </para>
+  </sect2>
+
+
+  <sect2 id="tags-indexer"> 
+    <title>Using tags with &indexer;</title>
+    <para>
+    To limit an &indexer; action to a
+    desired tag use the <option>-t</option> command line option.
+    For example:
+<programlisting>
+indexer -t cars -S
+</programlisting>
+    will display statistics for the documents associated
+    with the tag <literal>cars</literal>.
+    </para>
+    
+    <para>
+    You can also
+    use multiple <option>-t</option> options. For example:
+<programlisting>
+indexer -t cars -t computers -am
+</programlisting>
+    will mark all documents from the tags <literal>cars</literal>
+    and <literal>computers</literal> as <emphasis>expired</emphasis>
+    and will re-crawl to these documents forcing full update
+    information about the documents.
+    </para>
+    
+    <para>
+    The <option>-t</option> command line option also understands
+    <acronym>SQL</acronym> <command>LIKE</command> patterns.
+    This command:
+<programlisting>
+indexer -t "c%" -C
+</programlisting>
+    will delete information about all documents associated with
+    <emphasis>any</emphasis> tag starting with the
+    letter <literal>c</literal> from the search database.
+    </para>
+  </sect2>
+  
+<!--
+  Indexes on TAG are created by default
+  <note>
+    <para>If your search database is large enough and
+    you often use tag limits, adding an index on the column
+    <varname>tag</varname> in the table <varname>server</varname>
+    can improve search performance. This index is not created by default.
+<programlisting>
+CREATE INDEX srv_tag ON server (tag);
+</programlisting>
+    </para>
+  </note>
+-->
+  
+</sect1>

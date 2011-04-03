@@ -1,0 +1,561 @@
+TODO
+----
+
+ General development directions
+
+* More various databases support.
+* More various transport protocols support.
+* More various APIs. e.g write Java class with libudmsearch support.
+* Support for huge databases with hundred or thousand millions documents.
+* Make it more manageable, i.e. administration tools, etc.
+
+
+  Below there are things that can be implemented somewhere in the future.
+They are given in no particular order. If you want to change the order of
+their development, please ask on general@mnogosearch.org.
+
+
+Search quality and results presentation
+---------------------------------------
+* Click rank
+* Administrator defined dynamic site priority:
+	- approved sites which should be displayed in the top of results;
+	- disapproved sites (e.g. for abuse) which should not be displayed.
+* Take in account words context: <b>, <font size="xx">, <big> and so on.
+* Optional automatic URL limit by SERVER_NAME variable.
+* "Exclude" limits, for example "to search though everything except
+  given site": ue=http://esite/
+* Fuzzy search for accent letters, for example Cyrillic "io" and "ie".
+* Regexp search
+* Rank URLs with long pathnames lower than direct hits on let's say a domain 
+name with no directory path.
+* CachedCopy does not highlight words if a query is to long and ispell is in use:
+  all word generated forms are passed to CachedCopy URL, and URL gets longer
+  than 2048 (which seems to be Apache's limit).
+  Solution is to pass only the original word forms to search.cgi
+  (in case when full string is too long) and make it generate the other forms.
+* Query operators:
+  +   (word required)
+  -   (word excluded)
+  NEAR
+
+Administration and Search Analysis
+----------------------------------
+* Make administration completely done via web browser admin.
+* Admin grants others access to all or limited set of features,front ends, etc.
+* Search status: recent queries per second, per collection, etc.
+* Search log report: a monthly, weekly or daily snapshot of search activity.
+* For each time period, the report shows the top 100 queries, top no match
+searches, traffic by day and hour, etc. 
+* Crawl status - documents served, crawling rate and errors.
+* Crawl reporting - provide interactive drill-down through directories to see
+  the status of each page
+* A list" which displays all the crawled URLs and status 
+
+Indexing related stuff
+----------------------
+* Detect clones on site level. Currently it is implemented on document level
+only. The idea is to detect that a site is a mirror of another
+site without having to crawl to all pages, just after crawling
+a few pages only.
+* SPAM clearance.
+* Fix that indexer becomes slow when ServerTable is big. This is because
+of full consecutive examination. Make in-memory cache for ServerTable part.
+* FTP digest ls-lR.gz support. For example,ftp://ftp.chg.ru/ls-lR.gz
+* Exclude auto-increment mode for 'url' table. We have to use CRC32 mode
+  since it is much faster for indexing and probably would take less space.
+* Adaptive re-crawling, based on change interval
+* Form-based authentication
+* NTLM 1 and NTLM 2 based authentication
+* Real-time reporting of indexing progress
+* Have a look into "Feed Protocol Developer Guide"
+http://code.google.com/apis/searchappliance/documentation/46/feedsguide.html
+
+
+Charset related stuff
+---------------------
+* Remove "ForceIISCharset1251 yes/no"command. Replace it with 
+enhanced "CharsetByServer <charset> <regexp> [<regexp>...]" 
+command.
+* State-full character sets support: UTF-7, Asian ISO-2022-XX
+and others. They will not be used as a LocalCharset because
+of much space, however indexer should be able to index them,
+as well as search front-end should be able to use them as
+a BrowserCharset.
+* Compile all character sets by default
+
+
+Misc
+----
+* Smart search results cache cleaning after re-indexing.
+* Make it possible to set table names in indexer.conf and search.htm
+* There was a discussion about word separators back in January; see 
+http://www.mail-archive.com/udmsearch%40web.izhcom.ru/msg00200.html.
+* Learn about Dublin core. A simple set of standard meta-data for web pages.
+  http://www.searchtools.com/related/metadata.html#dc
+* Add curl library support.
+* Rewrite mirroring functions. Make it possible to optionally store whole 
+document, not only MaxDocSize.
+* Add revised Robots Exclusion Protocol (June 2008 Agreement) directives:
+  NOARCHIVE, NOSNIPPET and others.
+  http://www.searchtools.com/robots/robots-exclusion-protocol.html
+
+Portability and code quality
+----------------------------
+Remove warnings on various platforms. Currently it is built without
+warnings on Linux and FreeBSD with these CFLAGS:
+
+-Wall 
+-Wconversion 
+-Wshadow  
+-Wpointer-arith 
+-Wcast-align 
+-Wwrite-strings  
+-Waggregate-return  
+-Wstrict-prototypes  
+-Wmissing-prototypes 
+-Wmissing-declarations 
+-Wredundant-decls 
+-Wnested-externs 
+-Wlong-long 
+-Winline
+
+However some other platform compilers do produce warnings.
+For example, mixed signed/unsigned chars on NetBSD Alpha compiler. 
+Please report those warnings to general@mnogosearch.org!
+
+
+Documentation
+-------------
+* Constantly improve it!
+* PDF version.
+
+
+
+Things that will most likely be done in 3.3 (in no particular order)
+--------------------------------------------------------------------
+
+1. Better relevancy
+   - DONE: separate word enumeration for each section
+     and add number_of_words_in_this_section into coord, i.e. 
+     "section + position_inside_section + number_of_words_in_this_section"
+     instead of
+     "section + position_inside_document"
+     Note, number_of_words_in_this_section doesn't need to be exact,
+     it can be approximate, to safe space.
+   - DONE: Use number_of_words_in_this_section in relevancy formula,
+     i.e. be close to the classic TF*IDF rank algorithm.
+   - DONE: better "body" capacity (get rid of "64K words in body" limit)
+     and more sections (reg rid of "256 sections" limit).
+     It can be done using dynamic encoding, e.g.
+     128 sections with 256*256*256 words plus
+     128*256 sections with 256*256 words.
+   - DONE: Change MinCordFactor and MaxCoordFactor to work per-section,
+     not per document.
+   - DONE: Move processing of DateFactor and RelevancyFactor to score.c
+   - DONE: Move processing of UserScore/UserScoreFactor to score.c
+   - NumSections auto-detection from wf
+     and from secno specifiers, e.g. "body:a b c".
+   - Find the best combination of the default values for all score commands.
+     (romip?)
+   - Fix problem with too huge WordDistance difference.
+     Doc1: "<html><title>a b</title><body>a x x x x x</body></html>"
+     Doc2: "<html><title>a b</title><body>a x x x x b</body></html>"
+     Query: ``a b"
+     Doc1 does not have the word "b" in body at all, so it should
+     be ranked lower. However, WordDistance factor affects too strong,
+     especially when the number of "x" is big enough.
+     So WordDistance for Doc1 is much better than WordDistance for Doc2,
+     therefore Doc1 is ranked much better:
+     about 2 times score difference with 
+     N(x)=1000, NumSections=10 and default WordDistanceWeight.
+   - DONE: Link all score commands in the manual,
+     add a new section "commands affecting score".
+
+2. Cluster
+   - Res2XML (built-in XML template)
+   - DONE: XML2Res (to parse built-in XML template)
+   - DONE: DBAddr http://hostname/path/to/searchxml.cgi
+   - DONE: Make it possible to run search.cgi as a inetd/xinetd service
+   - Make it possible to run search.cgi as a HTTP server
+   - Site enumerating without having to talk to each cluster node
+     (e.g. crc48 or crc56, with direct encoding for short names)
+   - Clone detection at search time
+   - Configurable distribution type: by site_id, by seed, etc.
+   - Add "did you mean?" support into cluster.
+
+3. Extend SQL drivers to use prepared statements in sql.c
+   - DONE: Prepare/Bind/Exec for MySQL (using PS API in 4.1 and later)
+   - DONE: Prepare/Bind/Exec for PgSQL
+   - DONE: Prepare/Bind/Exec for Interbase
+   - Prepare/Bind/Exec for SQLite3
+   - Prepare/Bind/Exec for CTLib
+   - DONE: Use pseudo-prepared statenents with substituting HEX/Escape
+     notation for the databases which do not support prepared statements
+   - Modify sql.c to use Prepare/Bind/Exec for all databases
+
+
+4. DBType=myinnodb (and maybe for other handler types)
+   - scripts MySQL with Engine=InnoDB
+   - true transactional code in sql.c, instead of LOCK TABLE.
+   - instead of separate DBType, it can perhaps use auto-detection
+     of engines
+
+5. More concurrent "indexer" safety
+   - test with concurrent indexers with all databases
+   - set isolation levels or lock tables when running
+     "indexer -Eblob" to avoid concurrent indexers update
+     tables (especially table "bdicti")
+     which will give an inconsistent result in table "bdict".
+     
+     Oracle: 
+             SELECT FOR UPDATE
+             LOCK TABLE t1 IN {ROW SHARE|SHARE|EXCLUSIVE} MODE
+             SET TRANSACTION
+     
+     DB2:    
+             SELECT .. FOR {READ ONLY|FETCH ONLY|UPDATE [OF column [, column]*]}
+             LOCK TABLE t1 IN {SHARE|EXCLUSIVE} MODE
+             SET TRANSACTION
+     
+     PostgreSQL:
+             SELECT FOR UPDATE
+             LOCK [ TABLE ] name [, ...] [ IN lockmode MODE ] [ NOWAIT ]
+               lockmode ::= ACCESS SHARE | ROW SHARE | ROW EXCLUSIVE |
+                           | SHARE UPDATE EXCLUSIVE | SHARE
+                           | SHARE ROW EXCLUSIVE | EXCLUSIVE | ACCESS EXCLUSIVE
+             SET TRANSACTION ISOLATION LEVEL
+     
+     DONE: MSSQL:
+             SET TRANSACTION ISOLATION LEVEL
+             Hints in SELECT statement: UPDLOCK,  XLOCK, TABLOC
+             SELECT...table_name (TABLOCK)  - share mode 
+             SELECT...table_name (TABLOCK REPEATABLEREAD) - exclusive mode
+             SELECT...table_name (TABLOCKX) - lock until the end of trans
+             
+             SELECT FOR UPDATE allowed only for DECLARE CURSOR.
+             An exclusive lock can be placed on a SQL Server table with
+             the SELECT..table_name (TABLOCKX) statement.
+             This statement requests an exclusive lock on a table.
+             It is used to prevent others from reading or updating
+             the table and is held until the end of the command or transaction.
+             It is similar in function to the Oracle
+             LOCK TABLE..IN EXCLUSIVE MODE statement.
+             
+     Sybase:
+             SELECT FOR UPDATE
+             LOCK TABLE table-name IN { SHARE | EXCLUSIVE } MODE
+             sa_locks - Displays all locks in the database.
+             
+             FOR UPDATE can not be used in a SELECT which is not part of the
+             declaration of a cursor or which is not inside a stored procedure.
+     
+     Mimer:
+             SELECT FOR UPDATE - is not allowed for a read-only cursor
+             
+             SET TRANSACTION ISOLATION LEVEL
+
+6. More multi-thread safety
+   - more tests with multiple threads
+   - DONE: better robot.txt locking
+     Currently all threads are waiting for a single thread
+     to fetch robots.txt file, independently of host name.
+     It can be done by implementing of a shared array
+     of "robots.txt currently being fetched".
+
+7. DBMode=blob improvements
+   - RENAME TABLE for more databases
+     Sybase:
+       [EXEC] sp_rename t1,t2
+       SELECT * INTO t1 FROM t2 WHERE 1=0; - copy structure (without indexes)
+     DONE: MSSQL (synax = Sybase)
+     DONE: Oracle
+     DONE: PostgreSQL
+     DONE: DB2
+     DONE: SQLite
+
+     Mimer, Interbase: do not seem to have table rename.
+     Cache, Virtuoso, MonetDB
+
+   - Check a possibility to use VIEWs for those databases
+     not supporting RENAME. Or use fast index creation date
+     to choose which table to use for search.
+   - Partial incremental "indexer -Eblob"
+   - Configurable choice to run partial or full
+     "indexer -Eblob", depending on amount
+     of new data collected.
+   - Optionally put information from "url" into "bdict" table ???
+   - Optionally put information from "urlinfo" ???
+   - DONE: Add HIGH_PRIORITY into this query:
+       SELECT rec_id, site_id, pop_rank, last_mod_time
+       FROM url WHERE rec_id IN (...)
+       ORDER BY rec_id
+   - Check Oracle's "DROP TABLE t1 PURGE"
+   - DONE: DBMode=blob for sqlite3?
+   - DONE: DBMode=blob for Interbase 
+   - DONE: DBMode=rawblob and a mixed blob+rawblob mode (live updates).
+
+8. Database consistency check (and maybe repair) tools,
+   - e.g. report (and/or remove) all bdicti/urlinfo records
+   which don't have corresponding url records.
+   - don't put lost URL records during "indexer -Eblob" run,
+   generate warnings if found lost records.
+
+9. Source code and packaging improvements
+   (see some more info added by Svoj in TODO.ru)
+   - more separate files (e.g. break utils.c)
+   - dynamically loadable database modules
+   - build statically linked (platform independent) and
+     dynamically linked (distribution-specific) RPMs,
+     FreeBSD packages and so on.
+     Gentoo: http://www.mnogosearch.org/board/message.php?id=17992
+     Solaris SPARC: http://www.mnogosearch.org/board/message.php?id=17955
+   - Code covarage and analizing: valgrind, fortify, gcov
+   
+
+10. mnoGoSearch benchmark suite
+   - tiny (~1000 documents)
+   - medium (~10000 documents
+   - huge (~1000000 documents)
+   - with 1,2,3,5,10,20 simultaneous users
+   - cluster with huge databases on several machines
+
+11. Windows version
+   - Check if it's possible to use CHM decompiler as a parser on Windows:
+     http://www.keyworks.net/keytools.htm
+   - Unix compatible indexer.conf
+       - UdmEnvWrite()  (can be done by a Unix developer)
+       - GUI for all missing important commands
+       - GUI for "extra" (i.e. not so important) commands 
+   - package prepared plugins, for example for Ispell or external parsers,
+     to reduce manual actions required from user.
+   - build MySQL fulltext parser plug-in
+
+12. API improvements (PHP, ASP, Perl) ???
+   - DONE: Stabilize and document C API.
+   - DONE: Put module code into the main tree,
+     add --with-php, --with-perl, and so on, options to configure.
+   - Add tests with Perl and PHP modules - find a way to cover 
+     Perl and PHP modules by "msearch-test" tests.
+   - Add "PHP via COM" front-end example (Windows)
+   - From Yannick LE NY
+     http://pecl.php.net/package/mnogosearch, there is an update.
+     This update correct:
+     - Initial PECL release
+     - fix compiler warnings and errors on 64bit platform
+     - #34705 (php bugs), disable udm_clear_search_limits when used with mnogosearch 3.2+
+       *this is a required backward compatibility break*
+
+
+13. Better internationalization (from Yannick LE NY)
+     http://www.mnogosearch.org/board/message.php?id=17948
+   - add i18n templates 
+   - use gettext to i18n the indexer binary help and messages.
+   - Korean frequency dictionaries ???
+     See this thread:
+     http://www.mnogosearch.org/board/message.php?id=17984
+     http://www.mnogosearch.org/board/message.php?id=18219
+   - Character set for FTP requests, replies, file listings.
+     http://www.mnogosearch.org/board/message.php?id=17992
+
+14. Documentation
+   - Full step-by-step instructions how to install and configure mnoGoSearch
+
+15. Support for Internationalized domain name:
+    http://en.wikipedia.org/wiki/Internationalized_domain_name
+    Maybe using GNU IDN Library: Libidn http://www.gnu.org/software/libidn/
+
+16. Misc:
+   - Single char problem: <font>W</font>ord
+     http://www.mnogosearch.org/board/message.php?id=17998
+   - DONE: Add "indexer -Esql -e"SELECT xxx FROM"
+     ./indexer -Esql --exec="SELECT * FROM t1"
+   - List all DB software tested with, including versions.
+   - Get rid of disk based search result cache,
+   - search result cache for all SQL databases,
+   - document new search result cache
+   - Write/read cached copies in chunks, for faster excerpts
+   - Learn about MySQL's "LOAD INDEX INTO CACHE"
+   - Add FOREACH loop
+   - Modify the code to use TRUNCATE with Sybase again.
+     Note: It must be executed outside a transaction!
+   - Remove "tag" and "category" columns from the table "server".
+     Turn tag and category limits into fast limits.
+   - Add ct_option(CS_OPT_TEXTSIZE) call for CT-lib.
+
+17. Query language improvements:
+   - Check about CQL (Common Query Language)
+     http://www.loc.gov/standards/sru/specs/cql.html
+
+   - Check Lucene query language
+     http://lucene.apache.org/java/2_4_1/queryparsersyntax.html
+     * wildcard searches: te?t, test*. 
+       Note: You cannot use a * or ? symbol as the first character of a search.
+     * Boosting a Term:
+       a^4 b
+       a^0.2 b
+     * Escaping special characters using backslash.
+
+   - Check Yandex query language
+     http://help.yandex.ru/search/?id=481939
+     * words in the same sentence: a & b
+     * words in the same document: a && b
+     * max word distance: a /2 b
+     * Sentence distance: a b && /3 c d
+     * positive word distance: a /+2 b
+     * negative word distacne: a /-2 b
+     * distance range: a /(-1 +2) b
+     * Morphology: !a, !!a
+     * Non-ranking AND operator: a << b
+
+18. More databases:
+http://www.webresourcesdepot.com/25-alternative-open-source-databases-engines/
+
+ 
+For the near 3.3.x releases:
+---------------------------
+
+- Document indexer and search.cgi command line options
+
+- Remove table disctsw.
+  Use #ts record from bdict and bdict00 instead.
+
+- Get rid of double loading of URL data when "indexer -Eblob".
+  First time  in UdmLoadURLDataFromURLForConv().
+  Second time in UdmBlobWriteURL().
+
+- More documentation on "QCache yes" and "search in found"
+  This page is not up to date:
+  http://www.mnogosearch.org/doc33/msearch-srcache.html
+
+- Use prepared statements at search time as much as possible
+  to avoid problems with quote and reverse solidus signs
+  treated incorrectly (whic is possible when running with Asian 
+  character sets).
+
+- Document "Enabling SQL indexes" -
+  "Repair with keycache" vs "Repair with sort".
+  Or better fix not to use "disable keys"!
+  Document DisableKeys=yes ?
+
+- max_allowed_packet problem. Make indexer work with a smaller
+  max_allowed_packet.
+
+- Add new indexer.conf command "Suggest yes",
+  to automatically create word statistics when "indexer -Eblob" is run.
+
+- Add new manual sectons: using indexer as a spider
+  to collect data to the database.
+
+- Add new HTML manual files into the distribution.
+
+- DONE: Use UdmStopTimer()
+
+- Check feature requests
+
+- When parsing a non-supported DBAddr,
+  print "XXX support is not compiled"
+  instead of "Wrong HTDBAddr" or "Wrong DBAddr".
+
+- Document the new style of clones.
+  Remove $(CL) variable, add new style code into search.htm.
+  Document $(nclones) variable.
+
+- Document -D (work with the D'th database only).
+
+- Document indexer and search.cgi command line options
+
+- Document RelevancyFactor.
+
+- Document this feature: Make it possible for external parsers to return
+converted content together with headers like Content-Type, Title and so on.
+
+- Document ServerTable faq:
+  http://www.mnogosearch.org/board/message.php?id=16226
+
+- Put section names and secno into "bdict", to avoid
+  writing section names into search.htm
+  
+- Update Pecl module at
+  http://pecl.php.net/package/mnogosearch
+  
+- Add PHP module documentation into mnoGoSearch manual
+
+- Fix CachedCopy in PHP module
+
+- $(ndocs) doesn't work with cluster
+  http://www.mnogosearch.org/bugs/index.php?id=1646
+  
+- Make sure "tmplt" variable removed from the  manual, or make it work.
+
+- Document PostgreSQL + unixODBC
+
+- Highlight color #FFFFCA
+
+- Document "indexing performance tips": MySQL log and binary log,
+  syslog, HoldBadHrefs, etc.
+
+- FIX this problem:
+==26951== Thread 79:
+==26951== Invalid write of size 1
+==26951==    at 0x4006181: strncat (mc_replace_strmem.c:218)
+==26951==    by 0x405D766: UdmHTMLParseTag (parsehtml.c:870)
+==26951==    by 0x405E407: UdmHTMLParse (parsehtml.c:1119)
+==26951==    by 0x4019E1D: UdmDocParseContent (indexer.c:1412)
+==26951==    by 0x401CE11: UdmIndexNextURL (indexer.c:2107)
+==26951==    by 0x804C18C: thread_main (main.c:887)
+==26951==    by 0x7153DA: start_thread (in /lib/libpthread-2.5.so)
+==26951==    by 0x66F06D: clone (in /lib/libc-2.5.so)
+==26951==  Address 0x73A4A88 is 0 bytes after a block of size 128 alloc'd
+==26951==    at 0x4005400: malloc (vg_replace_malloc.c:149)
+==26951==    by 0x405CDA4: UdmHTMLParseTag (parsehtml.c:761)
+==26951==    by 0x405E407: UdmHTMLParse (parsehtml.c:1119)
+==26951==    by 0x4019E1D: UdmDocParseContent (indexer.c:1412)
+==26951==    by 0x401CE11: UdmIndexNextURL (indexer.c:2107)
+==26951==    by 0x804C18C: thread_main (main.c:887)
+==26951==    by 0x7153DA: start_thread (in /lib/libpthread-2.5.so)
+==26951==    by 0x66F06D: clone (in /lib/libc-2.5.so)
+
+- Add re-entrant gethostbyname() functions for non-Linux
+  platforms. See HOWTO-RESOLVE.
+
+- HEX literal in Firebird
+  http://www.firebirdsql.org/rlsnotesh/rlsnotes25.html#rnfb25-dml-hex
+
+
+- Add native docx and xlsx parsers
+
+Document OpenXML mime types:
+.docm,application/vnd.ms-word.document.macroEnabled.12
+.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document
+.dotm,application/vnd.ms-word.template.macroEnabled.12
+.dotx,application/vnd.openxmlformats-officedocument.wordprocessingml.template
+.potm,application/vnd.ms-powerpoint.template.macroEnabled.12
+.potx,application/vnd.openxmlformats-officedocument.presentationml.template
+.ppam,application/vnd.ms-powerpoint.addin.macroEnabled.12
+.ppsm,application/vnd.ms-powerpoint.slideshow.macroEnabled.12
+.ppsx,application/vnd.openxmlformats-officedocument.presentationml.slideshow
+.pptm,application/vnd.ms-powerpoint.presentation.macroEnabled.12
+.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation
+.xlam,application/vnd.ms-excel.addin.macroEnabled.12
+.xlsb,application/vnd.ms-excel.sheet.binary.macroEnabled.12
+.xlsm,application/vnd.ms-excel.sheet.macroEnabled.12
+.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+.xltm,application/vnd.ms-excel.template.macroEnabled.12
+.xltx,application/vnd.openxmlformats-officedocument.spreadsheetml.template
+
+word/document.xml
+xl/workbook.xml
+ppt/presentation.xml
+
+w:wordDocument.w:body.w:p.w:r.w:r
+
+- Document missing commands: HyphenateNumbers
+
+
+=========================================
+Ideas how to reduce DBMode=blob data size:
+
+1. Sort and store coord lists in "ncoords" order:
+[ncoords=1][count=3]: [urlid1][pos1] ; [urlid2][pos2] ; [urlid3][pos3]
+[ncoords=2][count=2]: [urlid1][pos11][pos12] ; [urlid2][pos21][pos22]

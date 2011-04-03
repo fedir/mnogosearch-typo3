@@ -1,0 +1,542 @@
+<sect2 id="htdb">
+  <title>Indexing &sql; tables
+    (<literal>htdb:/</literal> virtual &url; scheme)
+    <indexterm><primary>HTDB</primary><secondary>Indexing &sql; database tables</secondary></indexterm>
+  </title>
+
+  <para>
+    &mnogo; can index
+     &sql; tables with long text
+     columns with help of so called
+    <literal>htdb:/</literal> virtual &url; scheme.
+  </para>
+
+  <para>Using the <literal>htdb:/</literal> virtual scheme,
+  you can build a full-text index for your &sql;
+  tables as well as index your database driven Web servers.
+  </para>
+
+  <note>
+    <para>You have to have a <literal>PRIMARY KEY</literal> or an
+    <literal>UNIQUE INDEX</literal> on the table you want to index
+    with <acronym>HTDB</acronym>.
+    </para>
+  </note>
+
+
+  <sect3 id="htdb-indexer">
+    <title> <acronym>HTDB</acronym> &indexer.conf; commands</title>
+    <para> <acronym>HTDB</acronym> is implemented using the following 
+    &indexer.conf; commands:
+       <xref linkend="cmdref-htdbaddr"/>, <xref linkend="cmdref-htdblist"/>,
+       <xref linkend="cmdref-htdblimit"/>, <xref linkend="cmdref-htdbdoc"/>.
+    </para>
+
+    <para>The purposes of the <xref linkend="cmdref-htdbaddr"/> command
+    is to specify a database connection string. It uses the same
+    syntax to <xref linkend="cmdref-dbaddr"/>. If no <xref linkend="cmdref-htdbaddr"/>
+    command is specified, the data will be fetched using the same connection
+    specified in <xref linkend="cmdref-dbaddr"/>.
+    </para>
+
+    <para>
+      <indexterm><primary>Command</primary><secondary>HTDBList</secondary></indexterm>
+      The <xref linkend="cmdref-htdblist"/> command is used to specify
+      an &sql; query which generates a list of documents
+      using either absolute or relative &url;
+      notation, for example:
+<programlisting>
+HTDBList "SELECT CONCAT('htdb:/',id) FROM messages"
+</programlisting>
+    or
+<programlisting>
+HTDBList "SELECT id FROM messages"
+</programlisting>
+      <note>
+        <para>
+        <xref linkend="cmdref-htdblist"/> allows to fetch
+        non-<acronym>htdb</acronym> &url;s as well.
+        So it gives another options to use <acronym>HTDB</acronym>:
+        you can store the list of "<emphasis>real URLs</emphasis>"
+        (e.g. &http;-style &url;s)
+        in the database and fetch them with help of <acronym>HTDB</acronym>.
+<programlisting>
+HTDBList "SELECT url FROM mytable"
+Server urllist htdb:/
+Realm page *
+</programlisting>
+        </para>
+      </note>
+    </para>
+
+    <para>The &sql; query given in
+      <xref linkend="cmdref-htdblist"/> is used for all
+      documents having the '<literal>/</literal>' sign
+      in the end of &url;. This query
+      is an analog for a <emphasis>file system directory listing</emphasis>.
+    </para>
+
+    <para><indexterm><primary>Command</primary><secondary>HTDBLimit</secondary></indexterm>
+    The <xref linkend="cmdref-htdblimit"/> command is
+    used to specify the maximum number of records fetched
+    by a single <command>SELECT</command> query given in the
+    <xref linkend="cmdref-htdblist"/> command.
+    <xref linkend="cmdref-htdblimit"/> helps to reduce
+    memory consumption when indexing large &sql;
+    tables. For example:
+<programlisting>
+HTDBLimit 512
+</programlisting>
+    </para>
+
+    <para>      
+      <indexterm><primary>Command</primary><secondary>HTDBDoc</secondary></indexterm>
+      The <xref linkend="cmdref-htdbdoc"/> command specifies an
+      &sql; query to get a single document
+      from the database using its <literal>PRIMARY KEY</literal>
+      value. The <xref linkend="cmdref-htdbdoc"/> query is 
+      executed for all <acronym>HTDB</acronym> documents not having
+      the '<literal>/</literal>' in the end of their &url;.
+    </para>
+    
+    <para>An &sql; query given in the 
+    <xref linkend="cmdref-htdbdoc"/> command
+    must return a <emphasis>single row</emphasis> result.
+    If the <xref linkend="cmdref-htdbdoc"/> query
+    returns an empty set or multiple records,
+    the <acronym>HTDB</acronym> retrieval system generates
+    a <literal>HTTP 404 Not Found</literal> response.
+    This can happen at re-indexing time if the record
+    was deleted from the table since last re-indexing.
+    You can use
+    <link linkend="cmdref-holdbadhrefs"><command>HoldBadHrefs 0</command></link>
+    to remove the deleted records from the &mnogo;
+    tables as well.
+    </para>
+    
+    <para>&mnogo; understands
+    three types of <xref linkend="cmdref-htdbdoc"/> &sql;
+    queries.
+    <itemizedlist>
+      <listitem>
+        <para>
+        A single-column result with a fully
+        formatted &http; response,
+        including standard &http;
+        response status line. Take a look into <xref linkend="http-codes"/>
+        to know how &indexer; handles
+        various &http; status codes.
+        A <xref linkend="cmdref-htdbdoc"/> &sql;
+        query can also optionally include &http;
+        headers understood by &indexer;,
+        such as <literal>Content-Type</literal>,
+        <literal>Last-Modified</literal>,
+        <literal>Content-Encoding</literal> and other headers. 
+        So you can build a very flexible indexing system by returning
+        different &http; status codes and headers.
+        </para>
+        <para><title>Example:</title>
+<programlisting>
+HTDBDoc "SELECT CONCAT(\
+'HTTP/1.0 200 OK\\r\\n',\
+'Content-type: text/plain\\r\\n',\
+'\\r\\n',\
+msg) \
+FROM messages WHERE id='$1'"
+</programlisting>
+        </para>            
+      </listitem>
+      <listitem>
+        <para>
+        A multiple-column result, with the status line
+        starting from the "<literal>HTTP/</literal>"
+        substring in the beginning of the first column.
+        All columns are concatenated using the
+        <literal>Carriage-Return + New-Line</literal>
+        (<literal>\r\n</literal>) delimiters to generate
+        a &http;-alike response.
+        The first column returning an empty string is
+        considered as a delimiter between the headers
+        and the content part of the &http;
+        response, and is replaced to "<literal>\r\n\r\n</literal>".
+        This type of queries is a simpler way of the
+        previous type. It helps to avoid using concatenation
+        operators and functions, and the "<literal>\r\n</literal>"
+        header delimiters.
+        </para>
+        <para><title>Example:</title>
+<programlisting>
+HTDBDoc "SELECT 'HTTP/1.0 200 OK','Content-type: text/plain','',msg \
+FROM messages WHERE id='$1'"
+</programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+        A single- or a multiple-column result without the
+        "<literal>HTTP/</literal>" header.
+        This is the simplest <xref linkend="cmdref-htdbdoc"/>
+        response type. The &sql; column names
+        returned by the query are associated with the
+        <xref linkend="cmdref-section"/> names configured
+        in &indexer.conf;.
+        </para>
+        <para><title>Example:</title>
+<programlisting>
+Section body  1 256
+Section title 2 256
+HTDBDoc "SELECT title, body FROM messages WHERE id='$1'"
+</programlisting>
+        </para>
+        <para>
+        In this example, the values of the columns
+        <varname>title</varname> and <varname>body</varname>
+        are associated with the sections
+        <literal>title</literal> and <literal>body</literal>
+        respectively.
+        </para>
+                    
+        <para>
+        The columns with the names <varname>status</varname>
+        and <varname>last_mod_time</varname> have a special
+        meaning - the &http; status code,
+        and the document modification time respectively. 
+        <varname>Status</varname> should be an integer code according
+        to &http; notation,
+        and the modification time should be in Unix timestamp format -
+        the number of seconds since
+        <literal>January, 1, 1970</literal>.
+        </para>
+
+        <para><title>Example:</title>
+<programlisting>
+HTDBDoc "SELECT title, body, \
+CASE WHEN messages.deleted THEN 404 ELSE 200 END as status,\
+timestamp as last_mod_time FROM messages WHERE id='$1'"
+</programlisting>
+        </para>
+
+        <para>
+        The above example demonstrates how to use the special columns.
+        The &sql; query will return
+        status "<literal>404 Not found</literal>" for
+        all documents marked as deleted, which will
+        make &indexer;
+        remove these documents from the search database
+        when re-indexing the data. Also, this query
+        makes &indexer; use
+        the column <varname>timestamp</varname>
+        as the document modification time.
+        </para>
+                    
+        <para>
+        If a column contains data in <acronym>HTML</acronym> format,
+        you can specify the <literal>html</literal> keyword in
+        the corresponding <xref linkend="cmdref-section"/> command,
+        which will make &indexer; apply
+        the <acronym>HTML</acronym> parser to this column and
+        therefore remove all <acronym>HTML</acronym> tags and comments:
+        </para>
+
+        <para><title>Example:</title>
+<programlisting>
+Section title      1 256
+Section wiki_text  2 16000 html
+HTDBDoc "SELECT title, wiki_text FROM messages WHERE id='$1'"
+</programlisting>
+        </para>
+      </listitem>
+    </itemizedlist>
+    </para>
+  </sect3>
+
+
+
+
+  <sect3 id="htdb-var">
+    <title><acronym>HTDB</acronym> variables
+      <indexterm><primary>HTDB</primary><secondary>variables</secondary></indexterm>
+    </title>
+
+    <para>The <emphasis>path</emphasis> parts
+    of an &url; can be passed as
+    parameters to the <xref linkend="cmdref-htdblist"/> and
+    <xref linkend="cmdref-htdbdoc"/> &sql; queries.
+    All parts are to be used as <varname>$1</varname>,
+    <varname>$2</varname>,  ... <varname>$N</varname>, where
+    the number represents the <emphasis>N-th path part</emphasis>,
+    that is the part of &url; after
+    the <literal>N-th</literal> slash sign:
+<programlisting>
+htdb:/part1/part2/part3/part4/part5
+         $1    $2    $3    $4    $5
+</programlisting>
+    </para>
+
+    <para>For example, you have this &indexer.conf; command:
+<programlisting>
+HTDBList "SELECT id FROM catalog WHERE category='$1'"
+</programlisting>
+    </para>
+
+    <para>When &mnogo; prepares to fetch
+    a document with the &url; <literal>htdb:/cars/</literal>,
+    <varname>$1</varname> will be replaced to "<literal>cars</literal>":
+<programlisting>
+SELECT id FROM catalog WHERE category='cars'
+</programlisting>
+    </para>
+
+    <para>
+    You can use long <acronym>URLs</acronym> to
+    pass multiple parameters into both
+    <xref linkend="cmdref-htdblist"/> and
+    <xref linkend="cmdref-htdbdoc"/> queries.
+    For example:
+<programlisting>
+HTDBList "SELECT column4 FROM table WHERE column1='$1' AND column2='$2' and column3='$3'"
+HTDBDoc  "SELECT title, body FROM table WHERE column1='$1' AND column2='$2' and column3='$3' column4='$4'"
+Server htdb:/path1/path2/path3/
+</programlisting>
+    Using multiple parameters helps to refer
+    to a certain record using parts of
+    a compound <literal>PRIMARY KEY</literal>
+    or <literal>UNIQUE INDEX</literal>.
+    </para>
+  </sect3>
+
+
+
+  <sect3 id="htdb-many">
+    <title>Using multiple <acronym>HTDB</acronym> sources
+      <indexterm><primary>HTDB</primary><secondary>sources</secondary></indexterm>
+    </title>
+
+    <para>It's possible to index multiple <acronym>HTDB</acronym> sources
+    using multiple <xref linkend="cmdref-htdblist"/>,
+    <xref linkend="cmdref-htdbdoc"/> and <xref linkend="cmdref-server"/>
+    commands in the same &indexer.conf;.
+    </para>
+
+    <para>
+<programlisting>
+Section body  1 256
+Section title 2 256
+
+HTDBList "SELECT id FROM t1"
+HTDBDoc  "SELECT title, body FROM t1 WHERE id=$2"
+Server htdb:/t1/
+
+HTDBList "SELECT id FROM t2"
+HTDBDoc  "SELECT title, body FROM t2 WHERE id=$2"
+Server htdb:/t2/
+
+HTDBList "SELECT id FROM t3"
+HTDBDoc  "SELECT title, body FROM t3 WHERE id=$2"
+Server htdb:/t3/
+</programlisting>
+    </para>
+  </sect3>
+
+
+  <sect3 id="htdb-fulltext">
+    <title>Using &mnogo; as an
+     external &sql; full-text engine</title>
+    <para>With help of the <literal>htdb:/</literal> scheme
+    you can quickly create a full-text index and use it
+    further in your &sql; application.
+    Imagine you have a large &sql;
+    table which stores a Web board messages in plain text format,
+    and you want to add search functionality to your Web board.
+    Say, the messages are stored in the table <varname>messages</varname>
+    with two columns <varname>id</varname>
+    and <varname>msg</varname>, where <varname>id</varname>
+    is an integer <literal>PRIMARY KEY</literal> and
+    <varname>msg</varname>
+    is a long text column containing messages.
+    Using a usual &sql; <command>LIKE</command>
+    search may take a very long time to return a result:
+<programlisting>
+SELECT id, message FROM messages WHERE message LIKE '%someword%'
+</programlisting>
+    </para>
+
+    <para>With help of the <literal>htdb:/</literal> scheme provided by
+    &mnogo; you can create
+    a full-text index on the table <varname>messages</varname>.
+    In order to do so you can
+    edit your &indexer.conf; as follows:
+<programlisting>
+DBAddr mysql://foo:bar@localhost/mnogosearch/?dbmode=single
+
+Section msg 1 256
+
+HTDBAddr mysql://foofoo:barbar@localhost/database/
+HTDBList "SELECT id FROM messages"
+HTDBDoc "SELECT msg FROM messages WHERE id='$1'"
+Server htdb:/
+</programlisting>
+    </para>
+
+    <para>When started, &indexer; will insert
+    the &url; <literal>htdb:/</literal>
+    into the database and will execute the &sql;
+    query given in <xref linkend="cmdref-htdblist"/>, which
+    will produce the values <literal>1</literal>,
+    <literal>2</literal>, <literal>3</literal>,..., <literal>N</literal> 
+    in the result. The values will be interpreted as links relative
+    to <literal>htdb:/</literal>. A list of new <acronym>URLs</acronym>
+    in the form <literal>htdb:/1</literal>, <literal>htdb:/2</literal>,
+    ..., <literal>htdb:/N</literal> will be added into the database.
+    Then the <xref linkend="cmdref-htdbdoc"/> &sql;
+    query will be executed for every added &url;.
+    <xref linkend="cmdref-htdbdoc"/> will return the column
+    <varname>msg</varname> as a document content, which will be associated
+    with the section <varname>mgs</varname> and parsed.
+    Word information will be stored in the table <varname>dict</varname>
+    (assuming the <literal>single</literal> storage mode).
+    </para>
+    <para>After indexing is done, you can use &mnogo;
+    tables to perform search:
+<programlisting>
+SELECT url.url 
+FROM url,dict 
+WHERE dict.url_id=url.rec_id 
+AND dict.word='someword';
+</programlisting>
+    </para>
+
+    <para>The table <varname>dict</varname> has an index
+    on the column <varname>word</varname>, so the above
+    query will be executed much faster than the queries
+    using the <command>LIKE</command> operator on the
+    table <varname>messages</varname>.
+    </para>
+
+    <para>You can also use multiple words in search:
+    <programlisting>
+SELECT url.url, count(*) as c 
+FROM url,dict
+WHERE dict.url_id=url.rec_id 
+AND dict.word IN ('some','word')
+GROUP BY url.url
+ORDER BY c DESC;
+</programlisting>
+    </para>
+
+    <para>Both queries will return <literal>htdb:/XXX</literal>
+    values from the <varname>url.url</varname> field.
+    Then your application can cut the "<literal>htdb:/</literal>"
+    prefix from the returned values to get the 
+    <literal>PRIMARY KEY</literal> values from the table
+    <varname>messages</varname>.
+    </para>
+  </sect3>
+
+
+  <sect3 id="htdb-web">
+    <title>Indexing a database driven Web server</title>
+    <para>You can also use <acronym>HTDB</acronym> to
+    index your database driven Web server. It allows to
+    index your documents without having to invoke your
+    the Web server at indexing time,
+    which should require less <acronym>CPU</acronym>
+    resources than direct &http;
+    indexing and therefore should offload the Web
+    server machine.
+    </para>
+
+    <para>The main idea of indexing a database driven Web
+    server is to map &http; requests
+    into <acronym>HTDB</acronym> requests at indexing time.
+    So &indexer; will fetch the
+    source data directly from the &sql;
+    database, meanwhile &search.cgi;
+    will return real <acronym>URLs</acronym> in usual
+    &http; notation.
+    This can be achieved using the aliasing mechanisms 
+    provided by &mnogo;.
+    </para>
+
+    <para>Take a look at a sample file
+     <filename>doc/samples/htdb.conf</filename>,
+     which is included into
+     &mnogo; source distribution.
+     It is the &indexer.conf; file used
+     to index the Web board at the
+     <ulink url="http://www.mnogosearch.org/">
+     &mnogo; site
+     </ulink>.
+    </para>
+
+    <para>The <xref linkend="cmdref-htdblist"/> command
+     generates <acronym>URLs</acronym> in the form:
+<programlisting>
+http://www.mnogosearch.org/board/message.php?id=XXX
+</programlisting>
+    </para>
+    <para>where <literal>XXX</literal> is
+    a <literal>PRIMARY KEY</literal> value
+    from the table <varname>messages</varname>.
+    </para>
+
+    <para>
+     For every <literal>PRIMARY KEY</literal> value
+     a fully formatted &http;
+     response is generated, containing a <literal>text/html</literal>
+     document with headers and this content:
+<programlisting>
+&lt;HTML&gt;
+&lt;HEAD&gt;
+&lt;TITLE&gt;<emphasis>Subject goes here</emphasis>&lt;/TITLE&gt;
+&lt;META NAME="Description" Content="<emphasis>Author name goes here</emphasis>"&gt;
+&lt;/HEAD&gt;
+&lt;BODY&gt;
+<emphasis>Message text goes here</emphasis>
+&lt;/BODY&gt;
+</programlisting>
+    </para>
+
+    <para>At the end of <filename>doc/samples/htdb.conf</filename>
+    you can find these commands:
+<programlisting>
+Server htdb:/
+Realm  http://www.mnogosearch.org/board/message.php?id=*
+Alias  http://www.mnogosearch.org/board/message.php?id=  htdb:/
+</programlisting>
+    </para>
+
+    <para>
+     The first command tells &indexer; to execute
+     the <xref linkend="cmdref-htdblist"/> query,
+     which generates a list of messages in the form:
+<programlisting>
+http://www.mnogosearch.org/board/message.php?id=XXX
+</programlisting>
+    </para>
+
+    <para>
+     The second command tells &indexer;
+     to allow messages matching the given <acronym></acronym>
+     pattern using string match with the '<literal>*</literal>'
+     wildcard at the end.
+    </para>
+
+    <para>The third command replaces the substring
+     <literal>http://www.mnogosearch.org/board/message.php?id=</literal>
+     in the &url; to
+     <literal>htdb:/</literal> before a message is downloaded,
+     which forces &indexer; to
+     use the &sql; table as the data source
+     for a document instead of sending an &http; 
+     request to the Web server.
+    </para>
+    <para>
+      After indexing is done, &search.cgi;
+      will display search result using the usual &http;
+      notation, for example:
+      <literal>http://www.mnogosearch.org/board/message.php?id=1000</literal>
+     </para>
+  </sect3>
+</sect2>
+

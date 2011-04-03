@@ -1,0 +1,395 @@
+<sect1 id="rel">
+  <title>Ranking documents
+     <indexterm><primary>Relevancy</primary></indexterm>
+  </title>
+
+   <para>By default, &mnogo; sorts
+   results by <emphasis>score</emphasis>.
+   Score is calculated as <emphasis>relevancy</emphasis>
+   value mixed with various other factors listed in
+   <xref linkend="score-commands"/>.
+   </para>
+   <note>
+     <para>
+     You can also request a non-default document ordering
+     with help of the <literal>s</literal> search parameter.
+     Have a look into <xref linkend="search-params"/>
+     to know how to order documents by <literal>Date</literal>,
+     <literal>Popularity Rank</literal>, <literal>URL</literal>
+     and other document parameters.
+     </para>
+   </note>
+
+
+<sect2 id="score-commands">
+  <title>
+  Commands affecting document score
+  <indexterm><primary>Score commands</primary></indexterm>
+  </title>
+  <para>
+    Have a look into these manual sections to know about various commands
+    that affect document ordering and/or score values:
+    <xref linkend="cmdref-datefactor"/>,
+    <xref linkend="cmdref-docsizeweight"/>,
+    <xref linkend="cmdref-mincoordfactor"/>,
+    <xref linkend="cmdref-numdistinctwordfactor"/>,
+    <xref linkend="cmdref-numsections"/>,
+    <xref linkend="cmdref-numwordfactor"/>,
+    <xref linkend="cmdref-userscore"/>,
+    <xref linkend="cmdref-worddistanceweight"/>,
+    <xref linkend="cmdref-wordformfactor"/>,
+    <xref linkend="cmdref-worddensityfactor"/>.
+  </para>
+</sect2>
+
+
+<sect2 id="relevancy"><title>Relevancy</title>
+  <para>Relevancy for every found document is calculated as
+  the cosine of the angle formed by two weights vectors,
+  the vector for the <emphasis>search query</emphasis> and
+  the vector for the <emphasis>found document</emphasis>.
+  The number of coordinates in the vectors is equal to the number
+  of the words in the search query (<literal>NumWords</literal>)
+  multiplied by the number of the active sections, defined by the
+  <command><xref linkend="cmdref-numsections"/></command> command:
+  <literal>NumWords * NumSections</literal>.
+  Every coordinate in the vector corresponds to one word in one section,
+  the coordinate value consists of thee factors:
+  <itemizedlist>
+    <listitem>
+      <para>
+       <literal>section_weight</literal>, according to the
+      <command><xref linkend="cmdref-wf"/></command> value
+      for this section (see <xref linkend="search-changeweight"/>).
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       <literal>word_weight</literal>, depending on whether this word
+      is the <emphasis>original word</emphasis> from the search query typed by
+      the user, or the word is a generated form such as
+      a <emphasis>synonym</emphasis> or a <emphasis>stemming form</emphasis>.
+      </para>
+      <note>
+        <para>
+        You can change the weight of the generated forms
+        using the <command><xref linkend="cmdref-wordformfactor"/></command>
+        command.
+        </para>
+      </note>
+    </listitem>
+    <listitem>
+      <para>
+      <literal>word_frequency</literal> - the frequency of the
+      word in the section, with the
+      <command><xref linkend="cmdref-worddensityfactor"/></command>
+      value taken into account.
+      </para>
+    </listitem>
+  </itemizedlist>
+  Imagine we typed the search query ``<userinput>test document</userinput>''
+  in the search form, and search returned this <acronym>HTML</acronym>
+  document among the other results:
+<programlisting>
+&lt;HTML&gt;
+  &lt;HEAD&gt;
+    &lt;TITLE&gt;
+      Test
+    &lt;/TITLE&gt;
+  &lt;/HEAD&gt;
+  &lt;BODY&gt;
+    This is a test document to test the score value 
+  &lt;/BODY&gt;
+&lt;/HTML&gt;
+</programlisting>
+  Also, for similicity reasons, imagine that
+  <command><xref linkend="cmdref-numsections"/></command> is set
+  to <literal>2</literal> (that is only the <literal>body</literal> and 
+  <literal>title</literal> sections are active),
+  <command><xref linkend="cmdref-wf"/></command> is set to
+  its default value (weight factors for alls sections are
+  equal to <literal>1</literal>), and
+  <command><xref linkend="cmdref-worddensityfactor"/></command>
+  is set to <literal>255</literal> (the strongest density effect).
+  </para>
+  <para>
+  &mnogo; will use these two vectors
+  to calculate relevancy:
+<programlisting>
+  Vq= (1, 1, 1, 1)
+</programlisting>
+for the search query
+and
+<programlisting>
+  Vd= (1, 0, 0.2, 0.1)
+</programlisting>
+for the above document, calculated as follows:
+    <itemizedlist>
+      <listitem>
+        <para>
+        The word <literal>test</literal> appears once in the section
+        <literal>title</literal> and its <literal>word_frequency</literal>
+        is <literal>1</literal>,
+        <varname>wf[title]</varname>=<literal>1</literal>,
+        <varname>word_weight</varname>=<literal>1</literal>.
+        Therefore, <varname>Vd[1]</varname>=<literal>1 * 1 * 1</literal> =
+        <literal>1</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+        The word <literal>document</literal> does not appear
+        in the section <literal>title</literal> at all,
+        therefore, <varname>Vd[2]</varname>=<literal>0</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+        The word <literal>test</literal> appears two times in the section
+        <literal>body</literal>, with <literal>10</literal>
+        words total. <literal>word_frequency</literal>
+        is <literal>2/10</literal>.
+        <varname>wf[body]</varname> is <literal>1</literal>.
+        <varname>word_weight</varname> is <literal>1</literal>.
+        Therefore, <varname>Vd[3]</varname> = <literal>2/10 * 1 * 1</literal> = <literal>0.2</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+        The word <literal>document</literal> appears once in the section
+        <literal>body</literal> which is total <literal>10</literal>
+        words long. <literal>word_frequency</literal>
+        is <literal>1/10</literal>.
+        <varname>wf[body]</varname> is <literal>1</literal>.
+        <varname>word_weight</varname> is <literal>1</literal>.
+        Therefore, <varname>Vd[4]</varname> = <literal>1/10 * 1 * 1</literal> = <literal>0.1</literal>.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </para>
+  
+  <para>
+  The cosine value value for the above two vectors is
+  <literal>0.634335</literal>.
+  </para>
+  
+  <para>
+  Now imagine that we set <varname>wf</varname> to "<literal>1111181</literal>"
+  and therefore made the weight factor for the section
+  <literal>title</literal> higher. Now relevancy will be calculated
+  using these two vectors:
+<programlisting>
+  Vq= (8, 8, 1, 1)
+</programlisting>
+for the search query
+and
+<programlisting>
+  Vd= (8, 0, 0.2, 0.1)
+</programlisting>
+for the above document, which will result in
+the relevancy value <literal>0.704660</literal>.
+  </para>
+
+  <para>
+  The relevancy value calculated as explained above
+  is further mixed with various other parameters
+  to get the final <emphasis>score</emphasis> value,
+  for example the average distance between
+  the words in the document, the distance of
+  the words from the beginning of the section,
+  and the other parameters listed in
+  <xref linkend="score-commands"/>.
+  </para>
+  
+  <note>
+    <para>
+    In the default configuration
+    &mnogo; produces quite small score values,
+    because it expects the words to be found in up to <literal>256</literal> 
+    sections and therefore uses the <literal>256</literal> coordinate
+    vectors. Have a look into <xref linkend="cmdref-numsections"/>
+    &search.htm; command description how to specify
+    the real number of sections and thus increase the score values.
+    Changing <xref linkend="cmdref-numsections"/>  does not affect
+    the document order, it only changes the absolute score values
+    for all documents.
+    </para>
+  </note>
+</sect2>
+
+
+
+<sect2 id="score-debug">
+  <title>Analyzing score values</title>
+  <para>Starting from the version <literal>3.3.7</literal>,
+  &mnogo;
+  allows to debug score values calculated for the documents found
+  and thus helps to find a combination of all score factors
+  which is the best for you.
+  
+  In order to debug score values go through these steps:
+    <orderedlist>
+      <listitem>
+        Add this code into the bottom of the
+        <literal>&lt;!--restop--&gt;</literal>
+        section of your search template:
+        <programlisting>
+&lt;--restop--&gt;
+....
+[DebugScore: $(DebugScore)]
+&lt;--/restop--&gt;
+        </programlisting>
+      </listitem>
+
+      <listitem>
+        Add this code into the bottom of the
+        <literal>&lt;!--res--&gt;</literal>
+        section of your search template:
+        <programlisting>
+&lt;--res--&gt;
+....
+[ID=$(ID)]
+&lt;--/res--&gt;
+        </programlisting>
+      </listitem>
+      <listitem>
+        Open &search.cgi; in your browser and
+        run some search query consisting of multiple words.
+        You will additionally see the document IDs after
+        the usual document information.
+      </listitem>
+      <listitem>
+        Choose a document you want to see the debug information for.
+        Remember its ID (let's say the ID is 100).
+      </listitem>
+      <listitem>
+        Go to your browser's location bar, add
+      <command>&amp;DebugURLID=100</command> 
+      at the very end of the URL and press Enter.
+      <note>
+        <para>
+        Now URL will look approximately like this:
+          <programlisting>
+http://hostname/cgi-bin/search.cgi?q=test+query&amp;DebugURLID=100
+          </programlisting>
+        </para>
+        </note>
+      </listitem>
+      <listitem>
+        Find a line of this format in between the search form and the results:
+        <programlisting>
+DebugScore: url_id=100 RDsum=98 distance=84 (84/1) minmax=0.99091089
+            density=0.00196271 numword=0.90135133 wordform=0.00000000
+        </programlisting>
+        It will give you an idea why the score value for the
+        selected document is too high or too low and help
+        to fine tune various parameters
+        like <xref linkend="cmdref-worddistanceweight"/>
+        or  <xref linkend="cmdref-worddensityfactor"/>.
+      </listitem>
+    </orderedlist>
+    <note>
+      <para>
+      Score debug information is currently displayed only for
+      queries with multiple search words.
+      Queries with a single search word don't return debug information.
+      </para>
+    </note>
+  </para>
+</sect2>
+
+
+
+<sect2 id="poprank">
+  <title>
+    Popularity rank<indexterm><primary>Popularity rank</primary></indexterm>
+  </title>
+  <para>
+  <emphasis>Popularity rank</emphasis> is calculated when
+  you start <userinput>indexer -n0 -R</userinput> and is done in two steps.
+  </para>
+  <para>
+  At the first step, the value of the <option>Weight</option> parameter
+  for every server is divided by the number of outgoing links from
+  this server, so the weight of one link from this server is calculated.
+  At the second step the sum of weights of all incoming links is
+  calculated for every document and the result is stored as the document
+  popularity value.
+  </para>
+  
+  <para>
+  Self-links (when a document refers to itself),
+  are ignored and do not affect the document popularity.
+  You can also set  <command><xref linkend="cmdref-poprankskipsamesite"/></command>
+  to <literal>yes</literal> to ignore all internal site links and
+  thus have only inter-site links affect the popularity values.
+  </para>
+  <para><indexterm><primary>Command</primary><secondary>Weight</secondary></indexterm>
+  By default, the value of the <option>Weight</option> parameter is equal
+  to <literal>1</literal> for all servers. You can change this value using
+  the <command><xref linkend="cmdref-serverweight"/></command>
+  command in &indexer.conf;.
+  <!--
+  file or directly in the <literal>server</literal> table, if you load the
+  servers configuration from this table.
+  -->
+  </para>
+  
+  <para>If you put set <command><xref linkend="cmdref-poprankfeedback"/></command>
+  to <literal>yes</literal>, &indexer; will
+  re-calculate site weights before calculating popularity values.
+  A site weight is calculated as the sum of popularity values
+  for all document of this site calculated during
+  the previous <userinput>indexer -n0 -R</userinput> run.
+  If the sum is greater than <literal>1</literal>,
+  the site weight is set to this sum, otherwise,
+  the site weight is set to <literal>1</literal>.
+  </para>
+  <para>If you set <command><xref linkend="cmdref-poprankusetracking"/></command>
+  to <literal>yes</literal>, &indexer; will also
+  use the search statistics collected using
+  the <emphasis>search query tracking</emphasis> module
+  (see  <xref linkend="track"/> for details).
+  </para>
+  <para>If you set <command><xref linkend="cmdref-poprankuseshowcnt"/></command>
+  to <literal>yes</literal> in the search template file
+  &search.htm;, the <varname>url.shows</varname>
+  value (that is the value of the column <varname>show</varname> in the 
+  table <varname>url</varname>) will be incremented every
+  time a document is displayed in search results, but only in the case
+  when the score value of the document is greater than
+  <command><xref linkend="cmdref-poprankshowcntratio"/></command>
+  (<literal>25.0%</literal> by default). That is, this option
+  activates collecting information about the <emphasis>high scored</emphasis>
+  documents <emphasis>seen</emphasis> by the users.
+  </para>
+  <para>
+  You can set <command><xref linkend="cmdref-poprankuseshowcnt"/></command>
+  to <literal>yes</literal> in &indexer.conf;.
+  In this case <command>indexer</command> will use the collected
+  value of <varname>url.shows</varname> multiplied to the
+  <command><xref linkend="cmdref-poprankshowcntweight"/></command>
+  (<literal>0.01</literal> by default) to the popularity value.
+  </para>
+</sect2>
+
+
+
+<sect2 id="rel-cwords">
+  <title>
+    Crosswords<indexterm><primary>Crosswords</primary></indexterm>
+  </title>
+  <para>This feature makes the words written in between
+  the <literal>&lt;a href="xxx"&gt;</literal> and <literal>&lt;/a&gt;</literal>
+  <acronym>HTML</acronym> tags belong to the document referenced in the link. 
+  To enable using Crosswords,
+  use the <command><xref linkend="cmdref-crosswords"/>
+  <indexterm><primary>Command</primary><secondary>CrossWords</secondary></indexterm>
+  </command> command in  &indexer.conf; and
+  &search.htm;.
+  </para>
+</sect2>
+
+
+</sect1>
+

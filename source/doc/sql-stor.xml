@@ -1,0 +1,438 @@
+<sect1 id="sql-stor">
+  <title>Word modes with an <acronym>SQL</acronym> database</title>
+  <sect2 id="sql-stor-modes">
+    <title>Various modes used to store words
+    </title>
+    <para>
+    &mnogo; can use
+    a number of different formats (modes) to store
+    word information in the database, suitable for
+    different purposes. The available modes
+    are: <literal>single</literal>,
+    <literal>multi</literal> and <literal>blob</literal>.
+    The default mode is <literal>blob</literal>.
+    The mode can be selected using the
+    <option>DBMode</option> part of 
+    the <command><xref linkend="cmdref-dbaddr"/></command> command
+    in &indexer.conf; and
+    &search.htm;.
+    </para>
+    <para>
+Examples:
+<programlisting>
+DBAddr mysql://localhost/test/?DBMode=single
+DBAddr mysql://localhost/test/?DBMode=multi
+DBAddr mysql://localhost/test/?DBMode=blob
+</programlisting>
+    </para>
+  </sect2>
+
+
+  <sect2 id="sql-stor-single">
+    <title>Storage mode - single
+      <indexterm><primary>Storage modes</primary><secondary>single mode</secondary></indexterm>
+    </title>
+    <para>
+    The <literal>single</literal> mode is suitable for a small site
+    with the total number of documents up to <literal>5000</literal>.
+    </para>
+    <para>
+    When the <literal>single</literal> mode is specified,
+    all words are stored in a single table <literal>dict</literal>
+    with three columns <literal>(url_id,word,coord)</literal>,
+    where <varname>url_id</varname> is the <acronym>ID</acronym>
+    of the document which is referenced by <varname>rec_id</varname>
+    field in the table <literal>url</literal>, and <varname>coord</varname>
+    is a combination of the <literal>section ID</literal> and
+    position of the words in the section.
+    Word has the <literal>variable char(32)</literal> <acronym>SQL</acronym> type.
+    Every appearance of the same word in a document produces a separate record in the table.
+    </para>
+    <para>
+    The advantage of the <literal>single</literal> mode is <emphasis>live updates</emphasis>
+    support - a document updated by &indexer; 
+    becomes immediately visible for searches with its new content.
+    In other words <emphasis>crawling</emphasis> and 
+    <emphasis>indexing</emphasis> is done at the same time,
+    for every document individually.
+    </para>
+    <para>
+    Another advantage of the <literal>single</literal> mode is its
+    simplicity and straightforward data format. You can use
+    &mnogo; as a
+    fulltext solution for your database-driven Web application.
+    For example, you may find useful to create a simple search page
+    which will query the data collected by &indexer;
+    this way:
+<programlisting>
+SELECT
+  url.url, count(*) AS rank
+FROM
+  dict, url
+WHERE
+  url.rec_id=dict.url_id
+AND
+  dict.word IN ('some','words')
+GROUP BY
+  url.url
+ORDER BY
+  rank DESC;
+</programlisting>
+    and display the results of this search query.
+    </para>
+    <note>
+      <para>
+      The above query implements very simple ranking based
+      on the count of the word hits. You can also integrate
+      &mnogo; with your own 
+      application using the <xref linkend="cmdref-usercachequery"/>
+      command, which supports full-featured ranking taking into
+      account all factors described in 
+      <xref linkend="score-commands"/>.
+      </para>
+    </note>
+    <note>
+      <para>
+      When you use &mnogo;
+      to index data stored in your <acronym>SQL</acronym> tables
+      (see <xref linkend="htdb"/> for details),
+      you may find useful to run queries joining
+      the table <literal>dict</literal> with your own tables.
+      </para>
+    </note>
+  </sect2>
+  
+  
+  <sect2 id="sql-stor-multi">
+    <title>Storage mode - multi
+      <indexterm><primary>Storage modes</primary><secondary>multi mode</secondary></indexterm>
+    </title>
+    <para>
+    The <literal>multi</literal> mode is suitable for a medium size Web space
+    with up to about <literal>50000</literal> documents. It can be
+    useful if your documents are updated very often.
+    </para>
+    <para>
+    If the <literal>multi</literal> mode is selected, word information
+    is distributed into <literal>256</literal> separate tables
+    <varname>dict00</varname>..<varname>dictFF</varname> using a hash
+    function for distribution. The structure of these
+    tables is close to the table <varname>dict</varname> used
+    in the <literal>single</literal> mode: <literal>(url_id,secno,word,coords)</literal>.
+    The difference is that all positions of the same word (<literal>hits</literal>)
+    in a section of a document are grouped into a single binary array
+    <varname>coords</varname>, instead of producing multiple records.
+    Word information for different sections is stored in separate records.
+    </para>
+    <para>
+    Similar to the <literal>single</literal> mode,
+    the <literal>multi</literal> mode supports <emphasis>live updates</emphasis>.
+    That is, crawling and indexing are done at the same time.
+    A new document (or an updated document) becomes available
+    for search very soon after &indexer; 
+    has crawled it.
+    </para>
+    <para>
+    When working in the <literal>multi</literal> mode, 
+    &indexer; performs caching
+    of the word information in memory for better 
+    crawling performance. The word cache is 
+    flushed to the database as soon as it grows up
+    to the value given in <xref linkend="cmdref-wordcachesize"/>,
+    with <literal>8Mb</literal> by default.
+    You can change <xref linkend="cmdref-wordcachesize"/> to
+    a bigger value for better crawling performance.
+    </para>
+
+    <note>
+      <para>
+      The disadvantage of having a too big <xref linkend="cmdref-wordcachesize"/>
+      value is that in case when &indexer;
+      crashes or dies for any other reasons, all cached information gets lost.
+      </para>
+    </note>
+
+    <para>
+    Grouping word hits into the same record and distribution
+    between multiple tables make the <literal>multi</literal>
+    mode much faster both for search and indexing comparing
+    to the <literal>single</literal> mode.
+    </para>
+  </sect2>
+
+  <sect2 id="sql-stor-blob">
+    <title>Storage mode - blob
+      <indexterm><primary>Storage modes</primary><secondary>blob mode</secondary></indexterm>
+    </title>
+
+    <para>The <literal>blob</literal> mode is the fastest mode currently
+    available in &mnogo; for both purposes: indexing and searching.
+    This mode can handle up to <literal>1,000,000</literal> - <literal>2,000,000</literal>
+    million documents on a single machine.
+    </para>
+    <para>
+    <literal>DBMode=blob</literal> is know to work fine with
+    <application>DB2</application>,
+    <application>Mimer</application>,
+    <application>MS SQL</application>,
+    <application>MySQL</application>,
+    <application>PostgreSQL</application>,
+    <application>Oracle</application>,
+    <application>Sybase</application>,
+    <application>Firebird</application>/<application>Interbase</application>,
+    <application>SQLite3</application>.
+    </para>
+
+    <para>
+    In the <literal>blob</literal> mode crawling and indexing are done separately.
+    Crawling is done by starting &indexer; without
+    any command line arguments. At crawling time &indexer;
+    collects word information into the table <varname>bdicti</varname>
+    with a structure optimized for crawling purposes, but not suitable for
+    search purposes.
+    </para>
+
+    <para>
+    After crawling is done, an extra step is required to 
+    create the <emphasis>search index</emphasis> by launching
+    <userinput>indexer -Eblob</userinput>. When creating
+    the search index, &indexer;
+    loads information from the table <varname>bdicti</varname>,
+    groups all hits of the same word in different documents together
+    and writes the grouped data into the table <varname>bdict</varname>
+    with a structure optimized for search purposes.
+    The table <varname>bdict</varname> consists of three columns
+    (<varname>word</varname>, <varname>secno</varname>, <varname>intag</varname>),
+    where <varname>intag</varname> is
+    a binary array which includes information about all documents this
+    word appears in (using 32-bit <literal>ID</literal>s of the documents),
+    as well as positions of the word in every document (for phrase search).
+    The table <varname>bdict</varname> has an index on the column
+    <varname>word</varname> for fast look-up at search time.
+    Words from different sections (e.g. <literal>title</literal>
+    and <literal>body</literal>) are written in separate records.
+    <note>
+      <para>
+      Separate records for different sections are needed to optimize
+      searches with section limits, for example "<emphasis>find only in title</emphasis>".
+      </para>
+    </note>
+    </para>
+
+<!--
+    <para>
+    The data structure is highly optimized for search, however it is very
+    unsuitable for updates. Partial updating the search index is not implemented.
+    So, indexing is actually done in two steps.
+    The first step is crawling web space by running "indexer". On
+    this step indexer puts word information about each document into
+    the  table "bdicti".
+    </para>
+-->
+
+    <para>
+    Also, additional arrays of data are written into the table
+    <varname>bdict</varname>:
+
+    <itemizedlist>
+    <listitem>
+    <para>
+    <literal>#rec_id</literal> - a list of 32-bit document <literal>ID</literal>s
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    <literal>#last_mod_time</literal> - an array of 32-bit
+    <literal>Last-Modified</literal> values
+    (in Unix <literal>timestamp</literal> format) -
+    for fast limiting searches by date.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    <literal>#pop_rank</literal> - an array of popularity rank values,
+     each in the <type>32-bit float</type> format.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    <literal>#site_id</literal> - an array of 32-bit
+     site <literal>IDs</literal>, for <literal>GroupBySite</literal>.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    <literal>#limit#name</literal> - a list of document <literal>IDs</literal>
+    covered by a user defined limit with name "<literal>name</literal>".
+    A separate <literal>#limit#xxx</literal> record is created
+    for every user defined <xref linkend="cmdref-limit"/> configured
+    in &indexer.conf;.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    <literal>#ts</literal> - the timestamp indicating when
+    <userinput>indexer -Eblob</userinput> was executed last time,
+    in textual representation, using the Unix timestamp format.
+    This value is used for invalidating old queries stored
+    in the search result cache, as well as for searches
+    with <emphasis>live updates</emphasis>, described in
+    <xref linkend="sql-stor-blob-live"/>.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    <literal>#version</literal> - a string representing
+    the version <literal>ID</literal> of
+    &indexer; which created
+    the search index. For example, &indexer;
+    from <application>mnoGoSearch 3.3.0</application> writes
+    the string "<literal>30300</literal>". This record
+    is required for easier upgrade purposes, to make
+    a newer version of &search.cgi;
+    recognize an older format.
+    </para>
+    </listitem>
+    </itemizedlist>
+    </para>
+
+    <para>
+    Note, creating fast search index is also possible for 
+    the databases using <literal>DBMode=single</literal> and
+    <literal>DBMode=multi</literal>.
+    This is useful when you need to quickly switch to
+    <literal>DBMode=blob</literal> when
+    search performance with the other modes became bad -
+    without even having to re-index
+    your Web space. Later you can completely
+    switch to <literal>DBMode=blob</literal> in both
+    &indexer.conf; and
+    &search.htm;, and run indexing
+    from the very beginning.
+    </para>
+
+    <para>
+    The disadvantage of <literal>DBMode=blob</literal> is that
+    it does not support live updates directly. New or updated documents,
+    crawled by &indexer;
+    are not visible for search until <userinput>indexer -Eblob</userinput>
+    is run again. Creating search index takes about <literal>6</literal>
+    minutes on a collection with <literal>200000</literal>
+    <acronym>HTML</acronym> documents, with <literal>10Gb</literal>
+    total size (on a Intel Core Duo 2.13GHz <acronym>CPU</acronym>),
+    which can be unacceptably long for some applications
+    (for example, on a news site,
+     or when using &mnogo;
+     as an external full-text engine for <acronym>SQL</acronym>
+     tables with help of <link linkend="htdb">HTDB</link>).
+    </para>
+
+  </sect2>
+  
+  
+  <sect2 id="sql-stor-blob-live">
+    <title>Live updates emulator with <literal>DBMode=blob</literal></title>
+    <para>
+    Starting from version <literal>3.3.1</literal>,
+    &mnogo; emulates
+    <emphasis>live updates</emphasis> by reading
+    word information for the new or updated documents
+    directly from the crawler table <varname>bdicti</varname>.
+    It allows to add or update up to about <literal>10,000</literal>
+    documents without having to run <userinput>indexer -Eblob</userinput>.
+    To activate using live updates,
+    please add <option>LiveUpdates=yes</option> parameter
+    to the <xref linkend="cmdref-dbaddr"/> command in &search.htm;.
+    </para>
+
+    <para>
+    <title>Example:</title>
+<programlisting>
+DBAddr mysql://root@localhost/test/?DBMode=blob&amp;LiveUpdates=yes
+</programlisting>
+    </para>
+  </sect2>
+
+
+  <sect2 id="sql-stor-blob-ext">
+    <title>Extended features with <option>DBMode=blob</option></title>
+    <para>
+    Starting with the version <literal>3.3.0</literal>,
+    <userinput>indexer -Eblob</userinput> can be used in combination
+    with <literal>URL</literal> and <xref linkend="cmdref-tag"/> limits,
+    other limits described in <xref linkend="general-subsect"/>,
+    as well as in combination with a user defined limit described
+    by a <xref linkend="cmdref-limit" /> command.
+    The limits allow to generate a search index over a subset of
+    the documents collected by &indexer;
+    at crawling time.
+    </para>
+
+    <para><title>Examples:</title>
+<programlisting>
+indexer -Eblob -u %/subdir/%
+indexer -Eblob -t tag
+indexer -Eblob --fl=limitname
+</programlisting>
+    </para>
+
+    <para>Starting with the version <literal>3.2.36</literal> 
+    an additional command is available: <userinput>indexer -Erewriteurl</userinput>.
+    When &indexer; is launched with this parameter
+    it rewrites <acronym>URL</acronym> data for <option>DBMode=blob</option>.
+    It can be useful to rewrite <acronym>URL</acronym> data quickly
+    without having to rebuild the entire search index, for example
+    if you added the <option>Deflate=yes</option> parameter to 
+    <xref linkend="cmdref-dbaddr"/>, or after running
+    <userinput>indexer -n0 -R</userinput> to update the
+    <link linkend="poprank">Popularity Rank</link>.
+    
+    </para>
+  </sect2>
+
+
+  <sect2 id="sql-store-maxwords">
+    <title>Maximum amount of words collected from a  document</title>
+    <para>
+    Starting from the version <literal>3.3.0</literal>,
+    &mnogo; enumerates
+    words positions for every section separately and
+    allows to store information about up to 2 million
+    words per section.
+    </para>
+    <para>
+    In the versions prior to <literal>3.3.0</literal>
+    it was possible to store up to <literal>64K</literal> words
+    from a single document.
+    </para>
+  </sect2>
+
+
+  <sect2 id="sql-stor-noncrc">
+    <title>Substring search notes</title>
+    <para>
+      The
+      <literal>single</literal>,
+      <literal>multi</literal> and
+      <literal>blob</literal> modes support substring search.
+      An <acronym>SQL</acronym> query containing
+      a <command>LIKE</command> predicate is executed
+      internally in order to do substring search. Substring
+      search is usually slower than searching for a full word,
+      especially in case of very short substring.
+      You can use the <xref linkend="cmdref-substringmatchminwordlength"/>
+      command to limit the minimal word length allowed for substring search.
+    </para>
+    <note>
+      <para>
+      When performing substring search in the <literal>multi</literal>
+      mode, &search.cgi; has to iterate
+      search queries through all <literal>256</literal> tables
+      <varname>dict00</varname>..<varname>dictFF</varname>,
+      which makes substring search especially slow. Using
+      substring search is not recommended with <option>DBMode=multi</option>.
+      </para>
+    </note>
+  </sect2>
+</sect1>
+

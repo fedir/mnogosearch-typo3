@@ -1,0 +1,9 @@
+Database structure for Adaptive Sybase.
+
+Structrure is actually taken from MS SQL and
+slightly changed.
+
+Use this command to create tables:
+
+
+isql -Hhostname -Sservername -Uuser -Ppass -Ddbname < create.sql

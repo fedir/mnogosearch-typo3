@@ -1,0 +1,16 @@
+FIELDS=OFF;
+SELECT word, intag FROM dict WHERE word='longbody1' ORDER BY intag;
+SELECT snd, cnt, word FROM wrdstat ORDER BY snd, cnt DESC, word;
+SELECT status, docsize, hops, crc32, url FROM url ORDER BY status, crc32;
+SELECT sname FROM urlinfo ORDER BY sname;
+colflags2=1;
+SELECT word, secno, intag FROM bdict WHERE word LIKE '#%' AND word <> '#last_mod_time' AND word<>'#rec_id' AND word<>'#ts' AND word<>'#version' AND word<>'#limit#test1' AND word<>'#score#score1cached' AND word<>'#score#score2cached' ORDER BY word;
+SELECT word, secno FROM bdict WHERE word='#last_mod_time';
+SELECT word, secno FROM bdict WHERE word='#rec_id';
+SELECT word, secno FROM bdict WHERE word='#ts';
+SELECT word, secno FROM bdict WHERE word='#version';
+SELECT word, secno FROM bdict WHERE word='#limit#test1';
+SELECT word, secno FROM bdict WHERE word='#score#score1cached';
+SELECT word, secno FROM bdict WHERE word='#score#score2cached';
+SELECT word, secno, intag FROM bdict WHERE word >= '0' AND word <='9999' AND word NOT LIKE '#%' ORDER BY word, secno;
+SELECT word, secno, intag FROM bdict WHERE word >= 'a' AND word <='zzzz' AND word NOT LIKE '#%' ORDER BY word, secno;

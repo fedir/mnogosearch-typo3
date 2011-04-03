@@ -1,0 +1,234 @@
+<sect1 id="multilang">
+  <title>Search pages with multi-lingual interface
+    <indexterm><primary>Multi-language</primary></indexterm>
+  </title>
+
+  <para>The original instructions in this article
+  were made by Craig Small
+  <email>csmall[at]eye-net[dot]com[dot].au</email>.
+  Some later changes were done by Alexander Barkov 
+  <email>bar@mnogosearch.org</email>.
+  </para>
+
+
+  <para>
+  In case of a multi-lingual search engine
+  it is convenient to display search form
+  and search results using the language
+  according to the user browser preferences.
+  This article describes how to configure
+  a multi-lingual interface for the
+  &mnogo; +
+  <application>Apache</application> combination.
+  </para>
+
+
+  <sect2 id="multilang-install">
+  <title>Installing a multi-lingual interface</title>
+  <para>
+  The general idea of this method uses the fact that &search.cgi;
+  opens a template having the same name with the <acronym>CGI</acronym> script.
+  For example, if the name of the CGI script is <filename>search.en.cgi</filename>,
+  then it opens the template file
+  <filename>/usr/local/mnogosearch/etc/<emphasis>search.en.htm</emphasis></filename>
+  (assuming that &mnogo; <filename>/etc</filename>
+   directory is <filename>/usr/locale/mnogosearch/etc/</filename>).
+  Configuring a multi-lingual interface consists of three simple steps.
+  </para>
+  <orderedlist numeration="arabic">
+    <listitem>
+      <para>
+      <title>Installing multiple templates</title>
+      </para>
+      <para>
+      You need to create multiple search templates
+      (one template for every language you want to support)
+      with file names in the form 
+      <filename>search.<emphasis>language</emphasis>.htm</filename>, where
+      <literal><emphasis>language</emphasis></literal> is a two-letter language abbreviation,
+      for example: <literal>en</literal>, <literal>pl</literal>, <literal>ru</literal>.
+      </para>
+      <para>
+      You may also want to have the file &search.htm;
+      (usually a sym-link to <filename>search.en.htm</filename>) as the default file.
+      </para>
+      <para>At the end of this step you will have these files
+      in &mnogo; <filename>/etc</filename>
+      directory:
+      </para>
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry>
+                <filename>search.en.htm</filename>
+              </entry>
+              <entry>English template</entry>
+            </row>
+            <row>
+              <entry>
+                <filename>search.pl.htm</filename>
+              </entry>
+              <entry>Polish template</entry>
+            </row>
+            <row>
+              <entry>
+                <filename>search.ru.htm</filename>
+              </entry>
+              <entry>Russian template</entry>
+            </row>
+            <row>
+              <entry>
+                &search.htm;
+              </entry>
+              <entry>Symlink to the English template</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </listitem>
+    <listitem>
+      <para>
+      <title>Installing front-ends</title>
+      Put <filename>search.cgi</filename> into your Web server
+      CGI directory and setup the symlinks:</para>
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry>
+                <filename>search.cgi</filename>
+              </entry>
+              <entry>The original file</entry>
+            </row>
+            <row>
+              <entry>
+                <filename>search.en.cgi</filename>
+              </entry>
+              <entry>symlink</entry>
+            </row>
+            <row>
+              <entry>
+                <filename>search.pl.cgi</filename>
+              </entry>
+              <entry>symlink</entry>
+            </row>
+            <row>
+              <entry>
+                <filename>search.ru.cgi</filename>
+              </entry>
+              <entry>symlink</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </listitem>
+
+    <listitem>
+      <para>
+      <title>Configuring Apache</title>
+      You also need to make your <application>Apache</application>
+      understand the trick you are doing here to have content negotiation
+      happen, as well as some magic with the indexes.
+      It can be done either in <filename>httpd.conf</filename>,
+      or in the <filename>.htaccess</filename> file in
+      the directory you put &search.cgi; in.
+<programlisting>
+AddLanguage en .en
+AddLanguage pl .pl
+AddLanguage ru .ru
+DirectoryIndex search search.cgi
+Options FollowSymlinks MultiViews
+</programlisting>
+      </para>
+    </listitem>
+  </orderedlist>
+  </sect2>
+
+
+  <sect2 id="multilang-how">
+    <title>How it works</title>
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>You open your browser and type the URL <literal>http://myhost/mydir/search</literal>
+        </para>
+        <para>
+          <emphasis>(no slash at end !!)</emphasis>
+        </para>
+      </listitem>
+      <listitem>
+        <para>Your browser says
+        <literal>"I like English (well language negotiation en)"</literal>
+        </para>
+      </listitem>
+      <listitem>
+        <para>Apache finds
+        <filename>search.en.cgi</filename>:
+        </para>
+        <para>
+        <command>DirectoryIndex</command> gives <literal>search</literal>,
+        and <command>MultiViews</command> gives
+        <literal>en.cgi</literal>)
+        </para>
+      </listitem>
+      <listitem>
+        <para><application>Apache</application> sets the
+         environment variable <varname>SCRIPT_FILENAME</varname> to
+         <filename>mydir/search.en.cgi</filename> and executes
+         <application>search.en.cgi</application>.
+        </para>
+      </listitem>
+      <listitem>
+        <para><application>search.en.cgi</application> starts
+         and detects the template name using 
+         <varname>SCRIPT_FILENAME</varname>.
+        </para>
+      </listitem>
+    </orderedlist>
+
+    <para>So what happens if the user wants, say, German?
+    Note, there is no <filename>search.de.cgi</filename>!
+    The first bit of <command>DirectoryIndex</command> (i.e. <filename>search</filename>) fails,
+    so <application>Apache</application> tries the second one, <filename>search.cgi</filename>
+    and executes it. &search.cgi; starts and opens the template
+    file &search.htm;, which is a symlink to <filename>search.en.htm</filename>.
+    So you'll get the page in English, which is better than a <literal>404 Not Found</literal>.
+    </para>
+<!--
+    <para>This does work, you may need some more Apache
+fiddling to get negotiation to work because I am testing this on a
+server that already has it setup, so I may have missed
+something.</para>
+-->
+  </sect2>
+
+
+  <sect2 id="multilang-problem">
+    <title>Possible troubles</title>
+    <para>Rarely you may get some language negotiation problems caused by:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>Caches (proxy servers) that don't follow the standards
+        </para>
+      </listitem>
+      <listitem>
+        <para>Old versions of browsers that don't follow the standards
+        </para>
+      </listitem>
+      <listitem>
+        <para>Bad browser configuration with weird stuff in language settings.
+        </para>
+      </listitem>
+    </itemizedlist>
+    
+<!--
+    <para>The Apache team is working on some workarounds
+    for most of these, if possible.  For a reasonably heavily used website
+    you can expect an email about it once a week or so.
+    </para>
+-->
+  </sect2>
+
+</sect1>
+

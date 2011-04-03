@@ -1,0 +1,171 @@
+<!--variables
+ImportEnv UDM_TEST_DIR
+Include $(UDM_TEST_DIR)/dbaddr.conf
+
+SaveSectionSize no
+
+# Uncomment this line to enable search result cache
+#Cache yes
+
+#  Uncomment this line if you do not want to detect and show clones
+DetectClones yes
+
+# Use proper local and browser charsets
+# Default charset is iso-8859-1 (latin1)
+# which is suitable for the most Western European languages
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+# Load stopwords file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#StopwordFile stopwords/en.sl
+#StopwordFile stopwords/ru.sl
+#
+
+#
+# Minimum and maximum word lengths
+#
+#MinWordLen 1
+#MaxWordLen 32
+
+# Number of pages in navigator bar
+#
+#PagesPerScreen 10
+
+# Load synonyms file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#Synonym synonym/english.syn
+#Synonym synonym/russian.syn
+#
+
+#
+# How to hilight searched words.
+#
+HlBeg	<b>
+HlEnd	</b>
+
+# Uncomment this line to enable error loging to stderr
+#Log2stderr yes
+#
+
+# Uncomment this line to change default URL basis for storedoc.cgi
+#StoredocURL     /cgi-bin/storedoc
+#
+
+# Uncoment this line to change default maximal excerpt size. Default value is 256.
+#ExcerptSize 1024
+#
+
+# Uncomment this line to change Last-Modified format output
+# Use strftime function meta variables
+#DateFormat %d %b %Y %X %Z
+
+Alias http://site/ http://site-alias/
+
+NumDistinctWordFactor 256
+
+Crosswords $(cw)
+
+ResultsLimit 200
+
+IDFFactor 0
+-->
+
+<!--top-->
+----------------------
+WHERE=$(WhereCondition)
+<!--/top-->
+
+
+<!--restop-->
+Search for <b>$&(q)</b>.</small>
+Search results: <b>$(W)</b>.</small>
+nwords=$(nwords)
+word0.word='$(word0.word)'
+word0.count='$(word0.count)'
+word0.doccount='$(word0.doccount)'
+word0.order='$(word0.order)'
+word0.origin='$(word0.origin)'
+word0.weight='$(word0.weight)'
+Results $(first)-$(last) of $(total)
+<!IFGT NAME="StrictModeFound" CONTENT="0">
+Too few results were found in strict mode: $(StrictModeFound)
+Displaying results in less strict mode.
+<!ENDIF>
+<!--/restop-->
+
+
+<!--res-->
+<!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
+$(Order).
+URL: $(URL)
+Title: <!IF NAME="Title" CONTENT="">$(URL:40)<!ELSE>$&(Title)<!ENDIF>
+Score: $(Score)
+Popularity: $(Pop_Rank)
+Body: $&(Body)
+Content-Length: $(Content-Length)
+Content-Type: $(Content-Type)
+Stored: $(STORED)
+<!IFNOT NAME="sitelimit_href" CONTENT="">
+Same site: $(self)$(sitelimit_href) <!IFNOT NAME="PerSite" CONTENT="0"> ($(PerSite) total)<!ENDIF>
+<!ENDIF>
+<!IFGT NAME="nclones" CONTENT="0">
+  <!SET NAME="lastclone" CONTENT="$(nclones)"><!DEC NAME="lastclone">
+  <!FOR NAME="i" FROM="0" TO="$(lastclone)">
+    <!COPY NAME="CloneURL" CONTENT="clone$(i).url">Clone$(i).URL=$(CloneURL)
+    <!COPY NAME="CloneAlias" CONTENT="clone$(i).Alias">Clone$(i).Alias=$(CloneAlias)
+    <!COPY NAME="CloneContentLength" CONTENT="clone$(i).Content-Length">Clone$(i).Content-Length=$(CloneContentLength)
+  <!ENDFOR>
+<!ENDIF>
+<!--/res-->
+
+
+<!--resbot-->
+Result pages: $(NL)$(NB)$(NR)
+<!--/resbot-->
+
+<!--navleft-->
+<TD><small><A HREF="$(self)$(NH)">&lt;&lt; Prev</A></TD>
+<!--/navleft-->
+
+<!--navleft_nop-->
+<TD><small><FONT COLOR=gray>&lt;&lt; Prev</FONT></TD>
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<TD><small><A HREF="$(self)$(NH)">$(NP)</A></TD>
+<!--/navbar1-->
+
+<!--navbar0-->
+<TD><small>$(NP)</TD>
+<!--/navbar0-->
+
+<!--navright-->
+<TD><small><A HREF="$(self)$(NH)">Next &gt;&gt;</A></TD>
+<!--/navright-->
+
+<!--navright_nop-->
+<TD><small><FONT COLOR=gray>Next &gt;&gt;</FONT></TD>
+<!--/navright_nop-->
+
+
+
+<!--notfound-->
+Search for $&(q)
+Search results: $(W)
+Sorry, your search for $&(q) did not find any results.
+<!--/notfound-->
+
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

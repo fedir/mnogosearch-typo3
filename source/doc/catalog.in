@@ -1,0 +1,53 @@
+#
+# FreeBSD
+#
+#CATALOG "/usr/local/share/xml/docbook/catalog"
+
+#
+# FreeBSD-5.3
+#
+#CATALOG "/usr/local/share/xml/docbook/4.1.2/catalog"
+
+#
+# RedHat 8.0
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-14/catalog"
+#CATALOG "/usr/share/xml/docbook/dtd/4.2/catalog"
+
+#
+# RedHat Linux Advanced Server 3
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-17.2/catalog"
+
+#
+# Debian/Sarge
+# Debian Linux 3.1
+#
+# Fix Makefile:
+# remove /usr/share/sgml/docbook/stylesheet/dsssl/modular/dtds/decls/xml.dcl
+# add /usr/share/sgml/declaration/xml.dcl
+#
+#CATALOG "/usr/share/xml/docbook/schema/dtd/4.2/catalog"
+#GATALOG "/usr/share/sgml/docbook/dtd/4.2/catalog"
+
+#
+# Redhat Enterprise Linux ES release 4 (Nahant Update 4)
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-25/catalog"
+
+#
+#
+# Fefora core 3
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-25/catalog"
+
+#
+# Fedore core 4
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-26/catalog"
+
+#
+# Fedora core 6
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-30.1/catalog"
+
+#
+# Fedora core 9
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-35.fc9/catalog"
+#CATALOG "/usr/share/sgml/docbook/xml-dtd-4.2-1.0-37.fc9/catalog"
+
+CATALOG "@DOCBOOK_DTD@"

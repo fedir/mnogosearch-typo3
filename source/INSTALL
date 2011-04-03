@@ -1,0 +1,277 @@
+mnoGoSearch Installation notes
+==============================
+
+Requirements
+============
+
+Supported operating systems
+===========================
+
+We use GNU Autoconf so it is possible to compile and use mnoGoSearch on
+almost every modern UNIX system with a C compiler without any modifications.
+We develop the software on FreeBSD and RedHat Linux.
+
+Currently known systems mnoGoSearch has been successfully compiled and
+tested on are:
+
+    * FreeBSD 2.2.5, 3.x, 4.x, 5.x
+    * Linux 2.x
+    * sun4u sparc SunOS 5.6
+    * Solaris7 x86
+    * Solaris8 UltraSparc
+    * BSDI 4.1
+    * OpenBSD 2.5
+    * HP-UX B.10.20 ( GNU "sed" required)
+    * Digital Unix V4.0 (aka Compaq Tru64 UNIX)
+    * SCO UnixWare 7.x
+    * AIX 4.2
+    * SGI Irix 6.5
+    * YellowDog Linux for PPC on Mac G3
+    * MacOSX 10.0.0, 10.4.7
+
+We hope mnoGoSearch will work on other Unix platforms as well. 
+Please report successful platforms to devel@@mnogosearch.org
+
+
+SQL database requirements
+=========================
+Note that if you want to compile mnoGoSearch with one of supported
+SQL database you must have database already installed before 
+installing mnoGoSearch. 
+
+Since version 3.2 it is possible to use mnoGoSearch with several 
+SQL databases.
+
+You also should have enough permissions to create new database 
+or to write into already existing one.
+
+MySQL notes:
+------------
+Versions 4.0.x, 4.1.x, 5.0.x are known to work.
+libz library must be installed from zlib-devel RPM to successfully
+compile mnoGoSearch with MySQL.
+
+PostgreSQL notes:
+-----------------
+Version 7.3.4 is known to work.
+
+Oracle notes:
+-------------
+Versions 8.0.5.X, 8.1.6 R2, 9.0.1 are known to work
+
+IBM DB2 notes:
+--------------
+Versions 7.1, 8.1 are known to work.
+
+FreeTDS notes:
+--------------
+Versions 0.52, 0.61 are known to work with
+MS SQL Server 7.0 and MS SQL Server 2000.
+
+InterBase notes:
+----------------
+Versions Interbase 4.0, Interbase CS 6.0, FirebirdCS 0.9-4,
+Firebird 1.0.3 are known to work.
+
+MimerSQL notes:
+--------------
+Version 9.1.3 is known to work.
+
+iODBC notes:
+------------
+Versions iodbc-2.50.22a, 3.0.5 are known to work.
+
+unixODBC notes:
+---------------
+Versions 1.7, 2.2.5 are known to work.
+
+SQLite notes:
+-------------
+Version 2.8.5 is known to work.
+Version 3.1.2 is known to work.
+
+Sybase notes:
+-------------
+ASE-12.5 is known to work.
+
+
+Tools required for installation
+===============================
+
+You need the following tools to build and install mnoGoSearch from source:
+
+   * GNU gunzip to uncompress the distribution.
+
+   * A reasonable tar to unpack the distribution. GNU tar is known
+     to work.
+
+   * A working ANSI C compiler. GNU gcc is known to work.
+
+   * A good make program. GNU make is always recommended and
+     sometimes required.
+
+Installing mnoGoSearch
+======================
+
+1. Unpack the distribution and change dir into the top-level directory 
+of the unpacked distribution.
+
+	tar -zxf mnogosearch-x.x.x.tar.gz
+
+2a. To simplify configuration process  we included a configuration
+script with the package - install.pl.   Run install.pl and select
+mnoGoSearch configuration options in a question-and-answer manner.
+After you specify all the configuration options,  the script will
+run  ./configure  with the options you chose. It will also create
+install.options  file containing your configuration   preferences 
+that you can use to run the script later bypassing questions.
+After configuration is finished, build and install the package as
+described in section 3.
+
+2b. In case you would like to configure mnoGoSearch manually without
+using the configuration script, do the following:
+
+Configure the package with some SQL database support:
+
+	sh$ ./configure --with-mysql
+or
+	sh$ ./configure --with-pgsql
+
+or with enother one depending on the database you prefer,
+
+or with multiple databases:
+        
+        sh$ ./configure --with-mysql --with-pgsql --with-freetds
+
+By default, mnoGoSearch is installed in '/usr/local/mnogosearch'
+in the following subdirectories:
+
+Directory        Contents
+
+bin             search.cgi
+lib             libmnogosearch.a(so) libmnogocharset.a(so)
+sbin            indexer
+etc             indexer.conf-dist, search.htm-dist
+man             indexer.1, indexer.conf.5
+doc		Various documentation
+
+If you have no permissions to write to that directory or just want to install
+mnoGoSearch to another location, please use configure with --prefix option,
+e.g.
+	./configure --prefix=/user/home/mnogo --with-mysql
+
+To install mnoGoSearch with HTTPS support, use configure with the
+following option:
+
+	./configure --with-openssl
+	
+or in case the OpenSSL library is installed in a non-standard location:
+	
+	./configure --with-openssl=/path/to/library
+	
+Please note that you need OpenSSL library installed on your system.
+
+You can see all available options with ./configure --help
+
+
+It you want to provide some specific flags to C compiler (for example,
+'-O7 -mpentium' to build highly optimized binary for Pentium processor
+if you use egcs/pgcc), you can do so using command
+
+	sh$  CFLAGS="-O7 -mpentium"
+	
+_before_ running configure.
+
+To compile mnoGoSearch on FreeBSD with Solid in old aout format, use
+
+	sh$ CFLAGS="-aout"
+
+before running configure.
+
+To compile mnoGoSearch on FreeBSD with aout InterBase, use
+
+	sh$ CFLAGS="-aout -static"
+
+before running configure.
+
+
+If you run into problems with configure, please see section
+'Installation problems'.
+
+3. Build and install the package.
+
+	sh$ make
+	sh$ make install
+
+If you run into problems while doing make, please see section
+'Installation problems'
+
+4. Create database 'mnogosearch'
+
+You can also use existing database, skip this step in this case.
+
+MySQL:
+	sh$ mysqladmin create mnogosearch
+
+PostgreSQL:
+	sh$ createdb mnogosearch
+
+
+Use database specific documentation for other databases.
+
+
+5. Create indexer.conf:
+Change directory to /usr/local/mnogosearch/etc/,
+copy indexer.conf-dist into indexer.conf,
+edit it with your favourite text editor:
+   setting DBAddr is important at this step, e.g:
+
+   DBAddr mysql://localhost/mnogosearch/?dbmode=single
+
+
+5. Create tables:
+
+   Change directory to '/usr/local/mnogosearch/sbin/' and run:
+
+   ./indexer -Ecreate
+
+
+6. Installing search scripts.
+
+Copy search.cgi to your web-server cgi-bin directory or make Apache alias
+to mnoGoSearch bin directory. 
+
+
+Installation problems
+=====================
+
+   * Every time you run 'configure', you must run 'make' again to
+     recompile.
+
+     To prevent old configuration information or object files from being
+     used, run these commands before re-running 'configure':
+
+             sh$ rm config.cache
+             sh$ make clean
+
+   * If your compile fails with make errors, it can happen because
+     of a wrong make you're using.
+     The behavior of Solaris, FreeBSD, OpenBSD make is slightly different 
+     from GNU make. If you have make-related problems, 
+     you should use GNU make instead, often installed as gmake.
+     So, use gmake instead of make in step 3 after configure:
+
+     GNU 'make' version 3.77 is known to work.
+
+If above information doesn't help you, please feel free to contact mnoGoSearch
+mailing list <general@@mnogosearch.org> (please post in English only).
+
+
+Creating binary distribution
+============================
+
+You can create a binary distribution for you platform and share
+it with us. We'll put binaries for various platforms to our site
+to make them available to other users. To create a binary do please 
+type "make bin-dist", then put newely created tar.gz somewhere on the 
+net and post a letter to general@@mnogosearch.org

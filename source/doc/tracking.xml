@@ -1,0 +1,61 @@
+<sect1 id="track">
+  <title>Tracking search queries
+    <indexterm><primary>query tracking</primary></indexterm>
+  </title>
+
+  <para>
+    &mnogo; supports <emphasis>search query tracking</emphasis>,
+    which is useful to have statistics about your search engine usage, such as
+    the most popular queries, the recent queries, the average time spent to
+    process a search query, and so on.
+  </para>
+
+  <para> Query tracking is switched off by default.
+  To enable tracking, add the <literal>trackquery=yes</literal>
+  parameter to the <xref linkend="cmdref-dbaddr"/>
+  command in your search template.
+  </para>
+
+  <para>When performing search, the
+  front-end uses the <literal>qtrack</literal> table to
+  store the following data:
+
+  <itemizedlist>
+    <listitem>
+      <para>
+      query words
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      client IP address
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      the number of documents found
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      time spent for search (in milliseconds)
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      the current <application>UNIX</application> timestamp (in seconds from Epoch).
+      </para>
+    </listitem>
+  </itemizedlist>
+  Other search parameters are stored in the <literal>qinfo</literal> table.
+  </para>
+
+  <para>To make a summary of the search queries,
+  you can execute, for example, this SQL query:
+<programlisting>
+SELECT qwords,count(*),sum(found),avg(found) FROM qtrack GROUP BY qwords;
+</programlisting>
+  </para>
+
+</sect1>
+

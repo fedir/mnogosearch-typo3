@@ -1,0 +1,41 @@
+<sect1 id="vary">
+  <title>Indexing multilingual servers</title>
+  <indexterm><primary>Command</primary><secondary>VaryLang</secondary></indexterm>
+
+  <para>
+  Some HTTP servers can be configured to support multiple versions
+  of the same document, written in different languages. The server
+  decides which version of the document to send to the browser
+  during so called <literal>HTTP content negotiation</literal>,
+  according to the browser settings. For example,
+  in case of <application>Firefox</application> Web browser,
+  you can select your preferred language going to the
+  <literal>Edit</literal> &gt; <literal>Preferences</literal> &gt;
+  <literal>Content</literal> &gt; <literal>Languages</literal> menu.
+  </para>
+
+  <para>&mnogo; supports
+  language negotiation with help of
+  the <command><xref linkend="cmdref-varylang"/></command> command.
+  This command specifies a space-separated list of the desired language codes.
+  &indexer; will download and index all versions
+  of the documents.
+  </para>
+
+  <para>Usage example:
+<programlisting>
+VaryLang "ru en fr"
+</programlisting>
+  <command>indexer</command> will fetch all document copies, written in Russian, English and French languages.
+  </para>
+
+  <note>
+  <para>
+  At search time you can limit &search.cgi; return
+  only pages written in a certain language by passing using the <literal>g</literal>
+  HTML form variable. Have a look into <xref linkend="search-params"/>
+  for details.
+  </para>
+  </note>
+
+</sect1>

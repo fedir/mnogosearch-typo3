@@ -1,0 +1,4311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>mnoGoSearch change history</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="UdmResultFree"
+HREF="msearch-c-api-udmresultfree.html"><LINK
+REL="NEXT"
+TITLE="Index"
+HREF="msearch-index.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="appendix"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-c-api-udmresultfree.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-index.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="appendix"
+><H1
+><A
+NAME="changelog"
+></A
+>Appendix A. mnoGoSearch change history</H1
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="changelog-3-3"
+>Changes in 3.3</A
+></H1
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-11"
+>Changes in 3.3.11 (January 27, 2011)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;        Bug#4346 "QCache does not differentiate on Sections" was fixed.
+        ${sl.*} was added into default QueryCacheID format.
+        </P
+></LI
+><LI
+><P
+>&#13;        The &#60;!--variables--&#62; search template section is now executed earlier,
+        so <CODE
+CLASS="varname"
+>tmplt</CODE
+>, 
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-locale.html"
+>Locale</A
+></B
+>
+        and <CODE
+CLASS="varname"
+>StdoutBufferSize</CODE
+> can be set dynamically.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4256 "Install include headers fails due to duplicated entry of udm_http.h" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        GNU-style long options are now understood. For example,
+        <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer --rewritelimits</TT
+></B
+> is
+        a synonym for the old command <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Erewritelimits</TT
+></B
+>.
+        The new long options are intended to replace the old <TT
+CLASS="literal"
+>-Exxx</TT
+> options.
+        See <KBD
+CLASS="userinput"
+><SPAN
+CLASS="application"
+>indexer</SPAN
+> -?</KBD
+> for the list of the new options.
+        </P
+></LI
+><LI
+><P
+>&#13;        A few performance improvements in handling information in
+        the <TT
+CLASS="filename"
+>server</TT
+> and <TT
+CLASS="filename"
+>srvinfo</TT
+> tables were made.
+          <P
+></P
+><UL
+><LI
+><P
+>&#13;          The tables are now updated in transactions (or under locking, e.g. in <SPAN
+CLASS="application"
+>MySQL</SPAN
+>).
+          </P
+></LI
+><LI
+><P
+>&#13;          The default values for <CODE
+CLASS="option"
+>match_type</CODE
+>, <CODE
+CLASS="option"
+>case_sense</CODE
+>,
+          <CODE
+CLASS="option"
+>nomatch</CODE
+>, <CODE
+CLASS="option"
+>follow</CODE
+>, <CODE
+CLASS="option"
+>Method</CODE
+>
+          are not written to the <TT
+CLASS="filename"
+>server</TT
+> and <TT
+CLASS="filename"
+>srvinfo</TT
+>
+          tables any more.
+          </P
+></LI
+><LI
+><P
+>&#13;           The tables are not updated if no changes in <TT
+CLASS="filename"
+>indexer.conf</TT
+> 
+           have been made since last <SPAN
+CLASS="application"
+>indexer</SPAN
+> startup.
+          </P
+></LI
+></UL
+>
+        These improvements make <SPAN
+CLASS="application"
+>indexer</SPAN
+> start about 3-12 times faster 
+        (depending on database software) with an <TT
+CLASS="filename"
+>indexer.conf</TT
+> file
+        having <TT
+CLASS="literal"
+>4096</TT
+> <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+> commands.
+        </P
+></LI
+><LI
+><P
+>&#13;        <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> scripts to create tables for <SPAN
+CLASS="application"
+>MySQL</SPAN
+> now have the <TT
+CLASS="literal"
+>ENGINE=MyISAM</TT
+>
+        option, to address the default storage engine change in <SPAN
+CLASS="application"
+>MySQL</SPAN
+> version <TT
+CLASS="literal"
+>5.5</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed a <SPAN
+CLASS="application"
+>Valgrind</SPAN
+> warning when a template variable didn't end with right parenthesis properly, e.g.
+        <TT
+CLASS="literal"
+>$(name</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Non-standard RSS tags inside the <TT
+CLASS="literal"
+>&#60;item&#62;</TT
+> tag can now be parsed
+        when defined using a <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-section.html"
+>Section</A
+></B
+> command.
+        Cluster <ACRONYM
+CLASS="acronym"
+>XML</ACRONYM
+> search results can also transfer
+        the non-default user section values to the front-end point.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that the default <SPAN
+CLASS="application"
+>PHP</SPAN
+> frontend (<TT
+CLASS="filename"
+>php/index.php</TT
+>) did not highlight
+        non-Latin searched words when displaying cached copies. 
+        </P
+></LI
+><LI
+><P
+>&#13;        The <CODE
+CLASS="option"
+>--enable-fhs-layout</CODE
+> option to <TT
+CLASS="filename"
+>configure</TT
+>
+        is now available, to build and install with layout which suites File Hierarchy Layout
+        standard better. When <CODE
+CLASS="option"
+>--enable-fhs-layout</CODE
+>, mnoGoSearch installs:
+        <P
+></P
+><UL
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>indexer</SPAN
+> into <TT
+CLASS="filename"
+>/bin</TT
+> rather than <TT
+CLASS="filename"
+>/sbin</TT
+>
+          (as <SPAN
+CLASS="application"
+>indexer</SPAN
+> is not really limited to be run by the superuser only).
+          </P
+></LI
+><LI
+><P
+>&#13;          language map files into <TT
+CLASS="filename"
+>/share/langmap/*.lm</TT
+> rather than <TT
+CLASS="filename"
+>/etc/langmap/*.lm</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          stopword files into <TT
+CLASS="filename"
+>/share/stopwords/*.sl</TT
+> rather than <TT
+CLASS="filename"
+>/etc/stopwords/*.sl</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          synonym files into <TT
+CLASS="filename"
+>/share/synonym/*.syn</TT
+> rather than <TT
+CLASS="filename"
+>/etc/synonym/*.syn</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          frequency files (for Asian word segmenters) into <TT
+CLASS="filename"
+>/share/freq/*.freq</TT
+> rather than <TT
+CLASS="filename"
+>/etc/*.freq</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> scripts into <TT
+CLASS="filename"
+>/share/create/dbname/*.sql</TT
+> rather than <TT
+CLASS="filename"
+>/share/dbname/*.sql</TT
+>.
+          </P
+></LI
+></UL
+>
+        For backward compatibility, the traditional <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> layout is created when no <CODE
+CLASS="option"
+>--enable-fhs-layout</CODE
+> is given.
+        </P
+></LI
+><LI
+><P
+>&#13;        Correct path to <SPAN
+CLASS="application"
+>MySQL</SPAN
+> client library is now detected by <B
+CLASS="command"
+>configure</B
+>
+        on 64-bit <SPAN
+CLASS="application"
+>Linux</SPAN
+> platforms.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>Oracle</SPAN
+>'s <TT
+CLASS="literal"
+>11g</TT
+> client include and library layout
+        is now detected by <B
+CLASS="command"
+>configure</B
+> on 64-bit <SPAN
+CLASS="application"
+>Linux</SPAN
+> platforms.
+        </P
+></LI
+><LI
+><P
+>&#13;        An error message is now displayed when <SPAN
+CLASS="application"
+>indexer</SPAN
+> can not find a create or drop <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> script.
+        Earlier <SPAN
+CLASS="application"
+>indexer</SPAN
+> exited silently.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that a few files from the <TT
+CLASS="filename"
+>msearch-test</TT
+> directory were not included
+        into the distribution, so <B
+CLASS="command"
+><TT
+CLASS="literal"
+>make check</TT
+></B
+> did not work
+        outside <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> <SPAN
+CLASS="application"
+>CVS</SPAN
+> tree.
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-10"
+>Changes in 3.3.10 (November 23, 2010)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;        <CODE
+CLASS="varname"
+>Content-Length</CODE
+> is now stored into
+        the database for <ACRONYM
+CLASS="acronym"
+>FTP</ACRONYM
+> protocol when 
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-checkonly.html"
+>CheckOnly</A
+></B
+> access
+        method is used. Previous it was set to <TT
+CLASS="literal"
+>0</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>mconv</SPAN
+> conversion utility improvements
+        were made. Input buffer size was changed to <TT
+CLASS="literal"
+>1Mb</TT
+> 
+        to avoid breaking apart multibyte characters when processing
+        a file with long lines. <CODE
+CLASS="option"
+>-x</CODE
+> command line option
+        was added to display characters that can not be converted to
+        the target character set using <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>hexadecimal</I
+></SPAN
+>
+        <ACRONYM
+CLASS="acronym"
+>SGML</ACRONYM
+> entities (e.g. <TT
+CLASS="literal"
+>&#38;#x123;</TT
+>).
+        </P
+></LI
+><LI
+><P
+>&#13;        <TT
+CLASS="filename"
+>zh-hans.utf8.lm</TT
+> and
+        <TT
+CLASS="filename"
+>zh-hant.utf8.lm</TT
+> language maps were added
+        to detect Simplified and Traditional Chinese in
+        <TT
+CLASS="literal"
+>UTF-8</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Displaying <B
+CLASS="command"
+><A
+HREF="msearch-stored.html"
+>Cached copies</A
+></B
+>
+        now works with <SPAN
+CLASS="application"
+>mnoGoSearch PHP extension module</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Date formats "<TT
+CLASS="literal"
+>1997-07-16T19:20:30+01:00</TT
+>"
+        and "<TT
+CLASS="literal"
+>1997-07-16T19:20:30-01:00</TT
+>" are now
+        understood in protocol headers and when parsing <ACRONYM
+CLASS="acronym"
+>XML</ACRONYM
+> files.
+        </P
+></LI
+><LI
+><P
+>&#13;        The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>&#13;        <A
+HREF="http://en.wikipedia.org/wiki/Sitemaps"
+TARGET="_top"
+>Sitemap Protocol</A
+>
+        </I
+></SPAN
+> is now supported to fetch the list of <ACRONYM
+CLASS="acronym"
+>URLs</ACRONYM
+> available
+        for crawling on a website. A new command
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-usesitemap.html"
+>UseSitemap</A
+></B
+>
+        was added to specify whether to use
+        <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Sitemap Protocol</I
+></SPAN
+>
+        (<TT
+CLASS="literal"
+>yes</TT
+> by default).
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that binding of integer parameters in <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> driver
+        didn't work well on 64-bit platforms which might cause
+        <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+> failures.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>ctlib</SPAN
+>
+        (<SPAN
+CLASS="application"
+>Sybase</SPAN
+> and <SPAN
+CLASS="application"
+>Microsoft SQL Server</SPAN
+> client library) driver returned
+        <TT
+CLASS="literal"
+>CS_ROW_FAIL</TT
+> error on float numbers with
+        high precision.
+        </P
+></LI
+><LI
+><P
+>&#13;        <A
+HREF="msearch-cmdref-dbaddr.html#cmdref-dbaddr-qcache"
+>QCache=yes</A
+>
+        and <A
+HREF="msearch-cmdref-suggest.html"
+>Suggest</A
+> now work with <SPAN
+CLASS="application"
+>Microsoft SQL Server</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Running <A
+HREF="msearch-indexing.html#general-parallel"
+>multiple <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+        crawling processes</A
+> is now possible with <SPAN
+CLASS="application"
+>Microsoft SQL Server</SPAN
+>.
+        <SPAN
+CLASS="application"
+>indexer</SPAN
+> uses the
+        <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+><TT
+CLASS="literal"
+>(TABLOCKX)</TT
+> table hint</I
+></SPAN
+>
+        when fetching targets from the database to avoid crawling
+        of the same documents by multiple <SPAN
+CLASS="application"
+>indexer</SPAN
+> instances.
+        Previously running multiple crawling processes was possible only with
+        <SPAN
+CLASS="application"
+>MySQL</SPAN
+>, <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="application"
+>Oracle</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+>
+        now runs in non-locking mode (i.e. without search down time)
+        when working with <SPAN
+CLASS="application"
+>Microsoft SQL Server</SPAN
+>.
+        Previously non-locking re-indexing was possible only with
+        <SPAN
+CLASS="application"
+>MySQL</SPAN
+>, <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> and <SPAN
+CLASS="application"
+>Oracle</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4220 "one-character HTML titles are not indexed" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#501 "HoldBadHrefs don't work" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>indexer</SPAN
+> now respects the <CODE
+CLASS="option"
+>-D</CODE
+> command line
+        option when dumping data. For example,
+        <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Edumpdata -D2</TT
+></B
+>
+        will dump data from the second <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> command in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        New grouping mode 
+        <B
+CLASS="command"
+><TT
+CLASS="literal"
+>&#13;        <A
+HREF="msearch-cmdref-groupbysite.html"
+>GroupBySite rank</A
+>
+        </TT
+></B
+> was added.
+        </P
+></LI
+><LI
+><P
+>&#13;         <SPAN
+CLASS="application"
+>MonetDB</SPAN
+> and <SPAN
+CLASS="application"
+>OpenLink Virtuoso</SPAN
+> databases are now supported.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#3963 "SQL injection possible with tag and URL parameter" was fixed.
+        Protection against <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> injection in other search parameters was improved.
+        </P
+></LI
+><LI
+><P
+>&#13;        New parameter
+        <CODE
+CLASS="option"
+><A
+HREF="msearch-cmdref-dbaddr.html#cmdref-dbaddr-mysql-specific-multiinsert"
+>MultiInsert=yes</A
+></CODE
+>
+        was added to the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> command,
+        to enable inserting of multiple records in a single
+        <B
+CLASS="command"
+><TT
+CLASS="literal"
+>INSERT</TT
+></B
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+        statement when running
+        "<B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+>"
+        with a <SPAN
+CLASS="application"
+>MySQL</SPAN
+> database.
+        </P
+></LI
+><LI
+><P
+>&#13;        Verbose output was improved to give more information
+        about time spent on various indexing steps
+        (when running <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+>)
+        and search steps (when running <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>), to find performance
+        bottlenecks easier.
+        </P
+></LI
+><LI
+><P
+>&#13;        Minor <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+>
+        performance improvement was made: more records are now
+        inserted per single prepared statement call.
+        </P
+></LI
+><LI
+><P
+>&#13;         An <ACRONYM
+CLASS="acronym"
+>XSS</ACRONYM
+> problem was fixed:
+         typing this <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> in <SPAN
+CLASS="application"
+>Internet Explorer</SPAN
+>
+         address bar popped up an alert message window:
+<PRE
+CLASS="programlisting"
+>&#13;http://localhost/cgi-bin/search.cgi?q=who&#62;"&#62;&#60;script&#62;alert(123)&#60;/script&#62;&#60;"=Search!
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+>&#13;        It's now possible to specify an alternative name for the
+        <CODE
+CLASS="varname"
+>bdict</CODE
+> table using the <CODE
+CLASS="varname"
+>bdict</CODE
+>
+        parameter to <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+>:
+<PRE
+CLASS="programlisting"
+>&#13;DBADdr mysql://root@localhost/test/?bdict=bdict_name
+</PRE
+>
+        This can be used to build multiple search indexes in the same
+        database, for example, using different subsection filters.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#3792 "URL limit for htdb causes inefficient SQL query" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#3806 "wrong usage of memset function" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        The <A
+HREF="msearch-cmdref-userscore.html"
+>UserScore</A
+> command can now be written
+        in <TT
+CLASS="filename"
+>indexer.conf</TT
+>, so its result is cached in the database
+        during <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+> time
+        to be used by <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> at search time.
+        This improves performance in case of a complex <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query given in
+        <A
+HREF="msearch-cmdref-userscore.html"
+>UserScore</A
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>Tika</SPAN
+> MSWord-to-text converter
+        <A
+HREF="msearch-parsers.html#pars-msword"
+>configuration instructions</A
+>
+        were added into the manual.
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-9"
+>Changes in 3.3.9 (29 October 2009)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> now unserstands
+        the <TT
+CLASS="literal"
+>ClientMultiStatements=yes</TT
+> parameter
+        when connecting to <SPAN
+CLASS="application"
+>MySQL</SPAN
+>, which makes it possible to
+        use stored procedure calls in
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-userscore.html"
+>UserScore</A
+></B
+>
+        and <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-usersitescore.html"
+>UserSiteScore</A
+></B
+>
+        commands.
+        </P
+></LI
+><LI
+><P
+>&#13;         A bug was fixed: a missing <TT
+CLASS="literal"
+>&#60;link&#62;...&#60;link/&#62;</TT
+>
+         tag made <SPAN
+CLASS="application"
+>indexer</SPAN
+> crash when parsing a broken
+         <ACRONYM
+CLASS="acronym"
+>RSS</ACRONYM
+> file.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <TT
+CLASS="literal"
+>indexer -Eblob</TT
+> wrote
+        unsorted <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> data into table <CODE
+CLASS="varname"
+>bdicti</CODE
+>,
+        which made <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> return <TT
+CLASS="literal"
+>"no documents found"</TT
+>
+        and other kinds of unexpected results when running
+        with <TT
+CLASS="literal"
+>GroupBySite=yes</TT
+>.
+        
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> now uses <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>prepared statements</I
+></SPAN
+>
+        when working with <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+>
+        (<ACRONYM
+CLASS="acronym"
+>API</ACRONYM
+> functions
+        <CODE
+CLASS="methodname"
+>PQprepare()</CODE
+>,
+        <CODE
+CLASS="methodname"
+>PQexecPrepared()</CODE
+>).
+        </P
+></LI
+><LI
+><P
+>&#13;        When compiled with <SPAN
+CLASS="application"
+>MySQL</SPAN
+> &#62;=<TT
+CLASS="literal"
+>4.1</TT
+> client library
+        and connecting to an older <SPAN
+CLASS="application"
+>MySQL</SPAN
+> server
+        (without native <ACRONYM
+CLASS="acronym"
+>PS API</ACRONYM
+>),
+        <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> now automatically switches not to use
+        prepared statements.
+        </P
+></LI
+><LI
+><P
+>&#13;         Bug#3789 was fixed. <TT
+CLASS="filename"
+>russian.dict</TT
+>
+         from Lebedev's <SPAN
+CLASS="application"
+>Ispell</SPAN
+> package was incorrectly
+         detected as <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> hash file.
+         More accurate <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> ispell hash file detection was made.
+        </P
+></LI
+><LI
+><P
+>&#13;        Improvements in word distance calculation were made.
+        If a distance between two searched words is longer than
+        <TT
+CLASS="literal"
+>64</TT
+>, then this distance is considered to
+        be equal to <TT
+CLASS="literal"
+>64</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;         The <TT
+CLASS="literal"
+>${total}</TT
+> variable is now
+         available in <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-usercachequery.html"
+>UserCacheQuery</A
+></B
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> now does not execute an empty 
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-usercachequery.html"
+>UserCacheQuery</A
+></B
+> query.
+        </P
+></LI
+><LI
+><P
+>&#13;        It's now possible to use dot (<TT
+CLASS="literal"
+>.</TT
+>) and
+        dash (<TT
+CLASS="literal"
+>-</TT
+>) characters as separators in
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-wf.html"
+>wf</A
+></B
+>
+        vector for easier readability.
+        For example, <TT
+CLASS="literal"
+>wf=FFFF-9999-2221</TT
+> is
+        now the same to <TT
+CLASS="literal"
+>wf=FFFF99992221</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>indexer</SPAN
+> now understands the <TT
+CLASS="literal"
+>--exec</TT
+>
+        command line parameter to execute a single <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query,
+        for example:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -Esql --exec="select url from url"
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+>&#13;        <TT
+CLASS="literal"
+>indexer -Esqlmon</TT
+> now understands
+        the <TT
+CLASS="literal"
+>-D</TT
+> parameter to connect
+        to a certain database in multi-database environment.
+        For example:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -Esqlmon -D2
+</PRE
+>
+connects to the database specified in the second <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> command
+in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <B
+CLASS="command"
+>ServerTable</B
+> <ACRONYM
+CLASS="acronym"
+>HOWTO</ACRONYM
+> was
+        added into the manual. See <A
+HREF="msearch-indexer-configuration.html#srvtable"
+>the Section called <I
+>ServerTable
+    <A
+NAME="AEN1892"
+></A
+></I
+> in Chapter 3</A
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> didn't work with <TT
+CLASS="literal"
+>ps</TT
+>
+        values larger than <TT
+CLASS="literal"
+>500</TT
+> because of 
+        query buffer overflow.
+        </P
+></LI
+><LI
+><P
+>&#13;        The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-resultslimit.html"
+>ResultsLimit</A
+></B
+>
+        <TT
+CLASS="filename"
+>search.htm</TT
+> command now understands <TT
+CLASS="literal"
+>0</TT
+>
+        as <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>unlimited</I
+></SPAN
+> number of results displayed
+        to the user.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed a bug that some documents with very low score could
+        be excluded from search results.
+        </P
+></LI
+><LI
+><P
+>&#13;        New <TT
+CLASS="literal"
+>recursive</TT
+> and <TT
+CLASS="literal"
+>final</TT
+> synonym modes
+        were added. See <A
+HREF="msearch-fuzzy.html#synonyms"
+>the Section called <I
+>Synonyms
+    <A
+NAME="AEN6307"
+></A
+></I
+> in Chapter 10</A
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <TT
+CLASS="literal"
+>indexer -Eblob</TT
+> now uses a temporary table
+        <TT
+CLASS="literal"
+>bdict_tmp</TT
+> and renames it to 
+        <TT
+CLASS="literal"
+>bdict</TT
+> after search index is ready
+        with <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> <TT
+CLASS="literal"
+>8.2.4</TT
+>, <SPAN
+CLASS="application"
+>Oracle</SPAN
+>,
+        <SPAN
+CLASS="application"
+>SQLite</SPAN
+> and <SPAN
+CLASS="application"
+>IBM DB2</SPAN
+>. This reduces search service down
+        time when recreating search index just to less than a second.
+        Previously, temporary table was used only with <SPAN
+CLASS="application"
+>MySQL</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <TT
+CLASS="literal"
+>indexer -Ecrawl</TT
+> was added as a synonym
+        for <TT
+CLASS="literal"
+>indexer -Eindex</TT
+>. The latter is now
+        deprecated and will eventually removed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> did not work with <SPAN
+CLASS="application"
+>Sybase</SPAN
+> via <SPAN
+CLASS="application"
+>ODBC</SPAN
+>.
+        The call for
+        <TT
+CLASS="literal"
+>SQLSetConnectOption(hDbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)</TT
+>
+        expected only <TT
+CLASS="literal"
+>SQL_SUCCESS</TT
+> to be returned, while
+        <TT
+CLASS="literal"
+>SQL_SUCCESS_WITH_INFO</TT
+> is also possible with <SPAN
+CLASS="application"
+>Sybase</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        A minor crawling performance improvement was made: <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+        could execute empty <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> transactions in some cases.
+        Now it does not.
+        </P
+></LI
+><LI
+><P
+>&#13;        A minor crawling performance improvement  was made: <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+        does not send <TT
+CLASS="literal"
+>DELETE FROM dict WHERE url_id=xxx</TT
+>,
+        <TT
+CLASS="literal"
+>DELETE FROM urlinfo WHERE url_id=xxx</TT
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> queries
+        when crawling a document for the very first time.
+        </P
+></LI
+><LI
+><P
+>&#13;        A minor crawling performance improvement was made: <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+        now does not send <TT
+CLASS="literal"
+>DELETE FROM links WHERE...</TT
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> queries
+        when <A
+HREF="msearch-cmdref-collectlinks.html"
+>CollectLinks</A
+> is set to <TT
+CLASS="literal"
+>no</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        The <A
+HREF="msearch-cmdref-section.html"
+>special purpose section</A
+>
+        <TT
+CLASS="literal"
+>User.Date</TT
+>
+        now understands <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Unix Timestamp format</I
+></SPAN
+>.
+        For example:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;meta name="Date" content="1104537600"&#62;
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+>&#13;        A description of the <TT
+CLASS="literal"
+>offs</TT
+>
+        <A
+HREF="msearch-doingsearch.html#search-params"
+>search parameter</A
+>
+        was added into the manual.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that the <TT
+CLASS="literal"
+>offs</TT
+>
+        <A
+HREF="msearch-doingsearch.html#search-params"
+>search parameter</A
+>
+        did not work in cluster mode.
+        </P
+></LI
+><LI
+><P
+>&#13;        A new <TT
+CLASS="filename"
+>search.htm</TT
+> command <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-idffactor.html"
+>IDFFactor</A
+></B
+>
+        was added to diminish the weight of words that occur very frequently
+        in the document collection (such as <TT
+CLASS="literal"
+>the</TT
+>) and
+        increase the weight of words that occur rarely.
+        </P
+></LI
+><LI
+><P
+>&#13;        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-worddensityfactor.html"
+>WordDensityFactor</A
+></B
+>
+        now works smother.
+        </P
+></LI
+><LI
+><P
+>&#13;        A new query language syntax was added to set 
+        <A
+HREF="msearch-doingsearch.html#search-wordimportance"
+>importance</A
+>
+        for individual query words, for example:
+        <KBD
+CLASS="userinput"
+>importance200:star importance200:wars importance10:movie</KBD
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>phrase-to-word</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>phrase-phrase</I
+></SPAN
+>
+        synonym types are now supported.
+        A new <TT
+CLASS="filename"
+>search.htm</TT
+> command <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-complexsynonyms.html"
+>ComplexSynonyms</A
+></B
+>
+        was added.
+        </P
+></LI
+><LI
+><P
+>&#13;        If <KBD
+CLASS="userinput"
+>indexer -qq</KBD
+> is given, then
+        <SPAN
+CLASS="application"
+>indexer</SPAN
+> switches to even faster start-up 
+        comparing to <KBD
+CLASS="userinput"
+>indexer -q</KBD
+>.
+        Additionally, <KBD
+CLASS="userinput"
+>indexer -qq</KBD
+> does not
+        synchronize the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+>
+        and <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+>
+        commands found in <TT
+CLASS="filename"
+>indexer.conf</TT
+> with the table "<TT
+CLASS="literal"
+>server</TT
+>"
+        content. It can be useful for those having complex <TT
+CLASS="filename"
+>indexer.conf</TT
+> file
+        with many 
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-server.html"
+>Server</A
+></B
+> / 
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-realm.html"
+>Realm</A
+></B
+> commands.
+        </P
+></LI
+><LI
+><P
+>&#13;        The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-syslogfacility.html"
+>SyslogFacility</A
+></B
+>
+        command now understands <TT
+CLASS="literal"
+>none</TT
+> as a possible value, which means
+        <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>suppress logging to <SPAN
+CLASS="application"
+>syslog</SPAN
+></I
+></SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Improvements in word distance calculation were made.
+        Now search additionally detects if all query words appear
+        in a frame with length <TT
+CLASS="literal"
+>2*number_of_query_words</TT
+>
+        words. For example, documents with text fragments:
+<PRE
+CLASS="programlisting"
+>&#13;.... w1 . w2 . w3  ....
+
+.... w1 . . w2 w3  ....   
+
+.... w1 w2 . . w3  ....
+</PRE
+>
+        are now ranked better.
+        </P
+></LI
+><LI
+><P
+>&#13;        <TT
+CLASS="literal"
+>indexer -Eblob</TT
+> now does not put
+        information about popularity rank into search index
+        if all <TT
+CLASS="literal"
+>pop_rank</TT
+> values are empty
+        (i.e. when <TT
+CLASS="literal"
+>indexer -R</TT
+> has never been run).
+        This slightly improves performance.
+        </P
+></LI
+><LI
+><P
+>&#13;        Tools to <A
+HREF="msearch-extended-indexing.html#dump-restore"
+>dump and restore</A
+>
+        search databases were added. An article how to 
+        <A
+HREF="msearch-cluster.html#cluster-addnode"
+>add a cluster node with help
+        of dump/restore</A
+> tools was added into the manual.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>indexer</SPAN
+> now can limit documents by seed: <KBD
+CLASS="userinput"
+>indexer --seed=10</KBD
+>,
+        where <TT
+CLASS="literal"
+>seed</TT
+> is a value in the range <TT
+CLASS="literal"
+>0..255</TT
+>.
+        Seed range is also understood: <KBD
+CLASS="userinput"
+>indexer --seed=10-20</KBD
+>.
+        You can use seed limit, for example, to distribute crawler work through the week:
+        run <TT
+CLASS="literal"
+>indexer --seed=0-36</TT
+> on Sundays,
+        <TT
+CLASS="literal"
+>indexer --seed=37-75</TT
+> on Mondays, ..., 
+        <TT
+CLASS="literal"
+>indexer --seed=220-255</TT
+> on Saturdays.
+        </P
+></LI
+><LI
+><P
+>&#13;        <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> monitor tool (<TT
+CLASS="literal"
+>indexer -Esql</TT
+>)
+        now reports line numbers when displaying errors.
+        </P
+></LI
+><LI
+><P
+>&#13;        A description of <TT
+CLASS="literal"
+>MS Word 2007 *.docx</TT
+>
+        <A
+HREF="msearch-parsers.html#pars-msword-docx"
+>external parser</A
+>
+        was added into the manual.
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-8"
+>Changes in 3.3.8 (13 February 2009)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;        The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-userorder.html"
+>UserOrder</A
+></B
+>
+        command was added to <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+        to create helper data for fast ordering by a
+        user defined section.
+        </P
+></LI
+><LI
+><P
+>&#13;        New implementation of <I
+CLASS="firstterm"
+>search results cache</I
+>
+        was added. Use the <CODE
+CLASS="option"
+>QCache=yes</CODE
+> parameter
+        to <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> to activate the new search result cache.
+        Along with fast retrival of the results for the cached queries,
+        the new search result cache also supports
+        the <I
+CLASS="firstterm"
+>search in found</I
+> feature.
+        Also, the new search result cache does not need manual
+        cleaning after recreating of the search index.
+        </P
+></LI
+><LI
+><P
+>&#13;          A new "<TT
+CLASS="literal"
+>-D number</TT
+>" command line option is
+          now understood by <SPAN
+CLASS="application"
+>indexer</SPAN
+>. This options
+          makes <SPAN
+CLASS="application"
+>indexer</SPAN
+> connect only to the given
+          database (when running a multi-database environment).
+          For example, when started with <TT
+CLASS="literal"
+>-D2</TT
+>,
+          <SPAN
+CLASS="application"
+>indexer</SPAN
+> will crawl only those targets
+          stored in the database corresponding to the second
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> command of
+          <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-urlselectskiplock.html"
+>URLSelectSkipLock</A
+></B
+> - a new
+          <TT
+CLASS="filename"
+>indexer.conf</TT
+> command was added.
+          By default, <SPAN
+CLASS="application"
+>indexer</SPAN
+> sends a
+          <TT
+CLASS="literal"
+>LOCK TABLE url</TT
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query when
+          fetching a set of new crawler targets from
+          a <SPAN
+CLASS="application"
+>MySQL</SPAN
+> database to avoid
+          multiple <SPAN
+CLASS="application"
+>indexer</SPAN
+> instances crawling
+          into the same URLs. As fetching targets can take up
+          to a few seconds in a huge database, it can make
+          simultaneous search queries stall and wait
+          for <SPAN
+CLASS="application"
+>indexer</SPAN
+> to finish fetching targets.
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-urlselectskiplock.html"
+>URLSelectSkipLock</A
+></B
+>
+          helps to avoid this kind of delays in search queries when
+          you're running only a single instance of
+          <SPAN
+CLASS="application"
+>indexer</SPAN
+> at the same time.
+          </P
+></LI
+><LI
+><P
+>&#13;          Prepared statements support for
+          <SPAN
+CLASS="application"
+>MySQL</SPAN
+> and
+          <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> 
+          client-server protocols was added, which
+          slightly improves crawling and indexing performance.
+          Use the <CODE
+CLASS="option"
+>ps=yes</CODE
+> parameter
+          to <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+>
+          to activate using of prepared statements.
+          </P
+></LI
+><LI
+><P
+>&#13;          <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+> now doesn't put
+           information about the URLs not matching
+           the command line filters (e.g. on status or URL),
+           for performance purposes.
+          </P
+></LI
+><LI
+><P
+>&#13;          A new command
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-crawlerthreads.html"
+>CrawlerThreads</A
+></B
+>
+          is now understood in <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+          to specify the number of crawler threads to start by default
+          when <TT
+CLASS="literal"
+>-N</TT
+> command line option is
+          not given to <SPAN
+CLASS="application"
+>indexer</SPAN
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> and
+          <SPAN
+CLASS="application"
+>indexer</SPAN
+> crashed in some cases when using
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-userscore.html"
+>UserScore</A
+></B
+>
+          on a 64-bit platform.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that
+          "<B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -a -f urllist.txt</TT
+></B
+>"
+          incorrectly used "prefix match" instead of "exact match"
+          when marking documents with the URLs listed in the given
+          file as expired.
+          </P
+></LI
+><LI
+><P
+>&#13;          A new <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-addencoding.html"
+>AddEncoding</A
+></B
+>
+          command is now understood in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-addencoding.html"
+>AddEncoding</A
+></B
+>
+          associates file names and extensions with Mime content
+          encoding types. For example:
+          <PRE
+CLASS="programlisting"
+>AddEncoding gzip *.html.gz</PRE
+>
+          </P
+></LI
+><LI
+><P
+>&#13;          A new <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-crawldelay.html"
+>CrawlDelay</A
+></B
+>
+          <TT
+CLASS="filename"
+>indexer.conf</TT
+> command was added.
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-crawldelay.html"
+>CrawlDelay</A
+></B
+>
+          sets the number of seconds to wait between
+          subsequent requests to the same server.
+          </P
+></LI
+><LI
+><P
+>&#13;            <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> now understands <TT
+CLASS="literal"
+>-d</TT
+>
+            command line argument to pass a template file name to load.
+          </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>$base64(varname)</TT
+> template format was added to print content
+          of a variable using base64 encoding.
+          </P
+></LI
+><LI
+><P
+>&#13;          Better score results for documents containing full long search phrases.
+          </P
+></LI
+><LI
+><P
+>&#13;          A new command <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-uselocalcachedcopy.html"
+>UseLocalCachedCopy</A
+></B
+>
+          was added into <TT
+CLASS="filename"
+>search.htm</TT
+>.
+          Use this command to generate excerpts and "Cached Copy"
+          documents from the original copy of a document when indexing
+          local file system. This command helps to avoid storing of
+          cached copies in the database and thus makes the database smaller.
+          </P
+></LI
+><LI
+><P
+>&#13;          A new command
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-loadurlbasicinfo.html"
+>LoadURLBasicInfo</A
+></B
+>
+          was added into <TT
+CLASS="filename"
+>search.htm</TT
+>. Use this command
+          to improve performance in case when you only need to output
+          document IDs and score values in search results and don't need
+          the other basic information about the documents such as URL,
+          last modification date, document size (and other columns from
+          the table "<TT
+CLASS="literal"
+>URL</TT
+>"). 
+          </P
+></LI
+><LI
+><P
+>&#13;          A new command
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-usersitescore.html"
+>UserSiteScore</A
+></B
+>
+          is now understood in <TT
+CLASS="filename"
+>search.htm</TT
+>.
+          It works similarly to
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-userscore.html"
+>UserScore</A
+></B
+>,
+          but sets the desired score factor for the entire host
+          name instead of a single document.
+          </P
+></LI
+><LI
+><P
+>&#13;          New phrase segmenter types <TT
+CLASS="literal"
+>cjk</TT
+> and
+          <TT
+CLASS="literal"
+>cjk-phrase</TT
+> were added to make
+          <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> suit East-Asian
+          languages better.
+          </P
+></LI
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> automatically switches to
+          <TT
+CLASS="literal"
+>chj-phrase</TT
+> segmenter mode when
+          <TT
+CLASS="literal"
+>m=phrase</TT
+> query string parameter
+          is given and segmenter mode  is <TT
+CLASS="literal"
+>cjk</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          A new template variable <TT
+CLASS="literal"
+>$(SEGMENTER.QUERY_STRING)</TT
+>
+          was added. This variable contains the query string after being
+          processed by segmenter and can be used for testing and debugging
+          the search template.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that <SPAN
+CLASS="application"
+>mnoGoSearch PHP extension module</SPAN
+>
+          could crash when using <SPAN
+CLASS="application"
+>Ispell</SPAN
+> files
+          for stemming.
+          </P
+></LI
+><LI
+><P
+>&#13;          It's now possible to use
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-spell.html"
+>Spell</A
+></B
+> and
+          <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-affix.html"
+>Affix</A
+></B
+>
+          commands in <SPAN
+CLASS="application"
+>PHP extension module's</SPAN
+>
+          function <TT
+CLASS="literal"
+>udm_set_agent_param_ex()</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;           A new <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> parameter
+           <TT
+CLASS="literal"
+>step=number</TT
+> was added.
+           It makes <SPAN
+CLASS="application"
+>indexer</SPAN
+> load not more than
+           "<TT
+CLASS="literal"
+>number</TT
+>" documents at the same time when creating
+           fast search index. Use this command if you have a huge database
+           which doesn't fit into RAM, or you want to limit memory consumed
+           by <B
+CLASS="command"
+><TT
+CLASS="literal"
+>indexer -Eblob</TT
+></B
+>.
+           This parameter can also be useful when using <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> with a <SPAN
+CLASS="application"
+>MySQL</SPAN
+>
+           server with a small <CODE
+CLASS="option"
+>max_allowed_packet</CODE
+> value.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that <SPAN
+CLASS="application"
+>indexer</SPAN
+> and <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+          crashed in some cases due to wrong use of
+          <TT
+CLASS="literal"
+>OCILobGetLength()</TT
+> in the code.
+          </P
+></LI
+><LI
+><P
+>&#13;          The <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> parameter
+          <TT
+CLASS="literal"
+>setnames=charsetname</TT
+> is now understood when
+          connecting to <SPAN
+CLASS="application"
+>MySQL</SPAN
+> and
+          <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> via <SPAN
+CLASS="application"
+>ODBC</SPAN
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#3773 "Phrase excerpts do not work in some cases" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#3791 "indexer exits even though content encoding is known" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          A new <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-usercachequery.html"
+>UserCacheQuery</A
+></B
+>
+          <TT
+CLASS="filename"
+>indexer.conf</TT
+> command was added to store
+          search results in the database. This can help to use
+          <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> as an external full-text
+          solution together with your database driven application.
+          </P
+></LI
+><LI
+><P
+>&#13;          Improvements in <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-excerptpadding.html"
+>ExcerptPadding</A
+></B
+>
+          were made to generate nicer excerpts from East-Asian texts.
+          </P
+></LI
+><LI
+><P
+>&#13;          A new <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> parameter
+          <TT
+CLASS="literal"
+>Compress=yes</TT
+> was added to activate
+          compression in <SPAN
+CLASS="application"
+>MySQL's</SPAN
+> client-server
+          protocol by using
+          <TT
+CLASS="literal"
+>mysql_options(&#38;mydb-&#62;mysql, MYSQL_OPT_COMPRESS, 0)</TT
+>
+          API's call. This option improves indexing and search performance
+          when connecting to a <SPAN
+CLASS="application"
+>MySQL</SPAN
+> server
+          on a remote host.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> tried to load a sorting
+          section even when "<TT
+CLASS="literal"
+>su</TT
+>" search parameter was empty,
+          which caused performance problems.
+          </P
+></LI
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>configure --with-docs</SPAN
+> now automatically
+          searches for the <SPAN
+CLASS="application"
+>DocBook's</SPAN
+> catalog
+          in a number of common locations. Previously one had to fix
+          the file <TT
+CLASS="filename"
+>doc/catalog</TT
+> manually to build
+          the <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> manual.
+          </P
+></LI
+><LI
+><P
+>&#13;          Log level for "Unsupported Content-Type" and
+          "Unsupported Content-Encoding" messages was changed
+          from <TT
+CLASS="literal"
+>ERROR</TT
+> to
+          <TT
+CLASS="literal"
+>WARNING</TT
+> to avoid excessive flood
+          of <SPAN
+CLASS="application"
+>syslog</SPAN
+> logs
+          when running <SPAN
+CLASS="application"
+>indexer</SPAN
+> with <TT
+CLASS="literal"
+>-l1</TT
+>
+          command line option.
+          </P
+></LI
+><LI
+><P
+>&#13;          A description how to use <SPAN
+CLASS="application"
+>rtfx</SPAN
+> (a nice
+          RTF-to-XML converter) was added into the manual and
+          <TT
+CLASS="filename"
+>indexer.conf-dist</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;          The <TT
+CLASS="literal"
+>HIGH_PRIORITY</TT
+> keyword was added into more
+          <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> <TT
+CLASS="literal"
+>SELECT</TT
+> queries sent to
+          <SPAN
+CLASS="application"
+>MySQL</SPAN
+> during search time to
+          give a higher priority to <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> over
+          the simultaneosly runnig <SPAN
+CLASS="application"
+>indexer</SPAN
+> instances.
+          </P
+></LI
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>indexer</SPAN
+> now adds the <TT
+CLASS="literal"
+>FIRST N</TT
+>
+          clause into the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> <TT
+CLASS="literal"
+>SELECT</TT
+> query when fetching
+          crawler targets from a <SPAN
+CLASS="application"
+>Firebird</SPAN
+> database.
+          This slightly improves crawling performance, as well as offloads
+          the <SPAN
+CLASS="application"
+>Firebird</SPAN
+> server.
+          </P
+></LI
+><LI
+><P
+>&#13;          The command <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-pagesperscreen.html"
+>PagesPerScreen</A
+></B
+>
+          was added into the manual.
+          </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-7"
+>Changes in 3.3.7 (11 April 2008)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          New synonym file command "Mode: return" was added.
+          The words written on the same line in a synonym file are
+          expanded only to the leftmost words in this mode.
+          </P
+></LI
+><LI
+><P
+>&#13;          Synonym file command "Mode: roundtrip" was added
+          as a synonym to "Mode: reverse" to avoid ambiguity.
+          The old version (e.g. reverse) will be removed eventually.
+          </P
+></LI
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> now can work as an
+          <SPAN
+CLASS="application"
+>inetd</SPAN
+> or <SPAN
+CLASS="application"
+>xinetd</SPAN
+> service.
+          See <A
+HREF="msearch-inetd.html"
+>the Section called <I
+>Running <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> from
+    <SPAN
+CLASS="application"
+>inetd</SPAN
+> / <SPAN
+CLASS="application"
+>xinetd</SPAN
+></I
+> in Chapter 2</A
+> for details.
+          </P
+></LI
+><LI
+><P
+>&#13;          -s flag now understands status range, e.g.
+          "<B
+CLASS="command"
+>indexer -s200-299</B
+>" will
+          crawl documents having status in the range  200..299. 
+          </P
+></LI
+><LI
+><P
+>&#13;            C-API description was added into the manual.
+            See <A
+HREF="msearch-c-api.html"
+>Reference II, <I
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> C API function reference</I
+></A
+> for details.
+          </P
+></LI
+><LI
+><P
+>&#13;            A possibility to debug score values was added.
+            See <A
+HREF="msearch-rel.html#score-debug"
+>the Section called <I
+>Analyzing score values</I
+> in Chapter 10</A
+> for details.
+          </P
+></LI
+><LI
+><P
+>&#13;            <SPAN
+CLASS="application"
+>ppthtml</SPAN
+> PPT-to-HTML parser configuration
+            instructions were added into the manual.
+          </P
+></LI
+><LI
+><P
+>&#13;          Performance improvement: when processing wild-card patterns
+          like *.txt or *.htm (e.g. file extensions in the
+          <B
+CLASS="command"
+>AddType</B
+>, <B
+CLASS="command"
+>Allow</B
+>,
+          <B
+CLASS="command"
+>Disallow</B
+> commands etc), comparison code now
+          automatically switches from "wild-card comparison"
+          to "string ending comparison" for this type of patterns.
+          </P
+></LI
+><LI
+><P
+>&#13;          Performance improvements were made in creating
+          search index ("<B
+CLASS="command"
+>indexer -Eblob</B
+>"), 
+          which is now about 30% faster with Firebird, 80% faster
+          with SQLite3, 60% faster with Mimer, 30% faster with Sybase ASE.
+          </P
+></LI
+><LI
+><P
+>&#13;          Minor performance improvements were made in various
+          pieces of the sources.
+          </P
+></LI
+><LI
+><P
+>&#13;          Search now returns at most 1000 results by default,
+          to avoid flood attacks.
+          </P
+></LI
+><LI
+><P
+>&#13;           Fixed that user-defined sections didn't respect
+           <PRE
+CLASS="programlisting"
+>&#60;META NAME="Robots" CONTENT="NOINDEX"&#62;</PRE
+>
+           tags.
+          </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-6"
+>Changes in 3.3.6 (27 November 2007)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          The default word storage mode was changed to DBMode=blob.
+          </P
+></LI
+><LI
+><P
+>&#13;          DBMode=blob now works with SQLite3.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that the "<B
+CLASS="command"
+>flags</B
+>" commands in Ispell affix files were
+          expected to start immediately after the "new line" character.
+          Some affix files available on the Internet have leading spaces
+          and tabs before these commands. Previously mnoGoSearch didn't
+          read these files correctly.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#2023 "--disable-mysql-fulltext-plugin doesn't work" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that "GroupBySite=yes" didn't work with DBMode=multi
+          correctly.
+          </P
+></LI
+><LI
+><P
+>&#13;           Search and indexing performance improvements were made.
+          </P
+></LI
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> now uses less memory in DBMode=blob,
+          especially for huge results.
+          </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-5"
+>Changes in 3.3.5 (17 October 2007)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          Fixed an XSS (cross-site scripting) security problem in the default template
+          <TT
+CLASS="filename"
+>search.htm-dist</TT
+>.
+          Passing special values of the <TT
+CLASS="literal"
+>"t"</TT
+> query string
+          variable to <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+          resulted in bad code injection near the <TT
+CLASS="literal"
+>OPTION</TT
+> tags
+          of the <TT
+CLASS="literal"
+>&#60;SELECT NAME="t"&#62;</TT
+>
+          option list in extended search form.
+          </P
+><P
+>&#13;          This problem happened only with
+          <TT
+CLASS="literal"
+>&#60;SELECT NAME="t"&#62;</TT
+> which is inside a
+          <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> comment in the default template. Other <TT
+CLASS="literal"
+>SELECT</TT
+>
+          lists were not affected, if you didn't put them into a <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>
+          comment.
+          </P
+><P
+>To prevent this problem, <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+          was modified to understand variable references with "HTML-encoded" output format:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;OPTION VALUE="val" SELECTED="$&#38;(var)"&#62;
+</PRE
+>
+          Previously only non-encoded variable references worked in
+          <TT
+CLASS="literal"
+>OPTION</TT
+> tags:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;OPTION VALUE="val" SELECTED="$(var)"&#62;
+</PRE
+>
+          The default template <TT
+CLASS="filename"
+>search.htm-dist</TT
+>
+          was modified to use <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>-encoded output format in 
+          variable references in all <TT
+CLASS="literal"
+>OPTION</TT
+> tags.
+          </P
+><P
+>&#13;          After upgrade to this release, modify the existing templates
+          by replacing all <TT
+CLASS="literal"
+>&#60;OPTION VALUE="val" SELECTED="$(var)"&#62;</TT
+>
+          to <TT
+CLASS="literal"
+>&#60;OPTION VALUE="val" SELECTED="$&#38;(var)"&#62;</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;           Thread concurrency for resolving host names and processing
+           robot.txt files was significantly improved, which makes
+           "indexer -Nnum" work much faster when indexing multiple sites.
+          </P
+></LI
+><LI
+><P
+>&#13;          The <A
+HREF="msearch-cmdref-substringmatchminwordlength.html"
+>SubstringMatchMinWordLength</A
+>
+          <TT
+CLASS="filename"
+>search.htm</TT
+> command was added.
+          Thanks to Matthias Pigulla for contribution.
+          </P
+></LI
+><LI
+><P
+>&#13;           The <A
+HREF="msearch-cmdref-skip.html"
+>Skip</A
+> <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+           command was added.
+          </P
+></LI
+><LI
+><P
+>&#13;           The <A
+HREF="msearch-cmdref-casefolding.html"
+>CaseFolding</A
+> command was added to allow alternative
+           lower case mapping for some languages (e.g. Turkish).
+          </P
+></LI
+><LI
+><P
+>&#13;          In search queries with boolean operator <B
+CLASS="command"
+>~</B
+> (NOT),
+          e.g. "<TT
+CLASS="literal"
+>usa &#38; ~chicago</TT
+>",
+          boolean operator <B
+CLASS="command"
+>&#38;</B
+> (AND) is not
+          required anymore. This syntax now works as well:
+          "<TT
+CLASS="literal"
+>usa ~chicago</TT
+>".
+          <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> automatically assumes
+           <B
+CLASS="command"
+>&#38;</B
+> before <B
+CLASS="command"
+>~</B
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;           Udm_Set_Agent_Param_Ex() function in PHP extension module
+           now understands <TT
+CLASS="filename"
+>search.htm</TT
+> compatible commands:
+<PRE
+CLASS="programlisting"
+>            
+   Udm_Set_Agent_Param_Ex($udm_agent, "Section body  1 1");
+   Udm_Set_Agent_Param_Ex($udm_agent, "Section title 2 1");
+</PRE
+>             
+          </P
+></LI
+><LI
+><P
+>&#13;           The default value of the <A
+HREF="msearch-cmdref-varylang.html"
+>VaryLang</A
+> was changed from "en" to empty.
+          </P
+></LI
+><LI
+><P
+>&#13;           Cluster now honors the <A
+HREF="msearch-cmdref-readtimeout.html"
+>ReadTimeOut</A
+> command in <TT
+CLASS="filename"
+>search.htm</TT
+>
+           to skip the nodes which currently are not available, e.g. because of
+           network problems. Previously, search waited 30 seconds
+           before returning results if one of the nodes was unavailable.
+          </P
+></LI
+><LI
+><P
+>&#13;           Performance improvements in phrase search were made.
+          </P
+></LI
+><LI
+><P
+>&#13;           <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> now doesn't try to find clones for
+           a document if value of its "url.crc32" is 0.
+          </P
+></LI
+><LI
+><P
+>&#13;           Column type of "qcache.doclist" was changed from <TT
+CLASS="literal"
+>BLOB</TT
+>
+           to <TT
+CLASS="literal"
+>LONGBLOB</TT
+> in <SPAN
+CLASS="application"
+>MySQL</SPAN
+> structure,
+           to allow storing of longer cached results.
+          </P
+></LI
+><LI
+><P
+>&#13;         Fixed that <SPAN
+CLASS="application"
+>indexer</SPAN
+> crashed
+         in some cases when running with many threads.
+         </P
+></LI
+><LI
+><P
+>&#13;            Fixed that &#60;!INCLUDE&#62; didn't work when the
+            <TT
+CLASS="literal"
+>CONTENT</TT
+>
+            parameter started with a variable reference, e.g.:
+<PRE
+CLASS="programlisting"
+>            
+  &#60;!SET NAME="x" CONTENT="http://hostname/"&#62;
+  &#60;!INCLUDE CONTENT="$(x)"&#62;
+</PRE
+>            
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1903 "$(tag) doesn't work in cluster" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1959 "Confusing message "Unable to find working zlib library"
+          on missing libdmalloc" was fixed.
+          Configure parameter "--enable-dmalloc" was changed to
+          "--with-dmalloc", to be able to specify non-standard
+          dmalloc location.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#2022 "<SPAN
+CLASS="application"
+>search.cgi</SPAN
+> crashes when searching for a single word 
+          with 'Dehyphenate yes' and DBMode=blob" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed a bug in <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> content negotiation which made indexer
+          after receiving a <TT
+CLASS="literal"
+>"Vary: accept-language"</TT
+>
+          response header download the same URL several times again, even though
+          <TT
+CLASS="filename"
+>indexer.conf</TT
+> didn't specify any languages
+          to vary (i.e. when the <A
+HREF="msearch-cmdref-varylang.html"
+>VaryLang</A
+>
+          command was not set or was empty).
+          </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-4"
+>Changes in 3.3.4 (27 July 2007)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;           mnoGoSearch now works better for huge documents.
+           Maximum number of words collected from  each document
+           was changed from "64K words per section" to "2048K words per section".
+           Data format in DBMode=single was changed, users of DBMode=single
+           have to reindex their documents from the beginning.
+           Data format in DBMode=multi and DBMode=blob was not changed,
+           reindexing in these modes is only necessary for huge documents
+           (bigger than approximately 512K) - to make indexer collect more
+           words from these documents.  New limit allows to fully index
+           documents with text size up to about 16Mb.
+          </P
+></LI
+><LI
+><P
+>&#13;          The <B
+CLASS="command"
+>LoadTagInfo</B
+> <TT
+CLASS="filename"
+>search.htm</TT
+>
+          command was added, to make tag values available in search
+          results using $(tag).
+          </P
+></LI
+><LI
+><P
+>&#13;          The <B
+CLASS="command"
+>LoadURLInfo</B
+> <TT
+CLASS="filename"
+>search.htm</TT
+>
+          command was added, to switch off loading extra section values
+          from the <TT
+CLASS="filename"
+>urlinfo</TT
+> table for performance purposes.
+          </P
+></LI
+><LI
+><P
+>&#13;         The <B
+CLASS="command"
+>StripAccents yes/no</B
+> command
+         was added into <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+         and <TT
+CLASS="filename"
+>search.htm</TT
+> to make
+         accent insensitive searches possible with the
+         databases not supporting accent insensitive
+         collations. When <B
+CLASS="command"
+>StripAccent</B
+>
+         is set to <TT
+CLASS="literal"
+>yes</TT
+>, all accented
+         letters are converted to their non-accented
+         counterparts when writing or looking up
+         the word index.
+         </P
+></LI
+><LI
+><P
+>&#13;         Content-Type "application/http" is now understood -
+         a <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> response with headers.
+         </P
+></LI
+><LI
+><P
+>&#13;         Content-Type "application/http" now work external parsers:
+         if result type of a parser is "application/http", then indexer
+         consider it is a full <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> response and parses both headers
+         and content.
+         </P
+></LI
+><LI
+><P
+>&#13;         PostgreSQL driver now understands the "setnames" DBAddr parameter
+         to set client encoding. If a non-empty "setnames" parameter is given,
+         PQsetClientEncoding() is executed immediately after establishing
+         a connection to the server.
+         </P
+></LI
+><LI
+><P
+>&#13;         Fixed that highlighting didn't work in some cases
+         when a search query contained two or more phrases.
+         </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-3"
+>Changes in 3.3.3 (8 May 2007)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;         Performance improvement: the "sorting results by score"
+         step is now much faster on big results (0.01 second vs 1.00
+	 second on results returning one million documents).
+         </P
+></LI
+><LI
+><P
+>&#13;         Performance improvement: searching for a single 
+         word is now about three times faster on big results.
+         </P
+></LI
+><LI
+><P
+>&#13;         Some indexes were added into <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> schema to make
+         searches with tag and category limit faster
+         (Feature request #772).
+         </P
+></LI
+><LI
+><P
+>&#13;         Feature request #1364 "highlight collation matches" was
+         implemented. Now when using an accent insensitive collations
+         (for example, <TT
+CLASS="literal"
+>latin1_general_ci</TT
+> with MySQL),
+         <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> will take into account
+         all word forms for excerpts and highlighting. For example,
+         searches for French "cote" will also highlight "coté"
+         and vice versa, if the non-exact word form generated hits.
+         </P
+></LI
+><LI
+><P
+>&#13;         MySQL driver now understands <TT
+CLASS="literal"
+>setnames</TT
+>
+         parameter in <TT
+CLASS="literal"
+>DBAddr</TT
+> (feature request #1326).
+         </P
+></LI
+><LI
+><P
+>&#13;         MySQL driver now understands <TT
+CLASS="literal"
+>sqllogbin</TT
+>
+         parameter in <TT
+CLASS="literal"
+>DBAddr</TT
+> (feature request #697).
+         </P
+></LI
+><LI
+><P
+>&#13;         <TT
+CLASS="literal"
+>DebugSQL</TT
+> parameter to <TT
+CLASS="literal"
+>DBAddr</TT
+>
+         is now understood. When <TT
+CLASS="literal"
+>DebugSQL</TT
+> is set to
+         <TT
+CLASS="literal"
+>yes</TT
+>, <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+         and <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> print all <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> queries
+         sent to the database. mnoGoSearch must be compiled using
+         <TT
+CLASS="literal"
+>./configure --with-debug ...</TT
+> to make this
+         feature work.
+        </P
+></LI
+><LI
+><P
+>&#13;         MinCoordFactor and MaxCoordFactor impact is
+	 now calculated separately for each section.
+         </P
+></LI
+><LI
+><P
+>&#13;         "nwf" parameter is now understood in DBAddr string,
+         to set its value per database.
+         </P
+></LI
+><LI
+><P
+>&#13;         "HoldBadHrefs 0" now means never delete unavailable
+         documents from the database automatically (e.g. when
+         remote host is down), which improves indexing speed,
+         and which is now default behavior. Only positive HoldBadHrefs
+         values activate automatic deletion.
+         </P
+></LI
+><LI
+><P
+>&#13;         Data type of urlinfo.sval was changed from TEXT to MEDIUMTEXT
+         in MySQL table structure, to allow storing sections longer
+         than 64K.
+         </P
+></LI
+><LI
+><P
+>&#13;         Bug#1733 "'indexer -Ewordstat' problem with PostgreSQL" was fixed.
+         </P
+></LI
+><LI
+><P
+>&#13;         Bug #1054 "indexer does not index html files without body tag"
+         was fixed. A new special section with name "nobody" is now
+         understood. If this section is configured, then indexer collects
+         words outside the &#60;body&#62;...&#60;/body&#62; tags.
+         The default behavior is still not to index words outside these tags.
+         </P
+></LI
+><LI
+><P
+>&#13;         Bug#768 "User defined section is too short (1Kb limit)" was fixed.
+         </P
+></LI
+><LI
+><P
+>&#13;         Bug#1654 "SQLWordForms doesn't work with cluster"
+         was fixed. Those using cluster should upgrade node.xml
+         using the latest version of node.xml-dist.
+         </P
+></LI
+><LI
+><P
+>&#13;          Bug#1713 "Square brackets in DOCTYPE makes XML parser fail"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;         Bug#1739 "indexer doesn't understand Content-Encoding for robots.txt"
+         was fixed.
+         </P
+></LI
+><LI
+><P
+>&#13;          Bug#1740 "'UseRemoteContentType yes' doesn't work."
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1741 "'indexer.conf -Eblob -t tag' fails with 'Unknown
+          table 's' in WHERE clause'"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;         Fixed that <SPAN
+CLASS="application"
+>indexer</SPAN
+> ignored the
+         <B
+CLASS="command"
+>LogLevel</B
+> command.
+         </P
+></LI
+><LI
+><P
+>&#13;         Fixed that popularity rank calculation didn't work with
+         Interbase/Firebird. A missing column "url.shows" was added
+         into <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> schema.
+         </P
+></LI
+><LI
+><P
+>&#13;         Fixed that phrase search didn't work in some cases (a bug since 3.3.0).
+         </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-2"
+>Changes in 3.3.2 (19 April 2007)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>"<B
+CLASS="command"
+>ResultContentType none</B
+>" is now understood
+           to suppress printing of the "Content-Type" <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> header by
+           <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>.
+           This is useful if you execute <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+           from another Web application which sends <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> headers itself.
+         </P
+></LI
+><LI
+><P
+><B
+CLASS="command"
+>ue</B
+> <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+	 is now understood again to exclude documents with the given URL
+	 pattern from search results. This feature was broken in 3.2.x.
+         </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="application"
+>indexer</SPAN
+> now uses
+         <TT
+CLASS="literal"
+>UDM_TMP_DIR</TT
+> and <TT
+CLASS="literal"
+>TMPDIR</TT
+>
+         environment variables when creating temporary files (e.g for
+         external parsers) instead of the default /tmp.
+         </P
+></LI
+><LI
+><P
+>Fixed that standalone dash character was considered as a
+           separate word with "Dehyphenate yes", so for the queries like "a - b",
+           <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> incorrectly searched for three words: "a", "-", "b",
+           which never returned results in "find all words" mode.
+          </P
+></LI
+><LI
+><P
+>Fixed that "UseCookie yes" made <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+          crash when fetching data from HTDB sources.
+          </P
+></LI
+><LI
+><P
+>Fixed that excerpts generated from cached copy of TEXT
+           files didn't work (bug since 3.3.0).
+          </P
+></LI
+><LI
+><P
+>Bug#746 "Stopwords in a long boolean query" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1016 "Indexer is selecting wrong Content-Type"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1024 "Clear database limitations do not work: error ORA-01795"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1044 "-Ewordstat: incorrect unicode sequence"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1110 "'invalid UTF-8 byte sequence detected' when INSERT INTO
+          dictXX" was fixed. This error happened when indexing into PostgreSQL
+          with DBMode=multi. The "intag" column type was changed from TEXT to
+          BYTEA in the tables "dict00".."dictFF".
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1182 "Indexer crashes with -a -y 'content/type'" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1427 "ORA-01785: maximum number of expressions in a list is 1000"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1436 "Cannot run -Ewordstat, ORA-01400: cannot insert NULL"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>Bug#1615 "The identifier "PATH_MAX" is undefined" wad fixed.
+          </P
+></LI
+><LI
+><P
+>Bug#1641 "Documentation problem" was fixed.
+          </P
+></LI
+><LI
+><P
+>Bug#1659 "GroupBySite doesn't work in cluster mode"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>Bug#1679 "<SPAN
+CLASS="application"
+>search.cgi</SPAN
+> dumps core on OpenBSD 4.0 when I search
+          for non existing word" was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1693 "User defined sections don't work for text/plain files"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1716 "Can't limit indexer to documents matching language"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1725 "Navigation doesn't work when using a single cluster node"
+          was fixed.
+          </P
+></LI
+><LI
+><P
+>&#13;          Bug#1726 "DateFormat doesn't work in cluster"
+          was fixed.
+          </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-1"
+>Changes in 3.3.1 (18 March 2007)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>Relevancy improvement:
+          Fixed that average word distance was considered to be very big
+          in the case when words were found in different sections
+          (e.g. one word in "body" and one word in "title").
+          Word pairs from different sections are not taken into account
+          anymore for distance calculation.
+          </P
+></LI
+><LI
+><P
+>Relevancy improvement:
+          Average word distance is now calculated taking into account "wf"
+          values for the sections - the final score is now more sensitive
+          to word distances in the sections with higher "wf" values.
+          </P
+></LI
+><LI
+><P
+>&#13;          DBMode=blob&#38;LiveUpdates=yes is now understood in
+          DBAddr parameter. If LiveUpdates=yes is specified,
+          it's possible to crawl up to several thousand documents
+          without full recreating of search index by running
+          "indexer -Eblob". Thanks to Oz Basarir and Natural
+          Capital Institute for sponsoring this feature.
+          </P
+></LI
+><LI
+><P
+>&#13;          The "text" and "html" keywords were added into the "Section"
+          command syntax, to apply either text or <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> parser for data
+          returned from a "simple" HTDBDoc query. This option is useful
+          if the source <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> table stores data in <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> format. The default
+          value is "text". Thanks to Oz Basarir and Natural
+          Capital Institute for sponsoring this feature.
+          </P
+></LI
+><LI
+><P
+>&#13;          Column with name "last_mod_time" is now considered 
+          as modification time of the documents, returned from
+          "simple" HTDBDoc queries.
+          </P
+></LI
+><LI
+><P
+>&#13;           A new syntax to display N rightmost characters from
+           a template variable was added. For example, $(URL:-10).
+           Thanks to Eggert Ehmke for the idea and the original patch.
+          </P
+></LI
+><LI
+><P
+>&#13;           Performance improvements in score calculation
+           with non-empty "nwf" parameter were made.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that "simple" HTDBDoc queries didn't work
+          with Interbase/Firebird, because the driver returned
+          empty column names.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed a bug which made <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> crash when generating
+          a link to "cached copy" with a template having multiple DBAddr
+          commands.
+          </P
+></LI
+><LI
+><P
+>&#13;           Fixed a bug in character set conversion,
+           which made indexer crash in rare cases.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed that "indexer -Cw" didn't empty the "bdict" table.
+          </P
+></LI
+><LI
+><P
+>&#13;          Fixed a bug in cluster code which made <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> crash
+          on processing of a front-end template with "Suggest yes"
+          when search didn't return any results.
+          </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-0"
+>Changes in 3.3.0 (06 March 2007)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;Cluster support was added. A typical cluster
+consists of several database machines and a
+single front-end machine. The front-end machine
+receives <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> requests from a user's browser,
+forwards search queries to the database machines
+using <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> protocol, receives back a limited number
+of top best search results (using a simple XML format,
+based on OpenSearch specifications) from every database machine,
+then parses and merges the results, and displays them according
+to score and applying <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> template.
+This approach distributes operations with high
+CPU and hard disk consumption between the database
+machines in parallel, leaving simple merge and <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>
+template processing functions to the the front-end machine.
+As of version 3.3.0, mnoGoSearch allows to join up
+to 256 database machines into a single cluster.
+          </P
+></LI
+><LI
+><P
+>&#13;node.xml-dist is now installed into /etc directory -
+an XML template for a cluster database machine.
+          </P
+></LI
+><LI
+><P
+>&#13;"DBAddr http://hostname/search.cgi/node.xml" <TT
+CLASS="filename"
+>search.htm</TT
+>
+command was added, to specify an URL of a cluster database
+machine interface with XML format.
+          </P
+></LI
+><LI
+><P
+>&#13;"DBAddr file:///path/to/node.xml" <TT
+CLASS="filename"
+>search.htm</TT
+>
+command was added, to specify a static XML search response.
+This is mostly for test purposes.
+          </P
+></LI
+><LI
+><P
+>&#13;Two cluster types were implemented - a merge cluster
+to join results from several independent databases,
+each created by its own <TT
+CLASS="filename"
+>indexer.conf</TT
+>, as well as
+a distributed cluster - created by a single <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+when indexer automatically distributes search index
+between database machines.
+          </P
+></LI
+><LI
+><P
+>&#13;Changing default distribution type from "reminder" to "quotient".
+Thus, for <TT
+CLASS="filename"
+>indexer.conf</TT
+> having three DBAddr command,
+distribution is done as follows:
+<P
+></P
+><UL
+><LI
+><P
+>URLs with seed 0..85 go to the first DBAddr</P
+></LI
+><LI
+><P
+>URLs with seed 85..170 go to the second DBAddr</P
+></LI
+><LI
+><P
+>URLs with seed 171..255 go to the third DBAddr</P
+></LI
+></UL
+>
+This distribution style simplifies manual redistribution
+of an existing clustered database when adding a new DBAddr
+(i.e. a new database machine). Future releases will provide an automatic
+tool for redistribution when adding and deleting machines in an existing
+cluster, as well as more configuration commands to control distribution.
+          </P
+></LI
+><LI
+><P
+>&#13;Maximum amount of words collected from a document
+was changed from 64K words per document to 64K words
+per section - positions are now enumerated per section,
+starting from the beginning of each section separately.
+          </P
+></LI
+><LI
+><P
+>&#13;"SaveSectionSize yes/no" <TT
+CLASS="filename"
+>indexer.conf</TT
+> and <TT
+CLASS="filename"
+>search.htm</TT
+>
+command was added. When SaveSectionSize is set to yes,
+indexer stores additional information about section sizes,
+making it possible to generate better score values, as
+well as to do "exact section match" searches.
+Default value is "yes".
+          </P
+></LI
+><LI
+><P
+>&#13;Relevancy improvement: "WordDensityFactor num" <TT
+CLASS="filename"
+>search.htm</TT
+>
+command was added. Num is a number in the range 0..255
+to specify impact of word frequency on the result score.
+This feature works with "SaveSectionSize yes".
+The default value is 25.
+          </P
+></LI
+><LI
+><P
+>&#13;Exact section match syntax was added:
+<PRE
+CLASS="programlisting"
+>            
+title="Apache web server"
+</PRE
+>                              
+This feature works with "SaveSectionSize yes".
+          </P
+></LI
+><LI
+><P
+>&#13;"WordFormFactor num" <TT
+CLASS="filename"
+>search.htm</TT
+> command was added
+to give more weight to the word forms originally
+written in the search query and less weight to
+generated word forms using ispell dictionaries
+and synonyms. Use with a number 0..255.
+Default value is 255. 255 means to give the same
+weight to the original and generated forms.
+0 means maximum effect, i.e. weight for a generated
+word form is much smaller than weight for the original
+word form. 
+          </P
+></LI
+><LI
+><P
+>&#13;Excerpt generating code performance improvements
+were done. Excerpt generation from CachedCopy is
+now about 6-12% faster.
+          </P
+></LI
+><LI
+><P
+>&#13;Using URL and Tag limits is now possible with "indexer -Eblob", e.g.:
+<PRE
+CLASS="programlisting"
+>            
+./indexer -Eblob -u "%subdir%"
+./indexer -Eblob -t tag
+</PRE
+>                              
+This is to generate a search index over a subset of
+all documents collected during crawling.
+          </P
+></LI
+><LI
+><P
+>&#13;Using "Limit" command is also possible with "indexer -Eblob", e.g.:
+          </P
+><P
+>&#13;indexer.conf command:
+<PRE
+CLASS="programlisting"
+>            
+Limit subdir "SELECT rec_id FROM url WHERE url LIKE '%/subdir/%'"
+</PRE
+>                              
+          </P
+><P
+>&#13;command line:
+<PRE
+CLASS="programlisting"
+>            
+./indexer -Eblob --fl=subdir
+</PRE
+>                              
+          </P
+></LI
+><LI
+><P
+>&#13;"ResultContentType type" <TT
+CLASS="filename"
+>search.htm</TT
+> command
+was added to specify Content-Type header generated by
+<SPAN
+CLASS="application"
+>search.cgi</SPAN
+>. The default value is "text/html".
+          </P
+></LI
+><LI
+><P
+>&#13;"Dehyphenate yes/no" <TT
+CLASS="filename"
+>search.htm</TT
+> command was added.
+When "Dehyphenate yes" is specified, searching for "peace-making"
+also will return documents having "peacemaking".
+Thanks to Oz Basarir and Natural
+Capital Institute for sponsoring this feature.
+          </P
+></LI
+><LI
+><P
+>&#13;Clone template variables were changed: clones are now returned
+in the same row with the document itself, using CloneN prefix, e.g.:
+$(Clone0.URL). The "&#60;!--clone--&#62;" <TT
+CLASS="filename"
+>search.htm</TT
+> section and the $(CL)
+variable are not supported anymore.
+          </P
+></LI
+><LI
+><P
+>&#13;DetectClones is now "no" by default, for performance purposes.
+          </P
+></LI
+><LI
+><P
+>&#13;"CollectLinks yes/no" <TT
+CLASS="filename"
+>indexer.conf</TT
+> command was added.
+The default value is "no" which improves indexing performance
+by not pupulating the "links" table. As a side effect
+PopRank calculation is not possible in the default configuration.
+If PopRank is important for your installation, specify
+"CollectLinks yes" in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;Default sort order was changed from "RP" (score, then popularity)
+to "R" (score). This change improves search performance for
+the installations where PopRank is not important.
+          </P
+></LI
+><LI
+><P
+>&#13;Indexer now honors &#60;a rel="nofollow"&#62; tags.
+Thanks to Jeff Veit for contribution.
+          </P
+></LI
+><LI
+><P
+>&#13;A simplified format of HTDBDoc command was added:
+
+<PRE
+CLASS="programlisting"
+>            
+HTDBDoc "SELECT title, body FROM docs WHERE id=$2"
+</PRE
+>                              
+
+SQL column names are associated with "Section" names.
+Thanks to Oz Basarir and Natural
+Capital Institute for sponsoring this feature.
+          </P
+></LI
+><LI
+><P
+>&#13;It's now possible to specify wf as a parameter for
+DBAddr <TT
+CLASS="filename"
+>search.htm</TT
+> command, which is useful when
+merging two or more databases - to give more score
+to results coming from a desired database.
+<PRE
+CLASS="programlisting"
+>            
+DBAddr mysql://root@localhost/db1/?wf=FFFF
+DBAddr mysql://root@localhost/db2/?wf=1111
+DBAddr mysql://root@localhost/db3/?wf=1111
+</PRE
+>                              
+          </P
+></LI
+><LI
+><P
+>&#13;MaxResults parameter was added for DBAddr, which is
+useful to add a limited number of sponsored links
+in the top of search results:
+<PRE
+CLASS="programlisting"
+>&#13;DBAddr mysql://root@localhost/avd/?wf=FFFF&#38;MaxResults=1
+DBAddr mysql://root@localhost/db1/?wf=1111
+DBAddr mysql://root@localhost/db2/?wf=1111
+</PRE
+>
+          </P
+></LI
+><LI
+><P
+>&#13;$(DBOrder) template variable was added to display
+the original order of a document in its database result,
+before multiple DBAddr search results were merged into
+the final result. It is equal to $(Order) when using
+only a single DBAddr command in <TT
+CLASS="filename"
+>search.htm</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;FOR template operator was added. Loop limits
+can be both constants:
+
+<PRE
+CLASS="programlisting"
+>&#13;  &#60;!FOR NAME="a" FROM="10" TO="20"&#62;a=$(a)&#60;!ENDFOR&#62;
+</PRE
+>
+
+  and variables that were previously set, for example by the SET operator:
+
+<PRE
+CLASS="programlisting"
+>&#13;  &#60;!SET NAME="from" CONTENT="80"&#62;
+  &#60;!SET NAME="to" CONTENT="90"&#62;
+  &#60;!FOR NAME="a" FROM="$(from)" TO="$(to)"&#62;a=$(a)&#60;!ENDFOR&#62;
+</PRE
+>
+
+          </P
+></LI
+><LI
+><P
+>&#13;"[no title]" is not added automatically anymore:
+an empty string is printed instead. One can use IF
+template operator to reproduce 3.2.x behaviour:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!IF NAME="title" CONTENT=""&#62;[no title]&#60;!ELSE&#62;$&#38;(title)&#60;!ENDIF&#62;
+</PRE
+>
+          </P
+></LI
+><LI
+><P
+>&#13;Various indexing and search performance improvements were made.
+          </P
+></LI
+><LI
+><P
+>&#13;Fixed that indexer didn't work with MySQL-5.1.15-GPL.
+          </P
+></LI
+><LI
+><P
+>&#13;"indexer -?" now prints its help page to <TT
+CLASS="filename"
+>STDOUT</TT
+> instead of <TT
+CLASS="filename"
+>STDERR</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;A "#version" record is now put into the table "bdict" when
+running "indexer -Eblob". mnoGoSearch version ID is put
+as its value. For example, mnoGoSearch 3.3.0 will put "30300" string.
+          </P
+></LI
+><LI
+><P
+>&#13;Preliminary implementation for DBMode=rawblob
+in <TT
+CLASS="filename"
+>search.htm</TT
+> was added. This mode is designed for
+direct search from the table "bdicti" without having
+to run "indexer -Eblob" and is intended for use with
+small search databases as a replacement for DBMode=single.
+In the future releases it will also be reused for real-time
+index updates - to avoid running "indexer -Eblob" when
+only a small number of documents were changed.
+          </P
+></LI
+></UL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-c-api-udmresultfree.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-index.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>UdmResultFree</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Index</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

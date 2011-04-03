@@ -1,0 +1,23 @@
+SAY --- Installing UdmSearch Table Categories
+/
+AUTOCOMMIT OFF
+/
+IF $RC (EXISTS TABLE categories) <> 0
+THEN
+/
+CREATE TABLE categories (
+  rec_id 	FIXED(12) DEFAULT 0 NOT NULL,
+  path 		VARCHAR(10) DEFAULT '' ,
+  lnk		VARCHAR(10) DEFAULT '' ,
+  name		VARCHAR(64) DEFAULT '' NOT NULL,
+  PRIMARY KEY (rec_id)
+)
+/
+IF $RC ( select * from domain.sequences where SEQUENCE_NAME = 'SQ_CATEGORY_ID') <> 0
+THEN
+/
+ CREATE SEQUENCE SQ_category_id
+   INCREMENT BY 1
+   START WITH 1
+/
+COMMIT

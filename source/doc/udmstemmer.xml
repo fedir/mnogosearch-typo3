@@ -1,0 +1,162 @@
+<sect1 id="udmstemmer">
+  <title><application>MySQL</application> fulltext parser plugin</title>
+
+  <para>Starting with the version 3.2.36 &mnogo; offers a stemming plugin
+  which is compatible with the <application>MySQL</application> 5.1
+  <ulink url="http://dev.mysql.com/doc/refman/5.1/en/plugin-full-text-plugins.html">
+  pluggable fulltext parsers</ulink> interface.</para>
+
+  <para>When <application>mnoGoSearch stemming plugin</application> is used as a fulltext parser plugin,
+  all words are normalized during <literal>INSERT</literal>,
+  <literal>UPDATE</literal> and <literal>SELECT</literal> &sql; queries.
+  This allows to find different grammatical forms of the same words.
+  For example, the search front-end will try to find the word <literal>test</literal>
+  whenever the words <literal>testing</literal> or <literal>tests</literal> or <literal>tested</literal>
+  are given in the search query, and vice versa.
+  When processing <literal>INSERT</literal> and <literal>UPDATE</literal> &sql; statements,
+  <application>MySQL</application> will put all words into the fulltext
+  index in their normalized form. When processing a <literal>SELECT</literal> &sql; statement,
+  the query words given in the <literal>MATCH</literal> operator are normalized again
+  and then searched in the fulltext index.
+  </para>
+
+  <para>To enable support for <application>MySQL</application> 5.1 fulltext parser plugin,
+  &mnogo; should be
+  configured with <literal>--enable-mysql-fulltext-plugin</literal> option:
+  </para>
+  <programlisting>
+./configure --with-mysql --enable-mysql-fulltext-plugin
+make
+make install
+  </programlisting>
+
+  <para>To install <application>mnoGoSearch stemming plugin</application>,
+  <filename>libmnogosearch.so</filename> must be copied or sym-linked
+  into the <application>MySQL</application> plugin directory.
+  Also, you must have <literal>INSERT</literal>
+  privileges for the <literal>mysql.plugin</literal> table to
+  be able to run the <literal>INSTALL PLUGIN</literal> statement.
+  </para>
+
+<programlisting>
+cp /usr/local/mnogosearch/lib/libmnogosearch.so /usr/lib/mysql
+or
+ln -s /usr/local/mnogosearch/lib/libmnogosearch.so /usr/lib/mysql
+</programlisting>
+
+  <para>Before <application>mnoGoSearch stemming plugin</application>
+  can be used for a fulltext index,
+  <filename>libmnogosearch.so</filename> must be loaded into
+  <application>MySQL</application> using the
+  <ulink url="http://dev.mysql.com/doc/refman/5.1/en/install-plugin.html">
+  INSTALL PLUGIN</ulink> statement:</para>
+<programlisting>
+  INSTALL PLUGIN stemming SONAME 'libmnogosearch.so';
+</programlisting>
+
+  <para>To unload <application>mnoGoSearch stemming plugin</application>,
+  use the
+  <ulink url="http://dev.mysql.com/doc/refman/5.1/en/uninstall-plugin.html">
+  UNINSTALL PLUGIN</ulink> statement:</para>
+<programlisting>
+UNINSTALL PLUGIN stemming;
+</programlisting>
+
+  <para>To create an index using <application>mnoGoSearch stemming plugin</application>,
+  specify the <literal>WITH PARSER</literal> clause in the fulltext index definition:</para>
+<programlisting>
+CREATE TABLE my_table (
+  my_column TEXT,
+  FULLTEXT(my_column) WITH PARSER stemming
+);
+</programlisting>
+
+  <para>When the <literal>INSTALL PLUGIN</literal> statement is executed,
+  <application>mnoGoSearch stemming plugin</application>
+  reads its configuration from the file <filename>stemming.conf</filename>
+  in <application>MySQL</application> <filename>datadir</filename>.
+  The file <filename>stemming.conf</filename> supports these
+  standard &mnogo; commands:
+  <command><xref linkend="cmdref-affix" /></command>,
+  <command><xref linkend="cmdref-spell" /></command> and
+  <command><xref linkend="cmdref-minwordlength" /></command>.
+  </para>
+  <para>An example of <filename>stemming.conf</filename> may look like this:
+
+<programlisting>
+MinWordLength 2
+Spell en latin1 american.xlg
+Affix en latin1 english.aff
+</programlisting>
+  </para>
+
+  <note>
+  <para>
+  <itemizedlist>
+  <listitem>
+    <para>
+    <application>mnoGoSearch stemming plugin</application>
+    doesn't support <application>MySQL</application> Boolean mode operators at the moment.
+    </para>
+  </listitem>
+  <listitem>
+    <para>Whenever <filename>stemming.conf</filename> is modified,
+    all fulltext indexes using the plugin most likely need to be rebuilt
+    using the <literal>REPAIR TABLE</literal> statement. Note that 
+    <application>myisamchk</application> does not work on tables that use plugins for fulltext indexes.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+    Only one  <command><xref linkend="cmdref-affix" /></command> and
+    one <command><xref linkend="cmdref-spell" /></command> commands
+    can currently be specified in <filename>stemming.conf</filename>
+    </para>
+  </listitem>
+  <listitem>Using files in character sets different from column character set is not supported
+  yet.
+  </listitem>
+  </itemizedlist>
+  </para>
+  </note>
+
+  <para>Usage example:
+<programlisting>
+mysql> INSTALL PLUGIN stemming SONAME 'libmnogosearch.so';
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> CREATE TABLE t(a TEXT, FULLTEXT(a) WITH PARSER stemming);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> INSERT INTO t VALUES('testing'),('tested'),('test'),('tests'),('tester');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM t WHERE MATCH a AGAINST('test' IN BOOLEAN MODE);
++---------+
+| a       |
++---------+
+| testing |
+| tested  |
+| test    |
+| tests   |
+| tester  |
++---------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT * FROM t WHERE MATCH a AGAINST('testing' IN BOOLEAN MODE);
++---------+
+| a       |
++---------+
+| testing |
+| tested  |
+| test    |
+| tests   |
+| tester  |
++---------+
+5 rows in set (0.00 sec)
+</programlisting>
+  </para>
+
+</sect1>
+

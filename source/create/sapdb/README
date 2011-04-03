@@ -1,0 +1,4 @@
+File create-all.ins to create all Database objects for all DBModes.
+File drop.ins to drop all existing Database objects.
+Edit create.sh script for your Database instance or start xload 
+utility manually.

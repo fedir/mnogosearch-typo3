@@ -1,0 +1,1969 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>How to write search result templates
+    
+  </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Searching documents"
+HREF="msearch-doingsearch.html"><LINK
+REL="PREVIOUS"
+TITLE="Searching documents"
+HREF="msearch-doingsearch.html"><LINK
+REL="NEXT"
+TITLE="Designing search.htm"
+HREF="msearch-html.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-doingsearch.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Searching documents</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-html.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="templates"
+>How to write search result templates
+    <A
+NAME="AEN5144"
+></A
+></A
+></H1
+><P
+>&#13;  <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> users can
+  fully customize the search results <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>look and feel</I
+></SPAN
+>.
+  You can do it by editing the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>template</I
+></SPAN
+>
+  file <TT
+CLASS="filename"
+>search.htm</TT
+> which resides in
+  the <TT
+CLASS="filename"
+>/etc/</TT
+> directory of your
+  <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> installation.
+  </P
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates-structure"
+>Template file structure</A
+></H2
+><P
+>The template file is a usual <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> file
+     divided into blocks (sections). Keep in mind that you can just open the
+     template file in your Web browser and get the idea of how
+     the search results will look like.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      Lines in the template file should not exceed
+     <TT
+CLASS="literal"
+>1024</TT
+> bytes.
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>Every section starts and ends with
+    special <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>section delimiters</I
+></SPAN
+> 
+    which look like <TT
+CLASS="literal"
+>&#60;!--sectionname--&#62;</TT
+>
+    and <TT
+CLASS="literal"
+>&#60;!--/sectionname--&#62;</TT
+> correspondingly.
+    The section delimiters should reside on separate lines.
+    </P
+><P
+>Every section consists of a <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>
+    formatted text with  <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>variable references</I
+></SPAN
+>.
+    A variable reference is replaced by its value when
+    <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> is running.
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates-variable-formats"
+>Template variable formats</A
+></H2
+><P
+>Template variables can be printed using
+    a number of different formats:
+<P
+CLASS="literallayout"
+><br>
+<CODE
+CLASS="varname"
+>$(x)</CODE
+>&nbsp;-&nbsp;a&nbsp;plain&nbsp;text&nbsp;value.<br>
+<CODE
+CLASS="varname"
+>$&#38;(x)</CODE
+>&nbsp;-&nbsp;a&nbsp;<ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>-escaped&nbsp;value&nbsp;with&nbsp;search&nbsp;words&nbsp;highlighted.<br>
+<CODE
+CLASS="varname"
+>$%(x)</CODE
+>&nbsp;-&nbsp;a&nbsp;value&nbsp;escaped&nbsp;for&nbsp;use&nbsp;in&nbsp;<ACRONYM
+CLASS="acronym"
+>URLs</ACRONYM
+><br>
+<CODE
+CLASS="varname"
+>$^(x)</CODE
+>&nbsp;-&nbsp;a&nbsp;<ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>-escaped&nbsp;value&nbsp;with&nbsp;search&nbsp;words&nbsp;highlighted.<br>
+</P
+>
+    </P
+><P
+>&#13;      It is possible to specify the maximum number of characters printed by
+      a variable. For example, <CODE
+CLASS="varname"
+>$(URL)</CODE
+> can
+      return a very long <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> and break
+      the search results layout. To limit the maximum length printed
+      by a variable, use the <TT
+CLASS="literal"
+>$(URL:xx)</TT
+> syntax,
+      where <TT
+CLASS="literal"
+>xx</TT
+> is
+      the maximum number of characters to display.
+    </P
+><P
+>&#13;        <CODE
+CLASS="varname"
+>$(URL:40)</CODE
+>
+        will print the <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> variable value.
+        In case when it is longer than <TT
+CLASS="literal"
+>40</TT
+> characters,
+        only <TT
+CLASS="literal"
+>40</TT
+> characters will be displayed
+        including the trailing dots:
+    </P
+><P
+>&#13;      <KBD
+CLASS="userinput"
+>http://very.long.url/path/veery/long/...</KBD
+>
+    </P
+><P
+>&#13;      Starting from the version <TT
+CLASS="literal"
+>3.3.1</TT
+>,
+      it is also possible to display the rightmost characters:
+    </P
+><P
+>&#13;        <CODE
+CLASS="varname"
+>$(URL:-40)</CODE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates-sect"
+>Template sections
+    <A
+NAME="AEN5197"
+></A
+></A
+></H2
+><P
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> supports the
+    following sections:
+    </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="top-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>TOP</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5205"
+></A
+><P
+>&#13;      This section is printed in the very beginning of 
+      <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> output and
+      should usually start with
+      <TT
+CLASS="literal"
+>&#60;HTML&#62;&#60;HEAD&#62;</TT
+> and so on.
+      Also, this is the proper place to put a search form to.
+      </P
+><P
+>&#13;      A number of variables is available in
+      the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>top</I
+></SPAN
+> section:
+<PRE
+CLASS="programlisting"
+>&#13;$(self)  - the argument for the FORM ACTION tag
+$(q)     - the search query
+$(cat)   - the current category value
+$(tag)   - the current tag value
+$(rN)    - a random number (here N is a number between <TT
+CLASS="literal"
+>0</TT
+> and <TT
+CLASS="literal"
+>9</TT
+>)
+</PRE
+>
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>If you want to print some random banners or
+    random links in your search results, you can use
+    the <CODE
+CLASS="varname"
+>$(r0)</CODE
+>..<CODE
+CLASS="varname"
+>$(r9)</CODE
+>
+    variables. For example:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;A HREF="http://www.sitename.com/redirect.php?targetID=$(r0)"&#62;
+Go to a random page of the site
+&#60;/A&#62;
+</PRE
+>
+    You can also initialize the <CODE
+CLASS="varname"
+>$(rX)</CODE
+>
+    variables to a desired <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>number range</I
+></SPAN
+> using 
+    the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-r.html"
+>R0 - R9</A
+></B
+> commands.
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>A example of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>top</I
+></SPAN
+> section
+    can look like this:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--top--&#62;
+&#60;HTML&#62;
+&#60;HEAD&#62;
+ &#60;TITLE&#62;mnoGoSearch: $&#38;(q)&#60;/TITLE&#62;
+&#60;/HEAD&#62;
+&#60;BODY&#62;
+
+Search in the manual:
+&#60;FORM METHOD=GET ACTION="$&#38;(self)"&#62;
+ &#60;INPUT TYPE="text" NAME="q" SIZE="30" VALUE="$&#38;(q)"&#62;
+ &#60;INPUT TYPE="hidden" NAME="ul" VALUE="/manual/"&#62;
+ &#60;INPUT TYPE="hidden" NAME="ps" VALUE="20"&#62;
+ &#60;INPUT TYPE="submit" VALUE="Search!"&#62;
+&#60;/FORM&#62;
+&#60;!--/top--&#62;
+</PRE
+>
+    </P
+><P
+>The example above includes some search parameters, described in
+    details in <A
+HREF="msearch-doingsearch.html#search-params"
+>the Section called <I
+>Search parameters
+    <A
+NAME="AEN4477"
+></A
+></I
+></A
+>:
+    </P
+><P
+>&#13;    The <CODE
+CLASS="varname"
+>ul</CODE
+> form variable is an <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>
+    filter. It allows to limit results to a particular site or 
+    a site directory. For example, you can put the following code
+    into your template:
+<PRE
+CLASS="programlisting"
+>&#13;Search through:
+&#60;SELECT NAME="ul"&#62;
+&#60;OPTION VALUE=""            SELECTED="$(ul)"&#62;Entire site
+&#60;OPTION VALUE="/manual/"    SELECTED="$(ul)"&#62;Manual
+&#60;OPTION VALUE="/products/"  SELECTED="$(ul)"&#62;Products
+&#60;OPTION VALUE="/support/"   SELECTED="$(ul)"&#62;Support
+&#60;/SELECT&#62;
+</PRE
+>
+    to limit your search to a particular site directory.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    The attribute <TT
+CLASS="literal"
+>SELECTED="$(ul)"</TT
+> in the
+    above example (and in the other examples below) allows the
+    selected option to be selected again by default on the next page
+    displayed after pressing the <TT
+CLASS="literal"
+>Search!</TT
+> button.
+    The attribute is replaced to either the <TT
+CLASS="literal"
+>SELECTED</TT
+>
+    keyword, or to empty string, according to the
+    current <CODE
+CLASS="varname"
+>$(ul)</CODE
+> value.
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;      <CODE
+CLASS="varname"
+>ps</CODE
+> is the default page size (e.g. how many documents are displayed per page).
+    </P
+><P
+>&#13;      <CODE
+CLASS="varname"
+>q</CODE
+> is the search query.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="bottom-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>BOTTOM</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5247"
+></A
+><P
+>&#13;      This section is always displayed in the end of 
+      <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> output and 
+      typically contains all closing tags which have
+      their counterparts in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>top</I
+></SPAN
+> section.
+      <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      The position of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>bottom</I
+></SPAN
+> section
+      in the search template file does not matter. It is always
+      displayed in the very end of output. Putting the
+      <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>bottom</I
+></SPAN
+> section in the end of the
+      template file is recommended solely for convenience
+      reasons, to be able to view the template as an ordinary
+      <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> file in your Web browser.
+      </P
+></BLOCKQUOTE
+></DIV
+>
+      </P
+><P
+>An example of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>bottom</I
+></SPAN
+> section
+      can look like this:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--bottom--&#62;
+&#60;P&#62;
+&#60;HR&#62;
+&#60;DIV ALIGN=right&#62;
+&#60;A HREF="http://search.mnogo.ru/"&#62;
+&#60;IMG SRC="mnogosearch.gif" BORDER=0 ALT="[Powered by mnoGoSearch]"&#62;
+&#60;/A&#62;
+&#60;/BODY&#62;
+&#60;/HTML&#62;
+&#60;!--/bottom--&#62;
+</PRE
+>
+      </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="restop-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>RESTOP</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5264"
+></A
+><P
+>&#13;      This section is included just before the search results.
+      It's a good idea to use this section to put some statistics
+      about the query just executed, with help of the following
+      variables:
+      </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;            <A
+NAME="AEN5271"
+></A
+>
+            <TT
+CLASS="literal"
+>$(first)</TT
+> - the offset of the
+            <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>first</I
+></SPAN
+> document displayed on this page.
+          </P
+></LI
+><LI
+><P
+>&#13;            <A
+NAME="AEN5278"
+></A
+>
+            <TT
+CLASS="literal"
+>$(last)</TT
+>  - the offset of the
+            <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>last</I
+></SPAN
+> document displayed on this page.
+           </P
+></LI
+><LI
+><P
+>&#13;            <A
+NAME="AEN5285"
+></A
+>
+            <TT
+CLASS="literal"
+>$(total)</TT
+> - the total number of the documents
+            found.
+          </P
+></LI
+><LI
+><P
+>&#13;            <A
+NAME="AEN5291"
+></A
+>
+            <TT
+CLASS="literal"
+>$(W)</TT
+> - short
+            word statistics with information about the number of
+            the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>exact</I
+></SPAN
+> and the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>fuzzy</I
+></SPAN
+>
+            query word forms, delimited by the <TT
+CLASS="literal"
+>/</TT
+> sign for
+            every query word.  For example, if the <CODE
+CLASS="varname"
+>$(W)</CODE
+>
+            value is <TT
+CLASS="literal"
+>test: 25/73</TT
+>, it means that
+            <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> found <TT
+CLASS="literal"
+>25</TT
+>
+            exact word forms <TT
+CLASS="literal"
+>test</TT
+>, and
+            <TT
+CLASS="literal"
+>73</TT
+> fuzzy forms like
+            <TT
+CLASS="literal"
+>tested</TT
+>, <TT
+CLASS="literal"
+>tests</TT
+>,
+            <TT
+CLASS="literal"
+>testing</TT
+>, etc.
+          </P
+></LI
+><LI
+><P
+>&#13;           <A
+NAME="AEN5309"
+></A
+>
+           <TT
+CLASS="literal"
+>$(WE)</TT
+> - extended word statistics including
+           information about every exact and fuzzy word form found.
+           </P
+></LI
+><LI
+><P
+>&#13;            <A
+NAME="AEN5315"
+></A
+>
+            <TT
+CLASS="literal"
+>$(SearchTime)</TT
+> - search query execution time.
+          </P
+></LI
+><LI
+><P
+>&#13;            <A
+NAME="AEN5321"
+></A
+>
+            <TT
+CLASS="literal"
+>$(CurrentTimestamp)</TT
+> - current time,
+            in seconds since <TT
+CLASS="literal"
+>00:00:00 UTC, January 1, 1970</TT
+>.
+          </P
+></LI
+><LI
+><P
+>&#13;           <A
+NAME="AEN5328"
+></A
+>
+            <TT
+CLASS="literal"
+>$(ndocs)</TT
+> - the total number of documents in
+           the database.
+         </P
+></LI
+></UL
+><P
+>This is an example of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>restop</I
+></SPAN
+> section:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--restop--&#62;
+&#60;TABLE BORDER=0 WIDTH=100%&#62;
+  &#60;TR&#62;
+  &#60;TD&#62;Search&#60;BR&#62;results:&#60;/TD&#62;
+  &#60;TD&#62;&#60;small&#62;$(WE)&#60;/small&#62;&#60;/TD&#62;
+  &#60;TD&#62;&#60;small&#62;$(W)&#60;/small&#62;&#60;/TD&#62;
+  &#60;/TR&#62;
+&#60;/TABLE&#62;
+&#60;HR&#62;
+&#60;CENTER&#62;
+  Displaying documents $(first)-$(last) of total &#60;B&#62;$(total)&#60;/B&#62; found.
+  Search took &#60;b&#62;$(SearchTime)&#60;/b&#62; seconds
+&#60;/CENTER&#62;
+&#60;!--/restop--&#62;
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="res-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>RES</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5338"
+></A
+><P
+>&#13;      This section is displayed for every document from the current
+      result page (<TT
+CLASS="literal"
+>10</TT
+> documents per page by default).
+      </P
+><P
+>&#13;       The following variables are available
+       in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>RES</I
+></SPAN
+> section:
+      </P
+><P
+></P
+><UL
+><LI
+><A
+NAME="AEN5347"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(URL)</CODE
+> - the <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>
+        </P
+></LI
+><LI
+><A
+NAME="AEN5354"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Title)</CODE
+> - the Title
+         </P
+></LI
+><LI
+><A
+NAME="AEN5360"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Score)</CODE
+> - the score (as calculated by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>)
+        </P
+></LI
+><LI
+><A
+NAME="AEN5367"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Body)</CODE
+> - a piece of text,
+        to give an idea of what the document is about:
+        <P
+></P
+><UL
+><LI
+><P
+>&#13;          a smart excerpt with the query words in their context if
+          <B
+CLASS="command"
+><A
+HREF="msearch-stored.html"
+>CachedCopy</A
+></B
+>
+          is available,
+          </P
+></LI
+><LI
+><P
+>&#13;          otherwise, the first couple of lines from the document body.
+          </P
+></LI
+></UL
+>
+        </P
+></LI
+><LI
+><A
+NAME="AEN5380"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Content-Type)</CODE
+>  - the Content-type (for example, <TT
+CLASS="literal"
+>text/html</TT
+>)
+        </P
+></LI
+><LI
+><A
+NAME="AEN5387"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Last-Modified)</CODE
+>  - the modification date,
+        using <A
+HREF="msearch-cmdref-dateformat.html"
+>DateFormat</A
+>.
+        </P
+></LI
+><LI
+><A
+NAME="AEN5394"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Last-Modified-Timestamp)</CODE
+>  - the modification date
+        as a number of seconds since <TT
+CLASS="literal"
+>00:00:00 UTC, January 1, 1970</TT
+>.
+        </P
+></LI
+><LI
+><A
+NAME="AEN5401"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Content-Length)</CODE
+>  - the document Size (in bytes)</P
+></LI
+><LI
+><A
+NAME="AEN5407"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Content-Length-K)</CODE
+>  - the document Size (in kilobytes)</P
+></LI
+><LI
+><A
+NAME="AEN5413"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(Order)</CODE
+>  - the document Number
+        in the order of its appearance in the search results,
+        starting from <TT
+CLASS="literal"
+>1</TT
+>.
+        </P
+></LI
+><LI
+><A
+NAME="AEN5420"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(DBOrder)</CODE
+> - 
+       the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Original Database Document Order </I
+></SPAN
+> -
+       the original order of the document in its database result set,
+       before multiple <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+> search
+       results were merged into the final result.
+       It is equal to <CODE
+CLASS="varname"
+>$(Order)</CODE
+> if only
+       a single <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+> command is
+       given in <TT
+CLASS="filename"
+>search.htm</TT
+>.
+       This variable is mostly for debugging purposes.
+      </P
+></LI
+><LI
+><A
+NAME="AEN5431"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(DBNum)</CODE
+> - the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Source Database Number</I
+></SPAN
+> -
+       the number of the database generated this document,
+       in the order of appearance of the <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+> commands,
+       starting from <TT
+CLASS="literal"
+>0</TT
+>. That is <TT
+CLASS="literal"
+>0</TT
+> means
+       that the document was found in the database corresponding to the first
+       <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+> command, <TT
+CLASS="literal"
+>1</TT
+> -
+       to the second <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+> command, and so on.
+       <CODE
+CLASS="varname"
+>$(DBNum)</CODE
+> is always <TT
+CLASS="literal"
+>0</TT
+>
+       <TT
+CLASS="filename"
+>search.htm</TT
+> uses only a single
+       <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+> command.
+       This variable is mostly for debugging purposes.
+      </P
+></LI
+><LI
+><A
+NAME="AEN5448"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(meta.description)</CODE
+> - the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>description</I
+></SPAN
+> meta tag value.
+        </P
+></LI
+><LI
+><A
+NAME="AEN5455"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(meta.keywords)</CODE
+> - the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>keywords</I
+></SPAN
+> meta tag value.
+        </P
+></LI
+><LI
+><A
+NAME="AEN5462"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(DY)</CODE
+> - the document category with links,
+        i.e. <TT
+CLASS="filename"
+>/home/computers/software/www/</TT
+>
+        </P
+></LI
+><LI
+><A
+NAME="AEN5469"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(CloneN.URL)</CODE
+> -
+        the <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> of the <TT
+CLASS="literal"
+>N-th</TT
+>
+        <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+><A
+HREF="msearch-cmdref-detectclones.html"
+>clone</A
+></I
+></SPAN
+>,
+        where <TT
+CLASS="literal"
+>N</TT
+> is a number starting from <TT
+CLASS="literal"
+>0</TT
+>.
+        The <CODE
+CLASS="varname"
+>$(CloneN)</CODE
+> variables appeared
+        in <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> <TT
+CLASS="literal"
+>3.3.0</TT
+>.
+        </P
+></LI
+><LI
+><A
+NAME="AEN5485"
+></A
+><P
+><CODE
+CLASS="varname"
+>$(PerSite)</CODE
+> - the total number of documents found on the same site
+        when <B
+CLASS="command"
+><A
+HREF="msearch-doingsearch.html#search-params"
+>GroupBySite</A
+></B
+> is enabled,
+        or <TT
+CLASS="literal"
+>0</TT
+> otherwise.
+        </P
+></LI
+></UL
+><P
+>Here is an example of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>res</I
+></SPAN
+> section:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--res--&#62;
+&#60;DL&#62;&#60;DT&#62;
+&#60;b&#62;$(Order).&#60;/b&#62;&#60;a href="$(URL)" TARGET="_blank"&#62;
+&#60;b&#62;$(Title)&#60;/b&#62;&#60;/a&#62; [&#60;b&#62;$(Score)&#60;/b&#62;]&#60;DD&#62;
+$(Body)...&#60;BR&#62;
+&#60;b&#62;URL: &#60;/b&#62;
+&#60;A HREF="$(URL)" TARGET="_blank"&#62;$(URL)&#60;/A&#62;($(Content-Type))&#60;BR&#62;
+$(Last-Modified), $(Content-Length) bytes&#60;BR&#62;
+&#60;b&#62;Description: &#60;/b&#62;$(meta.description)&#60;br&#62;
+&#60;b&#62;Keywords: &#60;/b&#62;$(meta.keywords)&#60;br&#62;
+&#60;/DL&#62;
+&#60;UL&#62;
+$(CL)
+&#60;/UL&#62;
+&#60;!--/res--&#62;
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="clone-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>CLONE</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5499"
+></A
+><P
+>&#13;  This section was supported in <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+  versions prior to <TT
+CLASS="literal"
+>3.3.0</TT
+> and was removed
+  in the later versions. Use the <CODE
+CLASS="varname"
+>$(CloneN.URL)</CODE
+>
+  variables instead.
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="resbot-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>RESBOT</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5509"
+></A
+><P
+>&#13;   This section is included just after the last document.
+   You can usually print the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>page navigation bar</I
+></SPAN
+>
+   here, which includes links to move to the next and the previous
+   result pages.
+  </P
+><P
+>This is an example of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>resbot</I
+></SPAN
+> section:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--resbot--&#62;
+&#60;HR&#62;
+&#60;CENTER&#62;
+Result pages: $(NL)$(NB)$(NR)
+&#60;/CENTER&#62;
+&#60;!--/resbot--&#62;
+</PRE
+>
+  </P
+></DIV
+><P
+>The page navigator is constructed from
+   the following template sections:
+   </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="navleft-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>navleft, navleft_nop</I
+></SPAN
+> sections</A
+></H3
+><P
+>These sections are used to print the links to the
+  previous result page. If the previous page exists,
+  the code in <TT
+CLASS="literal"
+>&#60;!--navleft--&#62;</TT
+> is used.
+  The very first page does not have previous pages,
+  so <TT
+CLASS="literal"
+>&#60;!--navleft_nop--&#62;</TT
+> is used instead.
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--navleft--&#62;
+&#60;TD&#62;&#60;A HREF="$(NH)"&#62;&#60;IMG...&#62;&#60;/A&#62;&#60;BR&#62;
+&#60;A HREF="$(NH)"&#62;Prev&#60;/A&#62;&#60;/TD&#62;
+&#60;!--/navleft--&#62;
+
+&#60;!--navleft_nop--&#62;
+&#60;TD&#62;&#60;IMG...&#62;&#60;BR&#62;
+&#60;FONT COLOR=gray&#62;Prev&#60;/FONT&#62;&#60;/TD&#62;
+&#60;!--/navleft_nop--&#62;
+</PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="navbar0-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>navbar0</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5528"
+></A
+><P
+>&#13;    This is used for printing the current page in the page list.
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--navbar0--&#62;
+&#60;TD&#62;&#60;IMG...&#62;&#60;BR&#62;$(NN)&#60;/TD&#62;
+&#60;!--navbar0--&#62;
+</PRE
+>
+</P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="navright-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>navright, navright_nop</I
+></SPAN
+> sections</A
+></H3
+><A
+NAME="AEN5536"
+></A
+><P
+>&#13;    These two sections are used to print the link to the next page.
+    If the next page exists, the <TT
+CLASS="literal"
+>&#60;!--navright--&#62;</TT
+>
+    section is used. On the last page the
+    <TT
+CLASS="literal"
+>&#60;!--navright_nop--&#62;</TT
+> section is used instead.
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--navright--&#62;
+&#60;TD&#62;
+&#60;A HREF="$(NH)"&#62;&#60;IMG...&#62;&#60;/A&#62;
+&#60;BR&#62;
+&#60;A HREF="$(NH)"&#62;Next&#60;/A&#62;&#60;/TD&#62;
+&#60;!--/navright--&#62;
+
+&#60;!--navright_nop--&#62;
+&#60;TD&#62;
+&#60;IMG...&#62;
+&#60;BR&#62;
+&#60;FONT COLOR=gray&#62;Next&#60;/FONT&#62;&#60;/TD&#62;
+&#60;!--/navright_nop--&#62;
+</PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="navbar1-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>navbar1</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5546"
+></A
+><P
+>&#13;  This template section is used to print the links
+  to the other pages in the page list.
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--navbar1--&#62;
+&#60;TD&#62;
+&#60;A HREF="$(HR)"&#62;
+&#60;IMG...&#62;&#60;/A&#62;&#60;BR&#62;
+&#60;A HREF="$(NH)"&#62;$(NN)&#60;/A&#62;
+&#60;/TD&#62;
+&#60;!--/navbar1--&#62;
+</PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="notfound-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>notfound</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5554"
+></A
+><P
+>&#13;    As the section name implies, the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>notfound</I
+></SPAN
+>
+    section is displayed in case when no documents were found
+    and usually consists of a message with hints how to
+    make the search condition less restrictive.
+  </P
+><P
+>This is an example of the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>notfound</I
+></SPAN
+> section:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--notfound--&#62;
+&#60;CENTER&#62;
+Sorry, search did not find any results.&#60;P&#62;
+&#60;I&#62;Try to compose a less restrictive search query or check spelling.&#60;/I&#62;
+&#60;/CENTER&#62;
+&#60;HR&#62;
+&#60;!--/notfound--&#62;
+</PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="noquery-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>noquery</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5565"
+></A
+><P
+>&#13;  This section is displayed in case when the user gives an empty search
+  query. For example:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--noquery--&#62;
+&#60;CENTER&#62;
+You didn't type any words to search for.
+&#60;/CENTER&#62;
+&#60;HR&#62;
+&#60;!--/noquery--&#62;
+</PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="error-section"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>error</I
+></SPAN
+> section</A
+></H3
+><A
+NAME="AEN5573"
+></A
+><P
+>&#13;  This section is displayed in case when some internal error
+  occurred while searching.
+  For example, when the database server is not available. You can
+  use the <A
+NAME="AEN5577"
+></A
+>
+  <CODE
+CLASS="varname"
+>$(E)</CODE
+> variable to print the error text:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;!--error--&#62;
+&#60;CENTER&#62;
+&#60;FONT COLOR="#FF0000"&#62;An error occurred!&#60;/FONT&#62;
+&#60;P&#62;
+&#60;B&#62;$(E)&#60;/B&#62;
+&#60;/CENTER&#62;
+&#60;!--/error--&#62;
+</PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="templates-var"
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>variables</I
+></SPAN
+> section
+    <A
+NAME="AEN5585"
+></A
+></A
+></H3
+><P
+>This is a special section were you
+    put configuration commands.
+    </P
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>variables</I
+></SPAN
+> section can look like this:
+    </P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN5591"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;&#60;!--variables
+DBAddr mysql://foo:bar@localhost/search/?DBMode=blob
+LocalCharset    iso-8859-1
+BrowserCharset  iso-8859-1
+TrackQuery  yes
+DetectClones  yes
+HlBeg &#60;font color="blue"&#62;&#60;b&#62;&#60;i&#62;
+HlEnd &#60;/i&#62;&#60;/b&#62;
+R1    100
+Synonym synonym/english.syn
+--&#62;
+</PRE
+><P
+></P
+></DIV
+>The typical configuration commands are:
+    <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+>,
+    <A
+HREF="msearch-cmdref-localcharset.html"
+>LocalCharset</A
+>,
+    <A
+HREF="msearch-cmdref-browsercharset.html"
+>BrowserCharset</A
+>,
+    <A
+HREF="msearch-cmdref-detectclones.html"
+>DetectClones</A
+>,
+    <A
+HREF="msearch-cmdref-groupbysite.html"
+>GroupBySite</A
+>,
+    <A
+HREF="msearch-cmdref-hlbeg.html"
+>HlBeg</A
+>,
+    <A
+HREF="msearch-cmdref-hlend.html"
+>HlEnd</A
+>,
+    <A
+HREF="msearch-cmdref-dateformat.html"
+>DateFormat</A
+>.
+    See <A
+HREF="msearch-cmdref.html"
+>Reference I, <I
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> command reference</I
+></A
+> for the description of all available commands.
+
+  </DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="templates-var-another"
+>Using the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>variables</I
+></SPAN
+> section with operators
+      <A
+NAME="AEN5605"
+></A
+></A
+></H3
+><P
+>You can also use another <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>variables</I
+></SPAN
+>
+    section in combination with all operators
+    supported by the <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+    template language. You can set some variable
+    values which will be used during search,
+    for example search limits.
+    </P
+><P
+>&#13;    <P
+><B
+>Examples:</B
+></P
+>
+    <DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN5613"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;&#60;!--variables--&#62;
+&#60;!SET NAME="ul" CONTENT="/path/"&#62;
+&#60;!--/variable--&#62;
+</PRE
+><P
+></P
+></DIV
+>
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates-incl"
+>Includes in templates</A
+></H2
+><P
+>You can use
+    the <TT
+CLASS="literal"
+>&#60;!INCLUDE Content="http://hostname/path"&#62;</TT
+>
+    operator to include content of an external document into search results.
+    </P
+><P
+>&#13;      <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>&#13;        WARNING: <TT
+CLASS="literal"
+>&#60;!INCLUDE&#62;</TT
+>
+        works only in the following template sections:
+      </I
+></SPAN
+>
+    </P
+><P
+CLASS="literallayout"
+><br>
+<TT
+CLASS="literal"
+>&#60;!--top--&#62;</TT
+><br>
+<TT
+CLASS="literal"
+>&#60;!--bottom--&#62;</TT
+><br>
+<TT
+CLASS="literal"
+>&#60;!--restop--&#62;</TT
+><br>
+<TT
+CLASS="literal"
+>&#60;!--resbot--&#62;</TT
+><br>
+<TT
+CLASS="literal"
+>&#60;!--notfound--&#62;</TT
+><br>
+<TT
+CLASS="literal"
+>&#60;!--error--&#62;</TT
+><br>
+</P
+><P
+>&#13;    <P
+><B
+>Example:</B
+></P
+>
+    <DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN5631"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;&#60;!--top--&#62;
+....
+&#60;!INCLUDE CONTENT="http://hostname/banner?query=$&#38;(q)"&#62;
+...
+&#60;!--/top--&#62;
+</PRE
+><P
+></P
+></DIV
+>
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="templates-sec"
+>Security issues</A
+></H2
+><P
+>&#13;      <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>WARNING</I
+></SPAN
+>: Since the
+      template file contains secure information such as database password,
+      it is recommended to give proper permissions to the template file
+      to protect it from reading by anyone but you and the search program.
+      Otherwise your passwords may leak.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-doingsearch.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-html.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Searching documents</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-doingsearch.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Designing <TT
+CLASS="filename"
+>search.htm</TT
+></TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

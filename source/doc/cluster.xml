@@ -1,0 +1,480 @@
+<chapter id="cluster">
+  <title>mnoGoSearch cluster</title>
+  <sect2 id="cluster-introduction"><title>Introduction</title>
+    <para>
+Starting from the version 3.3.0, &mnogo; provides a clustered
+solution, which allows to scale search on several computers,
+extending database size up to several dozens or even hundreds
+million documents.
+    </para>
+  </sect2>
+
+  <sect2 id="cluster-how-it-works"><title>How it works</title>
+    <para>
+A typical cluster consists of several database machines (cluster nodes)
+and a single front-end machine. The front-end machine receives HTTP
+requests from a user's browser, forwards search queries to the
+database machines using HTTP protocol, receives back a limited
+number of the best top search results (using a simple XML format,
+based on OpenSearch specifications) from every database machine,
+then parses and merges the results ordering them by score,
+and displays the results applying HTML template. This approach
+distributes operations with high CPU and hard disk consumption
+between the database machines in parallel, leaving simple merge
+and HTML template processing functions to the the front-end
+machine.
+    </para>
+  </sect2>
+
+  <sect2 id="cluster-database-machine-operations">
+    <title>Operations done on the database machines</title>
+    <para>
+In a clustered &mnogo; installation, all hard operations
+are done on the database machines.
+    </para>
+    
+    <para>
+This is an approximate distribution chart of time spent
+on different search steps:
+    </para>
+
+    <para>
+      <itemizedlist>
+        <listitem><para>5% - fetching word information</para></listitem>
+        <listitem><para>30% - grouping words by doc ID</para></listitem>
+        <listitem><para>30% - calculating score for each document</para></listitem>
+        <listitem><para>20% - sorting documents according to score</para></listitem>
+        <listitem><para>10% - fetching cached copies and generating excerpts for the best 10 documents</para></listitem>
+        <listitem><para>5% - generating XML or HTML results using template</para></listitem>
+      </itemizedlist>
+    </para>
+  </sect2>
+
+  <sect2 id="cluster-xml-response-example">
+    <title>How a typical XML response looks like</title>
+    <para>
+<programlisting>
+&lt;rss&gt;
+  &lt;channel&gt;
+
+    &lt;!-- General search results information block --&gt;
+    &lt;openSearch:totalResults&gt;20&lt;/openSearch:totalResults&gt;
+    &lt;openSearch:startIndex&gt;1&lt;/openSearch:startIndex&gt;
+    &lt;openSearch:itemsPerPage&gt;2&lt;/openSearch:itemsPerPage&gt;
+
+    &lt;!-- Word statistics block --&gt;
+    &lt;mnoGoSearch:WordStatList&gt;
+      &lt;mnoGoSearch:WordStatItem order="0" count="300" word="apache"/&gt;
+      &lt;mnoGoSearch:WordStatItem order="1" count="103" word="web"/&gt;
+      &lt;mnoGoSearch:WordStatItem order="2" count="250" word="server"/&gt;
+    &lt;/mnoGoSearch:WordStatList&gt;
+
+    &lt;!-- document information block --&gt;
+    &lt;item&gt;
+      &lt;id&gt;1&lt;/id&gt;
+      &lt;score&gt;70.25%&lt;/score&gt;
+      &lt;title&gt;Test page of the Apache HTTP Server&lt;/title&gt;
+      &lt;link&gt;http://hostname/index.html&lt;/link&gt;
+      &lt;description&gt;...to use the images below on Apache
+      and Fedora Core powered HTTP servers. Thanks for using Apache ...
+      &lt;/description&gt;
+      &lt;updated&gt;2006-12-13T18:30:02Z&lt;/updated&gt;
+      &lt;content-length&gt;3956&lt;/content-length&gt;
+      &lt;content-type&gt;text/html&lt;/content-type&gt;
+    &lt;/item&gt;
+
+    &lt;!-- more items, typically 10 items total --&gt;
+
+  &lt;/channel&gt;
+&lt;/rss&gt;
+</programlisting>
+    </para>
+  </sect2>
+
+  <sect2 id="cluster-frontend-machine-operations">
+    <title>Operations done on the front-end machine</title>
+    <para>
+The front-end machine receives XML responses
+from every database machine. On the first query,
+the front-end machine requests top 10 results
+from every database machine. An XML response for
+the top 10 results page is about 5Kb. Parsing of
+each XML response takes less than 1% of time.
+Thus, a cluster consisting of 50 machines is about 50%
+slower than a cluster consisting of a single machine,
+but allows to search through a 50-times bigger
+collection of documents.
+    </para>
+    <para>
+If the user is not satisfied with search results
+returned on the first page and navigates to higher pages,
+then the front-end machine requests ps*np results
+from each database machine, where ps is page size
+(10 by default), and np is page number.
+Thus, to display the 5th result page, the front-end
+machine requests 50 results from every database
+machine and has to do five-times more parsing job,
+which makes search on higher pages a little bit
+slower. But typically, users look through not more
+than 2-3 pages.
+    </para>
+  </sect2>
+
+
+  <sect2 id="cluster-types"><title>Cluster types</title>
+    <para>
+&mnogo; supports two cluster types.
+A "merge" cluster is to join results from multiple independent machines,
+each one created by its own &indexer.conf;. This type of cluster is recommended
+when it is possible to distribute your web space into separate databases evenly
+using URL patterns by means of the <xref linkend="cmdref-server"/> or
+<xref linkend="cmdref-realm"/> commands.
+For example, if you need to index three sites <emphasis>siteA</emphasis>,
+<emphasis>siteB</emphasis> and <emphasis>siteC</emphasis> with 
+an approximately equal number of documents on each site, and you have three
+cluster machines <emphasis>nodeA</emphasis>, <emphasis>nodeB</emphasis> and
+<emphasis>nodeC</emphasis>, you can put each site to a separate
+machine using a corresponding
+<xref linkend="cmdref-server"/> command in the &indexer.conf; file
+on each cluster machine:
+
+<programlisting>
+# indexer.conf on machine nodeA:
+DBAddr mysql://root@localhost/test/
+Server http://siteA/
+
+# indexer.conf on machine nodeB:
+DBAddr mysql://root@localhost/test/
+Server http://siteB/
+
+# indexer.conf on machine nodeC:
+DBAddr mysql://root@localhost/test/
+Server http://siteC/
+</programlisting>
+
+    </para>
+
+    <para>
+A "distributed" cluster is created by a single &indexer.conf;,
+with "indexer" automatically distributing search data
+between database machines. This type of cluster is recommended when
+it is hard to distribute web space between cluster machines using
+URL patterns, for example when you don't know your site sizes or
+the site sizes are very different.
+    </para>
+
+    <para>
+      <note>
+        <para>
+Even distribution of search data between cluster machines is important to achieve
+the best performance. Search front-end waits for the slowest cluster node.
+Thus, if cluster machines <emphasis>nodeA</emphasis> and <emphasis>nodeB</emphasis>
+return search results in 0.1 seconds and <emphasis>nodeC</emphasis> return results
+in 0.5 seconds, the overall cluster response time will be about 0.5 seconds.
+        </para>
+      </note>
+    </para>
+
+  </sect2>
+
+  <sect2 id="cluster-configure-merge">
+    <title>Installing and configuring a "merge" cluster</title>
+    <para>
+      <sect3 id="cluster-configure-merge-database-machines">
+        <title>Configuring the database machines</title>
+        <para>
+On each database machine install &mnogo; using usual procedure:
+        </para>
+        <itemizedlist>
+          <listitem><para>
+Configure &indexer.conf;: Edit DBAddr -
+usually specifying a database installed on
+the local host, for example:
+
+<programlisting>
+DBAddr mysql://localhost/dbname/?dbmode=blob
+</programlisting>
+          </para></listitem>
+        
+          <listitem><para>
+  Add a "Server" command corresponding
+  to a desired collection of documents -
+  its own collection on every database machine.
+  Index collections on every database machines
+  by running "indexer" then "indexer -Eblob".
+          </para></listitem>
+
+          <listitem><para>
+Configure &search.htm; by copying the DBAddr
+command from &indexer.conf;.
+          </para></listitem>
+     
+          <listitem><para>
+Make sure that search works in "usual" (non-clustered)
+mode by opening http://hostname/cgi-bin/search.cgi
+in your browser and typing some search query,
+for example the word "test", or some other word
+which present in the document collection.
+          </para></listitem>
+        </itemizedlist>
+      </sect3>
+
+      <sect3 id="cluster-configure-xml-interface">
+        <title>Configuring XML interface on the database machines</title>
+        <para>
+Additionally to the usual installation steps,
+it's also necessary to configure XML interface
+on every database machine.
+        </para>
+        <para>
+Go through the following steps:
+<itemizedlist>
+<listitem><para>cd /usr/local/mnogosearch/etc/</para></listitem>
+<listitem><para>cp node.xml-dist node.xml</para></listitem>
+<listitem><para>Edit node.xml by specifying the same DBAddr</para></listitem>
+<listitem><para>
+make sure XML search returns a well-formed response
+(according to the above format)  by opening
+http://hostname/cgi-bin/search.cgi/node.xml?q=test
+</para></listitem>
+</itemizedlist>
+        </para>
+        <para>
+After these steps, you will have several separate
+document collections, every collection indexed into
+its own database, and configured XML interfaces
+on all database machine.
+        </para>
+      </sect3>
+      <sect3 id="cluster-configure-merge-frontend-machine">
+        <title>Configuring the front-end machine</title>
+        <para>
+Install &mnogo; using usual procedure,
+then do the following additional steps:
+<itemizedlist>
+<listitem><para>cd /usr/local/mnogosearch/etc/</para></listitem>
+<listitem><para>cp search.htm-dist search.htm</para></listitem>
+<listitem><para>
+Edit &search.htm; by specifying URLs of XML interfaces
+of all database machines, adding "?${NODE_QUERY_STRING}"
+after "node.xml":
+<programlisting>
+DBAddr http://hostname1/cgi-bin/search.cgi/node.xml?${NODE_QUERY_STRING}
+DBAddr http://hostname2/cgi-bin/search.cgi/node.xml?${NODE_QUERY_STRING}
+DBAddr http://hostname3/cgi-bin/search.cgi/node.xml?${NODE_QUERY_STRING}
+</programlisting>
+</para></listitem>
+</itemizedlist>
+        </para>
+        <para>
+You're done. Now open http://frontend-hostname/cgi-bin/search.cgi
+in your browser and test searches.
+        </para>
+        <para>
+Note: "DBAddr file:///path/to/response.xml" is also understood -
+to load an XML-formatted response from a static file.
+This is mostly for test purposes.
+        </para>
+      </sect3>
+    </para>
+  </sect2>
+
+  <sect2 id="cluster-configure-distributed">
+    <title>Installing and configuring a "distributed" cluster</title>
+    <para>
+      <sect3 id="cluster-configure-distributed-database-machines">
+        <title>Configuring the database machines</title>
+        <para>
+Install &mnogo; on a single database machine.
+Edit &indexer.conf; by specifying multiple
+DBAddr commands:
+<programlisting>
+DBAddr mysql://hostname1/dbname/?dbmode=blob
+DBAddr mysql://hostname2/dbname/?dbmode=blob
+DBAddr mysql://hostname3/dbname/?dbmode=blob
+</programlisting>
+and describing web space using Realm or Server
+commands. For example:
+
+<programlisting>
+#
+# The entire top level domain .ru,
+# using http://www.ru/ as a start point
+#
+Server http://www.ru/
+Realm http://*.ru/*
+</programlisting>
+
+After that, install &mnogo; on all other database
+machines and copy &indexer.conf; from the first database
+machine. Configuration of indexer is done. Now
+you can start "indexer" on any database machine,
+and then "indexer -Eblob" after it finishes.
+indexer will distribute data between the databases
+specified in the DBAddr commands.
+        </para>
+      </sect3>
+
+      <sect3 id="cluster-how-distribute-data">
+        <title>How indexer distributes data between multiple databases</title>
+        <para>
+The number of the database a document is put into
+is calculated as a result of division of url.seed
+by the number of DBAddr commands specified in &indexer.conf;,
+where url.seed is calculated using hash(URL).
+        </para>
+        <para>
+Thus, for &indexer.conf; having three DBAddr command,
+distribution is done as follows:
+<itemizedlist>
+<listitem><para>URLs with seed 0..85 go to the first DBAddr</para></listitem>
+<listitem><para>URLs with seed 85..170 go to the second DBAddr</para></listitem>
+<listitem><para>URLs with seed 171..255 go to the third DBAddr</para></listitem>
+</itemizedlist>
+Prior to version 3.3.0, indexer could also distribute
+data between several databases, but the distribution
+was done using reminder of division url.seed by the
+number of DBAddr commands.
+        </para>
+        <para>
+The new distribution style, introduced in 3.3.0,
+simplifies manual redistribution of an existing clustered
+database when adding a new DBAddr (i.e. a new database machine).
+Future releases will likely provide automatic tools
+for redistribution data when adding or deleting machines in
+an existing cluster, as well as more configuration commands to
+control distribution.
+        </para>
+      </sect3>
+
+      <sect3 id="cluster-configure-distributed-frontend-machine">
+        <title>Configuring the front-end machine</title>
+        <para>
+Follow the same configuration instructions
+with the "merge" cluster type.
+        </para>
+      </sect3>
+    </para>
+  </sect2>
+
+
+  <sect2 id="cluster-addnode">
+    <title>Using dump/restore tools to add cluster nodes</title>
+    <para>
+    Starting from the version <literal>3.3.9</literal>,
+    &mnogo; allows to add new nodes into a cluster (or remove nodes)
+    without having to re-crawl the documents once again.
+    </para>
+
+    <para>
+    Suppose you have <literal>5</literal> cluster nodes and what extend
+    the cluster to <literal>10</literal> nodes. Please go through the
+    following steps:
+
+    <orderedlist numeration="arabic">
+
+    <listitem><para>
+    Stop all &indexer; processes.
+    </para></listitem>
+
+    <listitem><para>
+    Create all new <literal>10</literal> &sql; databases and
+    create a new <filename>.conf</filename> file with <literal>10</literal>
+    <command><xref linkend="cmdref-dbaddr"/></command> commands.
+    Note, the old and the new &sql; databases can NOT overlap.
+    The new databases must be freshly created empty databases.
+    </para></listitem>
+
+    <listitem><para>
+    Run <programlisting>indexer -d /path/to/new.conf -Ecreate</programlisting>
+    to create table structure in all <literal>10</literal> new &sql; databases.
+    </para></listitem>
+
+    <listitem><para>
+    Make sure you have enough disk space - you'll need about <literal>2</literal>
+    times extra disk space of the all original &sql; databases size.
+    </para></listitem>
+
+    <listitem><para>
+    Create a directory, say, <filename>/usr/local/mnogosearch/dump-restore/</filename>,
+    where you will put the dump file, then go to this directory.
+    </para></listitem>
+
+    <listitem><para>
+    Run <programlisting>indexer -Edumpdata | gzip > dumpfile.sql.gz </programlisting>
+    It will create the dump file.
+    </para></listitem>
+
+    <listitem><para>
+    Run <programlisting>zcat dumpfile.sql.gz | indexer -d /path/to/new.conf -Esql -v2</programlisting>
+    It will load information from the dump file and put it into the new &sql; databases.
+    Note, all document IDs will be automatically re-assigned.
+    </para></listitem>
+
+    <listitem><para>
+    Check that restoring worked fine. These two commands should report
+    the same statistics:
+<programlisting>
+indexer -Estat
+indexer -Estat -d /path/to/new.conf
+</programlisting>
+    </para></listitem>
+
+    <listitem><para>
+    Run <programlisting>indexer -d /path/to/new.conf -Eblob</programlisting> to create
+    inverted search index in the new &sql; databases;
+    </para></listitem>
+
+    <listitem><para>
+    Configure a new search front-end to use the new &sql; databases and
+    check that search bring the same results from the old and the new
+    databases.
+    </para></listitem>
+   
+    
+    </orderedlist>
+    </para>
+
+    <!--
+    <para>
+Note, if you don't have enough space on a single machine
+for all dump files (see Step N3), then you can actually
+distribute work between multiple machines. Just copy
+dump.sh and restore.sh to multiple machines,
+and edit them to the loop variables to they don't overlap.
+    </para>
+    -->
+  </sect2>
+
+  <sect2 id="cluster-limitations">
+    <title>Cluster limitations</title>
+    <para>
+      <itemizedlist>
+        <listitem><para>
+As of version 3.3.0, &mnogo; allows to join up to 256
+  database machines into a single cluster.
+        </para></listitem>
+
+        <listitem><para>
+Only "body" and "title" sections are currently supported.
+  Support for other standard sections, like meta.keywords and meta.description,
+  as well as for user-defined sections will be added in the future 3.3.x releases.
+        </para></listitem>
+
+        <listitem><para>
+Cluster of clusters is not fully functional yet. It will likely
+be implemented in one of the near future 3.3.x release.
+        </para></listitem>
+
+        <listitem><para>
+<emphasis>Popularity rank</emphasis> does not work well 
+with cluster. Links between documents residing on different
+cluster nodes are not taken into account. This will be fixed
+in future releases.
+        </para></listitem>
+        
+      </itemizedlist>
+    </para>
+  </sect2>
+
+</chapter>

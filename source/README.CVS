@@ -1,0 +1,43 @@
+If you wish to get the latest mnoGoSearch source tree, you can obtain it 
+through anonymous CVS. Please note that the CVS version 
+is a development version, and as such, is often unstable, 
+and may not even compile properly. The advantage of using CVS, 
+however, is that you can get the latest fixes and updates, 
+without having to wait for the official releases.
+
+You can find more information about CVS, and download clients for 
+most major platforms, at CVShome.org.
+
+All the necessary utilities (autoconf, automake, libtool) to build
+working copy of mnoGoSearch from CVS tree can be obtained from 
+the GNU FTP site.
+
+It is recommended that you configure CVS by putting the following lines
+in your ~/.cvsrc file: 
+
+cvs -z3
+update -d -P
+checkout -P
+diff -u
+
+Log in to the mnoGoSearch anonymous CVS server. Use cvs as the password.
+cvs -d :pserver:cvs@cvs.mnogosearch.org:/usr/home/bar/cvsroot login
+
+Obtain the mnoGoSearch-3.3.x CVS tree:
+cvs -d :pserver:cvs@cvs.mnogosearch.org:/usr/home/bar/cvsroot co mnogosearch32
+
+To compile the latest version of mnoGoSearch from the CVS, do the following:
+
+1. Make sure you have autoconf 2.53 or newer, automake 1.5 or newer and 
+libtool 1.3.4 or newer. 
+
+2. Run the following commands:
+ 
+ # export CVSROOT=:pserver:cvs@cvs.mnogosearch.org:/usr/home/bar/cvsroot
+ # cvs login  (type cvs when asked for password)
+ # cvs co mnogosearch32
+ # cd mnogosearch32
+ # ./bootstrap
+ # ./configure (with your parameters, see README and ./configure --help)
+ # make
+ # make install

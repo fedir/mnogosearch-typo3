@@ -1,0 +1,116 @@
+<sect2 id="mp3">
+
+  <title>Creating an MP3 search engine
+  <indexterm><primary>MP3</primary></indexterm>
+  </title>
+
+  <para>
+    &mnogo; has a built-in
+    parser for MP3 files. It can extract
+    the <literal>Album</literal>,
+    the <literal>Artist</literal>,
+    the <literal>Song</literal> as well as
+    the <literal>Year</literal> <emphasis>MP3 tags</emphasis> from an MP3 file.
+    You can create a full-featured MP3 search
+    engine using &mnogo;.
+  </para>
+
+  <sect3 id="mp3-indexer">
+    <title>MP3 &indexer.conf; commands</title>
+    <indexterm><primary>Command</primary><secondary>CheckMp3Tag</secondary></indexterm>
+    <para>
+    To activate indexing of MP3 tags, you can use
+    the <command><xref linkend="cmdref-checkmp3"/></command>
+    and <command><xref linkend="cmdref-checkmp3only"/></command>
+    commands into &indexer.conf;, as well
+    as activate processing of MP3 sections (they are disabled
+    by default). This is an example of an &indexer.conf;
+    file with MP3 related commands:
+    
+<programlisting>
+Section MP3.Song               21    128
+Section MP3.Album              22    128
+Section MP3.Artist             23    128
+Section MP3.Year               24    128
+CheckMP3 *.mp3
+Hrefonly *
+</programlisting>
+    With the above configuration, &indexer; will
+    check all <filename>*.mp3</filename> files for MP3 tags,
+    and will collect new links from other file types without
+    indexing.
+    </para>
+    <para>
+      <indexterm><primary>Command</primary><secondary>CheckMP3Only</secondary></indexterm>
+      When you use the <command><xref linkend="cmdref-checkmp3"/></command>
+      command, &indexer; downloads only
+      <literal>128</literal> bytes from the files with the given
+      extension(s) to detect and parse MP3 tags.
+    <note>
+    <para>
+      &indexer; downloads MP3 files
+      efficiently from FTP servers, as well as from HTTP
+      servers supporting HTTP/1.1 protocol
+      with the <literal>Range</literal> request header,
+      to request partial content. Old HTTP servers 
+      not supporting the <literal>Range</literal> HTTP header
+      may not work well together with &mnogo;.
+    </para>
+    </note>
+  </para>
+
+<!--
+<programlisting>
+CheckMP3Only *.mp3
+</programlisting>
+
+    </para>
+    <para>When this option is enabled only MP3 tags are indexed,
+    all &html; documents are searched for links only.
+    In other case &html; and TEXT documents are indexed in usual
+    manner and will be searchable.
+<programlisting>
+URLFileWeight 1  
+</programlisting>
+    </para>
+    <para>
+     You may find useful to activate this option to index MP3 file names.
+    </para>
+-->
+  </sect3>
+
+
+  <sect3 id="mp3-search">
+    <title>Restricting search to a certain MP3 section</title>
+    <para>
+    If you want to restrict searches by <literal>Author</literal>,
+    <literal>Album</literal>, <literal>Song</literal> or
+    <literal>Year</literal>, you can use the standard 
+    &mnogo; ways to restrict
+    searches described in  <xref linkend="search-changeweight"/> and 
+    <xref linkend="search-secnoref"/>.
+    
+    For example,
+    if you want to restrict search by song and author name,
+    you use the standard &mnogo; way
+    to specify sections: <literal>Song: help Author:Beatles</literal>.
+    </para>
+    <para>
+    With the default sections given in &indexer.conf-dist;,
+    you may find useful to add this &html; form element into
+    &search.htm; to restrict search area:
+
+<programlisting>
+Search in:
+&lt;SELECT NAME="wf"&gt;
+  &lt;OPTION VALUE="111100000000000000000000" SELECTED="$(wf)"&gt;All MP3 sections&lt;/OPTION&gt;
+  &lt;OPTION VALUE="000100000000000000000000" SELECTED="$(wf)"&gt;MP3 Song name&lt;/OPTION&gt;
+  &lt;OPTION VALUE="001000000000000000000000" SELECTED="$(wf)"&gt;MP3 Album&lt;/OPTION&gt;
+  &lt;OPTION VALUE="010000000000000000000000" SELECTED="$(wf)"&gt;MP3 Artist&lt;/OPTION&gt;
+  &lt;OPTION VALUE="100000000000000000000000" SELECTED="$(wf)"&gt;MP3 Year&lt;/OPTION&gt;
+&lt;/SELECT&gt;
+</programlisting>
+
+    </para>
+  </sect3>
+</sect2>

@@ -1,0 +1,193 @@
+<chapter id="htmlparser">
+  <title>
+    mnoGoSearch &html; parser
+  </title>
+  
+  
+  <sect1 id="htmlparser-tag">
+    <title>Tag parser
+      <indexterm><primary>Tag parser</primary></indexterm>
+    </title>
+    <para>The tag parser understands these tag attribute notations:</para>
+    <itemizedlist>
+      <listitem>
+        <para>&lt;tagname attribute=value ...   &gt;</para>
+      </listitem>
+      <listitem>
+        <para>&lt;tagname attribute="value" ...   &gt;</para>
+      </listitem>
+      <listitem>
+        <para>&lt;tagname attribute='value' ...   &gt;</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+  
+  
+  <sect1 id="htmlparser-spec">
+    <title>&html; entities</title>
+    <para>
+      &indexer; understands the
+      following special &html; characters:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <literal>&amp;lt;</literal>
+          <literal>&amp;gt;</literal>
+          <literal>&amp;amp;</literal>
+          <literal>&amp;nbsp;</literal>
+          <literal>&amp;quot;</literal>
+        </para>
+      </listitem>
+      <listitem>
+        <para>All &html;-4 character entities:
+          <literal>&amp;auml;</literal>
+          <literal>&amp;uuml;</literal>
+          and other.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Characters in their Unicode notation:
+          <literal>&amp;#234;</literal>
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+  
+  
+  <sect1 id="htmlparser-meta">
+    <title>META tags
+<indexterm><primary>MATA tags</primary></indexterm>
+</title>
+    <para>
+     &mnogo;
+     &html; parser currently understands the
+     following special META tags.
+     Note that <literal>HTTP-EQUIV</literal> is also
+     understood instead of <literal>NAME</literal> in all entries.
+     </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <literal>&lt;META
+          NAME="Content-Type" Content="text/html; charset=xxxx"&gt;</literal>
+          -
+          This tag is used to detect the document character set when it is not specified
+          in the <literal>Content-type</literal> <acronym>HTTP</acronym>
+          response header.
+         </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>&lt;META
+          NAME="REFRESH" Content="5; URL=http://www.somewhere.com"&gt;</literal>
+          -
+          The <acronym>URL</acronym> value is inserted into the database.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>&lt;META
+           NAME="Robots" Content="xxx"&gt;</literal>
+           with the values
+           <literal>ALL</literal>,
+           <literal>NONE</literal>,
+           <literal>INDEX</literal>,
+           <literal>NOINDEX</literal>,
+           <literal>FOLLOW</literal>,
+           <literal>NOFOLLOW</literal>.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+  
+  
+  <sect1 id="htmlparser-links">
+    <title>Links</title>
+    <para>
+      &mnogo;
+      &html; parser collects links from
+      these tags:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para><literal>&lt;A HREF="xxx"&gt;</literal></para>
+      </listitem>
+      <listitem>
+        <para><literal>&lt;IMG SRC="xxx"&gt;</literal></para>
+      </listitem>
+      <listitem>
+        <para><literal>&lt;LINK HREF="xxx"&gt;</literal></para>
+      </listitem>
+      <listitem>
+        <para><literal>&lt;FRAME SRC="xxx"&gt;</literal></para>
+      </listitem>
+      <listitem>
+        <para><literal>&lt;IFRAME SRC="xxx"&gt;</literal></para>
+      </listitem>
+      <listitem>
+        <para><literal>&lt;AREA HREF="xxx"&gt;</literal></para>
+      </listitem>
+      <listitem>
+        <para><literal>&lt;BASE HREF="xxx"&gt;</literal>
+          <note>
+            <para>
+            &mnogo;
+            ignores not well-formed <literal>BASE HREF</literal>
+            values and uses the current <acronym>URL</acronym>
+            to compose relative links in case when
+            a badly formed base <acronym>URL</acronym> met.
+            </para>
+          </note>
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+     The links having the <literal>rel="nofollow"</literal> attribute
+     are ignored by &mnogo;.
+     </para>
+    <para><title>Example:</title>
+<programlisting>
+&lt;a href="http://site/" rel="nofollow"&gt;
+</programlisting>
+    </para>
+  </sect1>
+
+
+  <sect1 id="htmlparser-comments">
+    <title>Comments</title>
+    <itemizedlist>
+      <listitem>
+        <para>
+         Character data inside the
+         <literal>&lt;!-- .... --&gt;</literal>
+         tag is recognized as an &html; comment.
+        </para>
+      </listitem>
+      <listitem>
+        <para>You can use special purpose comment tags
+          <literal>&lt;!--UdmComment--&gt;</literal>
+          ...
+          <literal>&lt;!--/UdmComment--&gt;</literal>
+          to hide the character data and the mark-up
+          in between from &indexer;.
+          It may find useful to put these tags around
+          the things such as the site navigation menus,
+          advertisement blocks, etc.
+        </para>
+      </listitem>
+      <listitem>
+        <para>The
+        <literal>&lt;NOINDEX&gt;</literal>
+        ...
+        <literal>&lt;/NOINDEX&gt;</literal> tags
+        are also understood as synonyms for
+        <literal>&lt;!--UdmComment--&gt;</literal>
+        and
+        <literal>&lt;!--/UdmComment--&gt;</literal>.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+</chapter>

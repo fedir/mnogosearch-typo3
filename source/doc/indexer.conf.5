@@ -1,0 +1,749 @@
+.TH INDEXER.CONF 5 "23 March 2001" "mnoGoSearch 3.1" "mnoGoSearch reference manual"
+.SH NAME
+indexer.conf \- 
+configuration file for indexer
+.SH DESCRIPTION
+This is configuration file for
+.B indexer (1).
+Configuration file consists of commands and their arguments.
+All commands are case-insensitive.
+You can use # to comment out lines.
+.SH VARIABLES
+.TP
+
+
+.SH Global parameters
+
+These commands should be used only once and take global effect for the 
+whole configuration file.
+
+.TP 
+.BI DBType\ type
+Database type, currently supported values are
+.I mysql, pgsql, msql, solid, mssql, oracle, ibase, sqlite
+Actually it does not matter for native libraries support,
+but ODBC users must specify one of the supported values. 
+If your database type is not supported, use 
+.I unknown
+instead.
+
+.TP
+.BI DBHost\ host
+SQL host name (Not required for ODBC)
+
+Default: localhost
+.TP
+.BI DBName\ mnogosearch
+SQL database name or ODBC DSN
+
+Default: mnogosearch
+.TP
+.BI DBUser\ foo
+Database username to connect to database
+
+Default: no user
+.TP
+.BI DBPass\ bar
+Database password to connect to database
+
+Default: no password
+
+.TP
+.BI DBMode\  single/multi/crc/crc-multi
+SQL database words storage mode. Does not apply for built-in database. 
+When
+.I single
+is specified, all words are stored in the same table.
+.I multi
+means that words are stored in different tables depending on wordlength.
+.I multi
+mode is usualy faster, but it requires more tables in database.
+In case of 
+.I crc
+mode, mnoGoSearch will store 32 bit integer word ID's calculated by CRC32 algorythm
+instead of words. 
+.I crc
+mode requires less diskspace and is faster than
+.I single
+and
+.I multi
+modes.
+.I crc-multi
+mode shares storage structure with
+.I crc
+mode, but stores words in different tables depending on wordlength like
+.I multi
+mode.
+Default DBMode value is
+.I single
+
+.TP
+.BI LocalCharset\ charset
+Defines charset for local file system. It is required if you are using 8 bit characters and is not applicable for 7 bit characters. 
+This command is to be used once and takes global effect for the whole configuration file. 
+
+Example:
+.br
+.I LocalCharset windows-1250
+
+.TP
+.BI CrossWords\ yes|no
+Building CrossWords index. Crosswords are those, that are used in a link to the present page.
+The default value is
+.I no
+
+.TP
+.BI StopWordFile\ filename
+This command indicates which file contains stopwords list to load. 
+You may specify either absolute file name, or filename with a relative path to mnoGoSearch /etc directory.
+You may use several 
+.BI StopWordsFile
+commands.
+
+.TP
+.BI MinWordLength\ characters
+.BI MinWordLength\ characters
+With these commands you can change default length range of words stored in database. By default mnoGoSearch stores words that are 
+longer than 1 and shorter than 32.
+Example:
+.I MaxWordLength 35
+
+.TP
+.BI MaxDocSize\ bytes
+Specify maximum size of a document in bytes that can be indexed. The default value is 
+.I 1048576
+(1 Mb). This command take global effect for the whole config file.
+
+.TP
+.BI HTTPHeader\ header
+You may add custom HTTP headers to indexer HTTP request. Do not use "If-modified-since" and "Accept-Charset" headers, since they are 
+composed by indexer itself. "User-Agent: mnoGoSearch/version" is sent too, although you may override it. The command has global effect for the whole configuration file.
+
+.TP
+.BI ServerTable\ table_name
+This command works only with SQL database and is not applicable for built-in database mode. 
+Load servers with all their parameters from the table 
+.I table_name
+For an example of such tables structure, please refer to the file create/mysql/server.txt You may use several arguments with this command:
+.I ServerTable my_servers1 my_servers2 my_servers3
+or just a single argument:
+.I ServerTable server
+
+.TP
+.BI DeleteNoServer\ yes|no
+Use this command to specify whether to delete the URL that have no corresponding 
+.I Server
+commands. Default value is
+.I yes
+.
+
+.TP
+.BI VarDir\ /path/to/my/var/dir
+Specify a custom path to directory that indexer stores data to when use with built-in database and in cache mode. 
+By default /var directory of mnoGoSearch installation is used. 
+
+
+
+.SH URL Control Configuration
+  
+.TP
+.BI Allow\ [Match|NoMatch]\ {NoCase|Case]\ [String|Regex]\ <arg>\ [<arg>\ ...]
+Use this command to allow URL's that match (does not match) given argument. First three optional parameters describe the
+type of comparison. Default values are
+.I Match, NoCase, String
+Use
+.I NoCase
+or
+.I Case
+values to to choose case insensitive or sensitive comparison. Use
+.I Regex
+to choose regular expression comparison. Use
+.I String
+to choose string with wildcards comparison. Wildcards are 
+.I *
+for any number of characters, and 
+.I ?
+for one character. Note that 
+.I *
+and
+.I ?
+have special meaning in 
+.I String
+match type. Please use 
+.I Regex
+to describe documents with 
+.I ?
+and
+.I *
+signs in URL.
+.I String
+match is much faster than
+.I Regex,
+so use
+.I String
+where it is possible. You may use several arguments for one 
+.B Allow 
+command and use this command any number of times. It takes global effect for the config file.
+Note that mnoGoSearch automatically adds one 
+.I Allow regex .*
+command after reading config file. That command means that everything is allowed that is not disallowed
+
+.TP
+.BI Disallow\ [Match|NoMatch]\ [Case|NoCase]\ [String|Regex]\ [<arg>\ ...]
+Use this to disallow indexing documents with URLs that match given argument.
+The meaning of the first three optional parameters is exactly the same as with the 
+.B Allow
+command. You can use several arguments for one
+.B Disallow
+command. Takes global effect for config file.
+.TP
+Example:
+#Exclude cgi-bin and non-parsed-headers
+.br
+Disallow /cgi-bin/ \\.cgi /nph 
+
+#Exclude some known extensions
+.br
+Disallow \\.b$	\\.sh$	\\.md5$
+.br
+Disallow \\.arj$  \\.tar$  \\.zip$  \\.tgz$  \\.gz$
+.br
+Disallow \\.lha$ \\.lzh$ \\.tar\\.Z$  \\.rar$  \\.zoo$
+.br
+Disallow \\.gif$  \\.jpg$  \\.jpeg$ \\.bmp$  \\.tiff$ 
+.br
+Disallow \\.vdo$  \\.mpeg$ \\.mpe$  \\.mpg$  \\.avi$  \\.movie$
+.br
+Disallow \\.mid$  \\.mp3$  \\.rm$   \\.ram$  \\.wav$  \\.aiff$ \\.ra$
+.br
+Disallow \\.vrml$ \\.wrl$
+.br
+Disallow \\.exe$  \\.cab$  \\.dll$  \\.bin$  \\.class$
+.br
+Disallow \\.tex$  \\.texi$ \\.xls$  \\.doc$  \\.texinfo$
+.br
+Disallow \\.rtf$  \\.pdf$  \\.cdf$  \\.ps$
+.br
+Disallow \\.ai$   \\.eps$  \\.ppt$  \\.hqx$
+.br
+Disallow \\.cpt$  \\.bms$  \\.oda$  \\.tcl$
+.br
+Disallow \\.rpm$
+
+#Exclude Apache directory list in different sort order
+.br
+Disallow \\?D=A$ \\?D=A$ \\?D=D$ \\?M=A$ \\?M=D$ \\?N=A$ \\?N=D$ \\?S=A$ \\?S=D$
+
+#Exclude ./. and ./.. from Apache and Squid directory list
+.br
+Disallow /[.]{1,2} /\\%2e /\\%2f
+
+.TP
+.BI CheckOnly\ regexp\ [regexp\ [...]\ ]
+Indexer will use HEAD instead of GET http method for URLs that
+matches regexp. It means that file will be checked only
+and will not be downloaded. Usefull for zip,exe,arj etc files.
+One can use several arguments for one 'CheckOnly' command.
+One can use this command any times but not more than MAXFILTER in indexer.h
+Takes global effect for config file.
+.TP
+Examples:
+#Use HEAD method for some known non-text extensions:
+.br
+CheckOnly \\.b$	\\.sh$	\\.md5$
+.br
+CheckOnly \\.arj$  \\.tar$  \\.zip$  \\.tgz$  \\.gz$
+.br
+CheckOnly \\.lha$ \\.lzh$ \\.tar\\.Z$  \\.rar$  \\.zoo$
+.br
+CheckOnly \\.gif$  \\.jpg$  \\.jpeg$ \\.bmp$  \\.tiff$ 
+.br
+CheckOnly \\.vdo$  \\.mpeg$ \\.mpe$  \\.mpg$  \\.avi$  \\.movie$
+.br
+CheckOnly \\.mid$  \\.mp3$  \\.rm$   \\.ram$  \\.wav$  \\.aiff$
+.br
+CheckOnly \\.vrml$ \\.wrl$
+.br
+CheckOnly \\.exe$  \\.cab$  \\.dll$  \\.bin$  \\.class$
+.br
+CheckOnly \\.tex$  \\.texi$ \\.xls$  \\.doc$  \\.texinfo$
+.br
+CheckOnly \\.rtf$  \\.pdf$  \\.cdf$  \\.ps$
+.br
+CheckOnly \\.ai$   \\.eps$  \\.ppt$  \\.hqx$
+.br
+CheckOnly \\.cpt$  \\.bms$  \\.oda$  \\.tcl$
+.br
+CheckOnly \\.rpm$
+
+.TP
+.BI HrefOnly\ regexp\ [regexp\ [...]\ ]
+Indexer scans html documents that match regexp as it would scan any other
+URLs, except that it will not index the contents. It will add any URLs it
+finds in html document to database. Usefull when indexing mail list
+archives with big index pages which contain mostly URLs.
+One can use several arguments for one 'HrefOnly' command.
+One can use this command any times but not more than MAXFILTER in indexer.h
+Takes global effect for config file.
+.TP
+Examples:
+#Scan these files for href tags only, but do not index there contents.
+.br
+HrefOnly mail.*\\.html$ thr.*\\.html$
+
+.SH MIME types and external parsers
+
+.TP
+.BI UseRemoteContentType\ yes|no
+This command specifies if the indexer should get content type from HTTP server headers (yes)
+, or from its
+.B AddType 
+settings (no). If set to
+.I no
+, and the indexer could not determine content-type with its 
+.B AddType
+settings, 
+
+.TP
+.BI SyslogFacility\ facility
+Useful only if
+.B indexer
+is compiled with syslog support and if you
+do not like the default. Argument is the same as used in syslog.conf
+file (for example:
+.I local7
+,
+.I daemon
+). For list of possible facilities see syslog.conf(5)
+Takes global effect and should be used only
+.I once
+!
+Default: depends on compilation.
+
+.TP
+.BI LogdAddr\ host[:port]
+Use
+.I cachelogd
+at given host and port if specified. Required for 
+.I cache mode
+only. Default values are 
+.I localhost
+and port
+.I 7000
+.
+
+.TP
+.BI FollowOutside\ yes|no
+Allow/disallow indexer to walk outside current server.
+Should be used carefully (see 
+.B MaxHops
+command). 
+
+Default: no
+.TP
+.BI Period\ seconds
+Reindex period in seconds, 604800 = 1 week.
+May be used before every
+.B Server
+command and
+takes effect till the end of config file or till next 
+.B Period
+command.
+.TP
+.BI Tag\ number
+Use this parameter for your own purposes. For example for grouping
+some servers into one group, etc.
+May be used multiple times before every
+.B Server
+command and
+takes effect till the end of config file or till next
+.B Tag
+command.
+.TP
+.BI MaxHops\ number
+Maximum way in "mouse clicks" from start URL given in
+.B Server
+command. May be used multiple times before every
+.B Server
+command and
+takes effect till the end of config file or till next
+.B MaxHops
+command.
+
+Default: 256
+.TP
+.BI MaxNetErrors\ number
+Maximum network errors for each server.
+If there are too many network errors on some server
+(server is down, host unreachable etc.)
+.B indexer
+will try not to do more than
+.I number
+attempts to connect to this server.
+May be used multiple times before
+.B Server
+command and takes effect till the end of config file or till next
+.B MaxNetErrors
+command.
+
+Default: 16
+
+.TP
+.BI TitleWeight\ number
+Weight of the words in the <title>...</title>
+Can be set multiple times before 
+.B Server
+command and
+takes effect till the end of config file or till next
+.B TitleWeight
+command.
+
+Default: 2
+.TP
+.BI BodyWeight\ number
+Weight of the words in the <body>...</body> of the html documents 
+and in the contents of the text/plain documents.
+Can be set multiple times before 
+.B Server
+command and
+takes effect till the end of config file or till next
+.B BodyWeight
+command.
+
+Default: 1
+.TP
+.BI DescWeight\ number
+Weight of the words in the <META NAME="Description" Content="...">
+Can be set multiple times before 
+.B Server
+command and takes effect till the end of config file or till next 
+.B DescWeight
+command.
+
+Default: 2
+.TP
+.BI KeywordWeight\ number
+Weight of the words in the <META NAME="Keywords" Content="...">
+Can be set multiple times before 
+.B Server
+command and takes effect till the end of config file or till next 
+.B KeywordWeight
+command.
+
+Default: 2
+.TP
+.BI UrlWeight\ number
+Weight of the words in the URL of the documents.
+Can be set multiple times before 
+.B Server
+command and takes effect till the end of config file or till next
+.B UrlWeight
+command.
+
+Default: 0
+.TP
+.BI DeleteBad\ yes|no
+Prevent indexer from deleting bad (not found, forbidden etc) URLs
+from database. Useful if you want to check 'integrity' of you server(s),
+so if you set it to
+.I no
+, that "bad" URLs will remain in database.
+Can be set multiple times before 
+.B Server
+command and
+takes effect till the end of config file or till next
+.B DeleteBad
+command.
+
+Default: yes
+.TP
+.BI Robots\ yes|no
+Allows/disallows using robots.txt and <META NAME="robots">
+exclusions. Useful if you want to check 'integrity' of you server(s).
+Can be set multiple times before 
+.B Server
+command and
+takes effect till the end of config file or till next
+.B Robots
+command.
+
+Default: yes.
+
+.TP
+.BI Section\ <string>\ <number>
+where <string> is a section name and <number> is section ID
+between 0 and 255. Use 0 if you don't want to index some of 
+these sections. It is better to use different sections IDs
+for different documents parts. In this case during search 
+time you'll be able to give different weight to each part
+or even disallow some sections at a search time.
+
+
+
+.TP
+.BI Index\ yes|no
+Prevent indexer from storing words into database.
+Useful if you want to check 'integrity' of you server(s).
+Can be set multiple times before "Server" command and
+takes effect till the end of config file or till next Index command.
+
+.I Note:
+Instead of
+.B "Index no"
+you can use the alternate form
+.B "NoIndex"
+
+Default: yes
+.TP
+.BI Follow\ yes|no
+Allow/disallow indexer to store <a href="..."> into database.
+Can be set multiple times before
+.B Server
+command and
+takes effect till the end of config file or till next
+.B Follow
+command.
+
+.I Note:
+Instead of
+.B "Follow no"
+you can use the alternate form
+.B "NoFollow"
+
+Default: yes
+.TP
+.BI MaxDocSize\ size
+
+Hope the name is self-explanatory, this command is to limit maximum document size.
+.I size
+is in bytes.
+If there is document with size more than
+.I size
+,
+.B indexer
+will parse only first
+.I size
+bytes of documents.
+
+Default: 1048576 (which is 1 megabyte)
+
+.TP
+.B Mime
+.I <from_mime>
+.I <to_mime>[;charset]
+.I ["command line [$1]"]
+
+This is used to add support for parsing documents with mime types other
+than
+.I text/plain
+and
+.I text/html.
+It can be done via external parser (which should provide output in plain
+or html text) or just by substituting mime type so indexer can understand it
+directly.
+
+.I <from_mime>
+and
+.I <to_mime>
+are standard mime types.
+.I <to_mime>
+should be either
+.I text/plain
+or
+.I text/html
+, because these are the only types that
+.B indexer
+understands.
+                                                                           
+We assume external parser generates results on stdout (if not, you have to
+write a little script and cat results to stdout).
+
+Optional charset parameter used to change charset if needed.
+
+Command line parameter is optional. If there's no command line, this is
+used to change mime type. Command line could also have $1 parameter which
+stands for temporary file name. Some parsers could not operate on stdin,
+so
+.I indexer
+creates temporary file for parser and its name passed instead of $1.
+
+.TP
+.BI CharSet\ charset
+Useful for 8 bit character sets.
+WWW-servers send data in different character sets.
+.I charset
+is default character set of server in next 
+.B Server
+command(s).
+May be used before every
+.B Server
+command and
+takes effect till the end of config file or till next
+.B CharSet
+command.
+
+By now
+.B indexer
+supports Cyrillic koi8-r, cp1251, cp866, iso8859-5, x-mac-cyrillic, 
+Arabic cp1256, Western iso-8859-1, Central Europe iso-8859-2 and cp1250 
+character sets.
+
+This parameter is default character set for "bad" servers that do not send 
+information about charset in header: just "Content-type: text/html" 
+instead of for example "Content-type: text/html; charset=koi8-r" and
+do not send charset information in META tags.
+
+.B CharSet command.
+.TP
+Examples:
+
+CharSet koi8-r
+.br
+CharSet windows-1250
+.br
+CharSet ISO-8859-1
+
+.TP
+.BI ForceIISCharset1251\ yes/no
+This option is useful for users dealing with Cyrillic content and broken
+(or misconfigured?) Microsoft IIS web servers, which tends to report
+charset incorrectly. This is a really dirty hack, but if this option is turned on
+it is assumed that all servers that are reported as 'Microsoft' or 'IIS' have
+content in Windows-1251 codepage.
+This command should be used only once in configuration file and takes global
+effect.
+
+Default: no
+
+.TP
+.BI AuthBasic\ login:passwd
+Use basic http authorization. Can be set before every
+.B Server
+command and takes effect only for next
+.B Server
+command.
+.TP
+Examples:
+
+AuthBasic somebody:something
+
+If you have password protected directory(ies), but whole server is open, use:
+
+AuthBasic login1:passwd1
+.br
+Server http://my.server.com/my/secure/directory1/
+.br
+AuthBasic login2:passwd2
+.br
+Server http://my.server.com/my/secure/directory2/
+.br
+Server http://my.server.com/
+
+.TP
+.BI ProxyAuthBasic\ login:passwd
+Use http proxy basic authorisation. Can be used before every
+.B Server
+command and taked effect only for the next one 
+.B Server
+command! It should be also before
+.B Proxy
+command.
+.TP
+Example:
+ProxyAuthBasic somebody:smth
+
+.TP
+.BI Proxy\ your.proxy.host[:port]
+Connect ia  proxy rather directly.
+You can index ftp servers (only) when using proxy.
+If
+.I port
+is not specified, it is set to default value of 3128 (Squid).
+If proxy host is not specified, direct connection will be performed.
+Can be set before every
+.B Server
+command and
+takes effect till the end of config file or till next
+.B Proxy
+command.
+.TP
+Examples:
+Proxy atoll.anywhere.com
+ - proxy on atoll.anywhere.com, port 3128
+
+Proxy lota.anywhere.com:8090
+ - proxy on lota.anywhere.com, port 8090
+
+Proxy
+ - turn off proxy usage (direct connection)
+
+.TP
+.BI Server\ URL
+It is the main configuration command.
+Use this to add start URL of server to be indexed.
+You may use many
+.B Server 
+commands in the same indexer.conf file
+.TP
+Examples:
+
+Server http://localhost/
+.br
+Server http://www.yoursite.com/
+.br
+Server http://www.yoursite.com/~yourname/
+.br
+Server ftp://ftp.yourdomain.com/pub/
+
+
+
+
+.SH "EXAMPLE"
+
+.TP
+.I This is a minimal sample indexer config file
+
+DBHost		localhost
+.br
+DBName		udmsearch
+.br
+DBUser		foo
+.br
+DBPass		bar
+.br
+Server		http://localhost/
+.br
+Disallow /cgi-bin/ \\.cgi /nph 
+.br
+Disallow \\.b$	\\.sh$	\\.md5$
+.br
+Disallow \\.arj$  \\.tar$  \\.zip$  \\.tgz$  \\.gz$
+.br
+Disallow \\.lha$ \\.lzh$ \\.tar\\.Z$  \\.rar$  \\.zoo$
+.br
+Disallow \\.gif$  \\.jpg$  \\.jpeg$ \\.bmp$  \\.tiff$ 
+.br
+Disallow \\.vdo$  \\.mpeg$ \\.mpe$  \\.mpg$  \\.avi$  \\.movie$
+.br
+Disallow \\.mid$  \\.mp3$  \\.rm$   \\.ram$  \\.wav$  \\.aiff$ \\.ra$
+.br
+Disallow \\.vrml$ \\.wrl$
+.br
+Disallow \\.exe$  \\.cab$  \\.dll$  \\.bin$  \\.class$
+.br
+Disallow \\.tex$  \\.texi$ \\.xls$  \\.doc$  \\.texinfo$
+.br
+Disallow \\.rtf$  \\.pdf$  \\.cdf$  \\.ps$
+.br
+Disallow \\.ai$   \\.eps$  \\.ppt$  \\.hqx$
+.br
+Disallow \\.cpt$  \\.bms$  \\.oda$  \\.tcl$
+.br
+Disallow \\.rpm$
+.br
+Disallow \\?D=A$ \\?D=A$ \\?D=D$ \\?M=A$ \\?M=D$ \\?N=A$ \\?N=D$ \\?S=A$ \\?S=D$
+.br
+Disallow /[.]{1,2} /\\%2e /\\%2f
+.SH "SEE ALSO"
+.BR indexer (1),
+.BR syslog.conf (5)

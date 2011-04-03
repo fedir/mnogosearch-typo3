@@ -1,0 +1,22 @@
+<sect1 id="db2">
+  <title>IBM DB2 notes
+    <indexterm><primary>DB2</primary><secondary>notes</secondary></indexterm>
+  </title>
+  <para>
+  To use &mnogo; with <application>IBM DB2</application>
+  database, add the following lines to Apache's <filename>httpd.conf</filename>:
+<programlisting>
+SetEnv DB2DIR /usr/IBMdb2/V7.1
+SetEnv DB2INSTANCE db2
+PassEnv DB2DIR DB2INSTANCE
+</programlisting>
+  </para>
+  <para>Where <varname>DB2DIR</varname> is the path to
+  <application>DB2</application> installation, and
+  <varname>DB2INSTANCE</varname> is the
+  <application>DB2</application> instance that
+  &search.cgi; should use.
+  </para>
+
+</sect1>
+

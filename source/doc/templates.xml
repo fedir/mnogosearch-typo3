@@ -1,0 +1,819 @@
+<sect1 id="templates">
+
+  <title>How to write search result templates
+    <indexterm><primary>Templates</primary></indexterm>
+  </title>
+  
+  <para>
+  &mnogo; users can
+  fully customize the search results <emphasis>look and feel</emphasis>.
+  You can do it by editing the <emphasis>template</emphasis>
+  file &search.htm; which resides in
+  the <filename>/etc/</filename> directory of your
+  &mnogo; installation.
+  </para>
+
+  <sect2 id="templates-structure">
+    <title>Template file structure</title>
+    <para>The template file is a usual &html; file
+     divided into blocks (sections). Keep in mind that you can just open the
+     template file in your Web browser and get the idea of how
+     the search results will look like.
+    </para>
+    <note>
+      <para>
+      Lines in the template file should not exceed
+     <literal>1024</literal> bytes.
+    </para>
+    </note>
+
+    <para>Every section starts and ends with
+    special <emphasis>section delimiters</emphasis> 
+    which look like <literal>&lt;!--sectionname--&gt;</literal>
+    and <literal>&lt;!--/sectionname--&gt;</literal> correspondingly.
+    The section delimiters should reside on separate lines.
+    </para>
+
+    <para>Every section consists of a &html;
+    formatted text with  <emphasis>variable references</emphasis>.
+    A variable reference is replaced by its value when
+    &search.cgi; is running.
+    </para>
+  </sect2>
+
+
+  <sect2 id="templates-variable-formats">
+    <title>Template variable formats</title>
+    <para>Template variables can be printed using
+    a number of different formats:
+<literallayout>
+<varname>$(x)</varname> - a plain text value.
+<varname>$&amp;(x)</varname> - a &html;-escaped value with search words highlighted.
+<varname>$%(x)</varname> - a value escaped for use in <acronym>URLs</acronym>
+<varname>$^(x)</varname> - a &html;-escaped value with search words highlighted.
+</literallayout>
+    </para>
+
+    <para>
+      It is possible to specify the maximum number of characters printed by
+      a variable. For example, <varname>$(URL)</varname> can
+      return a very long <acronym>URL</acronym> and break
+      the search results layout. To limit the maximum length printed
+      by a variable, use the <literal>$(URL:xx)</literal> syntax,
+      where <literal>xx</literal> is
+      the maximum number of characters to display.
+    </para>
+
+    <para>
+        <varname>$(URL:40)</varname>
+        will print the <acronym>URL</acronym> variable value.
+        In case when it is longer than <literal>40</literal> characters,
+        only <literal>40</literal> characters will be displayed
+        including the trailing dots:
+    </para>
+
+    <para>
+      <userinput>http://very.long.url/path/veery/long/...</userinput>
+    </para>
+      
+    <para>
+      Starting from the version <literal>3.3.1</literal>,
+      it is also possible to display the rightmost characters:
+    </para>
+      
+    <para>
+        <varname>$(URL:-40)</varname>
+    </para>
+
+  </sect2>  
+
+
+  <sect2 id="templates-sect">
+    <title>Template sections
+    <indexterm><primary>Templates</primary><secondary>sections</secondary></indexterm>
+    </title>
+
+    <para>&mnogo; supports the
+    following sections:
+    </para>
+
+    <sect3 id="top-section">
+      <title>The <emphasis>TOP</emphasis> section</title>
+      <indexterm><primary>Template section</primary><secondary>TOP</secondary></indexterm>
+      <para>
+      This section is printed in the very beginning of 
+      &search.cgi; output and
+      should usually start with
+      <literal>&lt;HTML&gt;&lt;HEAD&gt;</literal> and so on.
+      Also, this is the proper place to put a search form to.
+      </para>
+      
+      <para>
+      A number of variables is available in
+      the <emphasis>top</emphasis> section:
+<programlisting>
+$(self)  - the argument for the FORM ACTION tag
+$(q)     - the search query
+$(cat)   - the current category value
+$(tag)   - the current tag value
+$(rN)    - a random number (here N is a number between <literal>0</literal> and <literal>9</literal>)
+</programlisting>
+    </para>
+    
+    <note>
+    <para>If you want to print some random banners or
+    random links in your search results, you can use
+    the <varname>$(r0)</varname>..<varname>$(r9)</varname>
+    variables. For example:
+<programlisting>
+&lt;A HREF="http://www.sitename.com/redirect.php?targetID=$(r0)"&gt;
+Go to a random page of the site
+&lt;/A&gt;
+</programlisting>
+    You can also initialize the <varname>$(rX)</varname>
+    variables to a desired <emphasis>number range</emphasis> using 
+    the <command><xref linkend="cmdref-r"/></command> commands.
+    </para>
+    </note>
+
+    <para>A example of the <emphasis>top</emphasis> section
+    can look like this:
+<programlisting>
+&lt;!--top--&gt;
+&lt;HTML&gt;
+&lt;HEAD&gt;
+ &lt;TITLE&gt;mnoGoSearch: $&amp;(q)&lt;/TITLE&gt;
+&lt;/HEAD&gt;
+&lt;BODY&gt;
+
+Search in the manual:
+&lt;FORM METHOD=GET ACTION="$&amp;(self)"&gt;
+ &lt;INPUT TYPE="text" NAME="q" SIZE="30" VALUE="$&amp;(q)"&gt;
+ &lt;INPUT TYPE="hidden" NAME="ul" VALUE="/manual/"&gt;
+ &lt;INPUT TYPE="hidden" NAME="ps" VALUE="20"&gt;
+ &lt;INPUT TYPE="submit" VALUE="Search!"&gt;
+&lt;/FORM&gt;
+&lt;!--/top--&gt;
+</programlisting>
+    </para>
+    
+    <para>The example above includes some search parameters, described in
+    details in <xref linkend="search-params"/>:
+    </para>
+    
+    <para>
+    The <varname>ul</varname> form variable is an <acronym>URL</acronym>
+    filter. It allows to limit results to a particular site or 
+    a site directory. For example, you can put the following code
+    into your template:
+<programlisting>
+Search through:
+&lt;SELECT NAME="ul"&gt;
+&lt;OPTION VALUE=""            SELECTED="$(ul)"&gt;Entire site
+&lt;OPTION VALUE="/manual/"    SELECTED="$(ul)"&gt;Manual
+&lt;OPTION VALUE="/products/"  SELECTED="$(ul)"&gt;Products
+&lt;OPTION VALUE="/support/"   SELECTED="$(ul)"&gt;Support
+&lt;/SELECT&gt;
+</programlisting>
+    to limit your search to a particular site directory.
+    </para>
+    
+    <note>
+    <para>
+    The attribute <literal>SELECTED="$(ul)"</literal> in the
+    above example (and in the other examples below) allows the
+    selected option to be selected again by default on the next page
+    displayed after pressing the <literal>Search!</literal> button.
+    The attribute is replaced to either the <literal>SELECTED</literal>
+    keyword, or to empty string, according to the
+    current <varname>$(ul)</varname> value.
+    </para>
+    </note>
+
+    <para>
+      <varname>ps</varname> is the default page size (e.g. how many documents are displayed per page).
+    </para>
+    <para>
+      <varname>q</varname> is the search query.
+    </para>
+    </sect3>
+ 
+
+    <sect3 id="bottom-section">
+      <title>The <emphasis>BOTTOM</emphasis> section</title>
+      <indexterm><primary>Template section</primary><secondary>BOTTOM</secondary></indexterm>
+      <para>
+      This section is always displayed in the end of 
+      &search.cgi; output and 
+      typically contains all closing tags which have
+      their counterparts in the <emphasis>top</emphasis> section.
+      <note>
+      <para>
+      The position of the <emphasis>bottom</emphasis> section
+      in the search template file does not matter. It is always
+      displayed in the very end of output. Putting the
+      <emphasis>bottom</emphasis> section in the end of the
+      template file is recommended solely for convenience
+      reasons, to be able to view the template as an ordinary
+      &html; file in your Web browser.
+      </para>
+      </note>
+      </para>
+
+      <para>An example of the <emphasis>bottom</emphasis> section
+      can look like this:
+<programlisting>
+&lt;!--bottom--&gt;
+&lt;P&gt;
+&lt;HR&gt;
+&lt;DIV ALIGN=right&gt;
+&lt;A HREF="http://search.mnogo.ru/"&gt;
+&lt;IMG SRC="mnogosearch.gif" BORDER=0 ALT="[Powered by mnoGoSearch]"&gt;
+&lt;/A&gt;
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+&lt;!--/bottom--&gt;
+</programlisting>
+      </para>
+    </sect3>
+
+
+
+    <sect3 id="restop-section">
+      <title>The <emphasis>RESTOP</emphasis> section</title>
+      <indexterm><primary>Template section</primary><secondary>RESTOP</secondary></indexterm>
+      <para>
+      This section is included just before the search results.
+      It's a good idea to use this section to put some statistics
+      about the query just executed, with help of the following
+      variables:
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            <indexterm><primary>Template variable</primary><secondary>$(first)</secondary></indexterm>
+            <literal>$(first)</literal> - the offset of the
+            <emphasis>first</emphasis> document displayed on this page.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <indexterm><primary>Template variable</primary><secondary>$(last)</secondary></indexterm>
+            <literal>$(last)</literal>  - the offset of the
+            <emphasis>last</emphasis> document displayed on this page.
+           </para>
+        </listitem>
+        <listitem>
+          <para>
+            <indexterm><primary>Template variable</primary><secondary>$(total)</secondary></indexterm>
+            <literal>$(total)</literal> - the total number of the documents
+            found.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <indexterm><primary>Template variable</primary><secondary>$(W)</secondary></indexterm>
+            <literal>$(W)</literal> - short
+            word statistics with information about the number of
+            the <emphasis>exact</emphasis> and the <emphasis>fuzzy</emphasis>
+            query word forms, delimited by the <literal>/</literal> sign for
+            every query word.  For example, if the <varname>$(W)</varname>
+            value is <literal>test: 25/73</literal>, it means that
+            &mnogo; found <literal>25</literal>
+            exact word forms <literal>test</literal>, and
+            <literal>73</literal> fuzzy forms like
+            <literal>tested</literal>, <literal>tests</literal>,
+            <literal>testing</literal>, etc.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+           <indexterm><primary>Template variable</primary><secondary>$(WE)</secondary></indexterm>
+           <literal>$(WE)</literal> - extended word statistics including
+           information about every exact and fuzzy word form found.
+           </para>
+        </listitem>
+        <listitem>
+          <para>
+            <indexterm><primary>Template variable</primary><secondary>$(SearchTime)</secondary></indexterm>
+            <literal>$(SearchTime)</literal> - search query execution time.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <indexterm><primary>Template variable</primary><secondary>$(CurrentTimestamp)</secondary></indexterm>
+            <literal>$(CurrentTimestamp)</literal> - current time,
+            in seconds since <literal>00:00:00 UTC, January 1, 1970</literal>.
+          </para>
+        </listitem>
+        <listitem>
+         <para>
+           <indexterm><primary>Template variable</primary><secondary>$(ndocs)</secondary></indexterm>
+            <literal>$(ndocs)</literal> - the total number of documents in
+           the database.
+         </para>
+        </listitem>
+    </itemizedlist>
+
+    <para>This is an example of the <emphasis>restop</emphasis> section:
+<programlisting>
+&lt;!--restop--&gt;
+&lt;TABLE BORDER=0 WIDTH=100%&gt;
+  &lt;TR&gt;
+  &lt;TD&gt;Search&lt;BR&gt;results:&lt;/TD&gt;
+  &lt;TD&gt;&lt;small&gt;$(WE)&lt;/small&gt;&lt;/TD&gt;
+  &lt;TD&gt;&lt;small&gt;$(W)&lt;/small&gt;&lt;/TD&gt;
+  &lt;/TR&gt;
+&lt;/TABLE&gt;
+&lt;HR&gt;
+&lt;CENTER&gt;
+  Displaying documents $(first)-$(last) of total &lt;B&gt;$(total)&lt;/B&gt; found.
+  Search took &lt;b&gt;$(SearchTime)&lt;/b&gt; seconds
+&lt;/CENTER&gt;
+&lt;!--/restop--&gt;
+</programlisting>
+    </para>
+    </sect3>
+
+
+
+    <sect3 id="res-section">
+      <title>The <emphasis>RES</emphasis> section</title>
+      <indexterm><primary>Template section</primary><secondary>RES</secondary></indexterm>
+      <para>
+      This section is displayed for every document from the current
+      result page (<literal>10</literal> documents per page by default).
+      </para>
+      <para>
+       The following variables are available
+       in the <emphasis>RES</emphasis> section:
+      </para>
+
+    <itemizedlist>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(URL)</secondary></indexterm>
+        <para><varname>$(URL)</varname> - the <acronym>URL</acronym>
+        </para>
+      </listitem>
+      <listitem>
+         <indexterm><primary>Template variable</primary><secondary>$(Title)</secondary></indexterm>
+         <para><varname>$(Title)</varname> - the Title
+         </para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Score)</secondary></indexterm>
+        <para><varname>$(Score)</varname> - the score (as calculated by &mnogo;)
+        </para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Body)</secondary></indexterm>
+        <para><varname>$(Body)</varname> - a piece of text,
+        to give an idea of what the document is about:
+        <itemizedlist>
+          <listitem>
+          <para>
+          a smart excerpt with the query words in their context if
+          <command><link linkend="stored">CachedCopy</link></command>
+          is available,
+          </para>
+          </listitem>
+          <listitem>
+          <para>
+          otherwise, the first couple of lines from the document body.
+          </para>
+          </listitem>
+        </itemizedlist>
+        </para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Content-Type)</secondary></indexterm>
+        <para><varname>$(Content-Type)</varname>  - the Content-type (for example, <literal>text/html</literal>)
+        </para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Last-Modified)</secondary></indexterm>
+        <para><varname>$(Last-Modified)</varname>  - the modification date,
+        using <xref linkend="cmdref-dateformat"/>.
+        </para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Last-Modified-Timestamp)</secondary></indexterm>
+        <para><varname>$(Last-Modified-Timestamp)</varname>  - the modification date
+        as a number of seconds since <literal>00:00:00 UTC, January 1, 1970</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Content-Length)</secondary></indexterm>
+        <para><varname>$(Content-Length)</varname>  - the document Size (in bytes)</para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Content-Length-K)</secondary></indexterm>
+        <para><varname>$(Content-Length-K)</varname>  - the document Size (in kilobytes)</para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(Order)</secondary></indexterm>
+        <para><varname>$(Order)</varname>  - the document Number
+        in the order of its appearance in the search results,
+        starting from <literal>1</literal>.
+        </para>
+      </listitem>
+      <listitem>
+      <indexterm>
+        <primary>Template variable
+        </primary><secondary>$(DBOrder)</secondary>
+      </indexterm>
+      <para><varname>$(DBOrder)</varname> - 
+       the <emphasis>Original Database Document Order </emphasis> -
+       the original order of the document in its database result set,
+       before multiple <xref linkend="cmdref-dbaddr"/> search
+       results were merged into the final result.
+       It is equal to <varname>$(Order)</varname> if only
+       a single <xref linkend="cmdref-dbaddr"/> command is
+       given in &search.htm;.
+       This variable is mostly for debugging purposes.
+      </para>
+      </listitem>
+      <listitem>
+      <indexterm>
+        <primary>Template variable
+        </primary><secondary>$(DBNum)</secondary>
+      </indexterm>
+      <para><varname>$(DBNum)</varname> - the <emphasis>Source Database Number</emphasis> -
+       the number of the database generated this document,
+       in the order of appearance of the <xref linkend="cmdref-dbaddr"/> commands,
+       starting from <literal>0</literal>. That is <literal>0</literal> means
+       that the document was found in the database corresponding to the first
+       <xref linkend="cmdref-dbaddr"/> command, <literal>1</literal> -
+       to the second <xref linkend="cmdref-dbaddr"/> command, and so on.
+       <varname>$(DBNum)</varname> is always <literal>0</literal>
+       &search.htm; uses only a single
+       <xref linkend="cmdref-dbaddr"/> command.
+       This variable is mostly for debugging purposes.
+      </para>
+      </listitem>
+      <listitem>
+      <indexterm><primary>Template variable</primary><secondary>$(meta.description)</secondary></indexterm>
+        <para><varname>$(meta.description)</varname> - the <emphasis>description</emphasis> meta tag value.
+        </para>
+      </listitem>
+      <listitem>
+      <indexterm><primary>Template variable</primary><secondary>$(meta.keywords)</secondary></indexterm>
+        <para><varname>$(meta.keywords)</varname> - the <emphasis>keywords</emphasis> meta tag value.
+        </para>
+      </listitem>
+      <listitem>
+      <indexterm><primary>Template variable</primary><secondary>$(DY)</secondary></indexterm>
+        <para><varname>$(DY)</varname> - the document category with links,
+        i.e. <filename>/home/computers/software/www/</filename>
+        </para>
+      </listitem>
+      <listitem>
+        <indexterm>
+          <primary>Template variable</primary>
+          <secondary><varname>$(CloneN.URL)</varname></secondary>
+        </indexterm>
+        <para><varname>$(CloneN.URL)</varname> -
+        the <acronym>URL</acronym> of the <literal>N-th</literal>
+        <emphasis><link linkend="cmdref-detectclones">clone</link></emphasis>,
+        where <literal>N</literal> is a number starting from <literal>0</literal>.
+        The <varname>$(CloneN)</varname> variables appeared
+        in &mnogo; <literal>3.3.0</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <indexterm><primary>Template variable</primary><secondary>$(PerSite)</secondary></indexterm>
+        <para><varname>$(PerSite)</varname> - the total number of documents found on the same site
+        when <command><link linkend="search-params">GroupBySite</link></command> is enabled,
+        or <literal>0</literal> otherwise.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Here is an example of the <emphasis>res</emphasis> section:
+<programlisting>
+&lt;!--res--&gt;
+&lt;DL&gt;&lt;DT&gt;
+&lt;b&gt;$(Order).&lt;/b&gt;&lt;a href="$(URL)" TARGET="_blank"&gt;
+&lt;b&gt;$(Title)&lt;/b&gt;&lt;/a&gt; [&lt;b&gt;$(Score)&lt;/b&gt;]&lt;DD&gt;
+$(Body)...&lt;BR&gt;
+&lt;b&gt;URL: &lt;/b&gt;
+&lt;A HREF="$(URL)" TARGET="_blank"&gt;$(URL)&lt;/A&gt;($(Content-Type))&lt;BR&gt;
+$(Last-Modified), $(Content-Length) bytes&lt;BR&gt;
+&lt;b&gt;Description: &lt;/b&gt;$(meta.description)&lt;br&gt;
+&lt;b&gt;Keywords: &lt;/b&gt;$(meta.keywords)&lt;br&gt;
+&lt;/DL&gt;
+&lt;UL&gt;
+$(CL)
+&lt;/UL&gt;
+&lt;!--/res--&gt;
+</programlisting>
+    </para>
+    </sect3>
+
+
+
+<sect3 id="clone-section">
+<title>The <emphasis>CLONE</emphasis> section</title>
+<indexterm><primary>Template section</primary><secondary>CLONE</secondary></indexterm>
+  <para>
+  This section was supported in &mnogo;
+  versions prior to <literal>3.3.0</literal> and was removed
+  in the later versions. Use the <varname>$(CloneN.URL)</varname>
+  variables instead.
+  </para>  
+</sect3>
+
+
+<sect3 id="resbot-section">
+  <title>The <emphasis>RESBOT</emphasis> section</title>
+  <indexterm><primary>Template section</primary><secondary>RESBOT</secondary></indexterm>
+  <para>
+   This section is included just after the last document.
+   You can usually print the <emphasis>page navigation bar</emphasis>
+   here, which includes links to move to the next and the previous
+   result pages.
+  </para>
+  <para>This is an example of the <emphasis>resbot</emphasis> section:
+<programlisting>
+&lt;!--resbot--&gt;
+&lt;HR&gt;
+&lt;CENTER&gt;
+Result pages: $(NL)$(NB)$(NR)
+&lt;/CENTER&gt;
+&lt;!--/resbot--&gt;
+</programlisting>
+  </para>
+</sect3>
+
+
+   <para>The page navigator is constructed from
+   the following template sections:
+   </para> 
+
+
+<sect3 id="navleft-section">
+  <title>The <emphasis>navleft, navleft_nop</emphasis> sections</title>
+  <para>These sections are used to print the links to the
+  previous result page. If the previous page exists,
+  the code in <literal>&lt;!--navleft--&gt;</literal> is used.
+  The very first page does not have previous pages,
+  so <literal>&lt;!--navleft_nop--&gt;</literal> is used instead.
+<programlisting>
+&lt;!--navleft--&gt;
+&lt;TD&gt;&lt;A HREF="$(NH)"&gt;&lt;IMG...&gt;&lt;/A&gt;&lt;BR&gt;
+&lt;A HREF="$(NH)"&gt;Prev&lt;/A&gt;&lt;/TD&gt;
+&lt;!--/navleft--&gt;
+
+&lt;!--navleft_nop--&gt;
+&lt;TD&gt;&lt;IMG...&gt;&lt;BR&gt;
+&lt;FONT COLOR=gray&gt;Prev&lt;/FONT&gt;&lt;/TD&gt;
+&lt;!--/navleft_nop--&gt;
+</programlisting>
+  </para>
+</sect3>
+
+
+<sect3 id="navbar0-section">
+    <title>The <emphasis>navbar0</emphasis> section</title>
+    <indexterm><primary>Template section</primary><secondary>navbar0</secondary></indexterm>
+    <para>
+    This is used for printing the current page in the page list.
+<programlisting>
+&lt;!--navbar0--&gt;
+&lt;TD&gt;&lt;IMG...&gt;&lt;BR&gt;$(NN)&lt;/TD&gt;
+&lt;!--navbar0--&gt;
+</programlisting>
+</para>
+</sect3>
+
+
+
+<sect3 id="navright-section">
+  <title>The <emphasis>navright, navright_nop</emphasis> sections</title>
+  <indexterm><primary>Template section</primary><secondary>navright, navright_nop</secondary></indexterm>
+  <para>
+    These two sections are used to print the link to the next page.
+    If the next page exists, the <literal>&lt;!--navright--&gt;</literal>
+    section is used. On the last page the
+    <literal>&lt;!--navright_nop--&gt;</literal> section is used instead.
+<programlisting>
+&lt;!--navright--&gt;
+&lt;TD&gt;
+&lt;A HREF="$(NH)"&gt;&lt;IMG...&gt;&lt;/A&gt;
+&lt;BR&gt;
+&lt;A HREF="$(NH)"&gt;Next&lt;/A&gt;&lt;/TD&gt;
+&lt;!--/navright--&gt;
+
+&lt;!--navright_nop--&gt;
+&lt;TD&gt;
+&lt;IMG...&gt;
+&lt;BR&gt;
+&lt;FONT COLOR=gray&gt;Next&lt;/FONT&gt;&lt;/TD&gt;
+&lt;!--/navright_nop--&gt;
+</programlisting>
+  </para>
+</sect3>
+
+
+<sect3 id="navbar1-section">
+  <title>The <emphasis>navbar1</emphasis> section</title>
+  <indexterm><primary>Template section</primary><secondary>navbar1</secondary></indexterm>
+  <para>
+  This template section is used to print the links
+  to the other pages in the page list.
+<programlisting>
+&lt;!--navbar1--&gt;
+&lt;TD&gt;
+&lt;A HREF="$(HR)"&gt;
+&lt;IMG...&gt;&lt;/A&gt;&lt;BR&gt;
+&lt;A HREF="$(NH)"&gt;$(NN)&lt;/A&gt;
+&lt;/TD&gt;
+&lt;!--/navbar1--&gt;
+</programlisting>
+  </para>
+</sect3>
+
+
+
+<sect3 id="notfound-section">
+  <title>The <emphasis>notfound</emphasis> section</title>
+  <indexterm><primary>Template section</primary><secondary>notfound</secondary></indexterm>
+  <para>
+    As the section name implies, the <emphasis>notfound</emphasis>
+    section is displayed in case when no documents were found
+    and usually consists of a message with hints how to
+    make the search condition less restrictive.
+  </para>
+
+  <para>This is an example of the <emphasis>notfound</emphasis> section:
+<programlisting>
+&lt;!--notfound--&gt;
+&lt;CENTER&gt;
+Sorry, search did not find any results.&lt;P&gt;
+&lt;I&gt;Try to compose a less restrictive search query or check spelling.&lt;/I&gt;
+&lt;/CENTER&gt;
+&lt;HR&gt;
+&lt;!--/notfound--&gt;
+</programlisting>
+  </para>
+</sect3>
+
+
+<sect3 id="noquery-section">
+  <title>The <emphasis>noquery</emphasis> section</title>
+  <indexterm><primary>Template section</primary><secondary>noquery</secondary></indexterm>
+  <para>
+  This section is displayed in case when the user gives an empty search
+  query. For example:
+<programlisting>
+&lt;!--noquery--&gt;
+&lt;CENTER&gt;
+You didn't type any words to search for.
+&lt;/CENTER&gt;
+&lt;HR&gt;
+&lt;!--/noquery--&gt;
+</programlisting>
+  </para>
+</sect3>
+
+
+
+<sect3 id="error-section">
+  <title>The <emphasis>error</emphasis> section</title>
+  <indexterm><primary>Template section</primary><secondary>error</secondary></indexterm>
+  <para>
+  This section is displayed in case when some internal error
+  occurred while searching.
+  For example, when the database server is not available. You can
+  use the <indexterm><primary>Template variable</primary><secondary>$(E)</secondary></indexterm>
+  <varname>$(E)</varname> variable to print the error text:
+<programlisting>
+&lt;!--error--&gt;
+&lt;CENTER&gt;
+&lt;FONT COLOR="#FF0000"&gt;An error occurred!&lt;/FONT&gt;
+&lt;P&gt;
+&lt;B&gt;$(E)&lt;/B&gt;
+&lt;/CENTER&gt;
+&lt;!--/error--&gt;
+</programlisting>
+  </para>
+</sect3>
+
+
+  <sect3 id="templates-var">
+    <title>The <emphasis>variables</emphasis> section
+    <indexterm><primary>Templates</primary><secondary>Variables section</secondary></indexterm>
+    </title>
+    <para>This is a special section were you
+    put configuration commands.
+    </para>
+    <para>The <emphasis>variables</emphasis> section can look like this:
+    </para>
+    <informalexample role="source-example">
+<programlisting>
+&lt;!--variables
+DBAddr mysql://foo:bar@localhost/search/?DBMode=blob
+LocalCharset    iso-8859-1
+BrowserCharset  iso-8859-1
+TrackQuery  yes
+DetectClones  yes
+HlBeg &lt;font color="blue"&gt;&lt;b&gt;&lt;i&gt;
+HlEnd &lt;/i&gt;&lt;/b&gt;
+R1    100
+Synonym synonym/english.syn
+--&gt;
+</programlisting>
+    </informalexample>
+
+    The typical configuration commands are:
+    <xref linkend="cmdref-dbaddr"/>,
+    <xref linkend="cmdref-localcharset"/>,
+    <xref linkend="cmdref-browsercharset"/>,
+    <xref linkend="cmdref-detectclones"/>,
+    <xref linkend="cmdref-groupbysite"/>,
+    <xref linkend="cmdref-hlbeg"/>,
+    <xref linkend="cmdref-hlend"/>,
+    <xref linkend="cmdref-dateformat"/>.
+    See <xref linkend="cmdref"/> for the description of all available commands.
+
+  </sect3>
+
+
+
+  <sect3 id="templates-var-another">
+    <title>Using the <emphasis>variables</emphasis> section with operators
+      <indexterm><primary>Templates</primary><secondary>Variables section with operators</secondary></indexterm>
+    </title>
+    <para>You can also use another <emphasis>variables</emphasis>
+    section in combination with all operators
+    supported by the &mnogo;
+    template language. You can set some variable
+    values which will be used during search,
+    for example search limits.
+    </para>
+
+    <para>
+    <title>Examples:</title>
+    <informalexample role="source-example">
+<programlisting>
+&lt;!--variables--&gt;
+&lt;!SET NAME=&quot;ul&quot; CONTENT=&quot;/path/&quot;&gt;
+&lt;!--/variable--&gt;
+</programlisting>
+    </informalexample>
+    </para>
+  </sect3>
+
+</sect2>
+
+
+
+  <sect2 id="templates-incl">
+    <title>Includes in templates</title>
+    <para>You can use
+    the <literal>&lt;!INCLUDE Content="http://hostname/path"&gt;</literal>
+    operator to include content of an external document into search results.
+    </para>
+    <para>
+      <emphasis>
+        WARNING: <literal>&lt;!INCLUDE&gt;</literal>
+        works only in the following template sections:
+      </emphasis>
+    </para>
+<literallayout>
+<literal>&lt;!--top--&gt;</literal>
+<literal>&lt;!--bottom--&gt;</literal>
+<literal>&lt;!--restop--&gt;</literal>
+<literal>&lt;!--resbot--&gt;</literal>
+<literal>&lt;!--notfound--&gt;</literal>
+<literal>&lt;!--error--&gt;</literal>
+</literallayout>
+    <para>
+    <title>Example:</title>
+    <informalexample role="source-example">
+      <programlisting>
+&lt;!--top--&gt;
+....
+&lt;!INCLUDE CONTENT="http://hostname/banner?query=$&amp;(q)"&gt;
+...
+&lt;!--/top--&gt;
+</programlisting>
+    </informalexample>
+    </para>
+  </sect2>
+
+
+  <sect2 id="templates-sec">
+    <title>Security issues</title>
+    <para>
+      <emphasis>WARNING</emphasis>: Since the
+      template file contains secure information such as database password,
+      it is recommended to give proper permissions to the template file
+      to protect it from reading by anyone but you and the search program.
+      Otherwise your passwords may leak.
+    </para>
+  </sect2>
+
+</sect1>
+

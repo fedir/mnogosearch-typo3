@@ -1,0 +1,2821 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Extended indexing features</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Cached copies
+    
+  "
+HREF="msearch-stored.html"><LINK
+REL="NEXT"
+TITLE="
+    mnoGoSearch HTML parser
+  "
+HREF="msearch-htmlparser.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-stored.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-htmlparser.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="extended-indexing"
+></A
+>Chapter 4. Extended indexing features</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#news"
+>News extensions
+<A
+NAME="AEN2188"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#mp3"
+>Creating an MP3 search engine
+  <A
+NAME="AEN2192"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#htdb"
+>Indexing <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables
+    (<TT
+CLASS="literal"
+>htdb:/</TT
+> virtual <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> scheme)
+    <A
+NAME="AEN2254"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#exec"
+>Indexing a program output
+  (<TT
+CLASS="literal"
+>exec:/</TT
+> and <TT
+CLASS="literal"
+>cgi:/</TT
+> virtual URL schemes)
+  <A
+NAME="AEN2595"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#mirror"
+>Mirroring
+  <A
+NAME="AEN2677"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#dump-restore"
+>Dumping and restoring the search database
+  <A
+NAME="AEN2762"
+></A
+></A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="news"
+>News extensions
+<A
+NAME="AEN2188"
+></A
+></A
+></H2
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="mp3"
+>Creating an MP3 search engine
+  <A
+NAME="AEN2192"
+></A
+></A
+></H2
+><P
+>&#13;    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> has a built-in
+    parser for MP3 files. It can extract
+    the <TT
+CLASS="literal"
+>Album</TT
+>,
+    the <TT
+CLASS="literal"
+>Artist</TT
+>,
+    the <TT
+CLASS="literal"
+>Song</TT
+> as well as
+    the <TT
+CLASS="literal"
+>Year</TT
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>MP3 tags</I
+></SPAN
+> from an MP3 file.
+    You can create a full-featured MP3 search
+    engine using <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>.
+  </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="mp3-indexer"
+>MP3 <TT
+CLASS="filename"
+>indexer.conf</TT
+> commands</A
+></H3
+><A
+NAME="AEN2205"
+></A
+><P
+>&#13;    To activate indexing of MP3 tags, you can use
+    the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-checkmp3.html"
+>CheckMP3</A
+></B
+>
+    and <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-checkmp3only.html"
+>CheckMP3Only</A
+></B
+>
+    commands into <TT
+CLASS="filename"
+>indexer.conf</TT
+>, as well
+    as activate processing of MP3 sections (they are disabled
+    by default). This is an example of an <TT
+CLASS="filename"
+>indexer.conf</TT
+>
+    file with MP3 related commands:
+    
+<PRE
+CLASS="programlisting"
+>&#13;Section MP3.Song               21    128
+Section MP3.Album              22    128
+Section MP3.Artist             23    128
+Section MP3.Year               24    128
+CheckMP3 *.mp3
+Hrefonly *
+</PRE
+>
+    With the above configuration, <SPAN
+CLASS="application"
+>indexer</SPAN
+> will
+    check all <TT
+CLASS="filename"
+>*.mp3</TT
+> files for MP3 tags,
+    and will collect new links from other file types without
+    indexing.
+    </P
+><P
+>&#13;      <A
+NAME="AEN2219"
+></A
+>
+      When you use the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-checkmp3.html"
+>CheckMP3</A
+></B
+>
+      command, <SPAN
+CLASS="application"
+>indexer</SPAN
+> downloads only
+      <TT
+CLASS="literal"
+>128</TT
+> bytes from the files with the given
+      extension(s) to detect and parse MP3 tags.
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      <SPAN
+CLASS="application"
+>indexer</SPAN
+> downloads MP3 files
+      efficiently from FTP servers, as well as from HTTP
+      servers supporting HTTP/1.1 protocol
+      with the <TT
+CLASS="literal"
+>Range</TT
+> request header,
+      to request partial content. Old HTTP servers 
+      not supporting the <TT
+CLASS="literal"
+>Range</TT
+> HTTP header
+      may not work well together with <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+  </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="mp3-search"
+>Restricting search to a certain MP3 section</A
+></H3
+><P
+>&#13;    If you want to restrict searches by <TT
+CLASS="literal"
+>Author</TT
+>,
+    <TT
+CLASS="literal"
+>Album</TT
+>, <TT
+CLASS="literal"
+>Song</TT
+> or
+    <TT
+CLASS="literal"
+>Year</TT
+>, you can use the standard 
+    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> ways to restrict
+    searches described in  <A
+HREF="msearch-doingsearch.html#search-changeweight"
+>the Section called <I
+>Changing weights of the different document parts at search time</I
+> in Chapter 10</A
+> and 
+    <A
+HREF="msearch-doingsearch.html#search-secnoref"
+>the Section called <I
+>Restricting search words to a section
+    <A
+NAME="AEN5093"
+></A
+></I
+> in Chapter 10</A
+>.
+    
+    For example,
+    if you want to restrict search by song and author name,
+    you use the standard <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> way
+    to specify sections: <TT
+CLASS="literal"
+>Song: help Author:Beatles</TT
+>.
+    </P
+><P
+>&#13;    With the default sections given in <TT
+CLASS="filename"
+>indexer.conf-dist</TT
+>,
+    you may find useful to add this <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> form element into
+    <TT
+CLASS="filename"
+>search.htm</TT
+> to restrict search area:
+
+<PRE
+CLASS="programlisting"
+>&#13;Search in:
+&#60;SELECT NAME="wf"&#62;
+  &#60;OPTION VALUE="111100000000000000000000" SELECTED="$(wf)"&#62;All MP3 sections&#60;/OPTION&#62;
+  &#60;OPTION VALUE="000100000000000000000000" SELECTED="$(wf)"&#62;MP3 Song name&#60;/OPTION&#62;
+  &#60;OPTION VALUE="001000000000000000000000" SELECTED="$(wf)"&#62;MP3 Album&#60;/OPTION&#62;
+  &#60;OPTION VALUE="010000000000000000000000" SELECTED="$(wf)"&#62;MP3 Artist&#60;/OPTION&#62;
+  &#60;OPTION VALUE="100000000000000000000000" SELECTED="$(wf)"&#62;MP3 Year&#60;/OPTION&#62;
+&#60;/SELECT&#62;
+</PRE
+>
+
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="htdb"
+>Indexing <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables
+    (<TT
+CLASS="literal"
+>htdb:/</TT
+> virtual <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> scheme)
+    <A
+NAME="AEN2254"
+></A
+></A
+></H2
+><P
+>&#13;    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> can index
+     <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables with long text
+     columns with help of so called
+    <TT
+CLASS="literal"
+>htdb:/</TT
+> virtual <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> scheme.
+  </P
+><P
+>Using the <TT
+CLASS="literal"
+>htdb:/</TT
+> virtual scheme,
+  you can build a full-text index for your <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+  tables as well as index your database driven Web servers.
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>You have to have a <TT
+CLASS="literal"
+>PRIMARY KEY</TT
+> or an
+    <TT
+CLASS="literal"
+>UNIQUE INDEX</TT
+> on the table you want to index
+    with <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+>.
+    </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="htdb-indexer"
+><ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> <TT
+CLASS="filename"
+>indexer.conf</TT
+> commands</A
+></H3
+><P
+> <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> is implemented using the following 
+    <TT
+CLASS="filename"
+>indexer.conf</TT
+> commands:
+       <A
+HREF="msearch-cmdref-htdbaddr.html"
+>HTDBAddr</A
+>, <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+>,
+       <A
+HREF="msearch-cmdref-htdblimit.html"
+>HTDBLimit</A
+>, <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+>.
+    </P
+><P
+>The purposes of the <A
+HREF="msearch-cmdref-htdbaddr.html"
+>HTDBAddr</A
+> command
+    is to specify a database connection string. It uses the same
+    syntax to <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+>. If no <A
+HREF="msearch-cmdref-htdbaddr.html"
+>HTDBAddr</A
+>
+    command is specified, the data will be fetched using the same connection
+    specified in <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+>.
+    </P
+><P
+>&#13;      <A
+NAME="AEN2288"
+></A
+>
+      The <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> command is used to specify
+      an <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query which generates a list of documents
+      using either absolute or relative <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>
+      notation, for example:
+<PRE
+CLASS="programlisting"
+>&#13;HTDBList "SELECT CONCAT('htdb:/',id) FROM messages"
+</PRE
+>
+    or
+<PRE
+CLASS="programlisting"
+>&#13;HTDBList "SELECT id FROM messages"
+</PRE
+>
+      <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+        <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> allows to fetch
+        non-<ACRONYM
+CLASS="acronym"
+>htdb</ACRONYM
+> <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>s as well.
+        So it gives another options to use <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+>:
+        you can store the list of "<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>real URLs</I
+></SPAN
+>"
+        (e.g. <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>-style <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>s)
+        in the database and fetch them with help of <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+>.
+<PRE
+CLASS="programlisting"
+>&#13;HTDBList "SELECT url FROM mytable"
+Server urllist htdb:/
+Realm page *
+</PRE
+>
+        </P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+><P
+>The <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query given in
+      <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> is used for all
+      documents having the '<TT
+CLASS="literal"
+>/</TT
+>' sign
+      in the end of <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>. This query
+      is an analog for a <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>file system directory listing</I
+></SPAN
+>.
+    </P
+><P
+><A
+NAME="AEN2314"
+></A
+>
+    The <A
+HREF="msearch-cmdref-htdblimit.html"
+>HTDBLimit</A
+> command is
+    used to specify the maximum number of records fetched
+    by a single <B
+CLASS="command"
+>SELECT</B
+> query given in the
+    <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> command.
+    <A
+HREF="msearch-cmdref-htdblimit.html"
+>HTDBLimit</A
+> helps to reduce
+    memory consumption when indexing large <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+    tables. For example:
+<PRE
+CLASS="programlisting"
+>&#13;HTDBLimit 512
+</PRE
+>
+    </P
+><P
+>      
+      <A
+NAME="AEN2324"
+></A
+>
+      The <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> command specifies an
+      <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query to get a single document
+      from the database using its <TT
+CLASS="literal"
+>PRIMARY KEY</TT
+>
+      value. The <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> query is 
+      executed for all <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> documents not having
+      the '<TT
+CLASS="literal"
+>/</TT
+>' in the end of their <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>.
+    </P
+><P
+>An <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query given in the 
+    <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> command
+    must return a <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>single row</I
+></SPAN
+> result.
+    If the <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> query
+    returns an empty set or multiple records,
+    the <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> retrieval system generates
+    a <TT
+CLASS="literal"
+>HTTP 404 Not Found</TT
+> response.
+    This can happen at re-indexing time if the record
+    was deleted from the table since last re-indexing.
+    You can use
+    <A
+HREF="msearch-cmdref-holdbadhrefs.html"
+><B
+CLASS="command"
+>HoldBadHrefs 0</B
+></A
+>
+    to remove the deleted records from the <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+    tables as well.
+    </P
+><P
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> understands
+    three types of <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+    queries.
+    <P
+></P
+><UL
+><LI
+><P
+>&#13;        A single-column result with a fully
+        formatted <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> response,
+        including standard <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>
+        response status line. Take a look into <A
+HREF="msearch-http-codes.html"
+>the Section called <I
+>HTTP response codes <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> understands</I
+> in Chapter 3</A
+>
+        to know how <SPAN
+CLASS="application"
+>indexer</SPAN
+> handles
+        various <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status codes.
+        A <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+        query can also optionally include <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>
+        headers understood by <SPAN
+CLASS="application"
+>indexer</SPAN
+>,
+        such as <TT
+CLASS="literal"
+>Content-Type</TT
+>,
+        <TT
+CLASS="literal"
+>Last-Modified</TT
+>,
+        <TT
+CLASS="literal"
+>Content-Encoding</TT
+> and other headers. 
+        So you can build a very flexible indexing system by returning
+        different <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status codes and headers.
+        </P
+><P
+><P
+><B
+>Example:</B
+></P
+>
+<PRE
+CLASS="programlisting"
+>&#13;HTDBDoc "SELECT CONCAT(\
+'HTTP/1.0 200 OK\\r\\n',\
+'Content-type: text/plain\\r\\n',\
+'\\r\\n',\
+msg) \
+FROM messages WHERE id='$1'"
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+>&#13;        A multiple-column result, with the status line
+        starting from the "<TT
+CLASS="literal"
+>HTTP/</TT
+>"
+        substring in the beginning of the first column.
+        All columns are concatenated using the
+        <TT
+CLASS="literal"
+>Carriage-Return + New-Line</TT
+>
+        (<TT
+CLASS="literal"
+>\r\n</TT
+>) delimiters to generate
+        a <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>-alike response.
+        The first column returning an empty string is
+        considered as a delimiter between the headers
+        and the content part of the <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>
+        response, and is replaced to "<TT
+CLASS="literal"
+>\r\n\r\n</TT
+>".
+        This type of queries is a simpler way of the
+        previous type. It helps to avoid using concatenation
+        operators and functions, and the "<TT
+CLASS="literal"
+>\r\n</TT
+>"
+        header delimiters.
+        </P
+><P
+><P
+><B
+>Example:</B
+></P
+>
+<PRE
+CLASS="programlisting"
+>&#13;HTDBDoc "SELECT 'HTTP/1.0 200 OK','Content-type: text/plain','',msg \
+FROM messages WHERE id='$1'"
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+>&#13;        A single- or a multiple-column result without the
+        "<TT
+CLASS="literal"
+>HTTP/</TT
+>" header.
+        This is the simplest <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+>
+        response type. The <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> column names
+        returned by the query are associated with the
+        <A
+HREF="msearch-cmdref-section.html"
+>Section</A
+> names configured
+        in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+        </P
+><P
+><P
+><B
+>Example:</B
+></P
+>
+<PRE
+CLASS="programlisting"
+>&#13;Section body  1 256
+Section title 2 256
+HTDBDoc "SELECT title, body FROM messages WHERE id='$1'"
+</PRE
+>
+        </P
+><P
+>&#13;        In this example, the values of the columns
+        <CODE
+CLASS="varname"
+>title</CODE
+> and <CODE
+CLASS="varname"
+>body</CODE
+>
+        are associated with the sections
+        <TT
+CLASS="literal"
+>title</TT
+> and <TT
+CLASS="literal"
+>body</TT
+>
+        respectively.
+        </P
+><P
+>&#13;        The columns with the names <CODE
+CLASS="varname"
+>status</CODE
+>
+        and <CODE
+CLASS="varname"
+>last_mod_time</CODE
+> have a special
+        meaning - the <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status code,
+        and the document modification time respectively. 
+        <CODE
+CLASS="varname"
+>Status</CODE
+> should be an integer code according
+        to <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> notation,
+        and the modification time should be in Unix timestamp format -
+        the number of seconds since
+        <TT
+CLASS="literal"
+>January, 1, 1970</TT
+>.
+        </P
+><P
+><P
+><B
+>Example:</B
+></P
+>
+<PRE
+CLASS="programlisting"
+>&#13;HTDBDoc "SELECT title, body, \
+CASE WHEN messages.deleted THEN 404 ELSE 200 END as status,\
+timestamp as last_mod_time FROM messages WHERE id='$1'"
+</PRE
+>
+        </P
+><P
+>&#13;        The above example demonstrates how to use the special columns.
+        The <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query will return
+        status "<TT
+CLASS="literal"
+>404 Not found</TT
+>" for
+        all documents marked as deleted, which will
+        make <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+        remove these documents from the search database
+        when re-indexing the data. Also, this query
+        makes <SPAN
+CLASS="application"
+>indexer</SPAN
+> use
+        the column <CODE
+CLASS="varname"
+>timestamp</CODE
+>
+        as the document modification time.
+        </P
+><P
+>&#13;        If a column contains data in <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> format,
+        you can specify the <TT
+CLASS="literal"
+>html</TT
+> keyword in
+        the corresponding <A
+HREF="msearch-cmdref-section.html"
+>Section</A
+> command,
+        which will make <SPAN
+CLASS="application"
+>indexer</SPAN
+> apply
+        the <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> parser to this column and
+        therefore remove all <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> tags and comments:
+        </P
+><P
+><P
+><B
+>Example:</B
+></P
+>
+<PRE
+CLASS="programlisting"
+>&#13;Section title      1 256
+Section wiki_text  2 16000 html
+HTDBDoc "SELECT title, wiki_text FROM messages WHERE id='$1'"
+</PRE
+>
+        </P
+></LI
+></UL
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="htdb-var"
+><ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> variables
+      <A
+NAME="AEN2423"
+></A
+></A
+></H3
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>path</I
+></SPAN
+> parts
+    of an <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> can be passed as
+    parameters to the <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> and
+    <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> queries.
+    All parts are to be used as <CODE
+CLASS="varname"
+>$1</CODE
+>,
+    <CODE
+CLASS="varname"
+>$2</CODE
+>,  ... <CODE
+CLASS="varname"
+>$N</CODE
+>, where
+    the number represents the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>N-th path part</I
+></SPAN
+>,
+    that is the part of <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> after
+    the <TT
+CLASS="literal"
+>N-th</TT
+> slash sign:
+<PRE
+CLASS="programlisting"
+>&#13;htdb:/part1/part2/part3/part4/part5
+         $1    $2    $3    $4    $5
+</PRE
+>
+    </P
+><P
+>For example, you have this <TT
+CLASS="filename"
+>indexer.conf</TT
+> command:
+<PRE
+CLASS="programlisting"
+>&#13;HTDBList "SELECT id FROM catalog WHERE category='$1'"
+</PRE
+>
+    </P
+><P
+>When <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> prepares to fetch
+    a document with the <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> <TT
+CLASS="literal"
+>htdb:/cars/</TT
+>,
+    <CODE
+CLASS="varname"
+>$1</CODE
+> will be replaced to "<TT
+CLASS="literal"
+>cars</TT
+>":
+<PRE
+CLASS="programlisting"
+>&#13;SELECT id FROM catalog WHERE category='cars'
+</PRE
+>
+    </P
+><P
+>&#13;    You can use long <ACRONYM
+CLASS="acronym"
+>URLs</ACRONYM
+> to
+    pass multiple parameters into both
+    <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> and
+    <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> queries.
+    For example:
+<PRE
+CLASS="programlisting"
+>&#13;HTDBList "SELECT column4 FROM table WHERE column1='$1' AND column2='$2' and column3='$3'"
+HTDBDoc  "SELECT title, body FROM table WHERE column1='$1' AND column2='$2' and column3='$3' column4='$4'"
+Server htdb:/path1/path2/path3/
+</PRE
+>
+    Using multiple parameters helps to refer
+    to a certain record using parts of
+    a compound <TT
+CLASS="literal"
+>PRIMARY KEY</TT
+>
+    or <TT
+CLASS="literal"
+>UNIQUE INDEX</TT
+>.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="htdb-many"
+>Using multiple <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> sources
+      <A
+NAME="AEN2459"
+></A
+></A
+></H3
+><P
+>It's possible to index multiple <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> sources
+    using multiple <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+>,
+    <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> and <A
+HREF="msearch-cmdref-server.html"
+>Server</A
+>
+    commands in the same <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    </P
+><P
+>&#13;<PRE
+CLASS="programlisting"
+>&#13;Section body  1 256
+Section title 2 256
+
+HTDBList "SELECT id FROM t1"
+HTDBDoc  "SELECT title, body FROM t1 WHERE id=$2"
+Server htdb:/t1/
+
+HTDBList "SELECT id FROM t2"
+HTDBDoc  "SELECT title, body FROM t2 WHERE id=$2"
+Server htdb:/t2/
+
+HTDBList "SELECT id FROM t3"
+HTDBDoc  "SELECT title, body FROM t3 WHERE id=$2"
+Server htdb:/t3/
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="htdb-fulltext"
+>Using <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> as an
+     external <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> full-text engine</A
+></H3
+><P
+>With help of the <TT
+CLASS="literal"
+>htdb:/</TT
+> scheme
+    you can quickly create a full-text index and use it
+    further in your <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> application.
+    Imagine you have a large <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+    table which stores a Web board messages in plain text format,
+    and you want to add search functionality to your Web board.
+    Say, the messages are stored in the table <CODE
+CLASS="varname"
+>messages</CODE
+>
+    with two columns <CODE
+CLASS="varname"
+>id</CODE
+>
+    and <CODE
+CLASS="varname"
+>msg</CODE
+>, where <CODE
+CLASS="varname"
+>id</CODE
+>
+    is an integer <TT
+CLASS="literal"
+>PRIMARY KEY</TT
+> and
+    <CODE
+CLASS="varname"
+>msg</CODE
+>
+    is a long text column containing messages.
+    Using a usual <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> <B
+CLASS="command"
+>LIKE</B
+>
+    search may take a very long time to return a result:
+<PRE
+CLASS="programlisting"
+>&#13;SELECT id, message FROM messages WHERE message LIKE '%someword%'
+</PRE
+>
+    </P
+><P
+>With help of the <TT
+CLASS="literal"
+>htdb:/</TT
+> scheme provided by
+    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> you can create
+    a full-text index on the table <CODE
+CLASS="varname"
+>messages</CODE
+>.
+    In order to do so you can
+    edit your <TT
+CLASS="filename"
+>indexer.conf</TT
+> as follows:
+<PRE
+CLASS="programlisting"
+>&#13;DBAddr mysql://foo:bar@localhost/mnogosearch/?dbmode=single
+
+Section msg 1 256
+
+HTDBAddr mysql://foofoo:barbar@localhost/database/
+HTDBList "SELECT id FROM messages"
+HTDBDoc "SELECT msg FROM messages WHERE id='$1'"
+Server htdb:/
+</PRE
+>
+    </P
+><P
+>When started, <SPAN
+CLASS="application"
+>indexer</SPAN
+> will insert
+    the <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> <TT
+CLASS="literal"
+>htdb:/</TT
+>
+    into the database and will execute the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+    query given in <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+>, which
+    will produce the values <TT
+CLASS="literal"
+>1</TT
+>,
+    <TT
+CLASS="literal"
+>2</TT
+>, <TT
+CLASS="literal"
+>3</TT
+>,..., <TT
+CLASS="literal"
+>N</TT
+> 
+    in the result. The values will be interpreted as links relative
+    to <TT
+CLASS="literal"
+>htdb:/</TT
+>. A list of new <ACRONYM
+CLASS="acronym"
+>URLs</ACRONYM
+>
+    in the form <TT
+CLASS="literal"
+>htdb:/1</TT
+>, <TT
+CLASS="literal"
+>htdb:/2</TT
+>,
+    ..., <TT
+CLASS="literal"
+>htdb:/N</TT
+> will be added into the database.
+    Then the <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+    query will be executed for every added <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>.
+    <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> will return the column
+    <CODE
+CLASS="varname"
+>msg</CODE
+> as a document content, which will be associated
+    with the section <CODE
+CLASS="varname"
+>mgs</CODE
+> and parsed.
+    Word information will be stored in the table <CODE
+CLASS="varname"
+>dict</CODE
+>
+    (assuming the <TT
+CLASS="literal"
+>single</TT
+> storage mode).
+    </P
+><P
+>After indexing is done, you can use <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+    tables to perform search:
+<PRE
+CLASS="programlisting"
+>&#13;SELECT url.url 
+FROM url,dict 
+WHERE dict.url_id=url.rec_id 
+AND dict.word='someword';
+</PRE
+>
+    </P
+><P
+>The table <CODE
+CLASS="varname"
+>dict</CODE
+> has an index
+    on the column <CODE
+CLASS="varname"
+>word</CODE
+>, so the above
+    query will be executed much faster than the queries
+    using the <B
+CLASS="command"
+>LIKE</B
+> operator on the
+    table <CODE
+CLASS="varname"
+>messages</CODE
+>.
+    </P
+><P
+>You can also use multiple words in search:
+    <PRE
+CLASS="programlisting"
+>&#13;SELECT url.url, count(*) as c 
+FROM url,dict
+WHERE dict.url_id=url.rec_id 
+AND dict.word IN ('some','word')
+GROUP BY url.url
+ORDER BY c DESC;
+</PRE
+>
+    </P
+><P
+>Both queries will return <TT
+CLASS="literal"
+>htdb:/XXX</TT
+>
+    values from the <CODE
+CLASS="varname"
+>url.url</CODE
+> field.
+    Then your application can cut the "<TT
+CLASS="literal"
+>htdb:/</TT
+>"
+    prefix from the returned values to get the 
+    <TT
+CLASS="literal"
+>PRIMARY KEY</TT
+> values from the table
+    <CODE
+CLASS="varname"
+>messages</CODE
+>.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="htdb-web"
+>Indexing a database driven Web server</A
+></H3
+><P
+>You can also use <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> to
+    index your database driven Web server. It allows to
+    index your documents without having to invoke your
+    the Web server at indexing time,
+    which should require less <ACRONYM
+CLASS="acronym"
+>CPU</ACRONYM
+>
+    resources than direct <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>
+    indexing and therefore should offload the Web
+    server machine.
+    </P
+><P
+>The main idea of indexing a database driven Web
+    server is to map <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> requests
+    into <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> requests at indexing time.
+    So <SPAN
+CLASS="application"
+>indexer</SPAN
+> will fetch the
+    source data directly from the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+>
+    database, meanwhile <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+    will return real <ACRONYM
+CLASS="acronym"
+>URLs</ACRONYM
+> in usual
+    <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> notation.
+    This can be achieved using the aliasing mechanisms 
+    provided by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>.
+    </P
+><P
+>Take a look at a sample file
+     <TT
+CLASS="filename"
+>doc/samples/htdb.conf</TT
+>,
+     which is included into
+     <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> source distribution.
+     It is the <TT
+CLASS="filename"
+>indexer.conf</TT
+> file used
+     to index the Web board at the
+     <A
+HREF="http://www.mnogosearch.org/"
+TARGET="_top"
+>&#13;     <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> site
+     </A
+>.
+    </P
+><P
+>The <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> command
+     generates <ACRONYM
+CLASS="acronym"
+>URLs</ACRONYM
+> in the form:
+<PRE
+CLASS="programlisting"
+>&#13;http://www.mnogosearch.org/board/message.php?id=XXX
+</PRE
+>
+    </P
+><P
+>where <TT
+CLASS="literal"
+>XXX</TT
+> is
+    a <TT
+CLASS="literal"
+>PRIMARY KEY</TT
+> value
+    from the table <CODE
+CLASS="varname"
+>messages</CODE
+>.
+    </P
+><P
+>&#13;     For every <TT
+CLASS="literal"
+>PRIMARY KEY</TT
+> value
+     a fully formatted <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>
+     response is generated, containing a <TT
+CLASS="literal"
+>text/html</TT
+>
+     document with headers and this content:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;HTML&#62;
+&#60;HEAD&#62;
+&#60;TITLE&#62;<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Subject goes here</I
+></SPAN
+>&#60;/TITLE&#62;
+&#60;META NAME="Description" Content="<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Author name goes here</I
+></SPAN
+>"&#62;
+&#60;/HEAD&#62;
+&#60;BODY&#62;
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Message text goes here</I
+></SPAN
+>
+&#60;/BODY&#62;
+</PRE
+>
+    </P
+><P
+>At the end of <TT
+CLASS="filename"
+>doc/samples/htdb.conf</TT
+>
+    you can find these commands:
+<PRE
+CLASS="programlisting"
+>&#13;Server htdb:/
+Realm  http://www.mnogosearch.org/board/message.php?id=*
+Alias  http://www.mnogosearch.org/board/message.php?id=  htdb:/
+</PRE
+>
+    </P
+><P
+>&#13;     The first command tells <SPAN
+CLASS="application"
+>indexer</SPAN
+> to execute
+     the <A
+HREF="msearch-cmdref-htdblist.html"
+>HTDBList</A
+> query,
+     which generates a list of messages in the form:
+<PRE
+CLASS="programlisting"
+>&#13;http://www.mnogosearch.org/board/message.php?id=XXX
+</PRE
+>
+    </P
+><P
+>&#13;     The second command tells <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+     to allow messages matching the given <ACRONYM
+CLASS="acronym"
+></ACRONYM
+>
+     pattern using string match with the '<TT
+CLASS="literal"
+>*</TT
+>'
+     wildcard at the end.
+    </P
+><P
+>The third command replaces the substring
+     <TT
+CLASS="literal"
+>http://www.mnogosearch.org/board/message.php?id=</TT
+>
+     in the <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> to
+     <TT
+CLASS="literal"
+>htdb:/</TT
+> before a message is downloaded,
+     which forces <SPAN
+CLASS="application"
+>indexer</SPAN
+> to
+     use the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> table as the data source
+     for a document instead of sending an <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> 
+     request to the Web server.
+    </P
+><P
+>&#13;      After indexing is done, <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+      will display search result using the usual <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>
+      notation, for example:
+      <TT
+CLASS="literal"
+>http://www.mnogosearch.org/board/message.php?id=1000</TT
+>
+     </P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="exec"
+>Indexing a program output
+  (<TT
+CLASS="literal"
+>exec:/</TT
+> and <TT
+CLASS="literal"
+>cgi:/</TT
+> virtual URL schemes)
+  <A
+NAME="AEN2595"
+></A
+></A
+></H2
+><P
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> offers special
+  virtual URL methods
+  <TT
+CLASS="literal"
+>exec:/</TT
+> and <TT
+CLASS="literal"
+>cgi:/</TT
+>.
+  These methods allow to use output of an external program
+  as a source for indexing. <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+  can work with any executable program that returns results
+  to <TT
+CLASS="filename"
+>STDOUT</TT
+>. The result must be conform to the
+  <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> standard and return full <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> response headers
+  (including <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> status line and at least the <TT
+CLASS="literal"
+>Content-Type</TT
+>
+   <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> response header) followed by the document content.
+  </P
+><P
+>For example, when indexing both
+  <TT
+CLASS="literal"
+>cgi:/usr/local/bin/myprog</TT
+> and
+  <TT
+CLASS="literal"
+>exec:/usr/local/bin/myprog</TT
+>, 
+  <SPAN
+CLASS="application"
+>indexer</SPAN
+> will execute
+  the <TT
+CLASS="filename"
+>/usr/local/bin/myprog</TT
+> program.
+  </P
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="exec-cgi"
+>Passing parameters to the <TT
+CLASS="literal"
+>cgi:/</TT
+> virtual scheme</A
+></H3
+><P
+>When executing a program given in a <TT
+CLASS="literal"
+>cgi:/</TT
+> URL,
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> emulates environment in the way
+    this program would run in when executed under a <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> server. It
+    creates the <CODE
+CLASS="varname"
+>REQUEST_METHOD=GET</CODE
+> environment variable,
+    and the <CODE
+CLASS="varname"
+>QUERY_STRING</CODE
+> variable according to the HTTP
+    standards. For example, if
+    <TT
+CLASS="literal"
+>cgi:/usr/local/apache/cgi-bin/test-cgi?a=b&#38;d=e</TT
+>
+    is being indexed, <SPAN
+CLASS="application"
+>indexer</SPAN
+> creates
+    <TT
+CLASS="literal"
+>QUERY_STRING</TT
+> with
+    <TT
+CLASS="literal"
+>a=b&#38;d=e</TT
+> value. <TT
+CLASS="literal"
+>cgi:/</TT
+> virtual
+    URL scheme allows indexing your site without having to invoke web
+    servers even if you want to index CGI scripts. For example, you have
+    a web site with static documents under
+    <TT
+CLASS="filename"
+>/usr/local/apache/htdocs/</TT
+> and with CGI scripts
+    under
+    <TT
+CLASS="filename"
+>/usr/local/apache/cgi-bin/</TT
+>. You can use the following
+    configuration:
+<PRE
+CLASS="programlisting"
+>&#13;Server http://localhost/
+Alias  http://localhost/cgi-bin/  cgi:/usr/local/apache/cgi-bin/
+Alias  http://localhost/    file:///usr/local/apache/htdocs/
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="exec-exec"
+>Passing parameters to the <TT
+CLASS="literal"
+>exec:/</TT
+> virtual scheme</A
+></H3
+><P
+>&#13;    In case of an <TT
+CLASS="literal"
+>exec:/</TT
+> URL, <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    does not create the <TT
+CLASS="literal"
+>QUERY_STRING</TT
+> variable, instead
+    it passes all parameters in the command line. For example, when indexing
+<TT
+CLASS="literal"
+>exec:/usr/local/bin/myprog?a=b&#38;d=e</TT
+>, this
+command will be executed:
+<PRE
+CLASS="programlisting"
+>&#13;/usr/local/bin/myprog "a=b&#38;d=e" 
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="exec-ext"
+>Using the <TT
+CLASS="literal"
+>exec:/</TT
+> virtual scheme as an external retrieval system</A
+></H3
+><P
+>The <TT
+CLASS="literal"
+>exec:/</TT
+> virtual scheme can be used as an
+    external retrieval system. It allows using protocols which are not
+    supported natively by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>.
+    For example, you can use <SPAN
+CLASS="application"
+>curl</SPAN
+> program which is available
+    from <A
+HREF="http://curl.haxx.se/"
+TARGET="_top"
+>http://curl.haxx.se/</A
+>
+    to index HTTPS sites when <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+    is compiled without built-in HTTPS support.
+    </P
+><P
+>Put this short script to
+    <TT
+CLASS="literal"
+>/usr/local/mnogosearch/bin/</TT
+> under
+    name <TT
+CLASS="filename"
+>curl.sh</TT
+>.
+<PRE
+CLASS="programlisting"
+>&#13;#!/bin/sh
+/usr/local/bin/curl -i $1 2&#62;/dev/null
+</PRE
+>
+</P
+><P
+>This script takes an URL given as a command line parameter
+    and executes <SPAN
+CLASS="application"
+>curl</SPAN
+> to download the given URL.
+    The <TT
+CLASS="literal"
+>-i</TT
+> argument tells <SPAN
+CLASS="application"
+>curl</SPAN
+>
+    to output result together with <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> response headers.
+    </P
+><P
+>Add these commands into  <TT
+CLASS="filename"
+>indexer.conf</TT
+>:
+    <PRE
+CLASS="programlisting"
+>&#13;Server https://some.https.site/
+Alias  https://  exec:/usr/local/mnogosearch/etc/curl.sh?https://
+</PRE
+>
+    </P
+><P
+>When indexing
+    <TT
+CLASS="filename"
+>https://some.https.site/path/to/page.html</TT
+>,
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> will translate this URL to 
+<PRE
+CLASS="programlisting"
+>&#13;exec:/usr/local/mnogosearch/etc/curl.sh?https://some.https.site/path/to/page.html
+</PRE
+>
+    </P
+><P
+>then execute the <TT
+CLASS="filename"
+>curl.sh</TT
+> script:
+<PRE
+CLASS="programlisting"
+>&#13;/usr/local/mnogosearch/etc/curl.sh "https://some.https.site/path/to/page.html"
+</PRE
+>
+    </P
+><P
+>and load its output for indexing.
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> loads up to
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-maxdocsize.html"
+>MaxDocSize</A
+></B
+> bytes
+    when executing an <TT
+CLASS="literal"
+>exec:/</TT
+> or
+    <TT
+CLASS="literal"
+>cgi:/</TT
+>.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="mirror"
+>Mirroring
+  <A
+NAME="AEN2677"
+></A
+></A
+></H2
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="mirror-creating"
+>Creating a mirror</A
+></H3
+><P
+>&#13;      <A
+NAME="AEN2682"
+></A
+>
+      <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> supports some mirroring functionality.
+      To enable mirroring, you can specify the path where <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+      will create the mirrors of your sites with help of the
+      <A
+HREF="msearch-cmdref-mirrorroot.html"
+>MirrorRoot</A
+> command. For example: 
+<PRE
+CLASS="programlisting"
+>&#13;MirrorRoot /path/to/mirror
+</PRE
+>
+    </P
+><P
+>&#13;      <A
+NAME="AEN2690"
+></A
+>
+      You can also configure <SPAN
+CLASS="application"
+>indexer</SPAN
+> to store <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> headers on the disk.
+      This can be helpful if you want to use the local mirror for quick
+      reindexing of the remote site. Use the <A
+HREF="msearch-cmdref-mirrorroot.html"
+>MirrorRoot</A
+> command
+      to activate storing the <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> headers. For example:
+<PRE
+CLASS="programlisting"
+>&#13;MirrorHeadersRoot /path/to/headers
+</PRE
+>
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      <A
+HREF="msearch-cmdref-mirrorroot.html"
+>MirrorRoot</A
+> and
+      <A
+HREF="msearch-cmdref-mirrorheadersroot.html"
+>MirrorHeadersRoot</A
+> can point to the same directory.
+     </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+><SPAN
+CLASS="application"
+>indexer</SPAN
+> 
+    does not download more than <A
+HREF="msearch-cmdref-maxdocsize.html"
+>MaxDocSize</A
+>
+    bytes from every documents. If a document is larger,
+    it will be only partially downloaded. Make sure
+    that <A
+HREF="msearch-cmdref-maxdocsize.html"
+>MaxDocSize</A
+> is large enough if you
+    want to use the mirror created by <SPAN
+CLASS="application"
+></SPAN
+> as a real
+    site mirror.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="mirror-as-cache"
+>Using a mirror as crawler cache.
+    <A
+NAME="AEN2710"
+></A
+></A
+></H3
+><P
+>&#13;      <A
+NAME="AEN2713"
+></A
+>
+      <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> can use a previously created
+      mirror as a crawler cache. It can be useful when you do experiments
+      with <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> to find the best 
+      configuration: you modify your <TT
+CLASS="filename"
+>indexer.conf</TT
+>,
+      then clear the database and index the same sites again.
+      To reduce Internet traffic you can activate loading documents
+      from the mirror using the <A
+HREF="msearch-cmdref-mirrorperiod.html"
+>MirrorPeriod</A
+> command.
+      For example:
+<PRE
+CLASS="programlisting"
+>&#13;MirrorPeriod 2h
+</PRE
+>
+    </P
+><P
+>&#13;     <A
+HREF="msearch-cmdref-mirrorperiod.html"
+>MirrorPeriod</A
+> specify the period of time
+     when <SPAN
+CLASS="application"
+>indexer</SPAN
+> considers the local mirrored copy
+     of a document as valid. If <SPAN
+CLASS="application"
+>indexer</SPAN
+> finds that
+     the local mirrored copy is fresh enough, it will not download
+     the same document again and use the local copy instead.
+     If the local is older than <A
+HREF="msearch-cmdref-mirrorperiod.html"
+>MirrorPeriod</A
+> says,
+     then <SPAN
+CLASS="application"
+>indexer</SPAN
+> will download the document
+     from its original location again, and update the locally mirrored copy.
+    </P
+><P
+> If <A
+HREF="msearch-cmdref-mirrorheadersroot.html"
+>MirrorHeadersRoot</A
+> is not specified
+    and therefore the original <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> headers are not available,
+    then <SPAN
+CLASS="application"
+>indexer</SPAN
+> will detect <TT
+CLASS="literal"
+>Content-Type</TT
+>
+    of a document using the <A
+HREF="msearch-cmdref-addtype.html"
+>AddType</A
+> commands.
+    </P
+><P
+>The parameter <A
+HREF="msearch-cmdref-mirrorperiod.html"
+>MirrorPeriod</A
+>
+    should be in the form: <TT
+CLASS="literal"
+>xxxA[yyyB[zzzC]]</TT
+>, where
+    <TT
+CLASS="literal"
+>xxx</TT
+>, <TT
+CLASS="literal"
+>yyy</TT
+>,
+    <TT
+CLASS="literal"
+>zzz</TT
+> are numbers (can be negative!).
+    Spaces are allowed between <TT
+CLASS="literal"
+>xxx</TT
+> and
+    <TT
+CLASS="literal"
+>A</TT
+> and <TT
+CLASS="literal"
+>yyy</TT
+> and so on.
+    <TT
+CLASS="literal"
+>A</TT
+>, <TT
+CLASS="literal"
+>B</TT
+>,
+    <TT
+CLASS="literal"
+>C</TT
+> can be one of the following:
+<PRE
+CLASS="programlisting"
+>&#13;    s - second
+    M - minute
+    h - hour
+    d - day
+    m - month
+    y - year
+</PRE
+>
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>The letters are similar to the
+     descriptors understood by the
+     <CODE
+CLASS="function"
+>strptime()</CODE
+>
+     and <CODE
+CLASS="function"
+>strftime()</CODE
+> C functions.
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>Examples:
+<PRE
+CLASS="programlisting"
+>&#13;15s - 15 seconds
+4h30M - 4 hours and 30 minutes
+1y6m-15d - 1 year and six month minus 15 days
+1h-10M+1s - 1 hour minus 10 minutes plus 1 second
+</PRE
+>
+    </P
+><P
+>If you specify only a number without any characters,
+    it is assumed that the time is given in seconds.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>If you start mirroring in a already existing
+    database, <SPAN
+CLASS="application"
+>indexer</SPAN
+> will refuse
+    to create the mirror immediately because of the
+    traffic optimization method described at
+    <A
+HREF="msearch-indexing.html#general-crawling-optimization"
+>the Section called <I
+>Crawling time optimization</I
+> in Chapter 3</A
+>.
+    You can run <KBD
+CLASS="userinput"
+>indexer -am</KBD
+> once
+    to turn off optimization, or clear the database
+    using <KBD
+CLASS="userinput"
+>indexer -C</KBD
+> and then
+    run <SPAN
+CLASS="application"
+>indexer</SPAN
+> without any arguments.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="dump-restore"
+>Dumping and restoring the search database
+  <A
+NAME="AEN2762"
+></A
+></A
+></H2
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="dump"
+>Dumping the search database</A
+></H3
+><P
+>&#13;    It is possible to dump and restore a <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> database
+    using standard tools supplied with the database software,
+    such as <SPAN
+CLASS="application"
+>mysqldump</SPAN
+> or 
+    <SPAN
+CLASS="application"
+>pg_dump</SPAN
+>. This approach works fine
+    in case of a single <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> database.
+    </P
+><P
+>&#13;    However, if you use multiple <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> databases to store <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> data,
+    or use <A
+HREF="msearch-cluster.html"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> cluster</A
+> solution and
+    want to re-distribute data between more <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> databases
+    (say, when adding a new machine into cluster), or
+    want to reduce the number of separate <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> databases (say, when removing
+    a machine from cluster), the standard method of dumping and restoring
+    <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> data will not work because of conflicts in auto-generated values
+    (<TT
+CLASS="literal"
+>auto_increment</TT
+> values, <TT
+CLASS="literal"
+>SEQUENCE</TT
+>
+     values, <TT
+CLASS="literal"
+>IDENTITY</TT
+> values and so so).
+    </P
+><P
+>&#13;    Starting from the version <TT
+CLASS="literal"
+>3.3.9</TT
+>, <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+    includes dump and restore tools which allows to workaround this problem.
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    As of version <TT
+CLASS="literal"
+>3.3.9</TT
+>, <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> dump and restore
+    tools work only with <SPAN
+CLASS="application"
+>MySQL</SPAN
+>. Support for the other databases
+    will be added in the future releases.
+    </P
+></BLOCKQUOTE
+></DIV
+>
+    In order to create a dump of your <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> database, you can run:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -Edumpdata &#62; dumpfile.sql
+</PRE
+>
+or pipe data to <SPAN
+CLASS="application"
+>gzip</SPAN
+>:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -Edumpdata | gzip &#62; dumpfile.sql.gz
+</PRE
+>
+to reduce the dump size.
+    </P
+><P
+>&#13;    The dump file created by <KBD
+CLASS="userinput"
+>indexer -Edump</KBD
+>
+    is a usual <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> dump file, which does not include auto-generated
+    values. A piece of a dump file in case of <SPAN
+CLASS="application"
+>MySQL</SPAN
+> database
+    looks like:
+
+<PRE
+CLASS="programlisting"
+>&#13;--seed=39
+INSERT INTO url (...all columns except rec_id...) VALUES (...);
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'body','Modules Directives FAQ...');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'CachedCopy','eNrtWc1v2zgWv+ev...');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'Charset','utf-8');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'Content-Language','en');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'Content-Type','text/html');
+INSERT INTO urlinfo (url_id,sname,sval) VALUES(last_insert_id(),'title','Apache HTTP Server Ver...');
+INSERT INTO bdicti VALUES(last_insert_id(),1,0x6B6F00011EC296170000726577726974696E6700017E4D,0...');
+</PRE
+>
+    
+    The dump file consists of chunks of <TT
+CLASS="literal"
+>INSERT</TT
+> instructions for every document.
+    The structure of the dump file forces <SPAN
+CLASS="application"
+>MySQL</SPAN
+> to assign a new auto-increment 
+    value for the column <CODE
+CLASS="varname"
+>url.rec_id</CODE
+> and use this value to insert data
+    into the child tables <CODE
+CLASS="varname"
+>urlinfo</CODE
+> and <CODE
+CLASS="varname"
+>bdicti</CODE
+> at restore time.
+    </P
+><P
+>&#13;    Additionally, every chunk consists of the comment <TT
+CLASS="literal"
+>--seed=xxx</TT
+> which
+    is used to distribute data between multiple database properly at restore time.
+    </P
+><P
+>&#13;    By default, <KBD
+CLASS="userinput"
+>indexer -Edump</KBD
+> dumps data from all databases
+    specified in <TT
+CLASS="filename"
+>indexer.conf</TT
+> file. You can use the <CODE
+CLASS="option"
+>-D</CODE
+> command
+    line argument to dump data from a certain database only. For example:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -Edump -D2
+</PRE
+>
+    will dump data from the database described by the second command
+    <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+> in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    </P
+></DIV
+><DIV
+CLASS="sect3"
+><H3
+CLASS="sect3"
+><A
+NAME="restore"
+>Restoring the search database</A
+></H3
+><P
+>&#13;    To restore a search database from a dump file, use:
+<PRE
+CLASS="programlisting"
+>&#13;indexer -Esql -v2 &#60; dumpfile.sql
+</PRE
+>
+or in case of <TT
+CLASS="filename"
+>.gz</TT
+> file:
+<PRE
+CLASS="programlisting"
+>&#13;zcat dumpfile.sql.gz | indexer -Esql -v2
+</PRE
+>
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> will load the data back to the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> database.
+    In case if you have two or more <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+>
+    commands in the current <TT
+CLASS="filename"
+>indexer.conf</TT
+> file, <SPAN
+CLASS="application"
+>indexer</SPAN
+> will also properly
+    distribute the data between the corresponding <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> databases.
+    </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-stored.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-htmlparser.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Cached copies
+    <A
+NAME="AEN2101"
+></A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>mnoGoSearch <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> parser</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

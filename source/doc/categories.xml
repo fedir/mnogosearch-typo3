@@ -1,0 +1,82 @@
+<sect1 id="categories">
+  <title>Categories
+    <indexterm><primary>Categories</primary></indexterm>
+  </title>
+  <para>
+   Starting from version 3.1.1 &mnogo;
+   supports nested categories.
+  </para>
+  <para>There is a category editor written in
+  <application>PHP3</application> and <application>Perl</application>.
+   You can get it from
+   <ulink url="http://mnogosearch.org/download.html">
+   &mnogo; downloads page</ulink>.
+  </para>
+  <para>
+    Categories are similar to the tags, but nested.
+    So you can have one category inside another and so on.
+  </para>
+  <para>Basic points:
+  <itemizedlist>
+    <listitem>
+      <para>there are up to 6 nested levels;</para>
+    </listitem>
+    <listitem>
+      <para>every level occupies two hexadecimal or 36-base digits;</para>
+    </listitem>
+    <listitem>
+      <para>the parameter for setting category is a
+        <parameter>path</parameter>, which can be empty
+        (which means the root category) or up to 10 chars
+        long (in case of the deepest category).
+      </para>
+    </listitem>
+  </itemizedlist>
+  </para>
+  <para>You can also set up <emphasis>symlinks</emphasis>, i.e.
+  categories that are actually links to other categories.
+  This is the role of the <literal>link</literal> database
+  field. In the symlink, the last two characters should be
+  @@. In example above Moto-&gt;BMW is a link to Auto-&gt;BMW.</para>
+
+  <para>First notice that a category in the server table is set to be
+  11 characters long. This means you can use a valid character to keep
+  track of the categories. If you are going to keep a category tree of any
+  size, then I would suggest using the category editor from 
+  <ulink url="http://mnogosearch.org/download.html">
+  &mnogo; downloads page</ulink>.
+  </para>
+  
+  <para>You can use either the tag column or the category column
+on the server to do the same thing. Or you can categorize a site in two
+different ways. For example you could keep track of sites that are
+owned by a certain company and then categorize them as well. You could
+use the tag option to keep a trace of ownership and use the category option
+for categories. When I explain the category option, note it goes the same
+for the tag option.
+  </para>
+
+  <para>A category can be broken down any way you choose. But
+for it to work with the category editor, I believe for now, you have
+to use two characters for each level. If you use the category editor
+you have the choice to use a hex number going from 0-F or a 36 base
+number going from 0-Z. Therefore a top-level category like 'Auto'
+would be 01. If it has a subcategory like 'Ford', then it would be 01
+(the parent category) and then 'Ford' which we will give 01. Put those
+together and you get 0101. If 'Auto' had another subcategory named
+'VW', then its id would not be 01 because it belongs to the 'Ford'
+category but 02 because it's the next category. So its id would
+be 0102. If VW had a sub category called 'Engine' then it's id would
+start at 01 again and it would get the 'VW' id 02 and 'Auto' id of 01,
+making it 010201.</para>
+
+  <para>If you want to search for sites under that category then
+you could pass it <literal>cat=010201</literal> into the url...so
+you could create a select box that would look like that:
+  <programlisting>
+&lt;OPTION value="01"&gt;AUTO
+&lt;OPTION value="0101"&gt;Ford
+</programlisting>
+  </para>
+  <para>and so on...</para>
+</sect1>

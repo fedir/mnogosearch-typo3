@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Generator v1.1" -->
+<rss version="2.0" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
+
+  <channel>
+
+    <openSearch:totalResults>3</openSearch:totalResults>
+    <openSearch:startIndex>1</openSearch:startIndex>
+    <openSearch:itemsPerPage>3</openSearch:itemsPerPage>
+
+    <mnoGoSearch:WordStatList>
+      <mnoGoSearch:WordStatItem order="0" count="200" word="web"/>
+    </mnoGoSearch:WordStatList>
+
+    <item>
+      <id>1</id>
+      <score>80.25%</score>
+      <title>Test11 title</title>
+      <link>http://gw/11</link>
+      <description>Apache Web Server Manual</description>
+      <updated>2003-12-13T18:30:02Z</updated>
+      <content-length>8025</content-length>
+      <content-type>text/html</content-type>
+    </item>
+
+    <item>
+      <id>2</id>
+      <score>60.25%</score>
+      <title>Test12 title</title>
+      <link>http://gw/12</link>
+      <description>Apache2 Web Server Manual</description>
+      <updated>2004-12-13T18:30:02Z</updated>
+      <content-length>6025</content-length>
+      <content-type>text/html</content-type>
+    </item>
+
+    <item>
+      <score>0.25%</score>
+      <title>Test13 title</title>
+      <link>http://gw/12</link>
+      <description>Test for empty ID tag</description>
+      <pubDate>2005-12-13T18:30:02Z</pubDate>
+      <content-length>25</content-length>
+      <content-type>text/html</content-type>
+      <image>http://host/image13.gif</image>
+    </item>
+
+  </channel>
+
+</rss>

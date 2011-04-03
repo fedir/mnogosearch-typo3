@@ -1,0 +1,18 @@
+DROP SEQUENCE rec_id_GEN;
+DROP SEQUENCE qtrack_GEN;
+
+DROP TABLE url;
+DROP TABLE urlinfo;
+DROP TABLE dict;
+DROP TABLE bdict;
+DROP TABLE server;
+DROP TABLE srvinfo;
+DROP TABLE links;
+DROP TABLE qtrack;
+DROP TABLE categories;
+DROP TABLE wrdstat;
+DROP TABLE crossdict;
+DROP TABLE qcache;
+DROP TABLE qinfo;
+
+-- DROP TABLE categories;

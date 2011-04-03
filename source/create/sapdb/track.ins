@@ -1,0 +1,23 @@
+IF $RC (EXISTS TABLE qtrack) <> 0
+THEN
+/
+    CREATE TABLE qtrack (
+       ip                   VARCHAR(16) DEFAULT '',
+       qwords               VARCHAR(63) DEFAULT '',
+       qtime                FIXED(12) DEFAULT 0 NOT NULL,
+       found                FIXED(12) DEFAULT 0 NOT NULL,
+       ps		    FIXED(12) DEFAULT 0 NOT NULL,
+       np		    FIXED(12) DEFAULT 0 NOT NULL,
+       m		    VARCHAR(63) DEFAULT '' NOT NULL,
+       wm		    VARCHAR(63) DEFAULT '' NOT NULL,
+       o		    FIXED(12) DEFAULT 0 NOT NULL,
+       t		    VARCHAR(63) DEFAULT '' NOT NULL,
+       cat		    VARCHAR(63) DEFAULT '' NOT NULL,
+       ul		    VARCHAR(63) DEFAULT '' NOT NULL,
+       wf		    VARCHAR(63) DEFAULT '' NOT NULL,
+       g		    VARCHAR(63) DEFAULT '' NOT NULL,
+       tmplt		    VARCHAR(63) DEFAULT '' NOT NULL,
+       groupbysite          CHAR(1) DEFAULT 'N' NOT NULL,
+       site_id              FIXED(12) DEFAULT 0 NOT NULL
+)
+/

@@ -1,0 +1,5 @@
+HTTP/1.0 200 Ok
+Content-Type: text/plain
+Last-Modified: Mon, 11 Sep 2006 13:44:42 GMT
+
+text1 text2 text3

@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>URLDataThreshold</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="mnoGoSearch command reference"
+HREF="msearch-cmdref.html"><LINK
+REL="PREVIOUS"
+TITLE="UserCacheQuery"
+HREF="msearch-cmdref-usercachequery.html"><LINK
+REL="NEXT"
+TITLE="URLSelectCacheSize"
+HREF="msearch-cmdref-urlselectcachesize.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-usercachequery.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-urlselectcachesize.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="cmdref-urldatathreshold"
+></A
+>URLDataThreshold</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN13281"
+></A
+><H2
+>Name</H2
+><B
+CLASS="command"
+>URLDataThreshold</B
+>&nbsp;--&nbsp;improves search performance for queries returning a small number of results<P
+><B
+></B
+><TT
+CLASS="filename"
+>search.htm</TT
+></P
+></DIV
+><DIV
+CLASS="refsynopsisdiv"
+><A
+NAME="AEN13287"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="command"
+>URLDataThreshold</B
+>  {number}</P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN13291"
+></A
+><H2
+></H2
+><P
+>&#13;    <B
+CLASS="command"
+>URLDataThreshold</B
+> allows to improve
+    search performance with <CODE
+CLASS="option"
+>DBMode=blob</CODE
+>
+    for the queries returning a small number of results
+    (typically not more than <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>several hundreds</I
+></SPAN
+>).
+    If search returns fewer than <CODE
+CLASS="parameter"
+>number</CODE
+> documents,
+    full <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> information is not loaded from the <CODE
+CLASS="varname"
+>bdict</CODE
+>
+    table and the <CODE
+CLASS="varname"
+>url</CODE
+> table is used instead.
+    </P
+><P
+>&#13;    In other words, <B
+CLASS="command"
+>URLDataThreshold</B
+> 
+    switches from "<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>loading a huge amount of <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>
+    data from the fast source</I
+></SPAN
+>" to
+    "<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>loading a small amount of <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> data
+    from the slow source</I
+></SPAN
+>".
+    </P
+><P
+>&#13;    The default value is <TT
+CLASS="literal"
+>0</TT
+>, which means always read <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> data from
+    the <CODE
+CLASS="varname"
+>bdict</CODE
+> table (from the fast source).
+    </P
+><P
+>&#13;    Find the number which is good for your installation experimentally.
+    
+    </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN13312"
+></A
+><H2
+>Examples</H2
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN13314"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;URLDatsThreshold 100
+      </PRE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN13316"
+></A
+><H2
+>See also</H2
+><P
+>&#13;      <A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+>
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-usercachequery.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-urlselectcachesize.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>UserCacheQuery</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-cmdref.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>URLSelectCacheSize</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

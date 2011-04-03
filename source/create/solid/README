@@ -1,0 +1,4 @@
+Use create.txt to create UdmSearch database structure,
+for example:
+
+solsql "tcp localhost 1313" dba dba create.txt

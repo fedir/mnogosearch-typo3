@@ -1,0 +1,147 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single
+
+SaveSectionSize no
+
+# Uncomment this line to enable search result cache
+#Cache yes
+
+#  Uncomment this line if you do not want to detect and show clones
+DetectClones	no
+
+# Use proper local and browser charsets
+# Default charset is iso-8859-1 (latin1)
+# which is suitable for the most Western European languages
+
+LocalCharset   iso-8859-1
+BrowserCharset iso-8859-1
+
+# Load stopwords file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#StopwordFile stopwords/en.sl
+#StopwordFile stopwords/ru.sl
+#
+
+#
+# Minimum and maximum word lengths
+#
+#MinWordLen 1
+#MaxWordLen 32
+
+# Number of pages in navigator bar
+#
+#PagesPerScreen 10
+
+# Load synonyms file.  File name is either absolute
+# or relative to /etc directory of mnoGoSearch installation.
+#
+#Synonym synonym/english.syn
+#Synonym synonym/russian.syn
+#
+
+#
+# How to hilight searched words.
+#
+HlBeg	<b>
+HlEnd	</b>
+
+# Uncomment this line to enable error loging to stderr
+#Log2stderr yes
+#
+
+# Uncomment this line to change default URL basis for storedoc.cgi
+#StoredocURL     /cgi-bin/storedoc
+#
+
+# Uncoment this line to change default maximal excerpt size. Default value is 256.
+#ExcerptSize 1024
+#
+
+# Uncomment this line to change Last-Modified format output
+# Use strftime function meta variables
+#DateFormat %d %b %Y %X %Z
+
+-->
+
+<!--top-->
+<!--/top-->
+
+
+<!--restop-->
+Search for: $&(q)
+Search results: $(W)
+Results: $(first)-$(last) of $(total)
+<!--/restop-->
+
+
+<!--res-->
+
+Order:      $(Order)
+Href:       $(URL)
+Title:      $&(Title)
+Score:      $(Score)
+Popularity: $(Pop_Rank)
+Body:       $&(Body)
+<!IFNOT NAME="sitelimit_href" CONTENT="">
+<a href="$(self)$(sitelimit_href)">More result from this site
+<!IFNOT NAME="PerSite" CONTENT="0"> ($(PerSite) total)<!ENDIF></a>
+<!ENDIF>
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+
+
+<!--clone-->
+<A HREF="$(URL)" TARGET="_blank">$(URL:40)</A>
+<font color="#008800"> - $(Content-Length) bytes </font>
+<!--/clone-->
+
+
+<!--navleft-->
+<TD><small><A HREF="$(self)$(NH)">&lt;&lt; Prev</A></TD>
+<!--/navleft-->
+
+<!--navleft_nop-->
+<TD><small><FONT COLOR=gray>&lt;&lt; Prev</FONT></TD>
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<TD><small><A HREF="$(self)$(NH)">$(NP)</A></TD>
+<!--/navbar1-->
+
+<!--navbar0-->
+<TD><small>$(NP)</TD>
+<!--/navbar0-->
+
+<!--navright-->
+<TD><small><A HREF="$(self)$(NH)">Next &gt;&gt;</A></TD>
+<!--/navright-->
+
+<!--navright_nop-->
+<TD><small><FONT COLOR=gray>Next &gt;&gt;</FONT></TD>
+<!--/navright_nop-->
+
+
+<!--notfound-->
+Sorry, your search for <b>$&(q)</b> did not find any results.<br>
+No documents were found containing <b>"$&(q)"</b>.<br>
+<!--/notfound-->
+
+
+<!--noquery-->
+<CENTER>You haven't typed any word(s) to search for.</CENTER>
+<!--/noquery-->
+
+
+<!--error-->
+<P><B>Error: $(E)</B>
+<!--/error-->
+
+
+<!--bottom-->
+-------------
+<!--/bottom-->

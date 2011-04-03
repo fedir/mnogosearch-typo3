@@ -1,0 +1,35 @@
+<sect1 id="content-enc">
+  <title>Content-Encoding support
+    <indexterm><primary>Content-Encoding</primary></indexterm>
+  </title>
+  <para>&mnogo; supports &http; compression
+  (Content encoding). Compression can have major positive impact on 
+  performance of &http; transactions.
+  </para>
+  <para>Using content encoding to receive server responses allows
+  to reduce traffic up to two times or even more.
+  </para>
+  <para>The
+  <ulink url="ftp://ftp.isi.edu/in-notes/rfc2616.txt">HTTP 1.1 (RFC 2616) specification</ulink>
+  defines four content encoding methods:
+  <literal>gzip, deflate, compress</literal>, and <literal>identity</literal>.
+  </para>
+  <para>When Content-encoding is enabled,
+  &mnogo; &indexer;
+  sends the <literal>Accept-Encoding: gzip,deflate,compress</literal>
+  string to the server in the request &http; headers.
+  </para>
+  <para>If the server supports any of requested encoding methods,
+  it sends the document content using compression.
+  </para>
+  <para>To compile &mnogo; with
+  &http; Content encoding support, <literal>zlib</literal> library is
+  required, which is usually available on all modern platforms.
+  </para>
+  <para>To enable &http; Content encoding support,
+  configure &mnogo; with the following option:
+  </para>
+  <para>
+    <userinput>./configure --with-zlib other-options.</userinput>
+  </para>
+</sect1>

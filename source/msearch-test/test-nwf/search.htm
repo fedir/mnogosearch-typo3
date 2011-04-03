@@ -1,0 +1,62 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single
+HlBeg	<b>
+HlEnd	</b>
+NumSections 4
+-->
+<!--top-->
+<!--/top-->
+<!--restop-->
+Search for: $&(q)
+Search results: $(W)
+Results: $(first)-$(last) of $(total)
+<!--/restop-->
+<!--res-->
+Order:        $(Order)
+URL:          $(URL)
+Score:        $(Score)
+Title:        $&(Title)
+Keywords:     $&(meta.keywords)
+Body:         $&(Body)
+<!--/res-->
+<!--resbot-->
+<!--/resbot-->
+<!--clone-->
+<!--/clone-->
+<!--navleft-->
+<!--/navleft-->
+<!--navleft_nop-->
+<!--/navleft_nop-->
+<!--navbar1-->
+<!--/navbar1-->
+<!--navbar0-->
+<!--/navbar0-->
+<!--navright-->
+<!--/navright-->
+<!--navright_nop-->
+<!--/navright_nop-->
+<!--notfound-->
+Nothing found
+<!--/notfound-->
+<!--noquery-->
+No query
+<!--/noquery-->
+<!--error-->
+Error: $(E)
+<!--/error-->
+<!--bottom-->
+-------------
+<!--/bottom-->
+<!--storedoc_top-->
+Size: $(Content-Length)
+Content-Type: $(Content-Type)
+<!--/storedoc_top-->
+<!--storedoc-->
+Document:
+$^(document)
+<!--/storedoc-->
+<!--storedoc_bottom-->
+######################
+<!--/storedoc_bottom-->
+ 

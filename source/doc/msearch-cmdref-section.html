@@ -1,0 +1,900 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Section</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="mnoGoSearch command reference"
+HREF="msearch-cmdref.html"><LINK
+REL="PREVIOUS"
+TITLE="SaveSectionSize"
+HREF="msearch-cmdref-savesectionsize.html"><LINK
+REL="NEXT"
+TITLE="Server"
+HREF="msearch-cmdref-server.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-savesectionsize.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-server.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="cmdref-section"
+></A
+>Section</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN12135"
+></A
+><H2
+>Name</H2
+><B
+CLASS="command"
+>Section</B
+>&nbsp;--&nbsp;defines a document section<P
+><B
+></B
+><TT
+CLASS="filename"
+>indexer.conf</TT
+>
+      <TT
+CLASS="filename"
+>search.htm</TT
+></P
+></DIV
+><DIV
+CLASS="refsynopsisdiv"
+><A
+NAME="AEN12142"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="command"
+>Section</B
+>  {name} {number} {maxlen} [when] [format] [cloneflag] [separator] [{source}  {pattern}  {replacement}]</P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN12156"
+></A
+><H2
+>Description</H2
+><P
+>When used in <TT
+CLASS="filename"
+>search.htm</TT
+>,
+    the <B
+CLASS="command"
+>Section</B
+> command requires only the first three
+    parameters and activates recognition of 
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>section name references</I
+></SPAN
+> in search queries,
+    for example:
+    <PRE
+CLASS="programlisting"
+>&#13;title:word1 body:word2
+    </PRE
+>
+    See <A
+HREF="msearch-doingsearch.html#search-secnoref"
+>the Section called <I
+>Restricting search words to a section
+    <A
+NAME="AEN5093"
+></A
+></I
+> in Chapter 10</A
+> for details.
+    There are no any other purposes of using the
+    <B
+CLASS="command"
+>Section</B
+> command
+    in <TT
+CLASS="filename"
+>search.htm</TT
+>. The rest of this article
+    applies mostly to <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+    </P
+><P
+><TT
+CLASS="literal"
+>string</TT
+> is the section name and
+    <TT
+CLASS="literal"
+>number</TT
+> is the section <CODE
+CLASS="varname"
+>ID</CODE
+> between
+    <TT
+CLASS="literal"
+>0</TT
+> and <TT
+CLASS="literal"
+>255</TT
+>.
+    Use <TT
+CLASS="literal"
+>0</TT
+> if you don't want to index the sections.
+    </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    It is recommended to use different sections <CODE
+CLASS="varname"
+>ID</CODE
+>
+    for different documents parts, which makes possible to
+    <A
+HREF="msearch-doingsearch.html#search-changeweight"
+>set different weights for the
+    different document parts</A
+>, as well as 
+    <A
+HREF="msearch-doingsearch.html#search-secnoref"
+>restrict search to a section</A
+>
+    at search time.
+    </P
+></BLOCKQUOTE
+></DIV
+><P
+>&#13;    The <CODE
+CLASS="parameter"
+>maxlen</CODE
+> argument contains the maximum
+    length of the section which should be stored in the database.
+    If <TT
+CLASS="literal"
+>maxlen</TT
+> is set to <TT
+CLASS="literal"
+>0</TT
+>,
+    then this section is not stored in the database and therefore is not
+    available at search time using <CODE
+CLASS="varname"
+>$(name)</CODE
+> syntaxt in
+    <TT
+CLASS="filename"
+>search.htm</TT
+>.
+    </P
+><P
+>&#13;    <CODE
+CLASS="parameter"
+>when</CODE
+> is an optional parameter defining when the
+    section is to be created. The following values are possible:
+    <P
+></P
+><UL
+><LI
+><P
+>&#13;        <TT
+CLASS="literal"
+>afterheaders</TT
+> - creates the section after processing of <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> headers,
+        which allows to replace the headers returned by an <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> server to your own values.
+        For example, if the <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> server is not well configured and returns
+        <TT
+CLASS="literal"
+>Content-Type: text/plain</TT
+> headers for the documents
+        which are in fact <ACRONYM
+CLASS="acronym"
+>XML</ACRONYM
+> or <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> documents, or
+        <TT
+CLASS="literal"
+>Content-Type: application/octet-stream</TT
+>
+        for <SPAN
+CLASS="application"
+>Word</SPAN
+> or <SPAN
+CLASS="application"
+>Excel</SPAN
+> documents,
+        you can overwrite the <TT
+CLASS="literal"
+>Content-Type</TT
+> header and thus
+        have <SPAN
+CLASS="application"
+>indexer</SPAN
+> invoke a proper external or internal parser.
+        </P
+></LI
+><LI
+><P
+>&#13;        <TT
+CLASS="literal"
+>afterguesser</TT
+> - creates the section
+        after execution of
+        <A
+HREF="msearch-international.html#charset-guesser"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>character set guesser</I
+></SPAN
+></A
+>.
+        A special variable <TT
+CLASS="literal"
+>${HTTP.LocalCharsetContent}</TT
+>
+        is additionally available for use in the <CODE
+CLASS="parameter"
+>source</CODE
+> argument,
+        which represents raw document content converted to <A
+HREF="msearch-cmdref-localcharset.html"
+>LocalCharset</A
+>.
+        <TT
+CLASS="literal"
+>afterguesser</TT
+> is suitable for <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>user defined sections</I
+></SPAN
+>,
+        to cut pieces of text from between desired tags with help of the 
+        <CODE
+CLASS="parameter"
+>source</CODE
+>, <CODE
+CLASS="parameter"
+>pattern</CODE
+> and <CODE
+CLASS="parameter"
+>replacement</CODE
+>
+        parameters.
+        </P
+></LI
+><LI
+><P
+>&#13;        <TT
+CLASS="literal"
+>afterparser</TT
+> - creates the section after
+        extracting pieces of text from the document
+        (i.e. after removing tags in the case of <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> or <ACRONYM
+CLASS="acronym"
+>XML</ACRONYM
+>),
+        and before breaking them into individual words. This is the default
+        value for the <TT
+CLASS="literal"
+>when</TT
+> parameter.
+        </P
+></LI
+></UL
+>
+    </P
+><P
+>&#13;    <CODE
+CLASS="parameter"
+>format</CODE
+> is a flag telling <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+    which parser to use for the section. Two values are understood:
+    <P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="literal"
+>text</TT
+> - use text parser</P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>html</TT
+> - use <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> parser</P
+></LI
+></UL
+>
+    The <CODE
+CLASS="parameter"
+>format</CODE
+> parameter is designed for
+    use in combination with the simple
+    type of <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> queries
+    (i.e. consisting of a list of data columns,
+    without full <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> headers). The default value is <TT
+CLASS="literal"
+>text</TT
+>.
+    If your <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> table contains data in <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> format, you can specify 
+    the <TT
+CLASS="literal"
+>html</TT
+> option to force removing of <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> tags.
+    See <A
+HREF="msearch-extended-indexing.html#htdb"
+>the Section called <I
+>Indexing <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables
+    (<TT
+CLASS="literal"
+>htdb:/</TT
+> virtual <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> scheme)
+    <A
+NAME="AEN2254"
+></A
+></I
+> in Chapter 4</A
+> for details about simple
+    <A
+HREF="msearch-cmdref-htdbdoc.html"
+>HTDBDoc</A
+> queries.
+    </P
+><P
+>&#13;    The <CODE
+CLASS="parameter"
+>cloneflag</CODE
+> parameter is a flag
+    describing whether the section should affect clone detection.
+    It can be <TT
+CLASS="literal"
+>DetectClone</TT
+> (or <TT
+CLASS="literal"
+>cdon</TT
+>),
+    or <TT
+CLASS="literal"
+>NoDetectClone</TT
+> (or <TT
+CLASS="literal"
+>cdoff</TT
+>). By default,
+    all <TT
+CLASS="literal"
+>url.*</TT
+> section values (i.e. various <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> parts) are not
+    taken in account for clone detection, while any other
+    sections take part in clone detection.
+    </P
+><P
+>&#13;    <CODE
+CLASS="parameter"
+>separator</CODE
+> is a string that separates
+    consequent chunks of the same section.
+    </P
+><P
+>&#13;    <P
+><B
+>User-defined sections</B
+></P
+>
+    The <CODE
+CLASS="parameter"
+>source</CODE
+>, <CODE
+CLASS="parameter"
+>pattern</CODE
+> and <CODE
+CLASS="parameter"
+>replacement</CODE
+>
+    parameters can be used to extract <I
+CLASS="firstterm"
+>user defined sections</I
+>.
+    </P
+><P
+>&#13;    <CODE
+CLASS="parameter"
+>source</CODE
+> can include variable references using
+    <CODE
+CLASS="varname"
+>${VARNAME}</CODE
+> syntax. Multiple variable references allowed.
+    </P
+><P
+>&#13;    <CODE
+CLASS="parameter"
+>pattern</CODE
+> represents a regular expression to specify which parts 
+    of <CODE
+CLASS="parameter"
+>source</CODE
+> should go to the section.
+    </P
+><P
+>&#13;    <CODE
+CLASS="parameter"
+>replacement</CODE
+> defines how the extracted parts of <CODE
+CLASS="parameter"
+>source</CODE
+>
+    are comnibed into the result. <CODE
+CLASS="parameter"
+>replacement</CODE
+> can contain references of the form
+    <CODE
+CLASS="varname"
+>$n</CODE
+>, where <CODE
+CLASS="varname"
+>n</CODE
+> is a number in the range <TT
+CLASS="literal"
+>0-9</TT
+>.
+    Every reference is replaced to text captured by the <CODE
+CLASS="varname"
+>n</CODE
+>-th parenthesized sub-pattern.
+    <CODE
+CLASS="varname"
+>$0</CODE
+> refers to text matched by the whole pattern. Opening parentheses are counted
+    from left to right (starting from <TT
+CLASS="literal"
+>1</TT
+>) to obtain the number of the capturing sub-pattern. 
+    </P
+><P
+>&#13;    <PRE
+CLASS="programlisting"
+>&#13;# Use a combination of URL and raw body content to extract
+# the host part of URL and title into the section "udef"
+Section HTTP.Content 0 0
+Section udef  1 256 cdoff  "" "${URL}:${HTTP.Content}" "^http://([^/]*)/.*&#60;title&#62;(.*)&#60;/title&#62;" "$1 $2"
+    </PRE
+>
+    </P
+><P
+>&#13;    <P
+><B
+>Conditional sections</B
+></P
+>
+    The <CODE
+CLASS="parameter"
+>source</CODE
+>, <CODE
+CLASS="parameter"
+>pattern</CODE
+> and <CODE
+CLASS="parameter"
+>replacement</CODE
+>
+    arguments can also be used to create sections only under certain conditions:
+    <PRE
+CLASS="programlisting"
+>&#13;# Create "body" only for the given host name
+Section HTTP.Content 0 0
+Section body  1 256 cdoff "" "${URL}:${HTTP.Content}" "^http://www.mysite.com/.*&#60;body&#62;(.*)&#60;/body&#62;" "$1"
+    </PRE
+>
+    </P
+><P
+>&#13;    <P
+><B
+>Special purpose sections</B
+></P
+>
+    There is a special <TT
+CLASS="literal"
+>User.Date</TT
+> section.
+    It makes possible
+    to use a user defined meta tag (or any other document part)
+    as an alternative <TT
+CLASS="literal"
+>Last-Modified</TT
+> value.
+    A number of widespread formats is understood:
+      <PRE
+CLASS="programlisting"
+>&#13;Sun, 06 Nov 1994 08:49:37 GMT
+Sun, 6 Nov 1994 08:49:37 GMT
+Sunday, 06-Nov-94 08:49:37 GMT
+Sun Nov 6 08:49:37 1994
+1994-11-06
+06.11.1994
+1104537600  -- Unix timestamp
+      </PRE
+>
+      When <TT
+CLASS="literal"
+>User.Date</TT
+> is defined,
+      the <TT
+CLASS="literal"
+>Last-Modified</TT
+> <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> header
+      is ignored, and the document modification time is
+      taken from <TT
+CLASS="literal"
+>User.Date</TT
+> instead.
+      This can be useful when indexing dynamic documents.
+    </P
+><P
+>&#13;    <TT
+CLASS="literal"
+>nobody</TT
+> is another section with a special meaning.
+    When parsing <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> documents, <SPAN
+CLASS="application"
+>indexer</SPAN
+> ignores the words outside
+    the <TT
+CLASS="literal"
+>&#60;body&#62;</TT
+> and <TT
+CLASS="literal"
+>&#60;/body&#62;</TT
+> tags by default.
+    To activate indexing of these words, you can define a special section
+    <TT
+CLASS="literal"
+>nobody</TT
+>, which should have the same <CODE
+CLASS="varname"
+>ID</CODE
+> and
+    length with the section <TT
+CLASS="literal"
+>body</TT
+>.
+    Making <SPAN
+CLASS="application"
+>indexer</SPAN
+> see the words outside the body tags can be useful to
+    index a remote site with broken <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> mark-up (when you can't modify
+    the pages), or to index local <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> pages having <ACRONYM
+CLASS="acronym"
+>SSI</ACRONYM
+>
+    (sever side include) directives directly from disk using <TT
+CLASS="literal"
+>file:///</TT
+> schema,
+    even if the <TT
+CLASS="literal"
+>&#60;body&#62;</TT
+> and
+    <TT
+CLASS="literal"
+>&#60;/body&#62;</TT
+> tags are not in the <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>
+    pages themselves, but in shared files included using <ACRONYM
+CLASS="acronym"
+>SSI</ACRONYM
+> directives, 
+    like <B
+CLASS="command"
+><TT
+CLASS="literal"
+>&#60;!--#include virtual="../include/top.html"--&#62;</TT
+></B
+>.
+    For example:
+    <PRE
+CLASS="programlisting"
+>&#13;Section body   1 256
+Section nobody 1 256
+    </PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN12312"
+></A
+><H2
+>Examples</H2
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN12314"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;Section body                    1       256
+Section title                   2       128
+Section meta.keywords           3       128
+Section meta.description        4       128
+Section header.server           5       64
+Section url.file                6       0
+Section url.path                7       0
+Section url.host                8       0
+Section url.proto               9       0
+Section crosswords              10      0
+Section Charset                 11      32
+Section Content-Type            12      64
+Section Content-Language        13      16
+Section attribute.alt           14      128
+Section attribute.label         15      128
+Section attribute.summary       16      128
+Section attribute.title         17      128
+Section References              18      0
+Section Message-ID              19      0
+Section Parent-ID               20      0
+Section MP3.Song                21      128
+Section MP3.Album               22      128
+Section MP3.Artist              23      128
+Section MP3.Year                24      128
+Section CachedCopy              25      64000
+Section attribute.face          27      0
+Section attribute.title         28      0 "."
+
+# A user-defined section
+Section h1                      29      128 "&#60;h1&#62;(.*)&#60;/h1&#62;" $1
+
+# User-defined date extracted from the "Date" meta-tag
+Section User.Date               0       10 '&#60;META NAME="Date" +CONTENT="([^"]*)"&#62;' "$1"
+
+# Replacing Content-Type to application/msword
+Section Content-Type            0       64 afterheaders cdoff "" "${URL}" "http://site/*.doc" "application/msword"
+
+# Using "afterguesser" in conjuction with ${HTTP.LocalCharsetContent}
+Section HTTP.LocalCharsetContent 0      0
+Section h1lcs                   30      128 afterguesser cdoff "" "${HTTP.LocalCharsetContent}" "&#60;h1&#62;(.*)&#60;/h1&#62;" $1
+
+# Using a simple HTDBDoc query for a SQL table with text and HTML columns
+Section 1 256 column1 text
+Section 2 256 colimn2 html
+      </PRE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN12316"
+></A
+><H2
+>See also</H2
+><P
+>&#13;      <A
+HREF="msearch-cmdref-maxdocsize.html"
+>MaxDocSize</A
+>,
+      <A
+HREF="msearch-cmdref-maxwordlength.html"
+>MaxWordLength</A
+>,
+      <A
+HREF="msearch-cmdref-minwordlength.html"
+>MinWordLength</A
+>,
+      <A
+HREF="msearch-cmdref-uselocalcachedcopy.html"
+>UseLocalCachedCopy</A
+>.
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-savesectionsize.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-server.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SaveSectionSize</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-cmdref.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Server</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

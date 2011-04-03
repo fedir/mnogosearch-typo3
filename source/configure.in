@@ -1,0 +1,1825 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(TODO)
+AC_CANONICAL_SYSTEM
+dnl AM_INIT_AUTOMAKE(mnogosearch, 3.2.33-`date "+%Y%m%d"`)
+AM_INIT_AUTOMAKE(mnogosearch, 3.3.11)
+AM_MAINTAINER_MODE
+AM_CONFIG_HEADER(include/udm_autoconf.h)
+AC_PROG_MAKE_SET
+
+# Set all version vars based on $VERSION. How do we do this more elegant ?
+# Remember that regexps needs to quote [ and ] since this is run through m4
+UDM_TRIM_VERSION=`echo $VERSION | sed -e "s|\.*pre[[0-9]]*$||"`
+UDM_TRIM_VERSION=`echo $UDM_TRIM_VERSION | sed -e "s|\.*-[[0-9]]*$||"`
+UDM_BASE_VERSION=`echo $UDM_TRIM_VERSION | sed -e "s|\.[[^.]]*$||" | sed -e "s|^\(.\)\.\(.\)$|\\1\.0\\2|" | sed -e "s|\.||g"`
+UDM_TAIL_VERSION=`echo $UDM_TRIM_VERSION | sed -e "s|^[[0-9]]\.[[0-9]]*\.||" | sed -e "s|^\(.\)$|0\\1|"`
+UDM_VERSION_ID=${UDM_BASE_VERSION}${UDM_TAIL_VERSION}
+
+AC_DEFINE_UNQUOTED([UDM_VERSION_ID], [$UDM_VERSION_ID], [Define VERSION_ID])
+AC_SUBST(UDM_VERSION_ID)
+
+dnl Installation prefix by default
+AC_PREFIX_DEFAULT(/usr/local/mnogosearch)
+
+dnl Check if build env is sane
+AM_SANITY_CHECK
+
+dnl Check for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+
+dnl Enable shared libs by default (to disable - place AM_DISABLE_SHARED)
+AM_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
+
+AC_PATH_PROG(RM, rm, rm)
+
+dnl Check if we are little or big endian
+AC_C_BIGENDIAN
+
+dnl OS specific flags and options
+case "$host" in
+        *-*-irix*)
+            CFLAGS="$CFLAGS -D_BSD_COMPAT"
+            LDADD="$LDADD -lbsd"
+            ;;
+esac
+
+dnl Checks for header files.
+AC_STDC_HEADERS
+AC_CHECK_HEADERS(sys/types.h fcntl.h unistd.h sys/cdefs.h libutil.h \
+sys/ioctl.h sys/time.h sys/times.h sys/param.h sys/wait.h locale.h \
+getopt.h syslog.h select.h sys/select.h sys/socket.h arpa/inet.h netdb.h \
+netinet/in.h netinet/in_systm.h netinet/tcp.h arpa/nameser.h sys/ipc.h)
+
+AC_CHECK_HEADERS(netinet/ip.h resolv.h,,,
+[
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#if HAVE_NETINET_IN_SYSTM_H
+#include <netinet/in_systm.h>
+#endif
+#if HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+]
+)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+# Check if we have socklen_t
+AC_CACHE_CHECK([for socklen_t], ac_cv_have_socklen_t,
+AC_TRY_COMPILE(
+[#include <sys/types.h>
+#include <sys/socket.h>],
+[socklen_t s;],
+ac_cv_have_socklen_t=yes, ac_cv_have_socklen_t=no))
+
+if test "$ac_cv_have_socklen_t" = "no"
+then
+  AC_DEFINE([socklen_t], [int], [Define if you havnt socklen_t type])
+fi
+
+
+dnl Check for tm_gmtoff in struct tm
+AC_MSG_CHECKING(for tm_gmtoff in struct tm)
+AC_TRY_COMPILE([#include <time.h>],
+[struct tm tm;
+tm.tm_gmtoff=0;
+],
+AC_DEFINE([HAVE_TM_GMTOFF], [1], [Define if you have tm_gmtoff in struct tm])
+AC_MSG_RESULT(yes),
+AC_MSG_RESULT(no))
+
+dnl Check for library functions
+AC_CHECK_FUNCS(strdup strndup strstr strnlen strcasecmp strncasecmp bzero strtok_r strcasestr timegm)
+AC_CHECK_FUNCS(regcomp socket vsnprintf snprintf mergesort setvbuf)
+AC_CHECK_FUNCS(setenv putenv, break)
+AC_CHECK_FUNCS(unsetenv atexit)
+AC_CHECK_FUNC(inet_addr, , AC_CHECK_LIB(xnet, inet_addr, LIBS="-lxnet $LIBS"))
+AC_CHECK_FUNC(setproctitle, , AC_CHECK_LIB(util, setproctitle, LIBS="-lutil $LIBS"))
+AC_CHECK_FUNC(sqrt, , AC_CHECK_LIB(m, sqrt, LIBS="$LIBS -lm"))
+
+dnl Check sizeof_type
+AC_CHECK_SIZEOF(char*)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF(short)
+
+dnl Check for libraries
+dnl Next line was commented out by Kir 
+dnl Does inet_addr and inet_aton belongs to one lib? 
+dnl If so we don't need to check for inet_aton
+dnl AC_CHECK_FUNCS(inet_addr inet_aton)
+AC_LIBRARY_NET
+
+dnl Determine signal handling standard
+AC_TYPE_SIGNAL
+AC_MSG_CHECKING(for POSIX signals)
+AC_TRY_LINK([#include <signal.h>],
+[   sigset_t ss;
+    struct sigaction sa;
+    sigemptyset(&ss); sigsuspend(&ss);
+    sigaction(SIGINT, &sa, (struct sigaction *) 0);
+    sigprocmask(SIG_BLOCK, &ss, (sigset_t *) 0);
+],
+    AC_DEFINE([HAVE_POSIX_SIGNALS], [1], [Define if you have POSIX type signal handling routines])
+    AC_MSG_RESULT(yes),
+    AC_MSG_RESULT(no))
+
+
+AC_MSG_CHECKING(for debug)
+AC_ARG_WITH(debug,
+    [  --without-debug         Build a production version without debugging code],
+    [with_debug=$withval],
+    [with_debug=no])
+if test "$with_debug" = "yes"
+then
+  AC_DEFINE([HAVE_DEBUG], [1], [Define if you want debugging code])
+  AC_MSG_RESULT(yes)
+else
+  # Optimized version. No debug
+  AC_MSG_RESULT(no)
+fi
+
+
+dnl check for better compatibility with the Filesystem Hierarchy Standard (FHS)
+AC_MSG_CHECKING(for better Filesystem Hierarchy Standard compatibility)
+AC_ARG_ENABLE(fhs-layout,
+[  --enable-fhs-layout     Enable better Filesystem Hierarchy Standard compatibility],
+[
+  dnl Better FHS layout
+  fhs_layout=yes
+  LANGMAPDIR="(datadir)/langmap"
+  STOPWORDSDIR="(datadir)/stopwords"
+  SYNONYMDIR="(datadir)/synonym"
+  FREQDIR="(datadir)/freq"
+  CREATEDIR="(datadir)/create"
+  AC_DEFINE(HAVE_FHS_LAYOUT,[1],[Better FHS layout])
+],
+[
+  dnl Traditional mnoGoSearch layout
+  fhs_layout=no
+  LANGMAPDIR="(sysconfdir)/langmap"
+  STOPWORDSDIR="(sysconfdir)/stopwords"
+  SYNONYMDIR="(sysconfdir)/synonym"
+  FREQDIR="(sysconfdir)"
+  CREATEDIR="(datadir)"
+])
+AC_MSG_RESULT($fhs_layout)
+AC_SUBST(LANGMAPDIR)
+AC_SUBST(STOPWORDSDIR)
+AC_SUBST(SYNONYMDIR)
+AC_SUBST(FREQDIR)
+AC_SUBST(CREATEDIR)
+
+
+dnl check for paranoia support
+paranoia=no
+AC_MSG_CHECKING(for paranoia support)
+AC_ARG_ENABLE(paranoia,
+[  --enable-paranoia       Enable paranoia support. Stack will be checked like with libparanoia 
+                            This works only on Intel architecture using gcc. Optimization should be switched off.],
+[
+  if test "$withval" != "no"; then
+    AC_MSG_RESULT($withval)
+    AC_DEFINE([USE_PARANOIA], [1], [libparanoia usage])
+  else
+    AC_MSG_RESULT(no)
+  fi
+],[
+  AC_MSG_RESULT(no)
+])
+
+
+dnl check needs for -lc
+sharedmem=no
+cok=no
+if test "$sharedmem" = no; then
+	AC_MSG_CHECKING(for POSIX shared memory library)
+	AC_TRY_LINK([
+#include <sys/types.h>
+#include <sys/mman.h>
+],
+[
+ shm_open("/tmp", 0, 0644);
+], cok=yes 
+   sharedmem=posix
+   AC_DEFINE([HAVE_SYS_MMAN_H], [1], [Define if you have the <sys/mman.h> header file.])
+   AC_MSG_RESULT(ok)
+)
+	if test "$cok" = no; then
+		ac_save_libs="$LIBS"
+		LIBS="$LIBS -lc" 
+		AC_TRY_LINK([
+#include <sys/types.h>
+#include <sys/mman.h>
+],
+[
+ shm_open("/tmp", 0, 0644);
+], cok=yes 
+   sharedmem=posix
+   AC_DEFINE([HAVE_SYS_MMAN_H], [1], [Define if you have the <sys/mman.h> header file.])
+   AC_MSG_RESULT(-lc), 
+   LIBS="$ac_save_libs"
+)
+	fi
+	if test "$cok" = no; then
+		ac_save_libs="$LIBS"
+		LIBS="$LIBS -lrt" 
+		AC_TRY_LINK([
+#include <sys/types.h>
+#include <sys/mman.h>
+],
+[
+ shm_open("/tmp", 0, 0644);
+], cok=yes 
+   sharedmem=posix
+   AC_DEFINE([HAVE_SYS_MMAN_H], [1], [Define if you have the <sys/mman.h> header file.])
+   AC_MSG_RESULT(-lrt), 
+   LIBS="$ac_save_libs"
+)
+	fi
+fi 
+
+if test "$sharedmem" = no; then
+	AC_MSG_CHECKING(for SystemV shared memory library)
+	AC_TRY_LINK([
+#include <sys/types.h>
+#include <sys/shm.h>
+],
+[
+ shmat(1, 0, 0);
+],cok=yes
+  sharedmem=sysV
+  AC_DEFINE([HAVE_SYS_SHM_H], [1], [Define if you have the <sys/shm.h> header file.])
+  AC_MSG_RESULT(ok))
+	if test "$cok" = no; then
+		ac_save_libs="$LIBS"
+		LIBS="$LIBS -lc" 
+		AC_TRY_LINK([
+#include <sys/types.h>
+#include <sys/shm.h>
+],
+[
+ shmat(1, 0, 0);
+],cok=yes 
+  sharedmem=sysV
+  AC_DEFINE([HAVE_SYS_SHM_H], [1], [Define if you have the <sys/shm.h> header file.])
+  AC_MSG_RESULT(-lc), 
+  LIBS="$ac_save_libs"
+)
+	fi
+	if test "$cok" = no; then
+		ac_save_libs="$LIBS"
+		LIBS="$LIBS -lrt" 
+		AC_TRY_LINK([
+#include <sys/types.h>
+#include <sys/shm.h>
+],
+[
+ shmat(1, 0, 0);
+],cok=yes 
+  sharedmem=sysV
+  AC_DEFINE([HAVE_SYS_SHM_H], [1], [Define if you have the <sys/shm.h> header file.])
+  AC_MSG_RESULT(-lrt), 
+  LIBS="$ac_save_libs"
+)
+	fi
+fi 
+
+if test "$sharedmem" = no; then
+	AC_MSG_ERROR([No shared memory support found])
+fi
+
+
+syslog=yes
+AC_MSG_CHECKING(for syslog support)
+AC_ARG_ENABLE(syslog,
+[How to log messages:
+  --enable-syslog         Use syslog (default)
+  --enable-syslog=LOG_FACILITY
+                          Use syslog facility LOG_FACILITY, which should be
+			  valid name defined in /usr/include/sys/syslog.h
+  --disable-syslog        Use stdout/stderr]
+,
+syslog=$enableval)
+
+if test "$syslog" != no; then
+    AC_DEFINE([USE_SYSLOG], [1], [Define if you want to use syslog for logging indexer messages])
+    if test "$syslog" != yes; then
+	AC_DEFINE_UNQUOTED(LOG_FACILITY, $syslog, syslog facility)
+	AC_TRY_RUN([
+	    #include <sys/syslog.h>
+	    int main(void){
+	    openlog("Test", LOG_NDELAY, LOG_FACILITY);
+	    closelog();
+	    return 0;
+	}
+	],
+	AC_MSG_RESULT([enabled (will use $syslog facility)]),
+	[
+	AC_MSG_RESULT(error)
+	echo "You probably gave wrong facility argument ($syslog)"
+	echo "to --enable-syslog. This argument should be one defined in"
+	echo "/usr/include/sys/syslog.h, for example LOG_DAEMON or LOG_LOCAL7."
+	AC_MSG_ERROR([** Unknown syslog facility given **])
+	],
+	[echo $ac_n "cross compiling; assumed OK... $ac_c"]
+	)
+    else
+	AC_MSG_RESULT(enabled)
+    fi
+else
+    AC_MSG_RESULT([disabled (will use stdout/stderr)])
+fi
+
+trace=no
+AC_MSG_CHECKING(for tracing support)
+AC_ARG_ENABLE(trace,
+[ --enable-trace         Use tracing (for debug purpose)
+                         disabled by default
+]
+,
+trace=$enableval)
+
+if test "$trace" != no; then
+	AC_DEFINE([USE_TRACE], [1], [Define if you want tracing for debugging])
+	AC_MSG_RESULT(enabled)
+else
+	AC_MSG_RESULT(disable)
+fi
+
+
+dnl Hack to build statically linked binary distributions
+STATIC_LFLAGS=""
+static_lflags=no
+AC_MSG_CHECKING(for -all-static linker flags)
+AC_ARG_ENABLE(all-static,
+[  --enable-all-static     build statically linked binaries],static_lflags=$enableval)
+if test "$static_lflags" != no; then
+	AC_MSG_RESULT(enabled)
+	STATIC_LFLAGS="-all-static"
+	LINKING="static"
+else
+	AC_MSG_RESULT([disabled])
+	LINKING="dynamic"
+fi
+AC_SUBST(STATIC_LFLAGS)
+AC_SUBST(LINKING)
+
+PTHREAD_CFLAGS=""
+PTHREAD_LFLAGS=""
+PTHREAD_LDADD=""
+
+pthreads=yes
+AC_MSG_CHECKING(for pthreads)
+AC_ARG_ENABLE(pthreads,
+[  --disable-pthreads      disable POSIX pthreads],pthreads=$enableval)
+
+if test "$pthreads" != no; then
+
+    case "$host" in
+        *-*-bsdi*)
+            PTHREAD_CFLAGS="-D_REENTRANT -D_THREAD_SAFE"
+            ;;
+        *-*-darwin*)
+            PTHREAD_CFLAGS="-D_THREAD_SAFE"
+# causes Carbon.p complaints?
+#           PTHREAD_CFLAGS="-D_REENTRANT -D_THREAD_SAFE"
+            ;;
+        *-*-freebsd*)
+            PTHREAD_CFLAGS="-D_REENTRANT -D_THREAD_SAFE"
+            PTHREAD_LFLAGS="-pthread"
+            ;;
+        *-*-netbsd*)
+            PTHREAD_CFLAGS="-I/usr/pkg/include -D_REENTRANT"
+            PTHREAD_LDADD="-L/usr/pkg/lib -lpthread -lsem"
+            ;;
+        *-*-openbsd*)
+            PTHREAD_CFLAGS="-D_REENTRANT"
+            PTHREAD_LFLAGS="-pthread"
+            ;;
+        *-*-solaris*)
+            PTHREAD_CFLAGS="-D_REENTRANT"
+            PTHREAD_LDADD="-lpthread -lposix4"
+            ;;
+        *-*-sysv5*)
+            PTHREAD_CFLAGS="-D_REENTRANT -Kthread"
+            PTHREAD_LDADD=""
+            ;;
+        *-*-irix*)
+            PTHREAD_CFLAGS="-D_SGI_MP_SOURCE -D_POSIX_C_SOURCE=199506L -D_XOPEN_SOURCE=500"
+            PTHREAD_LDADD="-lpthread"
+            ;;
+        *-*-aix*)
+            PTHREAD_CFLAGS="-D_REENTRANT -mthreads"
+            PTHREAD_LDADD="-lpthread"
+            ;;
+        *-*-qnx*)
+            PTHREAD_CFLAGS=""
+            PTHREAD_LDADD=""
+            ;;
+        *)
+            PTHREAD_CFLAGS="-D_REENTRANT"
+            PTHREAD_LDADD="-lpthread"
+            ;;
+    esac
+
+    ac_save_libs="$LIBS"
+    LIBS="$LIBS $PTHREAD_LFLAGS $PTHREAD_LDADD"
+    CFLAGS="$PTHREAD_CFLAGS $CFLAGS"
+    
+    AC_TRY_LINK([#include <pthread.h>],
+	[
+		pthread_attr_t type;
+		pthread_attr_init(&type);
+        ],AC_MSG_RESULT([yes]), 
+          AC_MSG_ERROR([POSIX thread support not found])
+    )
+
+    LIBS="$ac_save_libs"
+    AC_DEFINE([HAVE_PTHREAD], [1], [Define if you want to use threaded indexer])
+
+else
+    AC_MSG_RESULT([disabled])
+fi
+
+
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_LFLAGS)
+AC_SUBST(PTHREAD_LDADD)
+
+
+if test "$pthreads" = yes ; then
+  _CFLAGS="$CFLAGS"
+  _LIBS="$LIBS"
+  CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+  LIBS="$LIBS $PTHREAD_LFLAGS $PTHREAD_LDADD"
+  
+  AC_MSG_CHECKING(for gethostbyname_r)
+  
+  if test -z "$ac_cv_gethostbyname_args"; then
+    AC_TRY_LINK(
+[
+#include <sys/types.h>
+#include <netdb.h>
+],
+[
+struct hostent *hp;
+struct hostent h;
+char *name;
+char buffer[10];
+int  h_errno;
+hp= gethostbyname_r(name, &h, buffer, 10, &h_errno);
+], ac_cv_gethostbyname_args=5)
+  fi
+
+
+  if test -z "$ac_cv_gethostbyname_args"; then
+    AC_TRY_LINK(
+[
+#include <sys/types.h>
+#include <netdb.h>
+],
+[
+struct hostent h;
+struct hostent_data hdata;
+char *name;
+int  rc;
+rc= gethostbyname_r(name, &h, &hdata);
+], ac_cv_gethostbyname_args=3)
+  fi
+
+
+  if test -z "$ac_cv_gethostbyname_args"; then
+    AC_TRY_LINK(
+[
+#include <sys/types.h>
+#include <netdb.h>
+],
+[
+struct hostent h;
+struct hostent *hp;
+char *name;
+char buf[10];
+int rc;
+int h_errno;
+
+rc= gethostbyname_r(name, &h, buf, 10, &hp, &h_errno);
+], ac_cv_gethostbyname_args=6)
+  fi
+
+  if test -z "$ac_cv_gethostbyname_args"; then
+    AC_MSG_RESULT(no)
+  else
+    if test "$ac_cv_gethostbyname_args" = 3; then
+      AC_DEFINE([HAVE_GETHOSTBYNAME_R_3], [1], [Define if you have gethostbyname_r() with three arguments (AIX, HPUX, Tru64)])
+    elif test "$ac_cv_gethostbyname_args" = 5; then
+      AC_DEFINE([HAVE_GETHOSTBYNAME_R_5], [1], [Define if you have gethostbyname_r() with five arguments (Solaris, IRIX, QNX)])
+    elif test "$ac_cv_gethostbyname_args" = 6; then
+      AC_DEFINE([HAVE_GETHOSTBYNAME_R_6], [1], [Define if you have gethostbyname_r() with six arguments (Linux)])
+    fi
+    AC_MSG_RESULT([yes (with $ac_cv_gethostbyname_args arguments)])
+  fi
+
+  CFLAGS="$_CFLAGS"
+  LIBS="$_LIBS"
+fi
+
+
+parser=yes
+AC_MSG_CHECKING(for external parsers support)
+AC_ARG_ENABLE(parser,
+[  --disable-parser        disable external parsers support], parser=$enableval)
+
+if test "$parser" != no; then
+    AC_DEFINE([USE_PARSER], [1], [Define if you want to use external parser])
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT([no])
+fi
+
+
+mp3=yes
+AC_MSG_CHECKING(for MP3 ID3 tags support)
+AC_ARG_ENABLE(mp3,
+[  --disable-mp3           disable MP3 tags support ], mp3=$enableval)
+
+if test "$mp3" != no; then
+    AC_DEFINE([USE_MP3], [1], [Define if you want mp3 id3 tags support])
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT([no])
+fi
+
+
+file=yes
+AC_MSG_CHECKING(for file: URL schema support)
+AC_ARG_ENABLE(file,
+[  --disable-file          disable file:/ URL scheme support], file=$enableval)
+
+if test "$file" != no; then
+    AC_DEFINE([USE_FILE], [1], [Define if you want to support file:// URL schema])
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT([no])
+fi
+
+
+http=yes
+AC_MSG_CHECKING([for http: (and ftp: - via proxy) URL schema support])
+AC_ARG_ENABLE(http,
+[  --disable-http          disable http:// URL scheme support], http=$enableval)
+
+if test "$http" != no; then
+    AC_DEFINE([USE_HTTP], [1], [Define if you want to support http:// URL schema])
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT([no])
+fi
+
+
+ftp=yes
+AC_MSG_CHECKING(for ftp: URL schema support)
+AC_ARG_ENABLE(ftp,
+[  --disable-ftp           disable ftp:// URL scheme support], ftp=$enableval)
+
+if test "$ftp" != no; then
+    AC_DEFINE([USE_FTP], [1], [Define if you want to support ftp:// URL schema])
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT([no])
+fi
+
+
+
+
+news=yes
+AC_MSG_CHECKING(for news: URL schema support)
+AC_ARG_ENABLE(news,
+[  --disable-news          disable news:// URL schema support], news=$enableval)
+
+if test "$news" != no; then
+    AC_DEFINE([USE_NEWS], [1], [Define if you want to support news:// URL schema])
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT([no])
+fi
+
+
+efence=no
+AC_MSG_CHECKING(for Electricfence memory debugger support)
+AC_ARG_ENABLE(efence,
+[  --enable-efence         enable Electricfence memory debugger support],efence=$enableval)
+
+if test "$efence" != no; then
+	if test "$pthreads" != no; then
+		LIBS="$LIBS -L/usr/local/lib -lefence_r"
+	else
+		LIBS="$LIBS -L/usr/local/lib -lefence"
+	fi
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT([no])
+fi
+
+memdebug=no
+AC_MSG_CHECKING(for internal memory debugger support)
+AC_ARG_ENABLE(memdebug,
+[  --enable-memdebug       enable internal memory debugger support],memdebug=$enableval)
+
+if test "$memdebug" != no; then
+        AC_DEFINE([EFENCE], [1], [Define if you want internal memory debugger based on Electric Fence 2.2])
+        efOBJ="efence.o ef_page.o ef_print.o"
+        AC_MSG_RESULT(yes)
+else
+        AC_MSG_RESULT([no])
+fi
+AC_SUBST(efOBJ)
+
+
+dnl check for MySQL fulltext plugin support
+AC_MSG_CHECKING(for MySQL fulltext plugin support)
+AC_ARG_ENABLE(mysql-fulltext-plugin,
+[  --enable-mysql-fulltext-plugin  enable MySQL-5.1 fulltext plugin interface],
+[
+  if test "$enableval" != "no"; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE([HAVE_MYSQL_FULLTEXT_PLUGIN], [1], [MySQL fulltext plugin])
+  else
+    AC_MSG_RESULT(no)
+  fi
+],[
+  AC_MSG_RESULT(no)
+])
+
+
+# Shall we build the docs?
+AC_ARG_WITH(docs,
+    [  --with-docs             Build the documentation.],
+    [with_docs=$withval],
+    [with_docs=no]
+)
+
+if test "$with_docs" = "yes"
+then
+  # Check for DocBook and tools
+  PGAC_PROG_JADE
+  #PGAC_CHECK_DOCBOOK([4.1])
+  have_docbook=yes
+  PGAC_PATH_DOCBOOK_STYLESHEETS
+
+  if test "x$JADE" != "x" && test x$have_docbook != "xno" ; then
+    AC_MSG_CHECKING(for collateindex.pl)
+    for  ci_prefix in /usr/bin /usr/local/bin $DOCBOOKSTYLE/bin; do
+      ci_candidate=$ci_prefix/collateindex.pl
+      if test -f "$ci_candidate"
+      then
+        COLLATEINDEX=$ci_candidate
+        break
+      fi
+    done
+    AC_SUBST([COLLATEINDEX])
+    if test -n "$COLLATEINDEX"; then
+      AC_MSG_RESULT([$COLLATEINDEX])
+      doc_FILES="HTML_ALL"
+    else
+      AC_MSG_ERROR([Unable to find collateindex.pl])
+    fi
+#    if test -f $DOCBOOKSTYLE/bin/collateindex.pl; then
+#      doc_FILES="HTML_ALL"
+#    fi
+
+    AC_MSG_CHECKING(for docbook dtd catalog)
+    if test "$DOCBOOK_DTD" == ""
+    then
+      for dtd_prefix in \
+        /usr/share/sgml/docbook/dtd/4.2*/ \
+        /usr/share/sgml/docbook/xml-dtd-4.2*/ \
+        /usr/local/share/xml/docbook/4.2*/ \
+        /usr/share/xml/docbook/dtd/4.2*/ \
+        /usr/share/xml/docbook/schema/dtd/4.2*/ \
+        /usr/local/share/xml/docbook/ 
+      do
+        dtd_candidate=$dtd_prefix/catalog
+        if test -r "$dtd_candidate"
+        then
+          DOCBOOK_DTD=$dtd_candidate
+          break
+        fi
+      done
+    fi
+    AC_SUBST([DOCBOOK_DTD])
+    if test -n "$DOCBOOK_DTD"; then
+      AC_MSG_RESULT([$DOCBOOK_DTD])
+    else
+      AC_MSG_RESULT(no)
+    fi
+
+  fi
+else
+  doc_FILES="HTML_ALL_NOJADE"
+fi
+AC_SUBST(doc_FILES)
+
+
+
+
+AC_MSG_CHECKING(for Openssl support)
+AC_ARG_WITH(openssl,
+[  --with-openssl[=DIR]      Include Openssl support.  DIR is the Openssl 
+                          base install directory, defaults to /usr/local/ssl.],
+[
+  if test "$withval" != "no"; then
+        if test "$withval" = "yes"; then
+                if test -f /usr/include/openssl/ssl.h; then
+                        SSL_INCDIR=/usr/include
+                else
+                        SSL_INCDIR=/usr/local/ssl/include
+                fi
+                if test -f /usr/lib/libssl.a; then
+                        SSL_LIBDIR=/usr/lib
+                else
+                        SSL_LIBDIR=/usr/local/ssl/lib
+                fi
+        else
+                SSL_INCDIR=$withval/include
+                test -d $withval/include/openssl && SSL_INCDIR=$withval/include
+                SSL_LIBDIR=$withval/lib
+        fi
+    SSL_INCLUDE="-I$SSL_INCDIR"
+    SSL_LFLAGS="-L$SSL_LIBDIR -lssl -lcrypto"
+    # On RedHat 9 we need kerberos to compile openssl
+    for d in /usr/kerberos/include
+    do
+      if test -f $d/krb5.h; then
+        SSL_INCLUDE="-I$d $SSL_INCLUDE"
+      fi
+    done
+    AC_MSG_RESULT(yes)
+    AC_DEFINE([USE_HTTPS], [1], [Define if you want to support https:// URL schema])
+  else
+    AC_MSG_RESULT(no)
+  fi
+],[
+  AC_MSG_RESULT(no)
+])
+
+AC_SUBST(SSL_INCLUDE)
+AC_SUBST(SSL_LFLAGS)
+
+
+AC_MSG_CHECKING(for DMALLOC memory debugger support)
+AC_ARG_WITH(dmalloc,
+[  --with-dmalloc          enable DMALLOC memory debugger support],
+[
+if test "$withval" != "no"; then
+  if test "$withval" = "yes" ; then
+    if test -f /usr/include/dmalloc.h; then
+      withval="/usr"
+      AC_MSG_RESULT([$withval])
+    elif test -f /usr/local/include/dmalloc.h; then
+      withval="/usr/local"
+      AC_MSG_RESULT([$withval])
+    else
+      AC_MSG_RESULT([no])
+      AC_MSG_ERROR([Unknown dmalloc directory - unable to find dmalloc.h])
+    fi
+  fi
+  
+  if test "$pthreads" != no; then
+    dmalloc_libname="dmallocth"
+  else
+    dmalloc_libname="dmalloc"
+  fi
+
+  CFLAGS="$CFLAGS -I$withval/include"
+  LIBS="$LIBS -L$withval/lib -l$dmalloc_libname"
+  AC_CHECK_LIB($dmalloc_libname, dmalloc_shutdown, 
+               AC_DEFINE([DMALLOC], [1], [ Define if you want DMALLOC]),
+               AC_MSG_ERROR([Unable to find working dmalloc library under $withval/lib]))
+else
+  AC_MSG_RESULT([no])
+fi
+],
+[
+  AC_MSG_RESULT([no])
+])
+
+
+
+AC_MSG_CHECKING(for zlib for HTTP Content-Encoding support)
+AC_ARG_WITH(zlib,
+[  --with-zlib             for HTTP Content-Encoding support],
+[zlib=$withval],
+[zlib=yes])
+  
+AC_MSG_RESULT([$zlib])
+  
+if test "$zlib" = "no" ; then
+  dnl to avoid bash error
+  x=$x
+elif test "$zlib" = "yes" ; then
+  AC_CHECK_LIB(z, inflate, AC_DEFINE([HAVE_ZLIB], [1], [Define if you want HTTP Content Encoding support]) LIBS="$LIBS -lz",
+	LIBS_save="$LIBS"
+	LIBS="$LIBS /usr/local/lib"
+	AC_CHECK_LIB(z,inflate,AC_DEFINE([HAVE_ZLIB], [1], [ Define if you want HTTP Content Encoding support]) LIBS="$LIBS -lz",
+		LIBS="$LIBS_save"
+		AC_MSG_ERROR([Unable to find working zlib library])
+		)
+	)
+else
+  ZLIB_INCDIR="$zlib/include"
+  ZLIB_LIBDIR="$zlib/lib"
+  CFLAGS="-I$zlib/include $CFLAGS"
+  LIBS="$LIBS -L$zlib/lib -lz"
+  AC_CHECK_LIB(z,inflate,AC_DEFINE([HAVE_ZLIB], [1], [ Define if you want HTTP Content Encoding support]),AC_MSG_ERROR([Unable to find working zlib library under $zlib]))
+fi
+
+
+AC_MSG_CHECKING(for readline support)
+AC_ARG_WITH(readline,
+[  --with-readline         enable readline support for SQL monitor],
+[
+  AC_DEFINE([HAVE_READLINE], [1], [Define if you want readline support])
+  AC_MSG_RESULT(yes)
+  AC_CHECK_FUNC(tgetnum, ,
+    AC_CHECK_LIB(tinfo,  tgetnum, READLINE_LDADD="-ltinfo",
+    AC_CHECK_LIB(ncurses,tgetnum, READLINE_LDADD="-lncurses",
+    AC_CHECK_LIB(termcap,tgetnum, READLINE_LDADD="-ltermcap",
+    AC_MSG_ERROR([Unable to find tgetnum needed for readline])))))
+  READLINE_LDADD="-lreadline $READLINE_LDADD"
+],
+[
+  REALINE_LDADD=""
+  AC_MSG_RESULT([no])
+]
+)
+AC_SUBST(READLINE_LDADD)
+
+
+ADDCHARSETS=""
+AC_MSG_CHECKING(for chasen)
+AC_ARG_WITH(chasen,
+[  --with-chasen           enable chasen Japanese morphological system support],
+[
+  AC_DEFINE([CHASEN], [1], [Define if you want chasen support])
+  if test "$withval" = "yes"; then
+    dd="/usr /usr/local"
+  else
+    dd="$withval"
+  fi
+
+  for d in $dd; do
+    if test -f $d/include/chasen.h; then
+      path=$d
+      break
+    fi
+  done
+
+  if test "$path" = ""; then
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR(Invalid chasen directory - unable to find chasen.h)
+  fi
+
+  AC_MSG_RESULT($path)
+  CHASEN_INCLUDE="-I$path/include"
+  CHASEN_LFLAGS="-L$path/lib -lstdc++ -lchasen"
+  AC_DEFINE([HAVE_CHARSET_japanese], [1], [Define if you want Japanese support])
+  ADDCHARSETS="japanese"
+],
+[AC_MSG_RESULT([no])]
+)
+AC_SUBST(CHASEN_INCLUDE)
+AC_SUBST(CHASEN_LFLAGS)
+
+AC_MSG_CHECKING(for mecab)
+AC_ARG_WITH(mecab,
+[  --with-mecab            enable mecab Japanese morphological system support],
+[
+  AC_DEFINE([MECAB], [1], [Define if you want mecab support])
+  if test "$withval" = "yes"; then
+    dd="/usr /usr/local"
+  else
+    dd="$withval"
+  fi
+
+  for d in $dd; do
+    if test -f $d/include/mecab.h; then
+      path=$d
+      break
+    fi
+  done
+
+  if test "$path" = ""; then
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR(Invalid mecab directory - unable to find mecab.h)
+  fi
+
+  AC_MSG_RESULT($path)
+  LIBS="$LIBS -L$path/lib -lstdc++ -lmecab"
+  CFLAGS="$CFLAGS -I$path/include"
+  AC_DEFINE([HAVE_CHARSET_japanese], [1], [Define if you want Japanese support])
+  ADDCHARSETS="japanese"
+],
+[AC_MSG_RESULT([no])]
+)
+
+
+
+dnl Check for some DBMS backend
+dnl NOTE: we can use several different backend at the same time
+
+have_db=no
+DBTYPE=
+
+AC_MSG_CHECKING(for MySQL support)
+AC_ARG_WITH(mysql,
+[
+What DBMS support do you want (you may select several):
+  --with-mysql[=DIR]      Include MySQL support.  DIR is the MySQL base
+                          install directory, default is to search through
+                          a number of common places for the MySQL files.],
+[
+  if test "$withval" != "no"; then
+  	if test "$withval" = "yes"; then
+		if test -f /usr/include/mysql/mysql.h; then
+			MYSQL_INCDIR=/usr/include/mysql
+			MYSQL_LIBDIR=/usr/lib/mysql
+			withval="/usr"
+		elif test -f /usr/local/mysql/include/mysql/mysql.h; then
+			MYSQL_INCDIR=/usr/local/mysql/include/mysql
+			MYSQL_LIBDIR=/usr/local/mysql/lib/mysql
+			withval="/usr/local/mysql"
+		elif test -f /usr/local/mysql/include/mysql.h; then
+			MYSQL_INCDIR=/usr/local/mysql/include/
+			MYSQL_LIBDIR=/usr/local/mysql/lib/
+			withval="/usr/local/mysql"
+		elif test -f /usr/include/mysql.h; then
+			MYSQL_INCDIR=/usr/include
+			MYSQL_LIBDIR=/usr/lib
+			withval="/usr"
+		elif test -f /usr/local/include/mysql/mysql.h; then
+			MYSQL_INCDIR=/usr/local/include/mysql
+			MYSQL_LIBDIR=/usr/local/lib/mysql
+			withval="/usr/local"
+		elif test -f /usr/local/include/mysql.h; then
+			MYSQL_INCDIR=/usr/local/include
+			MYSQL_LIBDIR=/usr/local/lib
+			withval="/usr/local"
+		elif test -f /Library/MySQL/include/mysql/mysql.h; then
+			MYSQL_INCDIR=/Library/MySQL/include/mysql
+			MYSQL_LIBDIR=/Library/MySQL/lib/mysql
+			withval="/Library/MySQL"
+		else
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Unknown MySQL directory - unable to find mysql.h)
+		fi
+   	else
+		if test -f $withval/include/mysql/mysql.h; then
+   			MYSQL_INCDIR=$withval/include/mysql
+   			MYSQL_LIBDIR=$withval/lib/mysql
+		elif test -f $withval/include/mysql.h; then
+   			MYSQL_INCDIR=$withval/include
+   			MYSQL_LIBDIR=$withval/lib
+		else
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid MySQL directory - unable to find mysql.h under $withval)
+		fi
+   	fi
+    if test -f $withval/lib64/mysql/libmysqlclient.so; then
+	MYSQL_LIBDIR=$withval/lib64/mysql
+    fi
+    MYSQL_INCLUDE="-I$MYSQL_INCDIR"
+    MYSQL_LFLAGS="-L$MYSQL_LIBDIR -lmysqlclient"
+
+    AC_DEFINE([HAVE_MYSQL], [1], [Define if you want to use MySQL])
+    AC_MSG_RESULT($withval)
+    have_db=yes
+    dnl MySQL requires -lm sometime
+    AC_CHECK_FUNC(floor, , AC_CHECK_LIB(m, floor, MYSQL_LFLAGS="$MYSQL_LFLAGS -lm"))
+    dnl MySQL 3.23 requires -lz sometime
+    AC_CHECK_FUNC(compress, , AC_CHECK_LIB(z, compress, MYSQL_LFLAGS="$MYSQL_LFLAGS -lz"))
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="mysql"
+    else
+       DBTYPE="$DBTYPE-mysql"
+    fi
+
+  else
+  	AC_MSG_RESULT(no)
+  fi
+],[
+  AC_MSG_RESULT(no)
+])
+AC_SUBST(MYSQL_LFLAGS)
+AC_SUBST(MYSQL_INCLUDE)
+
+
+AC_MSG_CHECKING(for PostgreSQL support)
+AC_ARG_WITH(pgsql,
+[  --with-pgsql[=DIR]      Include PostgreSQL support.  DIR is the PostgreSQL
+                          base install directory, defaults to /usr/local/pgsql.],
+[
+  if test "$withval" != "no"; then
+  	if test "$withval" = "yes"; then
+		PGSQL_INCDIR=/usr/local/include/pgsql
+		test -f /usr/include/pgsql/libpq-fe.h && PGSQL_INCDIR=/usr/include/pgsql
+		test -f /usr/local/pgsql/include/libpq-fe.h && PGSQL_INCDIR=/usr/local/pgsql/include
+		test -f /usr/include/postgresql/libpq-fe.h && PGSQL_INCDIR=/usr/include/postgresql
+                test -f /usr/local/include/postgresql/libpq-fe.h && PGSQL_INCDIR=/usr/local/include/postgresql
+		test -f /usr/local/include/libpq-fe.h && PGSQL_INCDIR=/usr/local/include
+		PGSQL_LIBDIR=/usr/local/lib
+		test -f /usr/lib/libpq.a && PGSQL_LIBDIR=/usr/lib
+		test -f /usr/local/pgsql/lib/libpq.a && PGSQL_LIBDIR=/usr/local/pgsql/lib
+   	else
+   		PGSQL_INCDIR=$withval/include
+   		test -d $withval/include/pgsql && PGSQL_INCDIR=$withval/include/pgsql
+   		PGSQL_LIBDIR=$withval/lib
+   		test -d $withval/lib/pgsql && PGSQL_LIBDIR=$withval/lib/pgsql
+   	fi
+    PGSQL_INCLUDE="-I$PGSQL_INCDIR"
+    PGSQL_LFLAGS="-L$PGSQL_LIBDIR -lpq"
+    AC_DEFINE([HAVE_PGSQL], [1], [Define if you want to use PostgreSQL])
+    AC_MSG_RESULT(yes)
+    have_db=yes
+    
+    AC_CHECK_FUNC(crypt, , AC_CHECK_LIB(crypt, crypt, PGSQL_LFLAGS="$PGSQL_LFLAGS -lcrypt"))
+
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="pqsql"
+    else
+       DBTYPE="$DBTYPE-pqsql"
+    fi
+
+  else
+    AC_MSG_RESULT(no)
+  fi
+],[
+  AC_MSG_RESULT(no)
+])
+AC_SUBST(PGSQL_LFLAGS)
+AC_SUBST(PGSQL_INCLUDE)
+
+
+
+AC_MSG_CHECKING(for iODBC support)
+AC_ARG_WITH(iodbc,
+[  --with-iodbc[=DIR]      Include iODBC support.  DIR is the iODBC base
+                          install directory, defaults to /usr/local.],
+[
+	if test "$withval" = "yes"; then
+		withval=/usr/local
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/include/isql.h; then
+			IODBC_INCDIR=$withval/include
+			IODBC_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid iODBC directory - unable to find isql.h)
+		fi
+		IODBC_LFLAGS="-L$IODBC_LIBDIR -liodbc"
+		IODBC_INCLUDE="-I$IODBC_INCDIR"
+		AC_DEFINE([HAVE_IODBC], [1], [Define if you want to use iODBC])
+		AC_MSG_RESULT(yes)
+		have_db=yes
+		if test "x$DBTYPE" = "x" ; then
+			DBTYPE="iODBC"
+		else
+			DBTYPE="$DBTYPE-iODBC"
+		fi
+	fi
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(IODBC_LFLAGS)
+AC_SUBST(IODBC_INCLUDE)
+
+
+AC_MSG_CHECKING(for unixODBC support)
+AC_ARG_WITH(unixODBC,
+[  --with-unixODBC[=DIR]   Include unixODBC support.  DIR is the unixODBC base
+                          install directory, defaults to /usr/local.],
+[
+
+if test "$withval" != "no"; then
+	if test "$withval" = "yes"; then
+		if test -f /usr/include/sql.h; then
+			UNIXODBC_INCDIR=/usr/include
+			UNIXODBC_LIBDIR=/usr/lib
+			withval="/usr"
+		elif test -f /usr/local/include/sql.h; then
+			UNIXODBC_INCDIR=/usr/local/include
+			UNIXODBC_LIBDIR=/usr/local/lib
+			withval="/usr/local"
+		else
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Unknown unixODBC directory - unable to find sql.h)
+		fi
+	else
+		if test -f $withval/include/sql.h; then
+			UNIXODBC_INCDIR=$withval/include
+			UNIXODBC_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid unixODBC directory - unable to find sql.h)
+		fi
+	fi
+	have_db=yes
+	UNIXODBC_LFLAGS="-L$UNIXODBC_LIBDIR -lodbc"
+	UNIXODBC_INCLUDE="-I$UNIXODBC_INCDIR"
+	AC_DEFINE([HAVE_UNIXODBC], [1], [Define if you want to use unixODBC])
+	AC_MSG_RESULT($withval)
+	if test "x$DBTYPE" = "x" ; then
+		DBTYPE="unixODBC"
+	else
+		DBTYPE="$DBTYPE-unixODBC"
+	fi
+fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(UNIXODBC_LFLAGS)
+AC_SUBST(UNIXODBC_INCLUDE)
+
+AC_MSG_CHECKING(for IBM DB2 support)
+AC_ARG_WITH(db2,
+[  --with-db2[=DIR]        Include db2 support.  DIR is the DB2 base
+                          install directory, defaults to /home/db2],
+[
+	if test "$withval" = "yes"; then
+		withval=/usr/local
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/include/sqlcli1.h; then
+			DB2_INCDIR=$withval/include
+			DB2_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid DB2 directory - unable to find sqlcli1.h)
+		fi
+		DB2_LFLAGS="-L$DB2_LIBDIR -ldb2"
+		DB2_INCLUDE="-I$DB2_INCDIR"
+		AC_DEFINE([HAVE_DB2], [1], [Define if you want to use IBM DB2])
+		AC_MSG_RESULT(yes)
+		have_db=yes
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="DB2"
+    else
+       DBTYPE="$DBTYPE-DB2"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(DB2_LFLAGS)
+AC_SUBST(DB2_INCLUDE)
+
+
+AC_MSG_CHECKING(for Solid support)
+AC_ARG_WITH(solid,
+[  --with-solid[=DIR]      Include Solid support.  DIR is the Solid base
+                          install directory, defaults to /usr/local.],
+[
+	if test "$withval" = "yes"; then
+		withval=/usr/local
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/include/cli0cli.h; then
+			SOLID_INCDIR=$withval/include
+			SOLID_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid Solid directory - unable to find cli0cli.h)
+		fi
+		SOLID_LFLAGS="-L$SOLID_LIBDIR -lsolcli -lm"
+		SOLID_INCLUDE="-I$SOLID_INCDIR"
+		AC_DEFINE([HAVE_SOLID], [1], [Define if you want to use Solid SQL Server])
+		AC_MSG_RESULT(yes)
+		have_db=yes
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="solid"
+    else
+       DBTYPE="$DBTYPE-solid"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(SOLID_LFLAGS)
+AC_SUBST(SOLID_INCLUDE)
+
+AC_MSG_CHECKING(for OpenLink ODBC support)
+AC_ARG_WITH(openlink,
+[  --with-openlink[=DIR]   Include OpenLink ODBC support. 
+                          DIR is the base OpenLink ODBC install directory],
+[
+  if test "$withval" != "no"; then
+  	if test "$withval" = "yes"; then
+
+		if test -f /usr/local/virtuoso-ent/odbcsdk/include/isql.h; then
+			VIRT_INCDIR=/usr/local/virtuoso-ent/odbcsdk/include/
+			VIRT_LIBDIR=/usr/local/virtuoso-ent/odbcsdk/lib/
+		elif test -f /usr/local/virtuoso-lite/odbcsdk/include/isql.h; then
+			VIRT_INCDIR=/usr/local/virtuoso-lite/odbcsdk/include/
+			VIRT_LIBDIR=/usr/local/virtuoso-lite/odbcsdk/lib/
+		elif test -f /usr/local/virtuoso/odbcsdk/include/isql.h; then
+			VIRT_INCDIR=/usr/local/virtuoso/odbcsdk/include/
+			VIRT_LIBDIR=/usr/local/virtuoso/odbcsdk/lib/
+		else
+    		AC_MSG_RESULT(no)
+    		AC_MSG_ERROR(Invalid OpenLink ODBC directory - unable to find isql.h)
+		fi
+   	else
+		if test -f $withval/odbcsdk/include/isql.h; then
+   			VIRT_INCDIR=$withval/odbcsdk/include/
+   			VIRT_LIBDIR=$withval/odbcsdk/lib/
+		elif test -f $withval/include/isql.h; then
+			VIRT_INCDIR=$withval/include/
+			VIRT_LIBDIR=$withval/lib/
+		else
+    		AC_MSG_RESULT(no)
+    		AC_MSG_ERROR(Invalid OpenLink ODBC directory - unable to find isql.h under $withval)
+		fi
+   	fi
+    VIRT_INCLUDE="-I$VIRT_INCDIR"
+    VIRT_LFLAGS="-L$VIRT_LIBDIR -liodbc"
+
+    AC_DEFINE([HAVE_VIRT], [1], [Define if you want to use OpenLink ODBC (Virtuoso)])
+    AC_MSG_RESULT(yes)
+    have_db=yes
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="OpenLinkODBC"
+    else
+       DBTYPE="$DBTYPE-OpenLinkODBC"
+    fi
+
+  else
+  	AC_MSG_RESULT(no)
+  fi
+],[
+  AC_MSG_RESULT(no)
+])
+AC_SUBST(VIRT_LFLAGS)
+AC_SUBST(VIRT_INCLUDE)
+
+
+AC_MSG_CHECKING(for EasySoft ODBC support)
+AC_ARG_WITH(easysoft,
+[  --with-easysoft[=DIR]   Include EasySoft ODBC support. 
+                          DIR is the base EasySoft ODBC install directory],
+[
+  if test "$withval" != "no"; then
+  	if test "$withval" = "yes"; then
+
+		if test -f /usr/local/easysoft/oob/client/include/sql.h; then
+			EASYSOFT_INCDIR=/usr/local/easysoft/oob/client/include/
+			EASYSOFT_LFLAGS="-L/usr/local/easysoft/oob/client/lib/ -L/usr/local/easysoft/lib"
+		else
+    		AC_MSG_RESULT(no)
+    		AC_MSG_ERROR(Invalid EasySoft ODBC directory - unable to find sql.h)
+		fi
+   	else
+		if test -f $withval/easysoft/oob/client/include/sql.h; then
+			EASYSOFT_INCDIR=$withval/easysoft/oob/client/include/
+			EASYSOFT_LFLAGS="-L$withval/easysoft/oob/client/lib/ -L$withval/easysoft/lib"
+		else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR(Invalid EasySoft ODBC directory - unable to find sql.h under $withval)
+		fi
+	fi
+    EASYSOFT_INCLUDE="-I$EASYSOFT_INCDIR"
+    EASYSOFT_LFLAGS="$EASYSOFT_LFLAGS -lesoobclient -lesrpc -lessupp -lesextra"
+
+    AC_DEFINE([HAVE_EASYSOFT], [1], [Define if you want to use EasySoft ODBC])
+    AC_MSG_RESULT(yes)
+    have_db=yes
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="EasySoftODBC"
+    else
+       DBTYPE="$DBTYPE-EasySoftODBC"
+    fi
+
+  else
+  	AC_MSG_RESULT(no)
+  fi
+],[
+  AC_MSG_RESULT(no)
+])
+AC_SUBST(EASYSOFT_LFLAGS)
+AC_SUBST(EASYSOFT_INCLUDE)
+
+AC_MSG_CHECKING(for SAPDB ODBC support)
+AC_ARG_WITH(sapdb,
+[  --with-sapdb[=DIR]      Include SAPDB support.  DIR is the SAPDB base
+                          install directory, defaults to /usr/sapdb.],
+[
+	if test "$withval" = "yes"; then
+		withval=/usr/sapdb
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/incl/sql.h; then
+			SAPDB_INCDIR=$withval/incl
+			SAPDB_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid SAPDB directory - unable to find sql.h)
+		fi
+		SAPDB_LFLAGS="-L$SAPDB_LIBDIR -lpthread -lsqlod -lsqlrte -lm"
+		SAPDB_INCLUDE="-I$SAPDB_INCDIR"
+		AC_DEFINE([HAVE_SAPDB], [1], [Define if you want to use SAPDB ODBC library])
+		AC_MSG_RESULT(yes)
+		have_db=yes
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="SAPDB"
+    else
+       DBTYPE="$DBTYPE-SAPDB"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(SAPDB_LFLAGS)
+AC_SUBST(SAPDB_INCLUDE)
+
+
+AC_MSG_CHECKING(for InterBase support)
+AC_ARG_WITH(ibase,
+[  --with-ibase[=DIR]      Include InterBase support.  DIR is the InterBase
+                          install directory, defaults to /usr/interbase.],
+[
+	if test "$withval" = "yes"; then
+		for d in /usr/interbase /opt/firebird /usr/local/firebird /usr; do
+			if test -f $d/include/ibase.h; then
+				withval=$d
+				break
+			fi
+		done
+		if test "$withval" = "yes"; then
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid ibase directory - unable to find ibase.h)
+		fi
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/include/ibase.h; then
+			IBASE_INCDIR=$withval/include
+			IBASE_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid InterBase directory - unable to find ibase.h)
+		fi
+		if test $withval/lib/libfbclient.so; then
+			
+			IBASE_LFLAGS="-L$IBASE_LIBDIR -lfbclient"
+		else
+			IBASE_LFLAGS="-L$IBASE_LIBDIR -lgds"
+		fi
+		IBASE_INCLUDE="-I$IBASE_INCDIR"
+		AC_DEFINE([HAVE_IBASE], [1], [Define if you want to use Interbase SQL Server])
+		AC_MSG_RESULT($withval)
+		have_db=yes
+		dnl IB requires -lcrypt sometime
+		AC_CHECK_FUNC(crypt, , AC_CHECK_LIB(crypt, crypt, IBASE_LFLAGS="$IBASE_LFLAGS -lcrypt"))
+		dnl IB requires -ldl sometime
+		AC_CHECK_FUNC(dlopen, , AC_CHECK_LIB(dl, dlopen, IBASE_LFLAGS="$IBASE_LFLAGS -ldl"))
+
+		dnl InterBase lib on FreeBSD is in old aout format              
+		dnl so we need to pass -aout flag to ranlib
+		dnl if echo $build_os | grep -q freebsdelf; then
+		dnl	RANLIB="$RANLIB -aout"
+		dnl	CFLAGS="$CFLAGS -aout"
+		dnl	AM_PROG_LIBTOOL
+		dnl fi
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="ibase"
+    else
+       DBTYPE="$DBTYPE-ibase"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(IBASE_LFLAGS)
+AC_SUBST(IBASE_INCLUDE)
+
+AC_MSG_CHECKING(for Ct-Lib support)
+AC_ARG_WITH(ctlib,
+[  --with-ctlib[=DIR]      Include Ct-Lib support.  DIR is the Ct-Lib
+                          install directory, defaults to /opt/sybase.],
+[
+	if test "$withval" = "yes"; then
+		withval=/opt/sybase
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/include/ctpublic.h; then
+			CTLIB_INCDIR=$withval/include
+			CTLIB_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid Ct-Lib directory - unable to find ctpublic.h)
+		fi
+		if test -f $withval/lib/libsybct.a; then
+			CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lsybct -lsybcs -lsybtcl -lsybcomn -lsybintl -lsybunic"
+		else
+			CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lct -lcs -lsybtcl -lcomn -lintl"
+		fi
+		CTLIB_INCLUDE="-I$CTLIB_INCDIR"
+		AC_DEFINE([HAVE_CTLIB], [1], [Define if you want to use CT-LIB SyBase SQL Server])
+		AC_MSG_RESULT(yes)
+		have_db=yes
+		dnl ctlib requires -ldl sometime
+		AC_CHECK_FUNC(dlopen, , AC_CHECK_LIB(dl, dlopen, CTLIB_LFLAGS="$CTLIB_LFLAGS -ldl"))
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="ctlib"
+    else
+       DBTYPE="$DBTYPE-ctlib"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(CTLIB_LFLAGS)
+AC_SUBST(CTLIB_INCLUDE)
+
+
+AC_MSG_CHECKING(for FreeTDS Ct-Lib support)
+AC_ARG_WITH(freetds,
+[  --with-freetds[=DIR]    Include FreeTDS Ct-Lib support.  DIR is the FreeTDS
+                          install directory, defaults to /usr/local.],
+[
+	if test "$withval" = "yes"; then
+		withval=/usr/local
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/include/ctpublic.h; then
+			CTLIB_INCDIR=$withval/include
+			CTLIB_LIBDIR=$withval/lib
+		elif test -f $withval/include/freetds/ctpublic.h; then
+			CTLIB_INCDIR=$withval/include/freetds
+			CTLIB_LIBDIR=$withval/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid FreeTDS directory - unable to find ctpublic.h)
+		fi
+		CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lct"
+		CTLIB_INCLUDE="-I$CTLIB_INCDIR"
+		AC_DEFINE([HAVE_CTLIB], [1], [Define if you want to use CT-LIB SyBase SQL Server])
+		AC_MSG_RESULT(yes)
+		have_db=yes
+		AC_CHECK_FUNC(dlopen, , AC_CHECK_LIB(dl, dlopen, CTLIB_LFLAGS="$CTLIB_LFLAGS -ldl"))
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="freetds"
+    else
+       DBTYPE="$DBTYPE-freetds"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(CTLIB_LFLAGS)
+AC_SUBST(CTLIB_INCLUDE)
+
+
+AC_MSG_CHECKING(for sqlite support)
+AC_ARG_WITH(sqlite,
+[  --with-sqlite[=DIR]     Include sqlite support.  DIR is the sqlite
+                          install directory, default to search through
+                          a number of common places for SQLite files,],
+[
+	path=""
+
+	if test "$withval" = "yes"; then
+		withval="/usr /usr/local"
+	fi
+
+	for d in $withval; do
+		if test -f $d/include/sqlite.h; then
+			SQLITE_INCDIR=$d/include
+			SQLITE_LIBDIR=$d/lib
+			SQLITE_LFLAGS="-L$SQLITE_LIBDIR -lsqlite"
+			SQLITE_INCLUDE="-I$SQLITE_INCDIR"		
+			path=$d
+			AC_MSG_RESULT($d)
+			AC_DEFINE([HAVE_SQLITE], [1], [Define if you want to use sqlite])
+			break
+		fi
+	done
+
+	if test "$path" = ""; then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR(Invalid sqlite directory - unable to find sqlite.h)
+	fi
+
+	have_db=yes
+
+	if test "x$DBTYPE" = "x" ; then
+		DBTYPE="sqlite"
+	else
+		DBTYPE="$DBTYPE-sqlite"
+	fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(SQLITE_LFLAGS)
+AC_SUBST(SQLITE_INCLUDE)
+
+
+AC_MSG_CHECKING(for sqlite3 support)
+AC_ARG_WITH(sqlite3,
+[  --with-sqlite3[=DIR]    Include sqlite3 support.  DIR is the sqlite
+                          install directory, default to search through
+                          a number of common places for SQLite files,],
+[
+	path=""
+
+	if test "$withval" = "yes"; then
+		withval="/usr /usr/local"
+	fi
+
+	for d in $withval; do
+		if test "$d" = "amalgamation"; then
+			AC_DEFINE([HAVE_SQLITE3_AMALGAMATION], [1], [Define if you want to use sqlite3 amalgamation file sqlite3.c])
+			path=$d
+			AC_MSG_RESULT($d)
+			break
+		fi
+		if test -f $d/include/sqlite3.h; then
+			SQLITE3_INCDIR=$d/include
+			SQLITE3_LIBDIR=$d/lib
+			SQLITE3_LFLAGS="-L$SQLITE3_LIBDIR -lsqlite3"
+			SQLITE3_INCLUDE="-I$SQLITE3_INCDIR"
+			path=$d
+			AC_MSG_RESULT($d)
+			AC_DEFINE([HAVE_SQLITE3], [1], [Define if you want to use sqlite3])
+			break
+		fi
+	done
+
+	if test "$path" = ""; then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR(Invalid sqlite directory - unable to find sqlite3.h)
+	fi
+
+	have_db=yes
+
+	if test "x$DBTYPE" = "x" ; then
+		DBTYPE="sqlite3"
+	else
+		DBTYPE="$DBTYPE-sqlite3"
+	fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(SQLITE3_LFLAGS)
+AC_SUBST(SQLITE3_INCLUDE)
+
+
+AC_MSG_CHECKING(for Oracle8 support)
+AC_ARG_WITH(oracle8,
+[  --with-oracle8[=DIR]    Include Oracle8 support.  DIR is the Oracle
+                          home directory, defaults to $ORACLE_HOME or
+                          /oracle8/app/oracle/product/8.0.5.],
+[
+	if test "$withval" = "yes"; then
+		withval="$ORACLE_HOME"
+		if test "$withval" = ""; then
+			withval=/oracle8/app/oracle/product/8.0.5
+		fi
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/rdbms/demo/oci.h; then
+			ORACLE8_INCDIR1=$withval/rdbms/demo/
+			ORACLE8_INCDIR2=$withval/rdbms/public/
+			ORACLE8_INCDIR3=$withval/network/public/
+			ORACLE8_INCDIR4=$withval/plsql/public/
+			ORACLE8_LIBDIR1=$withval/lib
+			ORACLE8_LIBDIR2=$withval/rdbms/lib
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid ORACLE directory - unable to find oci.h)
+		fi
+                if test -f $withval/lib/libwtc8.so; then
+                         ORACLE8_LIBS="-lwtc8"
+                fi
+
+		ORACLE8_LFLAGS="-L$ORACLE8_LIBDIR1 -L$ORACLE8_LIBDIR2$ORACLE8_LIBS  -lclntsh -lmm -lepc -lclient -lvsn -lcommon -lgeneric -lcore4 -lnlsrtl3 -lm -lnetv2 -lnttcp -lnetwork -lncr -lsql"
+		ORACLE8_INCLUDE="-I$ORACLE8_INCDIR1 -I$ORACLE8_INCDIR2 -I$ORACLE8_INCDIR3 -I$ORACLE8_INCDIR4"
+ 		AC_DEFINE([HAVE_ORACLE8], [1], [Define if you want to use Oracle 8 SQL Server])
+		AC_MSG_RESULT(yes)
+		have_db=yes
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="oracle8"
+    else
+       DBTYPE="$DBTYPE-oracle8"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(ORACLE8_LFLAGS)
+AC_SUBST(ORACLE8_INCLUDE)
+
+
+AC_MSG_CHECKING(for Oracle8i support)
+AC_ARG_WITH(oracle8i,
+[  --with-oracle8i[=DIR]   Include Oracle8i support.  DIR is the Oracle
+                          home directory, defaults to $ORACLE_HOME],
+[
+	if test "$withval" = "yes"; then
+		withval="$ORACLE_HOME"
+	fi
+
+	if test "$withval" != "no"; then
+		if test -f $withval/rdbms/demo/oci.h; then
+			ORACLE8_INCDIR1=$withval/rdbms/demo/
+			ORACLE8_INCDIR2=$withval/rdbms/public/
+			ORACLE8_INCDIR3=$withval/network/public/
+			ORACLE8_INCDIR4=$withval/plsql/public/
+			ORACLE8_LIBDIR1=$withval/lib
+			ORACLE8_LIBDIR2=$withval/rdbms/lib
+
+			ORACLE8_LFLAGS="-L$ORACLE8_LIBDIR1 -L$ORACLE8_LIBDIR2 -lclntsh -lmm -lm"
+			ORACLE8_INCLUDE="-I$ORACLE8_INCDIR1 -I$ORACLE8_INCDIR2 -I$ORACLE8_INCDIR3 -I$ORACLE8_INCDIR4"
+ 			AC_DEFINE([HAVE_ORACLE8], [1], [Define if you want to use Oracle 8 SQL Server])
+			AC_MSG_RESULT($withval)
+			have_db=yes
+		elif test -f $withval/rdbms/public/oci.h; then
+			ORACLE8_INCDIR1=$withval/rdbms/public/
+			ORACLE8_LIBDIR1=$withval/lib
+			ORACLE8_LIBDIR2=$withval/rdbms/lib
+
+			ORACLE8_LFLAGS="-L$ORACLE8_LIBDIR1 -L$ORACLE8_LIBDIR2 -lclntsh -lnnz10 -lm"
+			ORACLE8_INCLUDE="-I$ORACLE8_INCDIR1"
+ 			AC_DEFINE([HAVE_ORACLE8], [1], [Define if you want to use Oracle 8 SQL Server])
+			AC_MSG_RESULT($withval)
+			have_db=yes
+		elif test -f /usr/include/oracle/11.2/client64/oci.h; then
+			dnl oracle-instantclient11.2-devel-11.2.0.2.0.x86_64.rpm
+			ORACLE8_INCDIR=/usr/include/oracle/11.2/client64/
+			ORACLE8_LIBDIR=/usr/lib/oracle/11.2/client64/lib/
+			ORACLE8_LFLAGS="-L$ORACLE8_LIBDIR -lclntsh -lnnz11 -lm"
+			ORACLE8_INCLUDE="-I$ORACLE8_INCDIR"
+ 			AC_DEFINE([HAVE_ORACLE8], [1], [Define if you want to use Oracle 8 SQL Server])
+			AC_MSG_RESULT($withval)
+			have_db=yes
+
+		else
+    			AC_MSG_RESULT(no)
+			AC_MSG_ERROR(Invalid ORACLE directory - unable to find oci.h)
+		fi
+	fi
+    if test "x$DBTYPE" = "x" ; then
+       DBTYPE="oracle8i"
+    else
+       DBTYPE="$DBTYPE-oracle8i"
+    fi
+
+],[
+	AC_MSG_RESULT(no)
+])
+AC_SUBST(ORACLE8_LFLAGS)
+AC_SUBST(ORACLE8_INCLUDE)
+
+
+
+AC_DIVERT_PUSH(0)
+define(DCHARSETS_AVAILABLE,big5 gb2312 gbk japanese euc-kr gujarati tscii)
+CHARSETS_AVAILABLE="DCHARSETS_AVAILABLE"
+AC_DIVERT_POP
+
+AC_ARG_WITH(extra-charsets,
+  [  --with-extra-charsets=CHARSET[,CHARSET,...]
+                          Use additional non-default charsets:
+                          none, all or a comma separated list from this set:
+                          DCHARSETS_AVAILABLE],
+  [extra_charsets="$withval"],
+  [extra_charsets="none"])
+
+AC_MSG_CHECKING(for additional character sets)
+
+if test "$extra_charsets" = no; then
+  CHARSETS=""
+elif test "$extra_charsets" = none; then
+  CHARSETS=""
+else
+  if test "$extra_charsets" = all; then
+    CHARSETS="$CHARSETS_AVAILABLE"
+  else
+    CHARSETS=`echo $extra_charsets | sed -e 's/,/ /g'`
+  fi
+fi
+
+for cs in $CHARSETS
+do
+  case $cs in 
+    big5)
+      AC_DEFINE([HAVE_CHARSET_big5], [1], [Define if you want Chinese big5 support])
+      ;;
+    euc-kr)
+      AC_DEFINE([HAVE_CHARSET_euc_kr], [1], [Define if you want Korean euc-kr support])
+      ;;
+    gb2312)
+      AC_DEFINE([HAVE_CHARSET_gb2312], [1], [Define if you want Chinese gb2312 support])
+      ;;
+    japanese)
+      AC_DEFINE([HAVE_CHARSET_japanese], [1], [Define if you want Japanese support])
+      ;;
+    gbk)
+      AC_DEFINE([HAVE_CHARSET_gbk], [1], [Define if you want Chinese gbk support])
+      ;;
+    gujarati)
+      AC_DEFINE([HAVE_CHARSET_gujarati], [1], [Define if you want gujarati support])
+      ;;
+    tscii)
+      AC_DEFINE([HAVE_CHARSET_tscii], [1], [Define if you want tscii support])
+      ;;
+    *)
+      AC_MSG_ERROR([Charset $cs not available. (Available: $CHARSETS_AVAILABLE).]);
+  esac
+  ADDCHARSETS="$ADDCHARSETS $cs"
+done
+
+AC_MSG_RESULT($ADDCHARSETS)
+
+
+dnl Check if one of databases was selected
+if test "$have_db" != "yes"; then
+	db_PROGS=""
+else	
+	db_PROGS="indexer"
+fi
+
+if test "$fhs_layout" == "yes"; then
+  db_bin_PROGS=$db_PROGS
+else
+  db_sbin_PROGS=$db_PROGS
+fi
+
+AC_SUBST(db_PROGS)
+AC_SUBST(db_bin_PROGS)
+AC_SUBST(db_sbin_PROGS)
+
+AC_DEFINE_UNQUOTED([UDM_DBTYPE], ["$DBTYPE"], [Define UDM_DBTYPE])
+AC_SUBST(DBTYPE)
+CDIR=`pwd`
+AC_SUBST(CDIR)
+AC_OUTPUT(Makefile include/Makefile src/Makefile doc/Makefile dnl
+  etc/Makefile etc/freq/Makefile dnl
+  etc/langmap/Makefile etc/stopwords/Makefile etc/synonym/Makefile dnl
+  doc/catalog dnl
+  misc/Makefile scripts/Makefile create/Makefile dnl
+  create/db2/Makefile create/ibase/Makefile dnl
+  create/mssql/Makefile create/mysql/Makefile create/oracle/Makefile dnl
+  create/pgsql/Makefile create/sapdb/Makefile create/solid/Makefile dnl
+  create/sybase/Makefile create/virtuoso/Makefile create/sqlite/Makefile dnl
+  create/mimer/Makefile create/cache/Makefile create/monetdb/Makefile dnl
+  scripts/udm-config dnl
+  perl/Makefile.PL msearch-test/Makefile)
+
+
+if test "$have_db" != "yes"; then
+	echo
+	echo
+	echo "No database selected! indexering part will not be compiled"
+	echo "If it's incorrect, use --with-XXX where XXX is your preferred database type"
+fi
+
+echo
+echo "***********************************************************"
+echo "*                                                         *"
+echo "*     Now run make && make install                        *"
+echo "*     If it fails, try to use GNU make,                   *"
+echo "*     often installed as gmake.                           *"
+echo "*                                                         *"
+echo "*                                                         *"
+echo "*            Thank you for using mnoGoSearch!             *"
+echo "***********************************************************"
+echo
+

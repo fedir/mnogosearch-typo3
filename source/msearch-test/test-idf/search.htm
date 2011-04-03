@@ -1,0 +1,85 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single
+
+HlBeg	<b>
+HlEnd	</b>
+
+IDFFactor 255
+WordDensityFactor 0
+DocSizeWeight     0
+NumWordFactor     0
+MinCoordFactor    0
+WordDistanceWeight 0
+
+Log2Stderr yes
+LogLevel 6
+-->
+
+<!--top-->
+--------------------
+<!--/top-->
+
+
+<!--restop-->
+Search for "$&(q)".
+Search results: $(W).
+Results $(first)-$(last) of $(total).
+
+nwords=$(nwords)
+word0: word='$(word0.word)' count='$(word0.count)' doccount='$(word0.doccount)' order='$(word0.order)' origin='$(word0.origin)' weight='$(word0.weight)'
+wors1: word='$(word1.word)' count='$(word1.count)' doccount='$(word1.doccount)' order='$(word1.order)' origin='$(word1.origin)' weight='$(word1.weight)'
+
+<!--/restop-->
+
+
+<!--res-->
+Order: $(Order).
+URL: $(URL)
+Score: $(Score)
+Body: $&(Body)...
+
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+
+<!--clone-->
+<!--/clone-->
+
+<!--navleft-->
+<!--/navleft-->
+
+<!--navleft_nop-->
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<!--/navbar1-->
+
+<!--navbar0-->
+<!--/navbar0-->
+
+<!--navright-->
+<!--/navright-->
+
+<!--navright_nop-->
+<!--/navright_nop-->
+
+<!--notfound-->
+Search for: $&(q).
+Search results: $(W)
+Sorry, your search for "$&(q)" did not find any results.
+No documents were found containing "$&(q)".
+<!--/notfound-->
+
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

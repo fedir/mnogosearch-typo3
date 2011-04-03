@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Generator v1.1" -->
+<rss version="2.0" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
+
+  <channel>
+
+    <openSearch:totalResults>20</openSearch:totalResults>
+    <openSearch:startIndex>1</openSearch:startIndex>
+    <openSearch:itemsPerPage>2</openSearch:itemsPerPage>
+
+    <mnoGoSearch:WordStatList>
+      <mnoGoSearch:WordStatItem order="0" count="300" word="web"/>
+    </mnoGoSearch:WordStatList>
+
+    <item>
+      <id>1</id>
+      <score>70.25%</score>
+      <title><b>Test21</b> title</title>
+      <link>http://gw/21</link>
+      <description>Apache Web Server Manual</description>
+      <updated>2000-12-13T18:30:02Z</updated>
+      <content-length>7025</content-length>
+      <content-type>application/msword</content-type>
+    </item>
+
+    <item>
+      <id>2</id>
+      <score>50.25%</score>
+      <title>Test22 <b>hl</b> title</title>
+      <link>http://gw/22</link>
+      <description>Apache2 Web Server Manual</description>
+      <updated>2001-12-13T18:30:02Z</updated>
+      <content-length>5025</content-length>
+      <content-type>application/msword</content-type>
+    </item>
+
+  </channel>
+
+</rss>

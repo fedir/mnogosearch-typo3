@@ -1,0 +1,27 @@
+SAY --- Installing UdmSearch Database Objects for CRC mode
+/
+AUTOCOMMIT OFF
+/
+IF $RC (EXISTS TABLE ndict) <> 0
+THEN
+    BEGIN
+/    
+  CREATE TABLE ndict (
+  url_id	FIXED(12) DEFAULT 0 NOT NULL,
+  word_id	FIXED(12) DEFAULT 0 NOT NULL,
+  intag		FIXED(12) DEFAULT 0 NOT NULL
+)
+/
+CREATE INDEX ndict_url_ind ON ndict
+(
+       url_id
+)
+/
+CREATE INDEX ndict_word_ind ON ndict
+(
+       word_id
+)
+/
+END
+/
+COMMIT

@@ -1,0 +1,60 @@
+DROP TABLE dict;
+DROP TABLE url;
+DROP TABLE stopword;
+DROP TABLE robots;
+DROP SEQUENCE next_url_id;
+COMMIT WORK;
+
+
+CREATE TABLE dict (
+  url_id INT NOT NULL,
+  word VARCHAR(32) NOT NULL,
+  intag INT NOT NULL
+);
+
+CREATE SEQUENCE next_url_id;
+
+CREATE TABLE url (
+  rec_id INT NOT NULL,
+  status INT NOT NULL,
+  url VARCHAR(128) NOT NULL,
+  content_type VARCHAR(48),
+  title VARCHAR(128),
+  txt VARCHAR(255),
+  docsize INT,
+  next_index_time INT NOT NULL,
+  last_mod_time INT,
+  referrer INT,
+  tag VARCHAR(16),
+  hops INT,
+  category VARCHAR(16),
+  keywords VARCHAR(255),
+  description VARCHAR(100),
+  crc32 INT NOT NULL,
+  lang VARCHAR(32),
+  charset VARCHAR(40),
+  seed INT
+);
+
+CREATE TABLE stopword (
+  word varchar(32) NOT NULL,
+  lang varchar(32)  NOT NULL
+);
+
+CREATE TABLE robots (
+  hostinfo VARCHAR(127) NOT NULL,
+  path VARCHAR(127) NOT NULL
+);
+
+CREATE   INDEX dict_word_url_id ON dict (word,url_id);
+
+CREATE   INDEX dict_url_id ON dict (url_id);
+
+CREATE UNIQUE  INDEX url_url ON url (url);
+
+CREATE INDEX url_crc ON url (crc32);
+
+CREATE UNIQUE  INDEX stopword_word ON stopword (word,lang);
+
+COMMIT WORK;
+

@@ -1,0 +1,508 @@
+<sect1 id="general">
+  <title>Indexing in general</title>
+
+
+  <sect2 id="general-conf">
+    <title>Configuration</title>
+    <para>
+    Indexer configuration is covered mostly by the &indexer.conf-dist; file.
+    You can find it in the <filename>/etc</filename> directory
+    of the &mnogo; installation
+    directory. Also, you may want to take a look into the
+    other <filename>*.conf</filename> samples
+    in the <filename>doc/samples</filename> directory of
+    the &mnogo; source distribution.
+    </para>
+    <para>To set up &indexer.conf; file,
+    go to the <literal>/etc</literal> directory of your
+    &mnogo; installation,
+    copy &indexer.conf-dist; to
+    &indexer.conf; and edit it using a text editor.
+    Typically, the <command><xref linkend="cmdref-dbaddr"/></command>
+    command needs to be modified according to your database connection
+    parameters, as well as a new command
+    <command><xref linkend="cmdref-server"/></command>
+    describing your Web site needs to be added. The other default
+    &indexer.conf; commands are usually suitable
+    in most cases and do not need changes. The file 
+    &indexer.conf; is well-commented and
+    contains examples for the most important commands, so
+    you will find it easy to configure.
+    </para>
+    <para>
+    To configure the search front-end &search.cgi;,
+    copy the file &search.htm-dist; to &search.htm; and edit it.
+    Typically, only <command><xref linkend="cmdref-dbaddr"/></command>
+    needs to be modified according to your database connection parameters,
+    similar to &indexer.conf;.
+    See <xref linkend="templates"/> for more detailed description.
+    </para>
+  </sect2>
+
+
+  <sect2 id="general-create-tables">
+    <title>Creating &sql; table structure
+      <indexterm><primary>Creating &sql; table structure</primary></indexterm>
+    </title>
+    <para>To create &sql; tables required for
+    &mnogo;, use <literal>indexer -Ecreate</literal>.
+    When started with this argument, &indexer; opens the file
+    containing the &sql; statements necessary for creating all &sql; tables
+    according to the database type and storage mode given in
+    the <command><xref linkend="cmdref-dbaddr"/></command> command
+    in &indexer.conf;. The files with the SQL
+    scripts are typically installed to the <filename>/share</filename>
+    directory of the &mnogo; installation,
+    which is usually <filename>/usr/local/mnogosearch/share/mnogosearch/</filename>.
+    </para>
+  </sect2>
+
+
+  <sect2 id="general-drop-tables">
+    <title>Dropping &sql; table structure
+      <indexterm><primary>Dropping &sql; table structure</primary></indexterm>
+    </title>
+    <para>To drop all &sql; tables created by &mnogo;,
+    use <literal>indexer -Edrop</literal>. The files with the &sql; statements
+    required to drop all tables previously created by
+    &mnogo; is installed in the <filename>/share</filename>
+    directory of the &mnogo; installation.
+    </para>
+    <note>
+    <para>
+    In some cases when you need to remove all existing data
+    from the search database and to crawl your sites from the very beginning, 
+    you can use <literal>indexer -Edrop</literal> followed
+    by <literal>indexer -Ecreate</literal> instead of 
+    truncating the existing tables (<literal>indexer -C</literal>).
+    In some databases recreating the tables work faster than
+    truncating data from the existing tables.
+    </para>
+    </note>
+  </sect2>
+
+
+  <sect2 id="general-run">
+    <title>Running &indexer;</title>
+    <para>
+      Run &indexer; periodically
+      (once a week, a day, an hour...), depending
+      on how often changes on your sites happen.
+      You may find useful adding  &indexer;
+      into <application>cron</application> job.
+    </para>
+    <para>
+    If you run &indexer; without any command
+    line arguments, it crawls only new and expired documents, while
+    fresh documents are not crawled. You can change expiration time
+    with help of the <command><xref linkend="cmdref-period"/></command>
+    &indexer.conf; command.
+    The default expiration period is one week.
+    If you need to crawl all documents, including the fresh ones,
+    (i.e. without having to wait for their expiration period),
+    use the <literal>-a</literal> command line option.
+    &indexer; will mark all documents as expired at startup.
+    </para>
+  </sect2>
+
+  <sect2>
+    <title>HTTP redirects</title>
+    <para>If &indexer; gets a redirect
+    response (<literal>301</literal>, <literal>302</literal>,
+    <literal>303</literal> &http; status), the URL from
+    the <literal>Location:</literal> &http; header is added
+    into the database.
+    </para>
+    <note>
+    <para>
+    &indexer;
+    puts the redirect target
+    into its queue. It does not follow the redirect target
+    immediately after processing an URL with a redirect response.
+    </para>
+    </note>
+  </sect2>
+
+  <sect2 id="general-crawling-optimization">
+    <title>Crawling time optimization</title>
+    <indexterm><primary>Command</primary><secondary>Period</secondary></indexterm>
+    <para>When downloading documents, &indexer; tries
+    to do some optimization. It sends the
+    <literal>If-Modified-Since</literal> &http; header for the
+    documents it have already downloaded (during the previous crawling
+    sessions). If the &http; server replies "<literal>304 Not
+    modified</literal>", then only minor updates in the database are done.
+    </para>
+    <para>
+    When &indexer; downloads a document
+    (i.e. when it gets a "<literal>HTTP 200 Ok</literal>" response)
+    it calculates the document checksum using the <emphasis>crc32</emphasis> algorithm.
+    If checksum is the same to the previous checksum stored in the database,
+    &indexer; will not do full updates in the database
+    with the new information about this document.
+    This is also done for optimization purposes to improve
+    crawling performance.
+    </para>
+    <para>
+    The <literal>-m</literal> command line option prevents
+    &indexer; from sending the
+    <literal>If-Modified-Since</literal> headers and forces
+    full updating the database even if the checksum is the same.
+    It can be useful if you have modified &indexer.conf;.
+    For example, when the <command><xref linkend="cmdref-allow"/></command>,
+    <command><xref linkend="cmdref-disallow"/></command> rules were
+    changed, or new <command><xref linkend="cmdref-server"/></command>
+    commands were added, and therefore you need &indexer;
+    to parse the old documents once again and add new links which
+    were ignored in the previous configuration.
+    <note>
+    <para>
+    Sometimes you may need to <emphasis>force</emphasis> reindexing of some document 
+    (or a group of documents), that is force both document downloading
+    (even when it is not expired yet) and updating the information about
+    the document in the database (even if the checksum has not modified).
+    You may find this command useful:
+<programlisting>
+indexer -am -u http://site/some/document.html
+</programlisting>
+    </para>
+    </note>
+    </para>
+  </sect2>
+
+
+  <sect2 id="general-subsect">
+    <title>Subsection control</title>
+    <para>&indexer; understand the <literal>-t, -u, -s</literal>
+    command line options to limit actions to only a part of the database.
+    <literal>-t</literal> forces a limit on
+    <command><xref linkend="cmdref-tag"/></command>,
+    <literal>-u</literal> forces a limit on URL substring
+    (using &sql; LIKE wildcards).
+    <literal>-s</literal> forces a limit on &http; status.
+    All limit command can be specified multiple times.
+    All limit options of the same group are <literal>OR</literal>-ed,
+    and the groups are <literal>AND</literal>-ed. For example,
+    if you run <userinput>indexer -s200 -s304 -u http://site1/% -u
+    http://site2/%</userinput>, &indexer; will re-crawl
+    the documents having &http; status <literal>200</literal> or
+    <literal>304</literal>, only from the site
+    <literal>http://site1/</literal> or from the site
+    <literal>http://site2/</literal>.
+    </para>
+    <note>
+    <para>
+    The above command line will be internally interpreted
+    into this &sql; query when fetching URLs from the queue:
+<programlisting>
+SELECT
+  &lt;columns&gt;
+FROM
+  url
+WHERE
+  status IN (200,304)
+AND
+  (url LIKE 'http://site1/%' OR url LIKE 'http://site2/%'
+AND
+  next_index_time &gt;= &lt;current_time&gt;
+</programlisting>
+    </para>
+    </note>
+  </sect2>
+
+
+  <sect2 id="general-cleardb">
+    <title>How to clear the database
+      <indexterm><primary>Clearing the database</primary></indexterm>
+    </title>
+    <para>To clear all information from the database,
+    use <userinput>indexer -C</userinput>.
+    </para>
+    <para>
+    By default, &indexer; asks 
+    for a confirmation if you are sure to delete data
+    from the database.
+<programlisting>
+$ indexer -C
+You are going to delete content from the database(s):
+pgsql://root@/root/?dbmode=blob
+Are you sure?(YES/no)
+</programlisting>
+    You can use the <literal>-w</literal> command line option
+    together with <literal>-C</literal> to force deleting data
+    without asking for confirmation: <userinput>indexer -Cw</userinput>.
+    </para>
+    <para>
+    You may also delete only a part of the database.
+    All subsection control options are taking into account
+    when deleting data. For example:
+<programlisting>
+indexer -Cw -u http://site/% 
+</programlisting>
+    will delete infomation about all documents from the
+    site <literal>http://site/</literal> without asking
+    for confirmation.
+    </para>
+  </sect2>
+
+
+  <sect2 id="general-dbstat">
+    <title>Database Statistics
+      <indexterm><primary>Database statistics</primary></indexterm>
+    </title>
+    <para>If you run <literal>indexer -S</literal>,
+    &indexer; will display the current database statistics,
+    including the number of total and expired documents for each HTTP
+    status:
+<programlisting>
+$indexer -S
+
+          Database statistics [2008-12-21 15:35:34]
+
+    Status    Expired      Total
+   -----------------------------
+         0        883        971 Not indexed yet
+       200          0        891 OK
+       404          0       1585 Not found
+   -----------------------------
+     Total        883       3447
+</programlisting>
+    It is also possible to see database statistic for a certain
+    moment of time in the future with help of the <literal>-j</literal>
+    command line argument, to check expiration period of the documents.
+    <literal>-j</literal> understands time in the format
+    <literal>YYYY-MM[-DD[ HH[:MM[:SS]]]]</literal>, or time offset
+    from the current time using the same format with the
+    <command><xref linkend="cmdref-period"/></command> command.
+    For example, 7d12h means <literal>seven days and 12 hours:</literal>
+<programlisting>
+$indexer -S -j 7d12h
+
+          Database statistics [2008-12-29 03:44:19]
+
+    Status    Expired      Total
+   -----------------------------
+         0        971        971 Not indexed yet
+       200        891        891 OK
+       404       1585       1585 Not found
+   -----------------------------
+     Total       3447       3447
+</programlisting>
+    From the above output we know that after
+    the given period of time all documents
+    in the database will have expired.
+    <note>
+    <para>
+    All subsection control options work together with <literal>-S</literal>.
+    </para>
+    </note>
+    </para>
+    <para>The meaning of the various status values is given in this
+    list:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para><literal>0</literal> - a new document (not visited yet)
+    </para>
+      </listitem>
+    </itemizedlist>
+    <para>If status is not <literal>0</literal>,
+    then it's a &http; response code &indexer; got
+    when downloading this document. Some of the &http; codes are:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <literal>200</literal> - <literal>OK</literal>
+          (the document was successfully downloaded)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>301</literal> - <literal>Moved Permanently</literal>
+            (redirect to another URL)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>302</literal> - <literal>Moved Temporarily</literal>
+          (redirect to another URL)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>303</literal> - <literal>See Other</literal>
+          (redirect to another URL)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>304</literal> - <literal>Not modified</literal>
+          (the document has not been modified since last visit)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>401</literal> - <literal>Authorization required</literal>
+          (use login/password for the given URL)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>403</literal> - <literal>Forbidden</literal>
+          (you have no access to this URL)
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>404</literal> - <literal>Not found</literal>
+          (the document does not exist)
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>500</literal> - <literal>Internal Server Error</literal>
+          (an error in a CGI script, etc)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>503</literal> - <literal>Service Unavailable</literal>
+          (host is down, connection timed out)
+    </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>504</literal> - <literal>Gateway Timeout</literal>
+          (read timeout happened during downloading the document)
+    </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+      <indexterm><primary>Command</primary><secondary>AuthBasic</secondary></indexterm>
+      <literal>HTTP 401</literal> means that this URL is password protected.
+      You can use the <command><xref linkend="cmdref-authbasic"/></command>
+      command in &indexer.conf; to specify the
+      <literal>login:password</literal> pair for this URL.
+    </para>
+    <para> <literal>HTTP 404</literal> means that you have a broken link
+      in one of your document (a reference to a resource that does not exist).
+    </para>
+    <para>Take a look at
+    <ulink url="http://www.w3.org/Protocols/">HTTP specific documentation</ulink>
+    for the further information on &http; status codes.
+    </para>
+  </sect2>
+
+
+  <sect2 id="general-linkval">
+    <title>Using &indexer; for site validation
+      <indexterm><primary>Link validation</primary></indexterm>
+    </title>
+    <para>Run <userinput>indexer -I</userinput> to display the 
+    list of URLs together with their referrers. It can be useful
+    to find broken links on your site.
+    <note>
+    <para>
+    If <xref linkend="cmdref-holdbadhrefs"/> is set to <literal>0</literal>,
+    link validation won't work.
+    </para>
+    </note>
+    <note>
+    <para>
+    All subsection control options work together with <literal>-I</literal>.
+    For example, <literal>indexer -I -s 404</literal> will display
+    the list of the documents with &http; status <literal>404 Not
+    found</literal> together with their referrers where the links to the
+    missing documents were found.
+    </para>
+    </note>
+    You can use &mnogo;
+    especially for link validation purposes.
+    </para>
+  </sect2>
+
+
+  <sect2 id="general-parallel">
+    <title>Running multiple &indexer; instances for crawling
+      <indexterm><primary>Parallel indexing</primary></indexterm>
+    </title>
+
+    <para>It is always safe to run multiple &indexer;
+    processes with different &indexer.conf; 
+    files configured to use different databases
+    in the <command><xref linkend="cmdref-dbaddr"/></command>.
+    </para>
+
+    <para>Some databases also allow to run multiple
+     &indexer; crawling processes with the same
+     &indexer.conf; file. As of
+    &mnogo; version
+    <literal>3.3.8</literal>, it is possible with
+      &app-mysql;, &app-pgsql; and &app-oracle;.
+      Starting from version <literal>3.3.10</literal>,
+      multiple running &indexer; crawling
+      processes is also possible with &app-mssql;.
+      &indexer; uses locking mechanisms
+      provided by the database software
+      (such as <literal>SELECT FOR UPDATE</literal>,
+      <literal>LOCK TABLE</literal>, <literal>(TABLOCKX)</literal>)
+      when fetching crawling targets from the database.
+      This is done to avoid double crawling of the same documents
+      by simultaneous &indexer; processes.
+    <note>
+    <para>
+    &indexer; is known to work fine
+    with <literal>30</literal> simultaneous crawling
+    processes with <application>MySQL</application>.
+    </para>
+    </note>
+    </para>
+
+    <note>
+    <para>It is not recommended to use the same database with
+    different &indexer.conf; files.
+    The first process can add new documents to the database,
+    while the second process can delete the same documents
+    because of different configuration. This process can never stop.
+    </para>
+    </note>
+
+  </sect2>
+  
+  <sect2 id="general-parallel-threads">
+    <title>Running &indexer; with multiple threads
+      <indexterm><primary>Parallel indexing</primary></indexterm>
+    </title>
+    
+    <para>
+    You can start &indexer; with multiple threads
+    using the <literal>-N</literal> command line option. For example,
+    <userinput>indexer -N10</userinput> will start <literal>10</literal>
+    crawling threads, which means <literal>10</literal> documents
+    from different locations will be downloaded at the same time,
+    which improves crawling performance significantly.
+    </para>
+    
+    <para>
+    <note>
+    <para>
+    Running <literal>10</literal> instances of &indexer;
+    is effectively very similar to running a single &indexer;
+    with <literal>10</literal> threads. You may notice some difference
+    though if you terminate (using <literal>Ctrl-Break</literal>)
+    or kill (using <application>kill(1)</application>) &indexer;,
+    or if &indexer; crashes for some reasons (e.g. when
+    it hits some bug in the sources).  In case of separate processes
+    only one process will die and the alive processes will continue
+    crawling, while in case of a multi-threaded &indexer;
+    all threads die and crawling completely stops.
+    </para>
+    </note>
+    </para>
+
+
+  </sect2>
+
+</sect1>

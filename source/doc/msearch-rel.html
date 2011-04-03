@@ -1,0 +1,1189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Ranking documents
+     
+  </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Searching documents"
+HREF="msearch-doingsearch.html"><LINK
+REL="PREVIOUS"
+TITLE="Template operators"
+HREF="msearch-templates-oper.html"><LINK
+REL="NEXT"
+TITLE="Tracking search queries
+    
+  "
+HREF="msearch-track.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-templates-oper.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Searching documents</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-track.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="rel"
+>Ranking documents
+     <A
+NAME="AEN5905"
+></A
+></A
+></H1
+><P
+>By default, <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> sorts
+   results by <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>score</I
+></SPAN
+>.
+   Score is calculated as <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>relevancy</I
+></SPAN
+>
+   value mixed with various other factors listed in
+   <A
+HREF="msearch-rel.html#score-commands"
+>the Section called <I
+>Commands affecting document score
+  <A
+NAME="AEN5921"
+></A
+></I
+></A
+>.
+   </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+     You can also request a non-default document ordering
+     with help of the <TT
+CLASS="literal"
+>s</TT
+> search parameter.
+     Have a look into <A
+HREF="msearch-doingsearch.html#search-params"
+>the Section called <I
+>Search parameters
+    <A
+NAME="AEN4477"
+></A
+></I
+></A
+>
+     to know how to order documents by <TT
+CLASS="literal"
+>Date</TT
+>,
+     <TT
+CLASS="literal"
+>Popularity Rank</TT
+>, <TT
+CLASS="literal"
+>URL</TT
+>
+     and other document parameters.
+     </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="score-commands"
+>Commands affecting document score
+  <A
+NAME="AEN5921"
+></A
+></A
+></H2
+><P
+>&#13;    Have a look into these manual sections to know about various commands
+    that affect document ordering and/or score values:
+    <A
+HREF="msearch-cmdref-datefactor.html"
+>DateFactor</A
+>,
+    <A
+HREF="msearch-cmdref-docsizeweight.html"
+>DocSizeWeight</A
+>,
+    <A
+HREF="msearch-cmdref-mincoordfactor.html"
+>MinCoordFactor</A
+>,
+    <A
+HREF="msearch-cmdref-numdistinctwordfactor.html"
+>NumDistinctWordFactor</A
+>,
+    <A
+HREF="msearch-cmdref-numsections.html"
+>NumSections</A
+>,
+    <A
+HREF="msearch-cmdref-numwordfactor.html"
+>NumWordFactor</A
+>,
+    <A
+HREF="msearch-cmdref-userscore.html"
+>UserScore</A
+>,
+    <A
+HREF="msearch-cmdref-worddistanceweight.html"
+>WordDistanceWeight</A
+>,
+    <A
+HREF="msearch-cmdref-wordformfactor.html"
+>WordFormFactor</A
+>,
+    <A
+HREF="msearch-cmdref-worddensityfactor.html"
+>WordDensityFactor</A
+>.
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="relevancy"
+>Relevancy</A
+></H2
+><P
+>Relevancy for every found document is calculated as
+  the cosine of the angle formed by two weights vectors,
+  the vector for the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>search query</I
+></SPAN
+> and
+  the vector for the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>found document</I
+></SPAN
+>.
+  The number of coordinates in the vectors is equal to the number
+  of the words in the search query (<TT
+CLASS="literal"
+>NumWords</TT
+>)
+  multiplied by the number of the active sections, defined by the
+  <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-numsections.html"
+>NumSections</A
+></B
+> command:
+  <TT
+CLASS="literal"
+>NumWords * NumSections</TT
+>.
+  Every coordinate in the vector corresponds to one word in one section,
+  the coordinate value consists of thee factors:
+  <P
+></P
+><UL
+><LI
+><P
+>&#13;       <TT
+CLASS="literal"
+>section_weight</TT
+>, according to the
+      <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-wf.html"
+>wf</A
+></B
+> value
+      for this section (see <A
+HREF="msearch-doingsearch.html#search-changeweight"
+>the Section called <I
+>Changing weights of the different document parts at search time</I
+></A
+>).
+      </P
+></LI
+><LI
+><P
+>&#13;       <TT
+CLASS="literal"
+>word_weight</TT
+>, depending on whether this word
+      is the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>original word</I
+></SPAN
+> from the search query typed by
+      the user, or the word is a generated form such as
+      a <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>synonym</I
+></SPAN
+> or a <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>stemming form</I
+></SPAN
+>.
+      </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+        You can change the weight of the generated forms
+        using the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-wordformfactor.html"
+>WordFormFactor</A
+></B
+>
+        command.
+        </P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+><P
+>&#13;      <TT
+CLASS="literal"
+>word_frequency</TT
+> - the frequency of the
+      word in the section, with the
+      <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-worddensityfactor.html"
+>WordDensityFactor</A
+></B
+>
+      value taken into account.
+      </P
+></LI
+></UL
+>
+  Imagine we typed the search query ``<KBD
+CLASS="userinput"
+>test document</KBD
+>''
+  in the search form, and search returned this <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>
+  document among the other results:
+<PRE
+CLASS="programlisting"
+>&#13;&#60;HTML&#62;
+  &#60;HEAD&#62;
+    &#60;TITLE&#62;
+      Test
+    &#60;/TITLE&#62;
+  &#60;/HEAD&#62;
+  &#60;BODY&#62;
+    This is a test document to test the score value 
+  &#60;/BODY&#62;
+&#60;/HTML&#62;
+</PRE
+>
+  Also, for similicity reasons, imagine that
+  <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-numsections.html"
+>NumSections</A
+></B
+> is set
+  to <TT
+CLASS="literal"
+>2</TT
+> (that is only the <TT
+CLASS="literal"
+>body</TT
+> and 
+  <TT
+CLASS="literal"
+>title</TT
+> sections are active),
+  <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-wf.html"
+>wf</A
+></B
+> is set to
+  its default value (weight factors for alls sections are
+  equal to <TT
+CLASS="literal"
+>1</TT
+>), and
+  <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-worddensityfactor.html"
+>WordDensityFactor</A
+></B
+>
+  is set to <TT
+CLASS="literal"
+>255</TT
+> (the strongest density effect).
+  </P
+><P
+>&#13;  <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> will use these two vectors
+  to calculate relevancy:
+<PRE
+CLASS="programlisting"
+>&#13;  Vq= (1, 1, 1, 1)
+</PRE
+>
+for the search query
+and
+<PRE
+CLASS="programlisting"
+>&#13;  Vd= (1, 0, 0.2, 0.1)
+</PRE
+>
+for the above document, calculated as follows:
+    <P
+></P
+><UL
+><LI
+><P
+>&#13;        The word <TT
+CLASS="literal"
+>test</TT
+> appears once in the section
+        <TT
+CLASS="literal"
+>title</TT
+> and its <TT
+CLASS="literal"
+>word_frequency</TT
+>
+        is <TT
+CLASS="literal"
+>1</TT
+>,
+        <CODE
+CLASS="varname"
+>wf[title]</CODE
+>=<TT
+CLASS="literal"
+>1</TT
+>,
+        <CODE
+CLASS="varname"
+>word_weight</CODE
+>=<TT
+CLASS="literal"
+>1</TT
+>.
+        Therefore, <CODE
+CLASS="varname"
+>Vd[1]</CODE
+>=<TT
+CLASS="literal"
+>1 * 1 * 1</TT
+> =
+        <TT
+CLASS="literal"
+>1</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        The word <TT
+CLASS="literal"
+>document</TT
+> does not appear
+        in the section <TT
+CLASS="literal"
+>title</TT
+> at all,
+        therefore, <CODE
+CLASS="varname"
+>Vd[2]</CODE
+>=<TT
+CLASS="literal"
+>0</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        The word <TT
+CLASS="literal"
+>test</TT
+> appears two times in the section
+        <TT
+CLASS="literal"
+>body</TT
+>, with <TT
+CLASS="literal"
+>10</TT
+>
+        words total. <TT
+CLASS="literal"
+>word_frequency</TT
+>
+        is <TT
+CLASS="literal"
+>2/10</TT
+>.
+        <CODE
+CLASS="varname"
+>wf[body]</CODE
+> is <TT
+CLASS="literal"
+>1</TT
+>.
+        <CODE
+CLASS="varname"
+>word_weight</CODE
+> is <TT
+CLASS="literal"
+>1</TT
+>.
+        Therefore, <CODE
+CLASS="varname"
+>Vd[3]</CODE
+> = <TT
+CLASS="literal"
+>2/10 * 1 * 1</TT
+> = <TT
+CLASS="literal"
+>0.2</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        The word <TT
+CLASS="literal"
+>document</TT
+> appears once in the section
+        <TT
+CLASS="literal"
+>body</TT
+> which is total <TT
+CLASS="literal"
+>10</TT
+>
+        words long. <TT
+CLASS="literal"
+>word_frequency</TT
+>
+        is <TT
+CLASS="literal"
+>1/10</TT
+>.
+        <CODE
+CLASS="varname"
+>wf[body]</CODE
+> is <TT
+CLASS="literal"
+>1</TT
+>.
+        <CODE
+CLASS="varname"
+>word_weight</CODE
+> is <TT
+CLASS="literal"
+>1</TT
+>.
+        Therefore, <CODE
+CLASS="varname"
+>Vd[4]</CODE
+> = <TT
+CLASS="literal"
+>1/10 * 1 * 1</TT
+> = <TT
+CLASS="literal"
+>0.1</TT
+>.
+        </P
+></LI
+></UL
+>
+  </P
+><P
+>&#13;  The cosine value value for the above two vectors is
+  <TT
+CLASS="literal"
+>0.634335</TT
+>.
+  </P
+><P
+>&#13;  Now imagine that we set <CODE
+CLASS="varname"
+>wf</CODE
+> to "<TT
+CLASS="literal"
+>1111181</TT
+>"
+  and therefore made the weight factor for the section
+  <TT
+CLASS="literal"
+>title</TT
+> higher. Now relevancy will be calculated
+  using these two vectors:
+<PRE
+CLASS="programlisting"
+>&#13;  Vq= (8, 8, 1, 1)
+</PRE
+>
+for the search query
+and
+<PRE
+CLASS="programlisting"
+>&#13;  Vd= (8, 0, 0.2, 0.1)
+</PRE
+>
+for the above document, which will result in
+the relevancy value <TT
+CLASS="literal"
+>0.704660</TT
+>.
+  </P
+><P
+>&#13;  The relevancy value calculated as explained above
+  is further mixed with various other parameters
+  to get the final <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>score</I
+></SPAN
+> value,
+  for example the average distance between
+  the words in the document, the distance of
+  the words from the beginning of the section,
+  and the other parameters listed in
+  <A
+HREF="msearch-rel.html#score-commands"
+>the Section called <I
+>Commands affecting document score
+  <A
+NAME="AEN5921"
+></A
+></I
+></A
+>.
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+    In the default configuration
+    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> produces quite small score values,
+    because it expects the words to be found in up to <TT
+CLASS="literal"
+>256</TT
+> 
+    sections and therefore uses the <TT
+CLASS="literal"
+>256</TT
+> coordinate
+    vectors. Have a look into <A
+HREF="msearch-cmdref-numsections.html"
+>NumSections</A
+>
+    <TT
+CLASS="filename"
+>search.htm</TT
+> command description how to specify
+    the real number of sections and thus increase the score values.
+    Changing <A
+HREF="msearch-cmdref-numsections.html"
+>NumSections</A
+>  does not affect
+    the document order, it only changes the absolute score values
+    for all documents.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="score-debug"
+>Analyzing score values</A
+></H2
+><P
+>Starting from the version <TT
+CLASS="literal"
+>3.3.7</TT
+>,
+  <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+  allows to debug score values calculated for the documents found
+  and thus helps to find a combination of all score factors
+  which is the best for you.
+  
+  In order to debug score values go through these steps:
+    <P
+></P
+><OL
+TYPE="1"
+><LI
+>Add this code into the bottom of the
+        <TT
+CLASS="literal"
+>&#60;!--restop--&#62;</TT
+>section of your search template:
+        <PRE
+CLASS="programlisting"
+>&#13;&#60;--restop--&#62;
+....
+[DebugScore: $(DebugScore)]
+&#60;--/restop--&#62;
+        </PRE
+></LI
+><LI
+>Add this code into the bottom of the
+        <TT
+CLASS="literal"
+>&#60;!--res--&#62;</TT
+>section of your search template:
+        <PRE
+CLASS="programlisting"
+>&#13;&#60;--res--&#62;
+....
+[ID=$(ID)]
+&#60;--/res--&#62;
+        </PRE
+></LI
+><LI
+>Open <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>in your browser and
+        run some search query consisting of multiple words.
+        You will additionally see the document IDs after
+        the usual document information.
+      </LI
+><LI
+>Choose a document you want to see the debug information for.
+        Remember its ID (let's say the ID is 100).
+      </LI
+><LI
+>Go to your browser's location bar, add
+      <B
+CLASS="command"
+>&#38;DebugURLID=100</B
+>at the very end of the URL and press Enter.
+      <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+        Now URL will look approximately like this:
+          <PRE
+CLASS="programlisting"
+>&#13;http://hostname/cgi-bin/search.cgi?q=test+query&#38;DebugURLID=100
+          </PRE
+>
+        </P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+>Find a line of this format in between the search form and the results:
+        <PRE
+CLASS="programlisting"
+>&#13;DebugScore: url_id=100 RDsum=98 distance=84 (84/1) minmax=0.99091089
+            density=0.00196271 numword=0.90135133 wordform=0.00000000
+        </PRE
+>It will give you an idea why the score value for the
+        selected document is too high or too low and help
+        to fine tune various parameters
+        like <A
+HREF="msearch-cmdref-worddistanceweight.html"
+>WordDistanceWeight</A
+>
+        or  <A
+HREF="msearch-cmdref-worddensityfactor.html"
+>WordDensityFactor</A
+>.
+      </LI
+></OL
+>
+    <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+      Score debug information is currently displayed only for
+      queries with multiple search words.
+      Queries with a single search word don't return debug information.
+      </P
+></BLOCKQUOTE
+></DIV
+>
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="poprank"
+>Popularity rank<A
+NAME="AEN6079"
+></A
+></A
+></H2
+><P
+>&#13;  <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Popularity rank</I
+></SPAN
+> is calculated when
+  you start <KBD
+CLASS="userinput"
+>indexer -n0 -R</KBD
+> and is done in two steps.
+  </P
+><P
+>&#13;  At the first step, the value of the <CODE
+CLASS="option"
+>Weight</CODE
+> parameter
+  for every server is divided by the number of outgoing links from
+  this server, so the weight of one link from this server is calculated.
+  At the second step the sum of weights of all incoming links is
+  calculated for every document and the result is stored as the document
+  popularity value.
+  </P
+><P
+>&#13;  Self-links (when a document refers to itself),
+  are ignored and do not affect the document popularity.
+  You can also set  <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-poprankskipsamesite.html"
+>PopRankSkipSameSite</A
+></B
+>
+  to <TT
+CLASS="literal"
+>yes</TT
+> to ignore all internal site links and
+  thus have only inter-site links affect the popularity values.
+  </P
+><P
+><A
+NAME="AEN6091"
+></A
+>
+  By default, the value of the <CODE
+CLASS="option"
+>Weight</CODE
+> parameter is equal
+  to <TT
+CLASS="literal"
+>1</TT
+> for all servers. You can change this value using
+  the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-serverweight.html"
+>ServerWeight</A
+></B
+>
+  command in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+  
+  </P
+><P
+>If you put set <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-poprankfeedback.html"
+>PopRankFeedBack</A
+></B
+>
+  to <TT
+CLASS="literal"
+>yes</TT
+>, <SPAN
+CLASS="application"
+>indexer</SPAN
+> will
+  re-calculate site weights before calculating popularity values.
+  A site weight is calculated as the sum of popularity values
+  for all document of this site calculated during
+  the previous <KBD
+CLASS="userinput"
+>indexer -n0 -R</KBD
+> run.
+  If the sum is greater than <TT
+CLASS="literal"
+>1</TT
+>,
+  the site weight is set to this sum, otherwise,
+  the site weight is set to <TT
+CLASS="literal"
+>1</TT
+>.
+  </P
+><P
+>If you set <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-poprankusetracking.html"
+>PopRankUseTracking</A
+></B
+>
+  to <TT
+CLASS="literal"
+>yes</TT
+>, <SPAN
+CLASS="application"
+>indexer</SPAN
+> will also
+  use the search statistics collected using
+  the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>search query tracking</I
+></SPAN
+> module
+  (see  <A
+HREF="msearch-track.html"
+>the Section called <I
+>Tracking search queries
+    <A
+NAME="AEN6154"
+></A
+></I
+></A
+> for details).
+  </P
+><P
+>If you set <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-poprankuseshowcnt.html"
+>PopRankUseShowCnt</A
+></B
+>
+  to <TT
+CLASS="literal"
+>yes</TT
+> in the search template file
+  <TT
+CLASS="filename"
+>search.htm</TT
+>, the <CODE
+CLASS="varname"
+>url.shows</CODE
+>
+  value (that is the value of the column <CODE
+CLASS="varname"
+>show</CODE
+> in the 
+  table <CODE
+CLASS="varname"
+>url</CODE
+>) will be incremented every
+  time a document is displayed in search results, but only in the case
+  when the score value of the document is greater than
+  <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-poprankshowcntratio.html"
+>PopRankShowCntRatio</A
+></B
+>
+  (<TT
+CLASS="literal"
+>25.0%</TT
+> by default). That is, this option
+  activates collecting information about the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>high scored</I
+></SPAN
+>
+  documents <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>seen</I
+></SPAN
+> by the users.
+  </P
+><P
+>&#13;  You can set <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-poprankuseshowcnt.html"
+>PopRankUseShowCnt</A
+></B
+>
+  to <TT
+CLASS="literal"
+>yes</TT
+> in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+  In this case <B
+CLASS="command"
+>indexer</B
+> will use the collected
+  value of <CODE
+CLASS="varname"
+>url.shows</CODE
+> multiplied to the
+  <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-poprankshowcntweight.html"
+>PopRankShowCntWeight</A
+></B
+>
+  (<TT
+CLASS="literal"
+>0.01</TT
+> by default) to the popularity value.
+  </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="rel-cwords"
+>Crosswords<A
+NAME="AEN6139"
+></A
+></A
+></H2
+><P
+>This feature makes the words written in between
+  the <TT
+CLASS="literal"
+>&#60;a href="xxx"&#62;</TT
+> and <TT
+CLASS="literal"
+>&#60;/a&#62;</TT
+>
+  <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> tags belong to the document referenced in the link. 
+  To enable using Crosswords,
+  use the <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-crosswords.html"
+>CrossWords</A
+>
+  <A
+NAME="AEN6147"
+></A
+>
+  </B
+> command in  <TT
+CLASS="filename"
+>indexer.conf</TT
+> and
+  <TT
+CLASS="filename"
+>search.htm</TT
+>.
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-templates-oper.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-track.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Template operators</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-doingsearch.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tracking search queries
+    <A
+NAME="AEN6154"
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

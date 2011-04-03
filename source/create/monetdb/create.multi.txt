@@ -1,0 +1,2064 @@
+
+CREATE TABLE dict00 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict00 ON dict00 (url_id);
+CREATE TABLE dict01 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict01 ON dict01 (url_id);
+CREATE TABLE dict02 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict02 ON dict02 (url_id);
+CREATE TABLE dict03 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict03 ON dict03 (url_id);
+CREATE TABLE dict04 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict04 ON dict04 (url_id);
+CREATE TABLE dict05 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict05 ON dict05 (url_id);
+CREATE TABLE dict06 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict06 ON dict06 (url_id);
+CREATE TABLE dict07 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict07 ON dict07 (url_id);
+CREATE TABLE dict08 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict08 ON dict08 (url_id);
+CREATE TABLE dict09 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict09 ON dict09 (url_id);
+CREATE TABLE dict0A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict0A ON dict0A (url_id);
+CREATE TABLE dict0B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict0B ON dict0B (url_id);
+CREATE TABLE dict0C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict0C ON dict0C (url_id);
+CREATE TABLE dict0D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict0D ON dict0D (url_id);
+CREATE TABLE dict0E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict0E ON dict0E (url_id);
+CREATE TABLE dict0F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict0F ON dict0F (url_id);
+
+CREATE TABLE dict10 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict10 ON dict10 (url_id);
+CREATE TABLE dict11 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict11 ON dict11 (url_id);
+CREATE TABLE dict12 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict12 ON dict12 (url_id);
+CREATE TABLE dict13 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict13 ON dict13 (url_id);
+CREATE TABLE dict14 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict14 ON dict14 (url_id);
+CREATE TABLE dict15 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict15 ON dict15 (url_id);
+CREATE TABLE dict16 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict16 ON dict16 (url_id);
+CREATE TABLE dict17 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict17 ON dict17 (url_id);
+CREATE TABLE dict18 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict18 ON dict18 (url_id);
+CREATE TABLE dict19 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict19 ON dict19 (url_id);
+CREATE TABLE dict1A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict1A ON dict1A (url_id);
+CREATE TABLE dict1B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict1B ON dict1B (url_id);
+CREATE TABLE dict1C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict1C ON dict1C (url_id);
+CREATE TABLE dict1D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict1D ON dict1D (url_id);
+CREATE TABLE dict1E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict1E ON dict1E (url_id);
+CREATE TABLE dict1F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict1F ON dict1F (url_id);
+
+CREATE TABLE dict20 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict20 ON dict20 (url_id);
+CREATE TABLE dict21 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict21 ON dict21 (url_id);
+CREATE TABLE dict22 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict22 ON dict22 (url_id);
+CREATE TABLE dict23 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict23 ON dict23 (url_id);
+CREATE TABLE dict24 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict24 ON dict24 (url_id);
+CREATE TABLE dict25 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict25 ON dict25 (url_id);
+CREATE TABLE dict26 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict26 ON dict26 (url_id);
+CREATE TABLE dict27 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict27 ON dict27 (url_id);
+CREATE TABLE dict28 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict28 ON dict28 (url_id);
+CREATE TABLE dict29 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict29 ON dict29 (url_id);
+CREATE TABLE dict2A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict2A ON dict2A (url_id);
+CREATE TABLE dict2B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict2B ON dict2B (url_id);
+CREATE TABLE dict2C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict2C ON dict2C (url_id);
+CREATE TABLE dict2D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict2D ON dict2D (url_id);
+CREATE TABLE dict2E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict2E ON dict2E (url_id);
+CREATE TABLE dict2F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict2F ON dict2F (url_id);
+
+CREATE TABLE dict30 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict30 ON dict30 (url_id);
+CREATE TABLE dict31 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict31 ON dict31 (url_id);
+CREATE TABLE dict32 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict32 ON dict32 (url_id);
+CREATE TABLE dict33 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict33 ON dict33 (url_id);
+CREATE TABLE dict34 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict34 ON dict34 (url_id);
+CREATE TABLE dict35 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict35 ON dict35 (url_id);
+CREATE TABLE dict36 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict36 ON dict36 (url_id);
+CREATE TABLE dict37 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict37 ON dict37 (url_id);
+CREATE TABLE dict38 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict38 ON dict38 (url_id);
+CREATE TABLE dict39 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict39 ON dict39 (url_id);
+CREATE TABLE dict3A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict3A ON dict3A (url_id);
+CREATE TABLE dict3B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict3B ON dict3B (url_id);
+CREATE TABLE dict3C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict3C ON dict3C (url_id);
+CREATE TABLE dict3D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict3D ON dict3D (url_id);
+CREATE TABLE dict3E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict3E ON dict3E (url_id);
+CREATE TABLE dict3F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict3F ON dict3F (url_id);
+
+CREATE TABLE dict40 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict40 ON dict40 (url_id);
+CREATE TABLE dict41 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict41 ON dict41 (url_id);
+CREATE TABLE dict42 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict42 ON dict42 (url_id);
+CREATE TABLE dict43 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict43 ON dict43 (url_id);
+CREATE TABLE dict44 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict44 ON dict44 (url_id);
+CREATE TABLE dict45 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict45 ON dict45 (url_id);
+CREATE TABLE dict46 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict46 ON dict46 (url_id);
+CREATE TABLE dict47 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict47 ON dict47 (url_id);
+CREATE TABLE dict48 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict48 ON dict48 (url_id);
+CREATE TABLE dict49 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict49 ON dict49 (url_id);
+CREATE TABLE dict4A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict4A ON dict4A (url_id);
+CREATE TABLE dict4B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict4B ON dict4B (url_id);
+CREATE TABLE dict4C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict4C ON dict4C (url_id);
+CREATE TABLE dict4D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict4D ON dict4D (url_id);
+CREATE TABLE dict4E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict4E ON dict4E (url_id);
+CREATE TABLE dict4F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict4F ON dict4F (url_id);
+
+CREATE TABLE dict50 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict50 ON dict50 (url_id);
+CREATE TABLE dict51 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict51 ON dict51 (url_id);
+CREATE TABLE dict52 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict52 ON dict52 (url_id);
+CREATE TABLE dict53 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict53 ON dict53 (url_id);
+CREATE TABLE dict54 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict54 ON dict54 (url_id);
+CREATE TABLE dict55 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict55 ON dict55 (url_id);
+CREATE TABLE dict56 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict56 ON dict56 (url_id);
+CREATE TABLE dict57 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict57 ON dict57 (url_id);
+CREATE TABLE dict58 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict58 ON dict58 (url_id);
+CREATE TABLE dict59 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict59 ON dict59 (url_id);
+CREATE TABLE dict5A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict5A ON dict5A (url_id);
+CREATE TABLE dict5B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict5B ON dict5B (url_id);
+CREATE TABLE dict5C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict5C ON dict5C (url_id);
+CREATE TABLE dict5D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict5D ON dict5D (url_id);
+CREATE TABLE dict5E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict5E ON dict5E (url_id);
+CREATE TABLE dict5F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict5F ON dict5F (url_id);
+
+CREATE TABLE dict60 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict60 ON dict60 (url_id);
+CREATE TABLE dict61 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict61 ON dict61 (url_id);
+CREATE TABLE dict62 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict62 ON dict62 (url_id);
+CREATE TABLE dict63 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict63 ON dict63 (url_id);
+CREATE TABLE dict64 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict64 ON dict64 (url_id);
+CREATE TABLE dict65 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict65 ON dict65 (url_id);
+CREATE TABLE dict66 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict66 ON dict66 (url_id);
+CREATE TABLE dict67 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict67 ON dict67 (url_id);
+CREATE TABLE dict68 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict68 ON dict68 (url_id);
+CREATE TABLE dict69 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict69 ON dict69 (url_id);
+CREATE TABLE dict6A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict6A ON dict6A (url_id);
+CREATE TABLE dict6B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict6B ON dict6B (url_id);
+CREATE TABLE dict6C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict6C ON dict6C (url_id);
+CREATE TABLE dict6D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict6D ON dict6D (url_id);
+CREATE TABLE dict6E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict6E ON dict6E (url_id);
+CREATE TABLE dict6F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict6F ON dict6F (url_id);
+
+CREATE TABLE dict70 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict70 ON dict70 (url_id);
+CREATE TABLE dict71 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict71 ON dict71 (url_id);
+CREATE TABLE dict72 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict72 ON dict72 (url_id);
+CREATE TABLE dict73 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict73 ON dict73 (url_id);
+CREATE TABLE dict74 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict74 ON dict74 (url_id);
+CREATE TABLE dict75 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict75 ON dict75 (url_id);
+CREATE TABLE dict76 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict76 ON dict76 (url_id);
+CREATE TABLE dict77 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict77 ON dict77 (url_id);
+CREATE TABLE dict78 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict78 ON dict78 (url_id);
+CREATE TABLE dict79 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict79 ON dict79 (url_id);
+CREATE TABLE dict7A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict7A ON dict7A (url_id);
+CREATE TABLE dict7B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict7B ON dict7B (url_id);
+CREATE TABLE dict7C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict7C ON dict7C (url_id);
+CREATE TABLE dict7D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict7D ON dict7D (url_id);
+CREATE TABLE dict7E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict7E ON dict7E (url_id);
+CREATE TABLE dict7F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict7F ON dict7F (url_id);
+
+CREATE TABLE dict80 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict80 ON dict80 (url_id);
+CREATE TABLE dict81 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict81 ON dict81 (url_id);
+CREATE TABLE dict82 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict82 ON dict82 (url_id);
+CREATE TABLE dict83 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict83 ON dict83 (url_id);
+CREATE TABLE dict84 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict84 ON dict84 (url_id);
+CREATE TABLE dict85 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict85 ON dict85 (url_id);
+CREATE TABLE dict86 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict86 ON dict86 (url_id);
+CREATE TABLE dict87 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict87 ON dict87 (url_id);
+CREATE TABLE dict88 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict88 ON dict88 (url_id);
+CREATE TABLE dict89 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict89 ON dict89 (url_id);
+CREATE TABLE dict8A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict8A ON dict8A (url_id);
+CREATE TABLE dict8B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict8B ON dict8B (url_id);
+CREATE TABLE dict8C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict8C ON dict8C (url_id);
+CREATE TABLE dict8D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict8D ON dict8D (url_id);
+CREATE TABLE dict8E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict8E ON dict8E (url_id);
+CREATE TABLE dict8F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict8F ON dict8F (url_id);
+
+CREATE TABLE dict90 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict90 ON dict90 (url_id);
+CREATE TABLE dict91 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict91 ON dict91 (url_id);
+CREATE TABLE dict92 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict92 ON dict92 (url_id);
+CREATE TABLE dict93 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict93 ON dict93 (url_id);
+CREATE TABLE dict94 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict94 ON dict94 (url_id);
+CREATE TABLE dict95 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict95 ON dict95 (url_id);
+CREATE TABLE dict96 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict96 ON dict96 (url_id);
+CREATE TABLE dict97 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict97 ON dict97 (url_id);
+CREATE TABLE dict98 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict98 ON dict98 (url_id);
+CREATE TABLE dict99 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict99 ON dict99 (url_id);
+CREATE TABLE dict9A (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict9A ON dict9A (url_id);
+CREATE TABLE dict9B (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict9B ON dict9B (url_id);
+CREATE TABLE dict9C (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict9C ON dict9C (url_id);
+CREATE TABLE dict9D (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict9D ON dict9D (url_id);
+CREATE TABLE dict9E (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict9E ON dict9E (url_id);
+CREATE TABLE dict9F (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udict9F ON dict9F (url_id);
+
+CREATE TABLE dictA0 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA0 ON dictA0 (url_id);
+CREATE TABLE dictA1 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA1 ON dictA1 (url_id);
+CREATE TABLE dictA2 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA2 ON dictA2 (url_id);
+CREATE TABLE dictA3 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA3 ON dictA3 (url_id);
+CREATE TABLE dictA4 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA4 ON dictA4 (url_id);
+CREATE TABLE dictA5 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA5 ON dictA5 (url_id);
+CREATE TABLE dictA6 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA6 ON dictA6 (url_id);
+CREATE TABLE dictA7 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA7 ON dictA7 (url_id);
+CREATE TABLE dictA8 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA8 ON dictA8 (url_id);
+CREATE TABLE dictA9 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictA9 ON dictA9 (url_id);
+CREATE TABLE dictAA (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictAA ON dictAA (url_id);
+CREATE TABLE dictAB (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictAB ON dictAB (url_id);
+CREATE TABLE dictAC (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictAC ON dictAC (url_id);
+CREATE TABLE dictAD (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictAD ON dictAD (url_id);
+CREATE TABLE dictAE (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictAE ON dictAE (url_id);
+CREATE TABLE dictAF (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictAF ON dictAF (url_id);
+
+CREATE TABLE dictB0 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB0 ON dictB0 (url_id);
+CREATE TABLE dictB1 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB1 ON dictB1 (url_id);
+CREATE TABLE dictB2 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB2 ON dictB2 (url_id);
+CREATE TABLE dictB3 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB3 ON dictB3 (url_id);
+CREATE TABLE dictB4 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB4 ON dictB4 (url_id);
+CREATE TABLE dictB5 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB5 ON dictB5 (url_id);
+CREATE TABLE dictB6 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB6 ON dictB6 (url_id);
+CREATE TABLE dictB7 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB7 ON dictB7 (url_id);
+CREATE TABLE dictB8 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB8 ON dictB8 (url_id);
+CREATE TABLE dictB9 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictB9 ON dictB9 (url_id);
+CREATE TABLE dictBA (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictBA ON dictBA (url_id);
+CREATE TABLE dictBB (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictBB ON dictBB (url_id);
+CREATE TABLE dictBC (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictBC ON dictBC (url_id);
+CREATE TABLE dictBD (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictBD ON dictBD (url_id);
+CREATE TABLE dictBE (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictBE ON dictBE (url_id);
+CREATE TABLE dictBF (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictBF ON dictBF (url_id);
+
+CREATE TABLE dictC0 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC0 ON dictC0 (url_id);
+CREATE TABLE dictC1 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC1 ON dictC1 (url_id);
+CREATE TABLE dictC2 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC2 ON dictC2 (url_id);
+CREATE TABLE dictC3 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC3 ON dictC3 (url_id);
+CREATE TABLE dictC4 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC4 ON dictC4 (url_id);
+CREATE TABLE dictC5 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC5 ON dictC5 (url_id);
+CREATE TABLE dictC6 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC6 ON dictC6 (url_id);
+CREATE TABLE dictC7 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC7 ON dictC7 (url_id);
+CREATE TABLE dictC8 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC8 ON dictC8 (url_id);
+CREATE TABLE dictC9 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictC9 ON dictC9 (url_id);
+CREATE TABLE dictCA (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictCA ON dictCA (url_id);
+CREATE TABLE dictCB (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictCB ON dictCB (url_id);
+CREATE TABLE dictCC (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictCC ON dictCC (url_id);
+CREATE TABLE dictCD (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictCD ON dictCD (url_id);
+CREATE TABLE dictCE (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictCE ON dictCE (url_id);
+CREATE TABLE dictCF (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictCF ON dictCF (url_id);
+
+CREATE TABLE dictD0 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD0 ON dictD0 (url_id);
+CREATE TABLE dictD1 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD1 ON dictD1 (url_id);
+CREATE TABLE dictD2 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD2 ON dictD2 (url_id);
+CREATE TABLE dictD3 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD3 ON dictD3 (url_id);
+CREATE TABLE dictD4 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD4 ON dictD4 (url_id);
+CREATE TABLE dictD5 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD5 ON dictD5 (url_id);
+CREATE TABLE dictD6 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD6 ON dictD6 (url_id);
+CREATE TABLE dictD7 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD7 ON dictD7 (url_id);
+CREATE TABLE dictD8 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD8 ON dictD8 (url_id);
+CREATE TABLE dictD9 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictD9 ON dictD9 (url_id);
+CREATE TABLE dictDA (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictDA ON dictDA (url_id);
+CREATE TABLE dictDB (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictDB ON dictDB (url_id);
+CREATE TABLE dictDC (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictDC ON dictDC (url_id);
+CREATE TABLE dictDD (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictDD ON dictDD (url_id);
+CREATE TABLE dictDE (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictDE ON dictDE (url_id);
+CREATE TABLE dictDF (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictDF ON dictDF (url_id);
+
+CREATE TABLE dictE0 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE0 ON dictE0 (url_id);
+CREATE TABLE dictE1 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE1 ON dictE1 (url_id);
+CREATE TABLE dictE2 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE2 ON dictE2 (url_id);
+CREATE TABLE dictE3 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE3 ON dictE3 (url_id);
+CREATE TABLE dictE4 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE4 ON dictE4 (url_id);
+CREATE TABLE dictE5 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE5 ON dictE5 (url_id);
+CREATE TABLE dictE6 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE6 ON dictE6 (url_id);
+CREATE TABLE dictE7 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE7 ON dictE7 (url_id);
+CREATE TABLE dictE8 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE8 ON dictE8 (url_id);
+CREATE TABLE dictE9 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictE9 ON dictE9 (url_id);
+CREATE TABLE dictEA (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictEA ON dictEA (url_id);
+CREATE TABLE dictEB (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictEB ON dictEB (url_id);
+CREATE TABLE dictEC (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictEC ON dictEC (url_id);
+CREATE TABLE dictED (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictED ON dictED (url_id);
+CREATE TABLE dictEE (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictEE ON dictEE (url_id);
+CREATE TABLE dictEF (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictEF ON dictEF (url_id);
+
+CREATE TABLE dictF0 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF0 ON dictF0 (url_id);
+CREATE TABLE dictF1 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF1 ON dictF1 (url_id);
+CREATE TABLE dictF2 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF2 ON dictF2 (url_id);
+CREATE TABLE dictF3 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF3 ON dictF3 (url_id);
+CREATE TABLE dictF4 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF4 ON dictF4 (url_id);
+CREATE TABLE dictF5 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF5 ON dictF5 (url_id);
+CREATE TABLE dictF6 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF6 ON dictF6 (url_id);
+CREATE TABLE dictF7 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF7 ON dictF7 (url_id);
+CREATE TABLE dictF8 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF8 ON dictF8 (url_id);
+CREATE TABLE dictF9 (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictF9 ON dictF9 (url_id);
+CREATE TABLE dictFA (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictFA ON dictFA (url_id);
+CREATE TABLE dictFB (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictFB ON dictFB (url_id);
+CREATE TABLE dictFC (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictFC ON dictFC (url_id);
+CREATE TABLE dictFD (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictFD ON dictFD (url_id);
+CREATE TABLE dictFE (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictFE ON dictFE (url_id);
+CREATE TABLE dictFF (
+  url_id INT NOT NULL,
+  secno INT NOT NULL,
+  word VARCHAR(255) NOT NULL,
+  intag BLOB NOT NULL,
+  PRIMARY KEY (word,url_id,secno)
+);
+CREATE INDEX udictFF ON dictFF (url_id);

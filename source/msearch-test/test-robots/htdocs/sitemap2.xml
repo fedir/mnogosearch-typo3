@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>http://site/</loc>
+      <lastmod>2005-01-01</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+   </url>
+
+   <!--
+    The next URL should not be added as it does not have Server record.
+    TODO: URL listed in Sitemap must be on the same host as Sitemap itself.
+   -->
+   <url>
+      <loc>http://site-no-server-record/</loc>
+      <lastmod>2004-11-23</lastmod>
+   </url>
+
+   <url>
+   <loc>http://site/catalog?item=74&amp;desc=vacation_newfoundland_sitemap2</loc>
+      <lastmod>2004-12-23T18:00:15+00:00</lastmod>
+      <priority>0.3</priority>
+   </url>
+   <url>
+      <loc>http://site/catalog?item=83&amp;desc=vacation_usa_sitemap2</loc>
+      <lastmod>2004-11-23</lastmod>
+   </url>
+
+   
+</urlset>
+

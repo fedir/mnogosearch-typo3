@@ -1,0 +1,66 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single
+
+SaveSectionSize no
+
+LocalCharset   iso-8859-1
+BrowserCharset utf-8
+
+ExcerptSize 2000
+ExcerptPadding 200
+Segmenter cjk
+
+HlBeg "<b>"
+HlEnd "</b>"
+-->
+
+<!--top-->
+Query: $(QUERY_STRING)
+Sergment: $&(SEGMENTER.QUERY_STRING)
+<!--/top-->
+
+
+<!--restop-->
+Search results: $&(W)
+Results $(first)-$(last) of $(total).
+<!--/restop-->
+
+
+<!--res-->
+$(Order). $&(Title)
+- $&(Body)
+- $(URL)
+- $(Content-Length) bytes
+<!IFNOT NAME="PerSite" CONTENT="0">More from this site ($(PerSite) total)<!ENDIF>
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+<!--clone-->
+<!--/clone-->
+<!--navleft-->
+<!--/navleft-->
+<!--navleft_nop-->
+<!--/navleft_nop-->
+<!--navbar1-->
+<!--/navbar1-->
+<!--navbar0-->
+<!--/navbar0-->
+<!--navright-->
+<!--/navright-->
+<!--navright_nop-->
+<!--/navright_nop-->
+<!--notfound-->
+Sorry, your search for <b>$&(q)</b> did not find any results.
+No documents were found containing <b>"$&(q)"</b>.
+<!--/notfound-->
+<!--noquery-->
+<!--/noquery-->
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+<!--bottom-->
+---------------------
+<!--/bottom-->

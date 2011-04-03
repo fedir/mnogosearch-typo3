@@ -1,0 +1,268 @@
+<sect2 id="aliases">
+  <title>Aliases</title>
+  <para>&mnogo; offers a flexible technique
+   of aliases and reverse aliases, making it possible to index sites by downloading
+   documents from another location. For example, if you index your local web server,
+   it is possible to load pages directly from the hard disk without involving your
+   web server in the crawling process.  Another example is building of a search engine
+   for the primary site using its mirror to download the documents.
+  </para>
+  <para>Different ways of using aliases are described in the next sections.
+  </para>
+  <sect3 id="alias-conf">
+    <title>The <command><xref linkend="cmdref-alias"/></command>
+  &indexer.conf; command
+      <indexterm><primary>Command</primary><secondary>Alias</secondary></indexterm>
+    </title>
+    <para>The <command><xref linkend="cmdref-alias"/></command> &indexer.conf; command
+    uses this format:
+    <programlisting>
+Alias &lt;masterURL&gt; &lt;mirrorURL&gt;
+</programlisting>
+    </para>
+    <para>For example, if you wish to index <literal>http://www.mnogosearch.ru/</literal>
+    using the nearest German mirror
+    <literal>http://www.gstammw.de/mirrors/mnoGoSearch/</literal>, you can add these lines
+    into your &indexer.conf;:
+
+    <programlisting>
+Server http://www.mnogosearch.ru/
+Alias  http://www.mnogosearch.ru/  http://www.gstammw.de/mirrors/mnoGoSearch/
+</programlisting>
+    </para>
+    <para>
+      When crawling, <filename>indexer</filename> will download the
+      documents from the mirror site <literal>http://www.gstammw.de/mirrors/mnoGoSearch/</literal>.
+      At search time &search.cgi; will display URLs from
+      the master site <literal>http://www.mnogosearch.ru/</literal>.
+    </para>
+
+    <para>Another example: You want to index all sites from the domain
+    <literal>udm.net</literal>. Suppose one of the servers (e.g.
+    <literal>http://home.udm.net/</literal>) is stored on the local machine in
+    the directory <filename>/home/httpd/htdocs/</filename>. These commands will be useful:
+    <programlisting>
+Realm http://*.udm.net/
+Alias http://home.udm.net/ file:///home/httpd/htdocs/
+    </programlisting>
+    </para>
+    <para><filename>Indexer</filename> will load documents form the site <literal>home.udm.net</literal>
+    using the local disk, and will use HTTP for the other sites.
+    </para>
+  </sect3>
+  
+  <sect3 id="aliases-diff">
+    <title>Using different aliases for server parts</title>
+    <para>Aliases are searched in the order of their appearance in &indexer.conf;.
+    So, you can create different aliases for a server and its parts:
+    <programlisting>
+# First, create alias for example for /stat/ directory which
+# is not under common location:
+Alias http://home.udm.net/stat/  file:///usr/local/stat/htdocs/
+
+# Then create alias for the rest of the server:
+Alias http://home.udm.net/ file:///usr/local/apache/htdocs/
+</programlisting>
+    </para>
+    <note>
+      <para>If you change the order of these commands, the alias for the
+    directory <filename>/stat/</filename> will never be found.</para>
+    </note>
+  </sect3>
+
+
+  <sect3 id="alias-server">
+    <title>Using aliases in the <command><xref linkend="cmdref-server"/></command> command</title>
+    <para>You can specify the location used by indexer as an optional argument
+    in a <command><xref linkend="cmdref-server"/></command> command:
+    <programlisting>
+Server  http://home.udm.net/  file:///home/httpd/htdocs/
+</programlisting>
+    </para>
+  </sect3>
+  
+  
+  
+  <sect3 id="alias-realm">
+    <title>Using aliases in the <command><xref linkend="cmdref-realm"/></command> command</title>
+    <para>Aliases in the <command><xref linkend="cmdref-realm"/></command> command
+    are based on regular expressions.
+    The implementation of this feature reminds PHP's <function>preg_replace()</function>
+    function. Aliases in the <command><xref linkend="cmdref-realm"/></command> command
+    work only if the <literal>regex</literal> match type is used, and do not work in case
+    of the <literal>string</literal> match type.
+    </para>
+    <para>Use this syntax for Realm aliases:
+    <programlisting>
+Realm regex &lt;URL_pattern&gt; &lt;alias_pattern&gt;
+</programlisting>
+    </para>
+    <para>When <filename>indexer</filename> finds a URL matching to
+    <varname>URL_pattern</varname>, it builds an alias using
+    <varname>alias_pattern</varname>. <varname>alias_pattern</varname>
+    can contain references of the form $n, where n is a number in the range of 0-9.
+    Every reference is replaced to text captured by the
+    <varname>n</varname>-th parenthesized sub-pattern.
+    <literal>$0</literal> refers to text matched by the whole pattern.
+    Opening parentheses are counted from left to right
+    (starting from 1) to obtain the number of the capturing
+    sub-pattern.
+    </para>
+    
+    <para>Example: your company hosts a few hundred users with their own domains in the form
+    of <literal>www.username.yourname.com</literal>. All user sites are stored on
+    the disk in the subdirectory <filename>/htdocs</filename> under their home
+    directories: <literal>/home/username/htdocs/</literal>.
+    </para>
+    <para>You can write this command into &indexer.conf;
+    (note that the dot '.' character has a special meaning in regular expressions
+    and should be escaped with a '\' sign when dot is used in its literal meaning):
+    <programlisting>
+Realm regex (http://www\.)(.*)(\.yourname\.com/)(.*)  file:///home/$2/htdocs/$4
+</programlisting>
+    </para>
+    
+    <para>Imagine that <filename>indexer</filename> processes a document
+    located at <filename>http://www.john.yourname.com/news/index.html</filename>.
+    These patterns will be captured:
+    </para>
+
+    <literallayout>
+   $0 = <literal>http://www.john.yourname.com/news/index.htm</literal> (the whole pattern match)
+   $1 = <literal>http://www.</literal>      - subpattern matching <literal>(http://www\.)</literal>
+   $2 = <literal>john</literal>             - subpattern matching <literal>(.*)</literal>
+   $3 = <literal>.yourname.com/</literal>   - subpattern matching <literal>(\.yourname\.com/)</literal>
+   $4 = <literal>/news/index.html</literal> - subpattern matching <literal>(.*)</literal>
+</literallayout>
+    <para>After the matches are found, the subpatterns <literal>$2</literal>
+    and <literal>$4</literal> are substituted to
+    <varname>alias_pattern</varname>, which will result into this alias:
+    <programlisting>
+file:///home/john/htdocs/news/index.html
+</programlisting>
+    </para>
+  </sect3>
+
+
+  <sect3 id="alias-prog">
+    <title>The <command><xref linkend="cmdref-aliasprog"/></command> command
+      <indexterm><primary>Command</primary><secondary>AliasProg</secondary></indexterm>
+    </title>
+    <para><command><xref linkend="cmdref-aliasprog"/></command> can be useful for
+    a web hosting company indexing its customer web sites by loading documents
+    directly from the disk without having to involve the HTTP server into
+    crawling process (to offload the server). Document layout can be very complex
+    to describe it using  the <command><xref linkend="cmdref-server"/></command> or
+    <command><xref linkend="cmdref-realm"/></command>
+    commands. <command><xref linkend="cmdref-aliasprog"/></command> defines an external
+    program that can be executed with an URL in the command line argument and
+    return the corresponding alias to &stdout;.
+    Use <literal>$1</literal> to pass URLs to the command line.
+    </para>
+    <para>
+     The command in this example uses the <application>replace</application> program
+     from <application>MySQL</application> distribution and replaces URL
+     substring <literal>http://www.apache.org/</literal> to
+     <literal>file:///usr/local/apache/htdocs/</literal>:
+    <programlisting>
+AliasProg  "echo $1 | /usr/local/mysql/bin/mysql/replace http://www.apache.org/ file:///usr/local/apache/htdocs/"
+    </programlisting>
+    </para>
+    <para>You can write your own complex program for converting URLs int
+    their aliases using any preferred programming language.</para>
+  </sect3>
+
+
+  <sect3 id="alias-reverse">
+    <title>The <command><xref linkend="cmdref-reversealias"/></command> command
+<indexterm><primary>Command</primary><secondary>ReverseAlias</secondary></indexterm>
+</title>
+    <para>The <command><xref linkend="cmdref-reversealias"/></command> &indexer.conf;
+    command allows mapping of URLs before a URL is inserted into the database. Unlike the
+    <command><xref linkend="cmdref-alias"/></command> command (which
+    performs mapping right before a document is downloaded), the <command><xref
+    linkend="cmdref-reversealias"/></command> command performs mapping
+    immediately after a new link is found. 
+<programlisting>
+ReverseAlias http://name2/   http://name2.yourname.com/
+Server       http://name2.yourname.com/
+    </programlisting>
+    </para>
+    <para>In the above example, all links with the short server name
+    will be converted to links with the full server and will be put
+    into the database after converting.
+    </para>
+
+    <para>Another possible use of the <command><xref linkend="cmdref-reversealias"/></command>
+    is stripping off various undesired query string parameters like
+    <literal>PHPSESSID=XXXX</literal>.
+    </para>
+    <para>The following example will strip off the
+    <literal>PHPSESSID=XXXX</literal> part from the URLs
+    like <literal>http://www/a.php?PHPSESSID=XXX</literal>, when there
+    are no any other query string parameters other than <literal>PHPSESSID</literal>.
+    The question mark is deleted as well:
+    <programlisting>
+ReverseAlias regex  (http://[^?]*)[?]PHPSESSID=[^&amp;]*$          $1$2
+    </programlisting>
+    </para>
+    <para>Stripping the <literal>PHPSESSID=XXXX</literal> from the URL
+    like <literal>w/a.php?PHPSESSID=xxx&amp;..</literal>, that is when
+    <literal>PHPSESSID=XXXX</literal> is the very first query string
+    parameter followed by a number of other parameters.
+    The ampersand sign <literal>&amp;</literal> after the
+    <literal>PHPSESSID=XXXX</literal> part is deleted as well.
+    The question mark <literal>?</literal> is not deleted:
+    <programlisting>
+ReverseAlias regex  (http://[^?]*[?])PHPSESSID=[^&amp;]*&amp;(.*)      $1$2
+</programlisting>
+    </para>
+    <para>Stripping the <literal>PHPSESSID=XXXX</literal> part from the URLs
+    like <literal>http://www/a.php?a=b&amp;PHPSESSID=xxx</literal> or
+    <literal>http://www/a.php?a=b&amp;PHPSESSID=xxx&amp;c=d</literal>,
+    where <literal>PHPSESSID=XXXX</literal> is not the first parameter.
+    The ampersand sign <literal>&amp;</literal> before
+    <literal>PHPSESSID=XXXX</literal> is deleted:
+    <programlisting>
+ReverseAlias regex  (http://.*)&amp;PHPSESSION=[^&amp;]*(.*)         $1$2
+    </programlisting>
+    </para>
+  </sect3>
+
+
+
+  <sect3 id="alias-search">
+    <title>Search-time aliases in &search.htm;
+      <indexterm><primary>Command</primary><secondary>Alias</secondary></indexterm>
+    </title>
+    <para>It is also possible to define aliases in the search template (&search.htm;).
+    The <command><xref linkend="cmdref-alias"/></command> command in &search.htm;
+    is identical to the one in &indexer.conf;, but is
+    applied  at search time rather than during crawling.</para>
+    <para>The syntax of the <command><xref linkend="cmdref-alias"/></command>
+    command in &search.htm; is similar to &indexer.conf;:
+    <programlisting>
+Alias &lt;find-prefix&gt; &lt;replace-prefix&gt;
+    </programlisting>
+    </para>
+    <para>Suppose your &search.htm; has the following
+    command:
+    <programlisting>
+Alias http://localhost/ http://www.mnogo.ru/
+    </programlisting>
+    </para>
+    <para>When &search.cgi; returns a page with
+    the URL <literal>http://localhost/news/article10.html</literal>,
+    it will be replaced to
+    <literal>http://www.mnogo.ru/news/article10.html</literal>.
+    </para>
+    <note>
+    <para>When you need aliases, you can put aliases either into &indexer.conf;
+    (to convert the remote notation to the local notation during crawling
+    time) or into &search.htm; (to convert the
+    local notation to the remote notation during search time). Use the 
+    approach which looks more convenient for you.
+    </para>
+    </note>
+  </sect3>
+</sect2>

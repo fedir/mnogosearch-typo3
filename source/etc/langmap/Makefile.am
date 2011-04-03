@@ -1,0 +1,114 @@
+EXTRA_DIST = ${langmap_DATA}
+
+langmapdir = $@LANGMAPDIR@
+
+langmap_DATA = \
+af.latin1.lm \
+af.latin1.bible.lm \
+ar.arabic.lm \
+ar.arabic.quran.lm \
+ar.cp1256.lm \
+ar.cp1256.quran.lm \
+az.utf8.lm \
+be.cp1251.lm \
+bg.cp1251.lm \
+bg.cp1251.bible.lm \
+bg.cyrillic.lm \
+bg.cyrillic.bible.lm \
+br.latin1.lm \
+bs.ascii.lm \
+bs.cp1250.lm \
+bs.latin2.lm \
+ca.latin1.lm \
+ca.latin1.lit.lm \
+cs.cp1250.lm \
+cs.latin2.lm \
+cy.latin1.lm \
+da.latin1.lm \
+da.latin1.bible.lm \
+de.latin1.lm \
+de.latin1.bible.lm \
+el.cp1253.lm \
+el.greek.lm \
+en.ascii.lm \
+eo.latin3.lm \
+eo.latin3.as.lm \
+eo.latin1-h.as.lm \
+eo.latin1-x.as.lm \
+eo.utf8.as.lm \
+es.latin1.lm \
+es.latin1.bible.lm \
+et.cp1257.lm \
+et.latin4.lm \
+eu.latin1.lm \
+fi.latin1.lm \
+fr.latin1.lm \
+fr.latin1.bible.lm \
+ga.latin1.lm \
+ga.latin1.lit.lm \
+he.hebrew.lm \
+hi.utf8.lm \
+hr.ascii.lm \
+hr.cp1250.lm \
+hr.cp1250.bible.lm \
+hr.latin2.lm \
+hu.cp1250.lm \
+hu.latin2.lm \
+hy.armscii-8.lm \
+is.latin1.lm \
+it.latin1.lm \
+ja.euc-jp.lm \
+ja.sjis.lm \
+ka.utf8.lm \
+la.ascii.lm \
+lt.cp1257.lm \
+lt.latin4.lm \
+lv.cp1257.lm \
+lv.latin4.lm \
+nl.latin1.lm \
+nl.latin1.bible.lm \
+no.latin1.lm \
+pl.latin2.lm \
+pt-br.latin1.lm \
+pt-pt.latin1.lm \
+ro.ascii.lm \
+ro.cp1250.lm \
+ro.latin2.lm \
+ru.cp1251.lm \
+ru.cp866.lm \
+ru.cyrillic.lm \
+ru.koi8-r.lm \
+ru.maccyr.lm \
+ru.utf8.lm \
+sk.ascii.lm \
+sk.cp1250.lm \
+sk.latin2.lm \
+sl.ascii.lm \
+sl.cp1250.lm \
+sl.latin2.lm \
+sq.latin1.lm \
+sr.cp1250.lm \
+sr.latin2.lm \
+sv.latin1.lm \
+sv.latin1.bible.lm \
+sw.latin1.lm \
+th.cp874.lm \
+th.tis-620.lm \
+ta.tscii.lm \
+tl.ascii.lm \
+tl.ascii.bible.lm \
+tr.cp1254.lm \
+tr.cp857.lm \
+tr.latin5.lm \
+ua.cp1251.lm \
+ua.koi8-u.lm \
+vi.viscii.lm \
+zh.big5.lm \
+zh.gb2312.lm \
+zh-hans.utf8.lm \
+zh-hant.utf8.lm
+
+uninstall-local:
+	-rmdir $(DESTDIR)$@LANGMAPDIR@
+
+uninstall-am: uninstall-langmapDATA uninstall-local

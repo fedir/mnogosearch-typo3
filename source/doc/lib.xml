@@ -1,0 +1,70 @@
+<sect1 id="lib">
+  <title>Using &mnogo;
+   as an embedded search library
+  <indexterm><primary>libmnogosearch</primary></indexterm>
+  </title>
+
+  <sect2 id="libmnogosearch">
+    <title><application>libmnogosearch</application></title>
+    <para>Starting with the version 3.0.7,
+    &mnogo; is distributed with
+    C API library <literal>libmnogosearch</literal> making it
+    possible to embed search functionality into your own applications.
+    &mnogo; libraries and header
+    files are installed in the <filename>/lib</filename> and <filename>/include</filename>
+    directories of the &mnogo; installation.
+    Every C source file of your application that uses <literal>libmnogosearch</literal>
+    functions should include the <filename>udmsearch.h</filename> header file.
+    </para>
+  </sect2>
+
+  <sect2 id="api">
+    <title>&mnogo; API</title>
+    <para>The detailed description of the &mnogo;
+     C API is given in <xref linkend="c-api"/>. You can also use
+     <filename>search.c</filename> as an examples of an application 
+     using <literal>libmnogosearch</literal> functions calls.</para>
+  </sect2>
+
+  <sect2 id="lib-udmconf">
+    <title>The <application>udm-config</application> script</title>
+    <para><literal>libmnogosearch</literal> may require
+    some dependency libraries, for example <literal>libmysqlclient</literal>.
+    You can find the <application>udm-config</application> script in the
+    <filename>/bin</filename> directory of your &mnogo;
+    installation. This script helps to take the dependencies into account.
+    </para>
+    <para>
+    <application>udm-config</application> understands a number command line options.
+    By default <application>udm-config</application> prints the list of all
+    available options:
+    </para>
+
+    <para>
+<programlisting>
+Usage: ./udm-config [OPTIONS]
+Options:
+        [--version]
+        [--libs]
+        [--cflags]
+</programlisting>
+    </para>
+
+    <para>When executed with the option <option>--libs</option>
+    <application>udm-config</application> outputs all linker flags
+    needed for <literal>libmnogosearch</literal> dependencies, for example:
+<programlisting>
+# ./udm-config --libs
+-lm -L/usr/local/mysql/lib/mysql -lmysqlclient \
+-L/usr/local/mnogosearch/lib -lmnogosearch
+</programlisting>
+    </para>
+    <para>So you can insert <userinput>udm-config --libs</userinput> into the CC compiler command line:
+    <programlisting>
+cc myprog.c -o myprog `udm-config --libs`
+</programlisting>
+    </para>
+  </sect2>
+
+</sect1>
+

@@ -1,0 +1,999 @@
+<sect1 id="search">
+  <title>Using search front-ends</title>
+
+
+  <sect2 id="search-perform">
+    <title>Performing search</title>
+    <para>Open your preferred front-end in Web browser:
+<programlisting>
+http://your.web.server/path/to/search.cgi
+</programlisting>
+or
+<programlisting>
+http://your.web.server/path/to/search.php
+</programlisting>
+or
+<programlisting>
+http://your.web.server/path/to/search.pl
+</programlisting>
+    </para>
+    <para>To start search, type the words you want to
+    find and press the <literal>SUBMIT</literal> button.
+    For example, ``<userinput>MySQL ODBC</userinput>''.
+    &mnogo; will find
+    documents having the words <literal>MySQL</literal>
+    and/or <literal>ODBC</literal>. The best matching
+    documents will be displayed in the top of the
+    search results.
+    <note>
+    <para>
+     The quote signs <literal>``</literal> and <literal>''</literal>
+     are not parts of the search query. They are used
+     in this example and in the other examples given
+     in the manual to separate search queries
+     from the other text.
+    </para>
+    </note>
+    <note>
+    <para>
+    &mnogo; works case insensitively.
+    The case of the letters in a search query does not matter.
+    </para>
+    </note>
+    </para>
+  </sect2>
+  
+  
+  <sect2 id="search-params">
+    <title>Search parameters
+    <indexterm><primary>Search parameters</primary></indexterm>
+    </title>
+    <para>&mnogo; front-ends
+    support the following &cgi; query string
+    parameters (which can be used in the &html;
+    search form variables).
+    </para>
+    <note>
+      <para>
+      Search parameters can also be set in the <literal>&lt;--variables</literal>
+      section in &search.htm; with help of the
+      <command><xref linkend="cmdref-replacevar"/></command> command.
+      </para>
+    </note>
+    <table>
+      <title>Available search parameters</title>
+      <tgroup cols="2">
+        <tbody>
+          <row>
+            <entry>q</entry>
+            <entry>text parameter with the search query words</entry>
+          </row>
+          <row>
+            <entry>s</entry>
+            <entry>a character sequence specifying the
+            result <emphasis>sorting order</emphasis>.
+            Small letters mean ascending order,
+            capital letters mean descending order.
+            The following letters are understood:
+            <option>R</option> or <option>r</option> - for sorting by
+            <emphasis>score</emphasis>,
+            <option>P</option> or <option>p</option> -
+            for sorting by <emphasis>Popularity Rank</emphasis>,
+            <option>D</option> or <option>d</option> -
+            for sorting by <emphasis>modification date</emphasis>.
+            <option>U</option> or <option>u</option> -
+            for sorting by <emphasis>URL</emphasis>.
+            <option>S</option> or <option>s</option> -
+            for sorting by a user defined section
+            (see also the <option>su</option> parameter).
+            The default value is <option>R</option>,
+            which means sorting in descending score order.
+            </entry>
+          </row>
+          <row>
+            <entry>su</entry>
+            <entry>the user defined section name to sort results
+            when <option>s=S</option> or <option>s=s</option>
+            is given.
+            <note>
+              <para>
+              Use the <command><xref linkend="cmdref-userorder"/></command>
+              command to improve performance of sorting by a user defined
+              section.
+              </para>
+            </note>
+            </entry>
+          </row>
+          <row>
+            <entry>sl.*</entry>
+            <entry>a <emphasis>section limit</emphasis>. You
+            can limit searches using a certain value
+            of a desired section. For example,
+            <option>sl.title=Top</option> will 
+            only search among the documents having
+            <literal>title</literal> equal to <literal>Top</literal>.
+            Section values support &sql;
+            wildcards <literal>%</literal> and <literal>_</literal>.
+
+<programlisting>
+&lt;SELECT NAME="sl.title" MULTIPLE&gt;
+&lt;OPTION VALUE="%2008%"&gt;2008&lt;/OPTION&gt;
+&lt;OPTION VALUE="%2008%"&gt;2007&lt;/OPTION&gt;
+&lt;/SELECT&gt;
+</programlisting>
+            The above code in the &html;
+            search form will limit searches to the documents
+            having the substrings <literal>2007</literal> or
+            <literal>2008</literal> in their titles,
+            according to the user choice.
+            </entry>
+          </row>
+          <row>
+            <entry>fl</entry>
+            <entry>Loads a <emphasis>fast limit</emphasis>
+            with the given name pattern.
+            The limit should be previously defined using the
+            <xref linkend="cmdref-limit"/> command.
+            If the <option>fl</option> value starts with
+            <literal>minus</literal> character,
+            the limit is considered as <emphasis>excluding</emphasis>
+            limit. For example, <option>fl=-name</option>
+            restricts search to the documents <emphasis>not</emphasis>
+            covered by the limit <literal>name</literal>.
+            &sql; <command>LIKE</command> operator
+            is used when loading fast limits during search time,
+            so <literal>%</literal> and <literal>_</literal>
+            wildcards can be used in the <option>fl</option> pattern.
+            If the pattern matches multiple limits, 
+            search is restricted to the documents covered
+            by either of them. If an <emphasis>excluding</emphasis>
+            limit pattern matches multiple limits,
+            search is restricted to the documents covered
+            by non of them.
+            </entry>
+          </row>
+          <row>
+            <entry>ps</entry>
+            <entry>page size,
+            the number of documents displayed on one page,
+            <literal>10</literal> by default.
+            </entry>
+          </row>
+          <row>
+            <entry>np</entry>
+            <entry>the current page number,
+            <literal>0</literal> by default (the first page)
+            </entry>
+          </row>
+          <row>
+            <entry>offs</entry>
+            <entry>search result start point (offset).
+            <literal>0</literal> by default (meaning
+            <emphasis>display starting from the first document</emphasis>).
+            <varname>offs</varname> is an alternative way
+            to <varname></varname> to set the desired offset.
+            <userinput>np=2&amp;ps=10</userinput>
+            is effectively the same to
+            <userinput>offs=20&amp;ps=10</userinput>, and
+            both mean <emphasis>display <literal>10</literal> documents
+            starting from <literal>21</literal></emphasis>.
+            If both <varname>offs</varname> and <varname>np</varname> are
+            specified, then <varname>np</varname> is ignored.
+            <note>
+              <para>
+              Using <varname>offs</varname> you can display results
+              starting from an arbitrary offset, even in the "middle"
+              of a page, for example:
+              <userinput>offs=5&amp;ps=10</userinput> means
+              <emphasis>display <literal>10</literal> documents
+              starting from <literal>5</literal></emphasis>.
+              </para>
+            </note>
+            </entry>
+          </row>
+          <row>
+            <entry>m</entry>
+            <entry>search mode. <literal>all</literal>
+            and <literal>any</literal> values are supported.
+            The default value is <literal>all</literal>.
+            </entry>
+          </row>
+          <row>
+            <entry>wm</entry>
+            <entry>word match type.
+            The available values are
+            <literal>wrd</literal>,
+            <literal>beg</literal>,
+            <literal>end</literal> and
+            <literal>sub</literal> respectively meaning
+            <emphasis>whole word</emphasis>,
+            <emphasis>word beginning</emphasis>,
+            <emphasis>word ending</emphasis>
+            and <emphasis>word substring</emphasis> match,
+            with the <emphasis>whole word</emphasis> match type by default.
+            Mininum word length for substring match is controlled by the
+            <xref linkend="cmdref-substringmatchminwordlength"/> command
+            in &search.htm;.
+            See also <xref linkend="sql-stor-noncrc"/>.
+            </entry>
+          </row>
+          <row>
+            <entry>t</entry>
+            <entry>A <command><xref linkend="cmdref-tag"/></command>
+            limit. Limits search through the documents with the given
+            tag only. This parameter has a similar effect to
+            the <option>-t</option> option in 
+            &indexer; command line
+            </entry>
+          </row>
+          <row>
+            <entry>cat</entry>
+            <entry>A <command><xref linkend="cmdref-category"/></command> limit.
+             Take a look into <xref linkend="categories"/> for details.
+           </entry>
+          </row>
+          <row>
+            <entry>ul</entry>
+            <entry>
+            <para>
+            An <acronym>URL</acronym> limit. Limits search results
+            by an <acronym>URL</acronym> pattern.
+            If the <option>ul</option> value represents a relative
+            <acronym>URL</acronym>, then
+            &search.cgi; automatically
+            adds <literal>%</literal> wildcards before and after
+            the <literal>ul</literal> value. For example:
+<programlisting>
+&lt;OPTION VALUE="/manual/"&gt;
+</programlisting>
+            will add <literal>(url LIKE '%/manual/%')</literal> condition
+            into the &sql; query.
+            If the <option>ul</option> value is an absolute
+            <acronym>URL</acronym> with schema,
+            then &search.cgi; will
+            add <literal>%</literal> sign only in the end of the value.
+            For example for:
+<programlisting>
+&lt;OPTION VALUE="http://localhost/"&gt;
+</programlisting>
+            &search.cgi; will add
+            <literal>(url LIKE 'http://localhost/%')</literal> condition.
+            </para>
+            <note>
+              <para>
+              Using an absolute <acronym>URL</acronym> is more efficient 
+              as it can use &sql; indexes for optimization.
+              </para>
+            </note>
+            <para>
+            Additionally to the automatically added wildcards,
+            you can use your own <literal>%</literal> and
+            <literal>_</literal> wildcards in the pattern.
+            For example:
+<programlisting>
+&lt;OPTION VALUE="http://localhost/%/archive/"&gt;
+</programlisting>
+            </para>
+            <para>
+            Multiple <option>ul</option> values can be given in
+            the query string, which allows to
+            use a <literal>SELECT MULTIPLE</literal> input type
+            in the &html; search form. Multiple
+            values are joined using the <literal>OR</literal>
+            condition. For example, when a user selects
+            both options from this list:
+<programlisting>
+&lt;SELECT NAME="ul" MULTIPLE&gt;
+&lt;OPTION VALUE="/dir1/"&gt;Dir1&lt;/OPTION&gt;
+&lt;OPTION VALUE="/dir2/"&gt;Dir2&lt;/OPTION&gt;
+&lt;/SELECT&gt;
+</programlisting>
+            &search.cgi; will add
+            <literal>(url LIKE '%/dir1/%' OR url LIKE '%/dir2/%')</literal>
+            condition into the search query.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>ue</entry>
+            <entry>
+            <para>
+            Limits the search results by excluding the 
+            documents matching the given <acronym>URL</acronym> pattern.
+            </para>
+            <para>
+            The <option>ue</option> parameter detects absolute and relative
+            <acronym>URL</acronym> patterns and automatically adds wildcards,
+            and supports your own wildcards, similarly
+            to the <option>ul</option> parameter.
+            </para>
+            <para>
+            Multiple <option>ue</option> parameters are also understood
+            to exclude multiple <acronym>URL</acronym> patterns at the
+            same time. Multiple parameters are joined using
+            the <literal>AND</literal> &sql; operator.
+            For example, when a user selects both options from this list:
+<programlisting>
+&lt;SELECT NAME="ue" MULTIPLE&gt;
+&lt;OPTION VALUE="/dir1/"&gt;Dir1&lt;/OPTION&gt;
+&lt;OPTION VALUE="/dir2/"&gt;Dir2&lt;/OPTION&gt;
+&lt;/SELECT&gt;
+</programlisting>
+            &search.cgi; will add
+            <literal>(url NOT LIKE '%/dir1/%' AND url NOT LIKE '%/dire2/%')</literal>
+            condition into the search query.  
+            </para>
+            <note>
+              <para>
+              The <option>ul</option> and <option>ue</option>
+              parameters can be given at the same time.
+              </para>
+            </note>
+            </entry>
+          </row>
+
+          <row>
+            <entry>wf</entry>
+            <entry>
+             A <emphasis>weight factor</emphasis> vector.
+             It allows to change weights of the different
+             document sections at search time.
+             The <option>wf</option> value should be passed
+             in the form of a hexadecimal number.
+             Check the explanation below.
+            </entry>
+          </row>
+          <row>
+            <entry>nwf</entry>
+            <entry>
+            A <emphasis>No section</emphasis> weight factor vector.
+            See the explanation below.
+            </entry>
+          </row>
+          <row>
+            <entry>g</entry>
+            <entry>A <emphasis>language limit</emphasis>
+            to find documents only in the given language.
+            The value should be a two-letter language
+            abbreviation. Have a look into <xref linkend="vary"/>
+            for details. An &html; form example:
+<programlisting>
+&lt;SELECT NAME="g"&gt;
+&lt;OPTION VALUE=""   SELECTED="$(g)"&gt;All language
+&lt;OPTION VALUE="en" SELECTED="$(g)"&gt;English
+&lt;OPTION VALUE="de" SELECTED="$(g)"&gt;German
+&lt;OPTION VALUE="ru" SELECTED="$(g)"&gt;Russian
+&lt;/SELECT&gt;
+</programlisting>
+            </entry>
+          </row>
+          <row>
+            <entry>tmplt</entry>
+            <entry>The search template file name (without path),
+            to specify the template file to use instead of
+            the default file &search.htm;.
+            </entry>
+          </row>
+          <row>
+            <entry>type</entry>
+            <entry>A <emphasis>Content-Type</emphasis> limit 
+            to find documents with the given type,
+            for example <literal>application/pdf</literal>.
+            Multiple <option>type</option> parameters can be passed
+            in the same query. &sql;
+            <command>LIKE</command> patterns are also understood.
+           </entry>
+          </row>
+          <row>
+            <entry>sp</entry>
+            <entry>Defines whether to use
+            <emphasis>stemming</emphasis>.
+            <option>sp=1</option> tells
+            &search.cgi; to use
+            the <application>Ispell</application> commands
+            given in &search.htm;.
+            <option>sp=0</option> makes
+            &search.cgi; ignore
+            all <application>Ispell</application> commands
+            and therefore return only the exact word forms
+            entered by the user.
+            The default value is <literal>1</literal>.
+            See <xref linkend="ispell"/> for details.
+            </entry>
+          </row>
+          <row>
+            <entry>sy</entry>
+            <entry>Defines whether to use <emphasis>synonyms</emphasis>.
+            <option>sy=1</option> allows using the 
+            <link linkend="synonyms">synonym</link> type
+            of fuzzy search. <option>sy=0</option>
+            makes &search.cgi;
+            ignore all synonym-related commands.
+            The default value is <literal>1</literal>.
+            </entry>
+          </row>
+          <row>
+          <entry>tl</entry>
+          <entry>Defines whether to use the
+          <emphasis><link linkend="translit">transliteration</link></emphasis>
+          type of fuzzy search. <option>tl=yes</option> or
+          <option>tl=1</option> means to use transliteration.
+          <option>tl=no</option> or <option>tl=0</option>
+          means to switch transliteration off.
+          The default value is <literal>0</literal>.
+          </entry>
+          </row>
+          <row>
+            <entry>dt</entry>
+            <entry>A <emphasis>time</emphasis> limit.
+            Three time limit types are supported.
+            <para>
+              <option>dt=back</option> 
+              limits the result to <emphasis>recent</emphasis> documents,
+              modified within the period of time between
+              <literal>now</literal> and back to the past
+              up to the given period of time.
+              The period is to be passed using
+              the <option>dp</option> parameter.
+            </para>
+            <para>If <option>dt=er</option> is given,
+            then search results are limited to the documents
+            newer or older than the given date value.
+            <option>dx=1</option> means <literal>newer</literal>
+            (or <literal>after</literal>). <option>dx=-1</option>
+            means <literal>older</literal> (or <literal>before</literal>).
+            The date value is specified using the
+            <option>dy</option>, <option>dm</option>,
+            and <option>dd</option> parameters.
+            </para>
+            <para>If <option>dt=range</option> is given,
+            then search returns documents modified
+            within the given date range. The
+            parameters <option>db</option> and <option>de</option> 
+            are used to pass the first and the last dates.
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>dp</entry>
+            <entry>A "<emphasis>recentness</emphasis>" limit.
+            To be used in combination with <option>dt=back</option>.
+            <option>dp</option> should be specified 
+            using the <literal>xxxA[yyyB[zzzC]]</literal> format.
+            <varname>xxx</varname>, <varname>yyy</varname>,
+            <varname>zzz</varname> are numbers (can be negative!).
+            <varname>A</varname>, <varname>B</varname>, <varname>C</varname>
+            are <emphasis>field descriptors</emphasis>, similar to
+            the descriptors <function>strptime()</function> and
+            <function>strftime()</function> <application>C</application>
+            functions use, with the following meaning:
+            <literal>s</literal> - second, <literal>M</literal> - minute,
+            <literal>h</literal> - hour, <literal>d</literal> - day,
+            <literal>m</literal> - month, <literal>y</literal> - year.
+            For example:
+<programlisting>
+  4h30m     - 4 hours and 30 minutes
+  1Y6M-15d  - 1 year and six month minus 15 days
+  1h-60m+1s - 1 hour minus 60 minutes plus 1 second
+</programlisting>
+            </entry>
+          </row>
+
+          <row>
+            <entry>dx</entry>
+            <entry>The <literal>newer</literal>/<literal>older</literal>
+            flag. <option>dx=1</option> means <literal>newer</literal>.
+            <option>dx=-1</option> means <literal>older</literal>. 
+            <option>dx</option> is to be used together with
+             <option>dt=er</option>.
+            </entry>
+          </row>
+
+          <row> <entry>dm</entry>
+            <entry>Month (when <option>dt=er</option>),
+            starting from <literal>0</literal>:
+            <literal>0</literal> - January,
+            <literal>1</literal> - February, ... ,
+            <literal>11</literal> - December.
+            </entry>
+          </row>
+
+          <row>
+            <entry>dy</entry>
+            <entry>Year (when <option>dt=er</option>),
+            using the four digit format.
+            For example: <option>dy=2008</option>.
+            </entry>
+          </row>
+
+          <row>
+            <entry>dd</entry>
+            <entry>Day  (when <option>dt=er</option>),
+             a number in the range
+             <literal>1</literal>...<literal>31</literal>.
+            </entry>
+          </row>
+
+          <row>
+            <entry>db</entry>
+            <entry> The <emphasis>beginning date</emphasis>
+            (when <option>dt=range</option>), using
+            the <literal>dd/mm/yyyy</literal> format.
+            </entry>
+          </row>
+
+          <row>
+            <entry>de</entry>
+            <entry>The <emphasis>end date</emphasis>
+            (when <option>dt=range</option>), using
+            the <literal>dd/mm/yyyy</literal> format.
+          </entry>
+          </row>
+
+          <row>
+            <entry>us</entry>
+            <entry>Specifies the name of the
+            <emphasis>user defined score</emphasis>
+            list which should be loaded and mixed with
+            the score values internally calculated
+            by &mnogo;,
+            according to <xref linkend="cmdref-userscore"/> and
+            <xref linkend="cmdref-userscorefactor"/> configuration.
+            If <option>us</option> is empty, or there is
+            no a <xref linkend="cmdref-userscore"/> command
+            with the given name, <option>us</option> is ignored.
+            </entry>
+          </row>
+
+          <row>
+            <entry>ss</entry>
+            <entry>Specifies the name of the
+            <emphasis>user defined site score</emphasis> list
+            which should be loaded and mixed with the scores
+            internally calculated by &mnogo;,
+            according to <xref linkend="cmdref-usersitescore"/>
+            and <xref linkend="cmdref-userscorefactor"/> configuration.
+            If <option>us</option> is empty, or there is no a
+            <xref linkend="cmdref-usersitescore"/> command
+            the given name, <option>ss</option> is ignored.
+            </entry>
+          </row>
+
+          <row>
+            <entry>GroupBySite</entry>
+            <entry>Enables or disables
+            <emphasis>grouping results by site</emphasis>.
+            Can be set to <literal>yes</literal> or <literal>no</literal>,
+            with the default value <literal>no</literal>.
+            This parameter has the same effect with
+            the <xref linkend="cmdref-groupbysite"/>
+            &search.htm; command.
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </sect2>
+  
+  
+  <sect2 id="search-changeweight">
+    <title>Changing weights of the different document parts at search time</title>
+    <para>Changing weights (importance) of the different
+    document parts (sections) is possible with help
+    of the <option>wf</option> &html; form
+    variable passed to &search.cgi;.
+    </para>
+
+    <para>To be able to use this feature, it is recommended to
+    set different section IDs for different document
+    parts in the <command><xref linkend="cmdref-section"/></command>
+    command in &indexer.conf;.
+    Currently up to <literal>256</literal> separate sections are supported.
+    </para>
+
+    <para>Imagine that we have these default
+    sections in &indexer.conf;:
+<programlisting>
+Section body        1  256
+Section title       2  128
+Section keywords    3  128
+Section description 4  128
+</programlisting>
+    </para>
+
+    <para>The <option>wf</option> value is a string of hexadecimal
+    digits <literal>ABCD</literal>, where every digit represents
+    a weight factor for the corresponding section.
+    The rightmost digit corresponds to the section with
+    <varname>ID</varname>=<literal>1</literal>.
+    If a weight factor for some section is <literal>0</literal>,
+    then this section is totally ignored at search time.
+    </para>
+    <para>
+    For the given above section configuration:
+    </para>
+
+<literallayout>
+      <varname>D</varname> is a factor for section 1 (body)
+      <varname>C</varname> is a factor for section 2 (title)
+      <varname>B</varname> is a factor for section 3 (keywords)
+      <varname>A</varname> is a factor for section 4 (description)
+</literallayout>
+
+    <para>
+      <title>Examples:</title>
+<literallayout>
+    <option>wf=0001</option> will search through the section <literal>body</literal> only.
+
+    <option>wf=1110</option> will search through the sections
+    <literal>title</literal>,  <literal>keywords</literal>, <literal>description</literal>.
+    The section <literal>body</literal> will be ignored.
+    
+    <option>wf=F421</option> will search through:
+           <literal>Description</literal> with factor <literal>15</literal> (<literal>F</literal> hex)
+           <literal>Keywords</literal> with factor <literal>4</literal>
+           <literal>Title</literal> with factor <literal>2</literal>
+           <literal>Body</literal> with factor <literal>1</literal>
+</literallayout>
+    </para>
+    <para>
+    It is also possible to set the default <option>wf</option>
+    value using the <xref linkend="cmdref-wf"/>
+    &search.htm; command.
+    If <option>wf</option> is omitted in the query and
+    there is no a <xref linkend="cmdref-wf"/> command
+    defined in &search.htm;,
+    all section factors are considered to be equal to <literal>1</literal>,
+    which means that all sections have the same weight.
+    </para>
+
+    <para>
+    Starting from the version <literal>3.3.0</literal>,
+    it is also possible to specify the <option>wf</option>
+    value as a <command><xref linkend="cmdref-dbaddr"/></command>
+    &search.htm; command parameter.
+    This can be useful if you're using multiple
+    <command><xref linkend="cmdref-dbaddr"/></command> commands
+    to merge search results from multiple databases and
+    want to give higher or lower score to the results
+    coming from a certain database.
+    </para>
+
+    <para>
+    The <option>nwf</option> search parameter uses the
+    same format with <option>wf</option>.
+    If all found words appear only in a single section,
+    then resulting score becomes lower. It can be used
+    for example to ignore spam in the <literal>KEYWORDS</literal>
+    meta tag. If you use high <option>wf</option> and
+    <option>nwf</option> values for the section corresponding
+    to the <literal>KEYWORDS</literal> meta tag, then score
+    will be high only if <literal>KEYWORDS</literal> match
+    the rest of the document, that is if the query words
+    appear in <literal>KEYWORDS</literal> and
+    <emphasis>at the same time</emphasis> in other sections
+    (like <literal>title</literal> or <literal>body</literal>).
+    If the query words are found in the section
+    <literal>KEYWORDS</literal> alone, then score for
+    this documents will be low.
+    Starting from the version <literal>3.3.3</literal>,
+    <option>nwf</option> can also be set as a parameter
+    to the <xref linkend="cmdref-dbaddr"/> command in
+    &search.htm;.
+    </para>
+  </sect2>
+
+
+  <sect2 id="search-wordimportance">
+    <title>Changing importance of individual query words</title>
+    <para>&mnogo; search query language allows to specify
+    different importance for individual search query words.
+    The range of possible user-defined importance values is
+    <literal>0-256</literal>. The the default value is <literal>256</literal>
+    for all query words. You can change importance of some words
+    using a special keyword <literal>importance</literal>
+    immediately followed by a number and a semicolon character:
+<programlisting>
+star wars importance10:movie
+</programlisting>
+    In the above example, importance for the words <literal>star</literal>
+    and <literal>wars</literal> is <literal>256</literal> (the default values),
+    while importance for the word <literal>movie</literal> is <literal>10</literal>,
+    which makes it less important when ranking found documents.
+    </para>
+    <para>
+    If you specify <userinput>importance0:</userinput> for some query word,
+    for example:
+<programlisting>
+star wars importance0:movie
+</programlisting>
+    then this word will be <emphasis>ignored only at ranking time</emphasis>,
+    however this word will still be required if you're doing an <literal>m=all</literal>
+    search query (i.e. "<emphasis>find all words</emphasis>"). Therefore, 
+    in the above example, search will not return documents which don't have
+    the word <literal>movie</literal>.
+    </para>
+  </sect2>
+
+  <sect2 id="search-scriptname">
+    <title>
+      Using &search.cgi; with <acronym>SSI</acronym>
+    </title>
+    <para>When using a dynamic page
+    (usually with the <filename>.shtml</filename> extension)
+    with <emphasis>server side includes</emphasis>
+    (<acronym>SSI</acronym>)
+    that calls &search.cgi;,
+    i.e. when &search.cgi; is not called
+    directly as a <acronym>CGI</acronym> program,
+    you may need to override the value available in
+    the <application>Apache</application>'s
+    <envar>SCRIPT_NAME</envar> environment variable
+    to make &search.cgi; generate
+    references back to the the <filename>.shtml</filename>
+    page rather than to &search.cgi;.
+    </para>
+
+    <para>For example, when an <filename>.shtml</filename>
+    page contains this <acronym>SSI</acronym> code:
+<programlisting>
+<literal>&lt;!--#include virtual="/cgi-bin/search.cgi?${QUERY_STRING}"--&gt;</literal>
+</programlisting>
+    the <envar>SCRIPT_NAME</envar> variable will point to
+    &search.cgi;, not to the
+    <filename>.shtml</filename> page.
+    </para>
+
+    <para>To override the <envar>SCRIPT_NAME</envar> variable,
+    &mnogo; checks
+    the <envar>UDMSEARCH_SELF</envar> variable that you
+    can add to the <application>Apache</application>'s
+    <filename>httpd.conf</filename> as follows:
+<programlisting>
+SetEnv UDMSEARCH_SELF /path/to/search.shtml
+PassEnv UDMSEARCH_SELF
+</programlisting>
+    &search.cgi; checks
+    the <envar>UDMSEARCH_SELF</envar> variable first,
+    and then <envar>SCRIPT_NAME</envar>. The found
+    value is available in the <varname>$(Self)</varname>
+    template variable, which you can use in the links.
+    </para>
+  </sect2>
+
+
+  <sect2 id="search-templates">
+    <title>Using multiple templates</title>
+    <para>It is often required to use multiple templates
+    with the same &search.cgi;.
+    There are a few ways to do it.
+    They are given here in the order
+    &search.cgi; detects the template name.
+    </para>
+
+    <orderedlist numeration="arabic">
+      <listitem>
+        <para>
+          &search.cgi; checks the
+          environment variable <envar>UDMSEARCH_TEMPLATE</envar>.
+          So you can put a path to the desired search
+          template to <envar>UDMSEARCH_TEMPLATE</envar>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+        &search.cgi; also supports
+        <application>Apache</application> internal redirect.
+        It checks the <envar>REDIRECT_STATUS</envar> and
+        <envar>REDIRECT_URL</envar> environment variables.
+        To start using <application>Apache</application> internal redirect
+        you can add these lines into <filename>httpd.conf</filename>: 
+<programlisting>
+AddType text/html .zhtml
+AddHandler zhtml .zhtml
+Action zhtml /cgi-bin/search.cgi
+</programlisting>
+        </para>
+        <para>Put &search.cgi; into your
+        <filename>/cgi-bin/</filename> directory. Then put the
+        &html; search templates into your
+        Web server directory using the <filename>.zthml</filename> extension,
+        for example <filename>template.zhtml</filename>.
+        Now you can open the search page by typing
+        this <acronym>URL</acronym> in the browser location bar:
+<programlisting>
+http://www.site.com/path/to/template.zhtml
+</programlisting>
+         Instead of <filename>.zthml</filename> you can configure
+         any other extension on your choice.
+        </para>
+      </listitem>
+      <listitem>
+      <para>
+      &search.cgi; also checks
+      the <acronym>URL</acronym> part after
+      the "<filename>search.cgi</filename>" substring,
+      which is available in the <envar>PATH_INFO</envar>
+      environment variable. For example, if you type 
+      <filename>http://site/search.cgi/search1.html</filename>
+      in your browser, &search.cgi;
+      will open <filename>search1.htm</filename> as a template file.
+      If you type <filename>http://site/search.cgi/search2.html</filename>,
+      it will use <filename>search2.htm</filename>, and so on.
+      </para>
+      </listitem>
+
+      <listitem>
+        <para>If the above three ways did not work,
+        &search.cgi; opens a template
+        which has the same name with the script
+        being executed by reading the <envar>SCRIPT_NAME</envar>
+        environment variable value.
+        &search.cgi; opens
+        the template file <filename>ETC/search.htm</filename>,
+        <filename>search1.cgi</filename>
+        opens the template file <filename>ETC/search1.htm</filename> and so on,
+        where <filename>ETC</filename> is
+        &mnogo; <filename>/etc</filename>
+        directory (usually <filename>/usr/local/mnogosearch/etc</filename>).
+        So, you can create a number of symbolic or hard links
+        to the same &search.cgi;
+        and open it using its different names.
+       </para>
+       <note>
+        <para>See also <xref linkend="multilang"/>.
+        </para>
+       </note>
+      </listitem>
+    </orderedlist>
+  </sect2>
+
+
+  <sect2 id="search-bool">
+    <title>Advanced Boolean search
+    <indexterm><primary>Boolean search</primary></indexterm>
+    </title>
+    <para>You can compose complex search queries
+    with help of the <emphasis>Boolean query language</emphasis>.
+    </para>
+
+    <para>&mnogo;
+     understands the following Boolean operators:
+    </para>
+    
+    <para><userinput>&amp;</userinput> - logical <command>AND</command>.
+    For example, ``<userinput>mysql &amp; odbc</userinput>''.
+    &mnogo; will
+    return the documents containing both words
+    <literal>mysql</literal> and <literal>odbc</literal>.
+    You can also use <userinput>+</userinput> for this operator.
+    </para>
+
+    <para><userinput>|</userinput> - logical <command>OR</command>.
+    For example, ``<userinput>mysql|odbc</userinput>''.
+    &mnogo; will find
+    the documents containing the word <literal>mysql</literal>,
+    or containing the word <literal>odbc</literal>.
+    </para>
+
+    <para><userinput>~</userinput> - logical <command>NOT</command>.
+    For example, ``<userinput>mysql &amp; ~odbc</userinput>''.
+    &mnogo; will find
+    the documents containing the word <literal>mysql</literal>
+    and not containing the word <literal>odbc</literal> at the same time.
+    Note that the <literal>~</literal> operator can only
+    <emphasis>exclude</emphasis> the given word from the results.
+    The query ``<userinput>~mysql &amp; ~odbc</userinput>''
+    will return no result.
+    </para>
+
+    <para><userinput>()</userinput> - the grouping command to
+    compose more complex queries.
+    For example, ``<userinput>(mysql | msql) &amp; ~postgres</userinput>''.
+    </para>
+
+    <para>
+      <note>
+        <para>
+        Boolean operators work only in queries having two or more
+        words. &search.cgi; ignores 
+        Boolean operators in queries consisting of a single word.
+        Thus, the query ``<userinput>~odbc</userinput>'' will just
+        search for the word <literal>odbc</literal>
+        without treating the <literal>~</literal>
+        sign as the <command>NOT</command> operator.
+        </para>
+      </note>
+    </para>
+  </sect2>
+
+
+  <sect2 id="search-secnoref">
+    <title>Restricting search words to a section
+    <indexterm><primary>Section name references</primary></indexterm>
+    </title>
+    <para>
+      Starting from the version <literal>3.2.39</literal>,
+      &mnogo; understands
+      <emphasis>section name references</emphasis>.
+      For example, ``<userinput>title:web body:server''</userinput>
+      will find the documents having the word <literal>web</literal>
+      in their titles and at the same time the word
+      <literal>server</literal> in their bodies.
+      To make &search.cgi; recognize section names,
+      you need to copy the desired  <xref linkend="cmdref-section"/>
+      commands from &indexer.conf; to &search.htm;.
+      <note>
+      <para>
+      Section name references can be combined
+      with Boolean operators.
+      </para>
+      </note>
+    </para>
+  </sect2>
+
+
+  <sect2 id="search-phrase">
+    <title>Phrase search
+    <indexterm><primary>Phrase search</primary></indexterm>
+    </title>
+    <para>
+    Phrase search is activated by using quote characters
+    around the words. For example,
+    the query ``<userinput>"search engine"</userinput>''
+    will return the documents having the word <literal>search</literal>
+    immediately followed by the word <literal>engine</literal>,
+    while the query ``<userinput>search engine</userinput>''
+    (i.e. without the surrounding quotes) will not require
+    the words to be close to each other.
+    <note>
+    <para>
+    It is possible to combine two or more phrases in the same
+    query, as well as combine phrases with Boolean operators.
+    </para>
+    </note>
+    </para>
+    <para>
+    Starting from the version <literal>3.2.39</literal>,
+    automatic phrase search is forced for complex words having
+    dots, dashes, underscores, commas and slashes
+    (<literal>- _ . , /</literal>) as delimiters between
+    the word parts.
+    For example, the query ``<userinput>max_allowed_packet</userinput>''
+    automatically searches for the phrase
+    ``<userinput>"max allowed packet"</userinput>'',
+    not just for the three separate words.
+    </para>
+  </sect2>
+
+
+  <sect2 id="search-exactsectionmatch">
+    <title>Exact section match
+    <indexterm><primary>Exact section match</primary></indexterm>
+    </title>
+    <para>
+    Starting from the version <literal>3.3.0</literal>,
+    <emphasis>exact section match</emphasis> syntax is available.
+    An exact section match query consists of a section
+    reference (as described in <xref linkend="search-secnoref"/>),
+    followed by the <literal>=</literal> (the EQUAL sign),
+    followed by a phrase in quotes.
+    For example, the search query
+    ``<userinput>title="search engine"</userinput>''
+    will return the documents having <literal>title</literal>
+    equal to the phrase "<literal>search engine</literal>".
+    </para>
+    <para>
+    Exact section match is not available if you set
+    <xref linkend="cmdref-savesectionsize"/> set to <literal>no</literal>.
+    </para>
+  </sect2>
+
+
+  <sect2 id="search-exp">
+    <title>How search handles expired documents</title>
+    <para>Expired documents are still searchable with their old content.
+    </para>
+  </sect2>
+
+</sect1>

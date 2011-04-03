@@ -1,0 +1,471 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using syslog
+  
+  </TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Indexing"
+HREF="msearch-indexing.html"><LINK
+REL="PREVIOUS"
+TITLE="indexer configuration"
+HREF="msearch-indexer-configuration.html"><LINK
+REL="NEXT"
+TITLE="Disabling Apache logging"
+HREF="msearch-itips.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-indexer-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Indexing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-itips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="syslog"
+>Using syslog
+  <A
+NAME="AEN2005"
+></A
+></A
+></H1
+><P
+>&#13;    <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+    programs <SPAN
+CLASS="application"
+>indexer</SPAN
+> and
+    <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> can use
+    <SPAN
+CLASS="application"
+>syslog</SPAN
+> to
+    log its messages.
+    Different verbose levels can be specified 
+    using the  <TT
+CLASS="literal"
+>-v</TT
+> option in 
+    <SPAN
+CLASS="application"
+>indexer</SPAN
+> command line,
+    as well as with help of 
+    the <A
+HREF="msearch-cmdref-loglevel.html"
+>LogLevel</A
+> command
+    in <TT
+CLASS="filename"
+>indexer.conf</TT
+> and
+    <TT
+CLASS="filename"
+>search.cgi</TT
+>
+  </P
+><DIV
+CLASS="table"
+><A
+NAME="AEN2017"
+></A
+><P
+><B
+>Table 3-1. Verbose levels</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><TBODY
+><TR
+><TD
+>0</TD
+><TD
+>SILENT</TD
+><TD
+>suppress all logs.
+            Default for <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>
+          </TD
+></TR
+><TR
+><TD
+>1</TD
+><TD
+>ERROR</TD
+><TD
+>log only critical errors</TD
+></TR
+><TR
+><TD
+>2</TD
+><TD
+>WARNING</TD
+><TD
+>log warnings as well</TD
+></TR
+><TR
+><TD
+>3</TD
+><TD
+>INFO</TD
+><TD
+>add info messages to log.
+            Default for <SPAN
+CLASS="application"
+>indexer</SPAN
+>.
+          </TD
+></TR
+><TR
+><TD
+>4</TD
+><TD
+>EXTRA</TD
+><TD
+>extra logging</TD
+></TR
+><TR
+><TD
+>5</TD
+><TD
+>DEBUG</TD
+><TD
+>for debug purposes</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;  By default, log messages are sent both to
+  <SPAN
+CLASS="application"
+>syslog</SPAN
+> and to <TT
+CLASS="filename"
+>STDOUT</TT
+>/<TT
+CLASS="filename"
+>STDERR</TT
+>.
+  You can use the <CODE
+CLASS="option"
+>-l</CODE
+> command line
+  option to suppress logging to <TT
+CLASS="filename"
+>STDOUT</TT
+>/<TT
+CLASS="filename"
+>STDERR</TT
+>.
+  This can be useful when you run <SPAN
+CLASS="application"
+>indexer</SPAN
+>
+  from <SPAN
+CLASS="application"
+>cron</SPAN
+>.
+  </P
+><DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+  You can compile <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+  without <SPAN
+CLASS="application"
+>syslog</SPAN
+> support. In order
+  to do it, run <TT
+CLASS="literal"
+>configure --disable-syslog</TT
+>, then
+  rebuild <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>.
+  When compiled without <SPAN
+CLASS="application"
+>syslog</SPAN
+> support,
+  <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> can only
+  use <TT
+CLASS="filename"
+>STDOUT</TT
+>/<TT
+CLASS="filename"
+>STDERR</TT
+> for logging.
+  </P
+></BLOCKQUOTE
+></DIV
+><P
+><SPAN
+CLASS="application"
+>syslog</SPAN
+> uses different facilities to separate log
+  messages. <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> uses
+  the <TT
+CLASS="literal"
+>LOCAL7</TT
+> facility by default.
+  Facility be changed when running <SPAN
+CLASS="application"
+>configure</SPAN
+>
+  with the <TT
+CLASS="literal"
+>--enable-syslog=LOG_FACILITY</TT
+> option,
+  where <TT
+CLASS="literal"
+>LOG_FACILITY</TT
+> is one of the standard
+  facilities, usually listed in <TT
+CLASS="filename"
+>/usr/include/sys/syslog.h</TT
+>
+  header file.
+  </P
+><P
+>Facility helps to separate
+  <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> messages from
+  others. You can modify <TT
+CLASS="filename"
+>/etc/syslog.conf</TT
+> to tell
+  <SPAN
+CLASS="application"
+>syslog</SPAN
+> how to handle
+  <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> messages. For example:
+<PRE
+CLASS="programlisting"
+>&#13;# Log all messages from mnoGoSearch to a separate file
+local7.*        -/var/log/mnoGoSearch.log
+</PRE
+>
+  </P
+><P
+>Another example:
+<PRE
+CLASS="programlisting"
+>&#13;# Send all mnoGoSearch messages to the host "central"
+# Syslog on central should be configured to accept the messages
+local7.*        @central
+</PRE
+>
+  </P
+><P
+>By default all messages are also logged to
+  the file <TT
+CLASS="filename"
+>/var/log/messages</TT
+>.
+  If you use <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+  actively, it can flood this file with a huge
+  number of messages. To avoid this you can add
+  <TT
+CLASS="literal"
+>local7.none</TT
+> or
+  <TT
+CLASS="literal"
+>local7.!*</TT
+>
+  (ignore any messages from the <TT
+CLASS="literal"
+>local7</TT
+> facility)
+   to your "catch-all" log files.
+  </P
+><P
+>For example:
+<PRE
+CLASS="programlisting"
+>&#13;#
+# Some `catch-all' logfiles.
+#
+*.=info;*.=notice;*.=warn;\
+        auth,authpriv.none;\
+        cron,daemon.none;\
+        mail,news.none;\
+        local7.!*               -/var/log/messages
+</PRE
+>
+  </P
+><P
+>Please take a look at <TT
+CLASS="literal"
+>syslogd(8)</TT
+>
+  and <TT
+CLASS="literal"
+>syslog.conf(5)</TT
+> man pages for
+  more information about <SPAN
+CLASS="application"
+>syslog</SPAN
+>
+  and its configuration notes.
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-indexer-configuration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-itips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>indexer configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-indexing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Disabling Apache logging</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

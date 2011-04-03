@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>DateFactor</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="mnoGoSearch 3.3.11 reference manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="mnoGoSearch command reference"
+HREF="msearch-cmdref.html"><LINK
+REL="PREVIOUS"
+TITLE="CVSIgnore"
+HREF="msearch-cmdref-cvsignore.html"><LINK
+REL="NEXT"
+TITLE="DateFormat"
+HREF="msearch-cmdref-dateformat.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="mnogo.css"><META
+NAME="Description"
+CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software over the Internet and Intranet Web Sites Based on SQL Database. It is a Free search software covered by GNU license."><META
+NAME="Keywords"
+CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
+><BODY
+CLASS="refentry"
+BGCOLOR="#EEEEEE"
+TEXT="#000000"
+LINK="#000080"
+VLINK="#800080"
+ALINK="#FF0000"
+><!--#include virtual="body-before.html"--><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> 3.3.11 reference manual: Full-featured search engine software</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-cvsignore.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="msearch-cmdref-dateformat.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="cmdref-datefactor"
+></A
+>DateFactor</H1
+><DIV
+CLASS="refnamediv"
+><A
+NAME="AEN8282"
+></A
+><H2
+>Name</H2
+><B
+CLASS="command"
+>DateFactor</B
+>&nbsp;--&nbsp;gives lower score to old documents<P
+><B
+></B
+><TT
+CLASS="filename"
+>search.htm</TT
+></P
+></DIV
+><DIV
+CLASS="refsynopsisdiv"
+><A
+NAME="AEN8288"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="command"
+>DateFactor</B
+>  {number}</P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN8292"
+></A
+><H2
+></H2
+><P
+>&#13;    The <CODE
+CLASS="varname"
+>number</CODE
+> parameter
+    is a number in the range <TT
+CLASS="literal"
+>0..255</TT
+> defining
+    the effect of the <CODE
+CLASS="varname"
+>Last-Modified</CODE
+> value
+    of a document on the document score.
+    </P
+><P
+>&#13;    The default value is <TT
+CLASS="literal"
+>0</TT
+>, which means
+    <CODE
+CLASS="varname"
+>Last-Modified</CODE
+> is not taken into account
+    on score calculation.
+    </P
+><P
+>&#13;    If <B
+CLASS="command"
+>DateFactor</B
+> is set to a non-zero value,
+    then a more fresh document gets higher score comparing to
+    an older document with the same content.
+    </P
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN8303"
+></A
+><H2
+>Examples</H2
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN8305"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;DateFactor 10
+      </PRE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="refsect1"
+><A
+NAME="AEN8307"
+></A
+><H2
+>See also</H2
+><P
+>&#13;      <A
+HREF="msearch-cmdref-docsizeweight.html"
+>DocSizeWeight</A
+>
+      <A
+HREF="msearch-cmdref-idffactor.html"
+>IDFFactor</A
+>
+      <A
+HREF="msearch-cmdref-mincoordfactor.html"
+>MinCoordFactor</A
+>
+      <A
+HREF="msearch-cmdref-numdistinctwordfactor.html"
+>NumDistinctWordFactor</A
+>
+      <A
+HREF="msearch-cmdref-numwordfactor.html"
+>NumWordFactor</A
+>
+      <A
+HREF="msearch-cmdref-wordformfactor.html"
+>WordFormFactor</A
+>
+    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-cvsignore.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="msearch-cmdref-dateformat.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>CVSIgnore</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="msearch-cmdref.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>DateFormat</TD
+></TR
+></TABLE
+></DIV
+><!--#include virtual="body-after.html"--></BODY
+></HTML
+>

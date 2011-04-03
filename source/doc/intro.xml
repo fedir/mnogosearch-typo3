@@ -1,0 +1,679 @@
+<chapter id="intro">
+  <title>Introduction
+    <indexterm><primary>Introduction</primary></indexterm>
+  </title>
+  <para>
+    &mnogo; is an open source
+    full-featured <acronym>SQL</acronym> based web search engine.
+    &mnogo; consists of two
+    parts. The first part is an indexing mechanism - &indexer;.
+    &indexer; walks over &html;
+    hypertext links and stores information about the documents 
+    in the database. The second part is a Web <acronym>CGI</acronym>
+    front-end &search.cgi; which
+    displays &html; form and search results
+    in the browser. &search.cgi; uses
+    information collected by &indexer;.
+    <note>
+      <para>
+      A <application>PHP</application> and a <application>Perl</application>
+      front-ends are also available.
+      </para>
+    </note>
+   </para>
+
+  <para>
+    The first public version of &mnogo;
+    was released in November 1998. The search engine was named
+    <application>UDMSearch</application> until the project was
+    acquired by <literal>Lavtech.Com Corp.</literal> in October
+    2000 and its name changed to &mnogo;.
+  </para>
+
+  <para><indexterm><primary>Changelog latest</primary></indexterm>
+  The latest changelog can be found
+  <ulink url="http://www.mnogosearch.org/history.html">on our website</ulink>.
+  </para>
+
+  <sect1 id="features">
+    <title>mnoGoSearch Features
+      <indexterm><primary>Features</primary></indexterm>
+    </title>
+    <para>The main &mnogo; features are:</para>
+    <itemizedlist>
+      <listitem>
+       <para>
+       <application>MySQL</application>,
+       <application>PostgreSQL</application>,
+       <application>SQLite</application>,
+       <application>Mimer</application>,
+       <application>Virtuoso</application>,
+       <application>Interbase</application>,
+       <application>Oracle</application>
+       (see <xref linkend="oracle"/>), 
+       <application>MS SQL</application>,
+       <application>DB2</application> (see <xref linkend="db2"/>),
+       <application>Sybase</application>,
+       <application>InterSystems Cache</application>
+       databases can be used as storage.
+       &mnogo; can also
+       work with various <acronym>ODBC</acronym> libraries:
+       <application>iODBC</application>,
+       <application>unixODBC</application>,
+       <application>EasySoft ODBC-ODBC bridge</application>.
+      </para>
+      </listitem>
+      <listitem>
+        <para><acronym>HTTP</acronym> support.</para>
+      </listitem>
+      <listitem>
+        <para><acronym>HTTP</acronym> proxy support.</para>
+      </listitem>
+      <listitem>
+        <para><acronym>HTTPS</acronym> support.</para>
+      </listitem>
+      <listitem>
+        <para><acronym>FTP</acronym> support.</para>
+      </listitem>
+      <listitem>
+        <para><acronym>NNTP</acronym> support
+        (news:// and nntp:// <acronym>URL</acronym> schemes).
+        </para>
+      </listitem>
+      <listitem>
+        <para><acronym>HTDB</acronym> virtual
+        <acronym>URL</acronym> scheme support.
+        You can build an index and search through
+        the large text fields of an <acronym>SQL</acronym>
+        database and thus use &mnogo;
+        as an external fulltext search solution in your database
+        applications.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Mirroring features.</para>
+      </listitem>
+      <listitem>
+        <para>Build-in parsers for 
+          <literal>text/html</literal>,
+          <literal>text/xml</literal>,
+          <literal>text/plain</literal> and
+          <literal>audion/mpeg</literal> (MP3) file types.
+       </para>
+      </listitem>
+      <listitem>
+        <para>External parsers support for any other document types.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+         Basic authorization support to index password protected HTTP servers.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Proxy authorization support.</para>
+      </listitem>
+      <listitem>
+        <para>Reentry capability.
+        You can run multiple indexing and searching processes
+        at the same time even on the same database.
+        Multi-threaded indexing is also supported.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Stop-list support.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+         <literal>&lt;META NAME="robots" content="..."&gt;</literal> and
+         <filename>robots.txt</filename> support.
+        </para>
+      </listitem>
+      <listitem>
+        <para>C language <acronym>CGI</acronym>,
+        <acronym>PHP</acronym>,
+        <acronym>Perl</acronym> Web front-ends.
+        </para>
+      </listitem>
+      <listitem>
+        <para>You can embed search into your own application
+        with help of a a <acronym>C API</acronym> library.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Phrase search.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Boolean query language.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Ordering results by relevancy, popularity rank, modification time. User defined ordering.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Fuzzy search: word forms (stemming),
+        synonyms, substrings, dehyphenation, transliteration,
+        accent insensitive search.
+        </para>
+      </listitem>
+      <listitem>
+        <para>Most of the modern character sets support</para>
+      </listitem>
+      <listitem>
+        <para>&html; templates to customize search results easily.</para>
+      </listitem>
+      <listitem>
+        <para>Advanced search options like time limits, category limits etc.</para>
+      </listitem>
+      <listitem>
+        <para>Phrases segmenting for Chinese and Japanese languages.</para>
+      </listitem>
+      <listitem>
+        <para>Cached copies.</para>
+      </listitem>
+      <listitem>
+        <para>Smart excerpts.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+
+  <sect1 id="get">
+    <title>Where to get &mnogo;.
+      <indexterm>
+        <primary>Where to get &mnogo;</primary>
+      </indexterm>
+    </title>
+    <para>Check for the latest version of
+    &mnogo; at
+    <ulink url="http://www.mnogosearch.org/">http://www.mnogosearch.org/</ulink>.</para>
+  </sect1>
+
+
+  <sect1 id="disclaimer">
+    <title>Disclaimer
+      <indexterm><primary>Disclaimer of
+        &mnogo;</primary>
+        </indexterm>
+    </title>
+    <para>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.  See <filename>COPYING</filename> file for details.</para>
+    <para>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. </para>
+    <para>You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA </para>
+  </sect1>
+  
+  
+  
+  <sect1 id="authors">
+    <title>Authors
+      <indexterm><primary>Authors</primary></indexterm>
+    </title>
+    The people who took part in development in various period of time,
+    in no particular order:
+    <itemizedlist>
+      <listitem>
+        <author>
+          <firstname>Alexander</firstname>
+          <surname>Barkov</surname>
+        </author>
+        <email>bar[at]mnogosearch[dot]org</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Mark</firstname>
+          <surname>Napartovich</surname>
+        </author>
+        <email>nmark[at]glasnet[dot]ru</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Ramil</firstname>
+          <surname>Kalimullin</surname>
+        </author>
+        <email>ram[at]mnogosearch[dot]org</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Aleksey</firstname>
+          <surname>Botchkov</surname>
+        </author>
+        <email>bycha[at]mnogosearch[dot]org</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Sergei</firstname>
+          <surname>Kartashoff</surname>
+        </author>
+        <email>gluke[at]mnogosearch[dot]org</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Dmitry</firstname>
+          <surname>Tkatchenko</surname>
+        </author>
+        <email>dim[at]mnogosearch[dot]org</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Kir</firstname>
+          <surname>Kolyshkin</surname>
+        </author>
+        <email>kir[at]asplinux[dot]ru</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Vladas</firstname>
+          <surname>Lapinskas</surname>
+        </author>
+        <email>lapinskas[at]mail[dot]iae[dot]lt</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Alex</firstname>
+          <surname>Strange</surname>
+        </author>
+        <email>strange[at]unicon[dot]ru</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Anton</firstname>
+          <surname>Zemlyanov</surname>
+        </author>
+        <email>az[at]hotmail[dot]ru</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Igor</firstname>
+          <surname>Suhikh</surname>
+        </author>
+        <email>igor[at]sever[dot]net</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Maxim</firstname>
+          <surname>Zakharov</surname>
+        </author>
+        <email>maxime[at]sochi[dot]net[dot]ru</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Sergei</firstname>
+          <surname>Vojtovich</surname>
+        </author>
+        <email>svoj[at]mnogosearch[dot]org</email>
+      </listitem>
+      <listitem>
+        <author>
+          <firstname>Roman</firstname>
+          <surname>Pletenev</surname>
+        </author>
+        <email>prv[at]mnogosearch[dot]org</email>
+      </listitem>
+    </itemizedlist>
+    <para>We welcome anyone to take part in
+     &mnogo; development.
+     If you want to join, please get in touch with
+     the <ulink url="mailto:devel[at]mnogosearch[dot]org">developers team</ulink>.
+    </para>
+  </sect1>
+
+
+    <sect1 id="contriblist">
+      <title>Contributors (in no particular order)
+       <indexterm><primary>Contributors</primary></indexterm>
+      </title>
+    <itemizedlist>
+<listitem>
+<author><firstname>Michael</firstname> <surname>Widenius</surname></author>
+ (<email>monty[at]analytikerna[dot]se</email>) Solaris and Linux Makefiles for initial versions. 
+</listitem>
+<listitem>
+Greatest <application>MySQL</application> database which gave an initial idea to build SQL based search engine. 
+</listitem>
+<listitem>
+<author><firstname>Alexey</firstname> <surname>Zelenin</surname></author> (<email>alzel[at]izhcom[dot]ru</email>) Active idea generator and tester 
+</listitem>
+<listitem>
+<author><firstname>Gunther</firstname> <surname>Stammwitz</surname></author> (<email>gstammw[at]gmx[dot]net</email>) Most active beta tester 
+</listitem>
+<listitem>
+<author><firstname>Mustapha</firstname> <surname>MOUGHIT</surname></author> (<email>emoughit[at]cie[dot]fr</email>) Initial porting search.phtml to PHP. 
+</listitem>
+<listitem>
+<author><firstname>Paolo</firstname> <surname>Romano</surname></author> (<email>paolo[at]risc220[dot]piaggio[dot]cba[dot]unige[dot]it</email>) IBM C for AIX Makefile 
+</listitem>
+<listitem>
+<author><firstname>Jingyi</firstname> <surname>Zhou</surname></author> (<email>jzhou[at]airbridge[dot]net</email>) Active beta tester 
+</listitem>
+<listitem>
+<author><firstname>Joao</firstname> <surname>Silva</surname></author> (<email>JRSilva[at]somague[dot]pt</email>) Portuguese stoplist 
+</listitem>
+<listitem>
+<author><firstname>Rudolf</firstname> <surname>Eichhorn</surname></author> (<email>re116[at]bingo-ev[dot]de</email>) Active beta tester 
+</listitem>
+<listitem>
+<author><firstname>Ilya</firstname> <surname>Nakvasin</surname></author> (<email>jin[at]akvilon[dot]ru</email>) Original version of ForceIISCharset command in
+&indexer.conf;.
+</listitem>
+<listitem>
+<author><firstname>Christophe</firstname> <surname>Lauer</surname></author> (<email>clauer[at]citeweb[dot]net</email>) French stoplist 
+</listitem>
+<listitem>
+<author><firstname>Vadim</firstname> <surname>Tkachenko</surname></author> (<email>vvtk[at]stealthcomp[dot]com</email>) Ukrainian stoplist 
+</listitem>
+<listitem>
+<author><firstname>Francisco Jose</firstname> <surname>Montilla</surname></author> (<email>pacopepe[at]raudo[dot]dhis[dot]org</email>) Spanish stoplist 
+</listitem>
+<listitem>
+<author><firstname>Mart</firstname> <surname>Laak</surname></author> (<email>Mart[dot]Laak[at]active[dot]ee</email>) PHP3 front-ends speed improvements 
+</listitem>
+<listitem>
+<author><firstname>Manfred</firstname> <surname>Bathelt</surname></author> (<email>Bathelt[at]3SOFT[dot]de</email>) Fixes of the bug in external parsers support 
+</listitem>
+<listitem>
+<author><firstname>Rohan</firstname> <surname>Baxter</surname></author> (<email>rohan[at]ultimode[dot]com</email>) Perl front-end 
+</listitem>
+<listitem>
+<author><firstname>Builder</firstname></author> (<email>cbob[at]ms[dot]anet[dot]cz</email>) Czech stoplist 
+</listitem>
+<listitem>
+<author><firstname>ZioBudda</firstname></author> (<email>michel[at]michel[dot]enter[dot]it</email>) search.php3 PHP front-end for PostgreSQL porting from <application>MySQL</application> version 
+</listitem>
+<listitem>
+<author><firstname>Michael</firstname> <surname>Ansley</surname></author> (<email>Michael[dot]Ansley[at]intec[dot]co[dot]za</email>) Binary stopwords scan 
+</listitem>
+<listitem>
+<author><firstname>Charlie</firstname> <surname>Hornberger</surname></author> (<email>charlie[at]pressflex[dot]com</email>) Active idea generator 
+</listitem>
+<listitem>
+<author><firstname>Carmelo</firstname></author> (<email>carmelo[at]melting-soft[dot]com</email>) Initial "Language guesser" implementation 
+</listitem>
+<listitem>
+<author><firstname>The Hermit Hacker</firstname></author> (<email>scrappy[at]hub[dot]org</email>) PostgreSQL optimization issues 
+</listitem>
+<listitem>
+<author><firstname>Heiko</firstname> <surname>Stoermer</surname></author> (<email>stoermer[at]innominate[dot]de</email>) Extended NEWS archiving mode 
+</listitem>
+<listitem>
+<author><firstname>Marcin</firstname> <surname>Marszaek</surname></author> (<email>azzie[at]staszic[dot]waw[dot]pl</email>) URL filter in search.cgi for built-in text mode. 
+</listitem>
+<listitem>
+<author><firstname>Kirill</firstname> <surname>Maxomov</surname></author> (<email>kir[at]astrive[dot]ru</email>) Oracle7 native support 
+</listitem>
+<listitem>
+<author><firstname>Maciek</firstname> <surname>Uhlig</surname></author> (<email>muhlig[at]us[dot]edu[dot]pl</email>) Polish stoplist 
+</listitem>
+<listitem>
+<author><firstname>Tonu</firstname> <surname>Samuel</surname></author> (<email>tonu[at]please[dot]do[dot]not[dot]remove[dot]this[dot]spam[dot]ee</email>) <application>MySQL</application> related improvements.
+</listitem>
+<listitem>
+<author><firstname>Yannick</firstname> <surname>Warnier</surname></author> (<email>ywarnier[at]beeznest[dot]org</email>) Major documentation improvements.
+</listitem>
+</itemizedlist>
+
+      <para>Many other people have contributed ideas/bug reports/fixes etc.
+      Thank you! If we forgot to list you here, please fill free to contact us!</para>
+    </sect1>
+
+
+  <sect1 id="faq">
+    <title>Frequently Asked Questions
+      <indexterm><primary>FAQ</primary></indexterm>
+    </title>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <emphasis>How can I contribute to the project?
+          </emphasis>
+        </para>
+        <para>There are several ways you can help.
+        Please visit the
+        <ulink url="http://www.mnogosearch.org/helpus.html">Help Us page</ulink>
+        on the &mnogo; website.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis>If I have pages with no keywords in the META description,
+           will the document get indexed?
+          </emphasis>
+        </para>
+        <para>Yes. By default &mnogo; indexes
+         the entire document. By changing the default values you can give
+         different weights to different parts of the document, like
+         <literal>body</literal>,
+         <literal>title</literal>,
+         <literal>keywords</literal>,
+         <literal>description</literal>.
+        </para>
+      </listitem>
+
+<!--
+      <listitem>
+        <para>
+          <emphasis>
+          If I search for the Spanish word
+          <literal>Espa&ntilde;a</literal>,
+          &search.cgi; breaks
+          the word in two parts,
+          searching for <literal>Espa</literal>
+          and also for <literal>a</literal>,
+          ignoring the letter <literal>&ntilde;</literal>.
+          </emphasis>
+        </para>
+        <para>You need to set <xref linkend="cmdref-localcharset"/>
+        to <literal>latin1</literal> in both
+          &indexer.conf; and
+          &search.htm;.
+        </para>
+      </listitem>
+-->
+
+      <listitem>
+        <para>
+          <emphasis>
+            I'm wondering if &mnogo;
+            supports multi-byte character sets.
+             I'm especially interested in <literal>EUC-JP</literal>.
+          </emphasis>
+        </para>
+        <para>
+         Multi-byte character sets (including <literal>EUC-JP</literal>)
+         are supported starting from the version <literal>3.2.x</literal>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis>Why does &indexer; fail with a message like
+          <literal>can't load library 'libmysqlclient.so.6'</literal>?
+          </emphasis>
+        </para>
+        <para>You probably don't have <application>MySQL</application>
+          libraries properly installed. On Linux, just find out where
+          your <filename>libmysqlclient.so.6</filename> is, then add
+          the path to this file into <filename>/etc/ld.so.conf</filename>.
+          Then run <literal>ldconfig</literal> as root.
+       </para>
+        <para>You can also set the value of the environment variable
+          <varname>LD_LIBRARY_PATH</varname> to the path to the required
+          dynamic libraries. This works on any <acronym>OS</acronym>.
+        </para> 
+        <para>Note that this is a general UNIX configuration issue,
+         not only &mnogo; specific.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis>What is the maximum data size
+          &mnogo; can can handle?
+          </emphasis>
+        </para>
+        <para>When using the <literal>blob</literal> storage mode,
+         introduced in the version <literal>3.2.8</literal>,
+         &mnogo;
+         is able to index and search through about one or two million
+         documents on a single computer.
+         The <application>mnoGoSearch cluster</application>
+         introduced in the version <literal>3.3.x</literal> can distribute
+         data over multiple servers and is able to index up to about
+         <literal>500</literal> million documents when using
+         <literal>256</literal> machines.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis>
+          I want to index multiple virtual domains on a single box.
+          What settings do I need to change for that?
+          </emphasis>
+        </para>
+        <para>
+          Virtual domains are fully supported.
+          No additional settings are required.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis>
+            Is it possible to use different templates for searches,
+            i.e. view search results in the design of different
+            sites without having to recompile
+            &search.cgi;?
+          </emphasis>
+        </para>
+        <para>There are several ways to do it.
+          They are given here in the order how
+          &search.cgi; detects template name:
+        </para>
+        <orderedlist numeration="arabic">
+          <listitem>
+            <para>
+              &search.cgi; checks
+              the environment variable <varname>UDMSEARCH_TEMPLATE</varname>.
+              Thus you can put the desired search template file name
+              into this variable.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              &search.cgi; also supports
+              Apache internal redirect.
+              It checks the <varname>REDIRECT_STATUS</varname> and
+              <varname>REDIRECT_URL</varname> environment variables.
+              To activate this template option you may add these
+              lines to Apache <filename>srm.conf</filename>:
+            </para>
+            <para>
+<programlisting>
+AddType text/html .zhtml
+AddHandler zhtml .zhtml
+Action zhtml /cgi-bin/search.cgi
+</programlisting>
+            </para>
+            <para>Put &search.cgi; into
+            your <filename>/cgi-bin/</filename> directory.
+            Then put the &html; template
+            into your site directory
+            structure under any name with the <filename>.zhtml</filename>
+            extension,
+            for example <filename>template.zhtml</filename>.
+            Now you can open the search page:
+            <literal>http://www.site.com/path/to/template.zhtml</literal>.
+            You can also use any available extension instead of
+            <literal>.zhtml</literal>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>If the above two methods fail,
+             &search.cgi; will open the template
+             having the same name with the script being executed,
+             using the <varname>SCRIPT_NAME</varname> environment variable.
+             &search.cgi; will open the file
+             <filename>ETC/search.htm</filename>,
+             <filename>search1.cgi</filename> will
+             open <filename>ETC/search1.htm</filename> and so on,
+             where <literal>ETC</literal> is
+             &mnogo; <literal>/etc</literal>
+             directory
+             (usually <literal>/usr/local/mnogosearch/etc</literal>).
+             So, you can use the same &search.cgi;
+             with different templates
+             without having to recompile it. Just create one or multiple
+             hard or symbolic links to &search.cgi;
+             or copy it under different names then put the corresponding
+             search templates into the <filename>/etc</filename>
+             directory of your &mnogo; installation.
+            </para>
+          </listitem>
+        </orderedlist>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis>&indexer;
+          doesn't store some links in
+           the database although they are expected to be stored.
+           &indexer; doesn't grab all the
+           links from my web site,
+           as a result only half the site is indexed. 
+        </emphasis>
+        </para>
+        <para>There are two possible reasons:</para>
+        <orderedlist numeration="arabic">
+          <listitem>
+            <para>&indexer; finds the links,
+            but rejects to put them into the database.
+            This most likely means that your &indexer.conf;
+            configured not to allow these links.
+            </para>
+          </listitem>
+          <listitem>
+            <para>&indexer; doesn't
+            find the links on the page because of a bug
+            in the &html; parser.
+          </para>
+          </listitem>
+        </orderedlist>
+        <para>Imaging that 
+          <literal>http://localhost/links.html</literal> is a
+          page that contains ignored links.
+        </para>
+        <para>To discover the reason,
+          start &indexer; with these
+          command line arguments:
+        </para>
+        <para>
+          <userinput>indexer -am -u http://localhost/links.html</userinput>
+        </para>
+        <para>It will display various debug information, including:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>every link found on this page found
+            </para>
+          </listitem>
+          <listitem>
+            <para>information why &indexer;
+            rejects or accepts every link found
+            </para>
+          </listitem>
+        </itemizedlist>
+        <para>With this information provided it is easy to detect
+        what is the reason of unexpected &indexer;
+        behavior: either 1 or 2. When you know the reason, you can either
+        change your &indexer.conf; and check again,
+        or file a bug if you're sure that &indexer.conf;
+        is OK.
+        </para>
+        <para>When <ulink url="http://www.mnogosearch.org/bugs/">
+        reporting this sort of bugs</ulink>, please include
+        <literal>indexer -am -u http://localhost/links.html</literal> output,
+        as well as the <command>Server/Realm</command>
+        and the <command>Allow/Disallow</command> commands
+        from your &indexer.conf;.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+</chapter>

@@ -1,0 +1,71 @@
+#!/bin/sh
+
+export UDM_TEST_ROOT=`pwd`
+export UDM_TEST="$UDM_TEST_ROOT/msearchtest"
+export UDM_TEST_LOG="$UDM_TEST_ROOT/msearchtest.log"
+export INDEXER="$UDM_TEST_ROOT/../src/indexer"
+export SEARCH="$UDM_TEST_ROOT/../src/search.cgi"
+export UDM_ETCSRC_DIR="$UDM_TEST_ROOT/../etc/"
+export UDM_VAR_DIR="$UDM_TEST_ROOT"
+
+fhs=`$INDEXER -FHAVE_FHS_LAYOUT`
+if [ "$fhs" == "HAVE_FHS_LAYOUT:yes" ]
+then
+export UDM_SHARE_DIR="$UDM_TEST_ROOT/../"
+else
+export UDM_SHARE_DIR="$UDM_TEST_ROOT/../create/"
+fi
+
+
+# DB2 ODBC driver seems to call setlocale(getenv("LANG"))
+# during connect, so $(Last-Modified) depends on the local
+# LANG settings even if we have "Locale C" in search.htm.
+# Let's set LANG to generic value to avoid this problem.
+
+export LANG=C
+
+#
+# Don't depend on the local machine timezone.
+#
+export TZ=GMT
+
+
+#
+# To generate valgrind suppresions add --gen-suppressions=all 
+# into valgrind command line.
+#
+
+while test $# -gt 0; do
+  case "$1" in
+  --debug-sql)
+    export PARAM_DEBUGSQL="DebugSQL=yes"
+    ;;
+  --ps)
+    export PARAM_PS="ps=yes"
+    ;;
+  --valgrind)
+    VALGRIND="valgrind -q --suppressions=valgrind.supp --tool=memcheck --leak-check=yes"
+    $INDEXER -? >/dev/null
+    $SEARCH  -? >/dev/null
+    export INDEXER="$VALGRIND $UDM_TEST_ROOT/../src/.libs/lt-indexer"
+    export SEARCH="$VALGRIND $UDM_TEST_ROOT/../src/.libs/lt-search.cgi"
+    ;;
+  --*)
+    echo "Unknown option $1"
+    exit 1
+    ;;
+  *)
+    break
+    ;;
+ esac
+ shift
+done
+
+make msearchtest
+
+export UDM_TEST_DBADDR_PARAM="$PARAM_DEBUGSQL&$PARAM_PS"
+
+echo $UDM_TEST_DBADDR_PARAM
+
+$UDM_TEST  $@ 2>$UDM_TEST_LOG
+

@@ -1,0 +1,31 @@
+#
+# English syninyms
+#
+
+Charset: us-ascii
+Language: en
+
+abcense absence
+color colour
+rgb "red green blue"
+rg  "red green"
+gb  "green blue"
+rb  "red blue"
+
+peacemaking "peace making"
+
+Mode: oneway
+blue azure purple
+
+Mode: return
+red scarlet crimson
+
+#
+# "06" is equal to "June"
+# "06" is equal to "2006"
+# But "June" is not equal to "2006"
+#
+
+Mode: roundtrip final
+06 2006
+06 June

@@ -1,0 +1,248 @@
+<sect1 id="cjk">
+
+  <title>
+   Segmenters for Chinese, Thai and Japanese languages
+  </title>
+
+  <para>
+  Unlike in the Western languages, texts in the East Asian languages
+  Chinese, Thai and Japanese may not have spaces between words in a phrase.
+  Thus, when indexing documents in these languages, 
+  a search engine needs to know how to 
+  split phrases into separate words, and also
+  needs to know the word boundaries when running a search query.
+  &mnogo; can find Asian word
+  boundaries with help of so called <literal>segmenters</literal>.
+  </para>
+
+  <sect2 id="ja-segment">
+    <title>Japanese phrase segmenter
+      <indexterm>
+        <primary>Phrase segmenter</primary>
+        <secondary>Japanese language</secondary>
+      </indexterm>
+    </title>
+    <para>
+    &mnogo; can use 
+    <application>
+      <ulink url="http://chasen.aist-nara.ac.jp/">ChaSen</ulink>
+    </application> and
+    <application>
+      <ulink url="http://mecab.sourceforge.net/">MeCab</ulink>
+    </application>
+    Japanese morphological systems to break phrases into words.
+    </para>
+    <para>To build &mnogo;
+    with Japanese phrase segmenting, use
+    either <option>--with-chasen</option> or <option>--with-mecab</option>
+    command line switches when running <application>configure</application>.
+    </para>
+  </sect2>
+
+
+
+  <sect2 id="zh-segment">
+    <title>Chinese phrase segmenter
+      <indexterm><primary>Phrase segmenter</primary>
+      <secondary>Chinese language</secondary></indexterm>
+    </title>
+    <para>
+      &mnogo; uses
+      frequency dictionaries for Chinese phrase segmenting.
+      Segmenting is implemented using the
+      <emphasis>dynamic programming method</emphasis>
+      to maximize the cumulative frequency of the separate
+      words produced from a phrase.
+    </para>
+    <para>
+      &mnogo;  distribution
+      includes two Chinese dictionaries:
+      <filename>mandarin.freq</filename> -
+      a <emphasis>Simplified Chinese</emphasis> dictionary
+      and <filename>TraditionalChinese.freq</filename> -
+      a <emphasis>Traditional Chinese</emphasis> dictionary.
+    </para>
+    <note>
+      <para>
+       When building &mnogo; from sources
+       for use with Chinese language, don't forget to add
+       <option>--with-extra-charsets=big5,gb2313</option> when
+       running <application>configure</application>.
+      </para>
+    </note>
+    <para>
+    Use the <command><xref linkend="cmdref-loadchineselist"/></command>
+    command to enable Chinese phrase segmenting, with this format:
+<programlisting>
+LoadChineseList [charset filename]
+</programlisting>
+    You can optionally specify the character set name and the
+    file name of a dictionary.
+    <note>
+      <para>
+      <xref linkend="cmdref-loadchineselist"/> will load the dictionary
+      for <emphasis>Simplified Chinese</emphasis> by default, that is using
+      the <literal>GB2312</literal> character set set and the file
+      <filename>mandarin.freq</filename>. Anyway, you may find it
+      convenient to specify the default values explicitly:
+<programlisting>
+LoadChineseList gb2312 mandarin.freq
+</programlisting>
+      </para>
+    </note>
+    To enable <emphasis>Traditional Chinese</emphasis> segmenting,
+    use this command:
+<programlisting>
+LoadChineseList big5 TraditionalChinese.freq
+</programlisting>
+    </para>
+  </sect2>
+
+
+
+  <sect2 id="th-segment">
+    <title>Thai phrase segmenter
+      <indexterm><primary>Phrase segmenter</primary><secondary>Thai language</secondary></indexterm>
+    </title>
+    <para>
+      Thai segmenting uses the same method with
+      segmenting for Chinese, with help of 
+      a Thai frequency dictionary <filename>thai.freq</filename>,
+      which is included into &mnogo;
+      distribution.
+    </para>
+    <para>
+    Use the <command><xref linkend="cmdref-loadthailist"/></command>
+    to enable Thai phrase segmenting, with this format:
+<programlisting>
+LoadThaiList [charset dictionaryfilename]
+</programlisting>
+    <note>
+      <para>
+      The <literal>TIS-620</literal> character set and the file
+      <filename>thai.freq</filename> are used by default. That is
+      if you use <command><xref linkend="cmdref-loadthailist"/></command>
+      without any arguments, it will be effectively the same to this command:
+<programlisting>
+LoadThaiList tis-620 thai.freq
+</programlisting>
+      </para>
+    </note>
+    </para>
+  </sect2>
+
+
+
+  <sect2 id="cjk-segment">
+    <title>The <acronym>CJK</acronym> phrase segmenter
+      <indexterm><primary>Phrase segmenter</primary><secondary>CJK</secondary></indexterm>
+    </title>
+    <para>
+      Starting from the version <literal>3.3.8</literal>,
+      &mnogo; also supports
+      a special universal segmenter which is suitable
+      for Japanese, Tradtitional Chinese and Simplied Chinese.
+      The universal <acronym>CJK</acronym> segmenter does not use
+      dictionaries and does not require external libraries.
+    </para>
+    <para>
+    You can enable the <acronym>CJK</acronym> segmenter by
+    adding this command into both 
+    &indexer.conf; and &search.htm;:
+<programlisting>
+Segmenter cjk
+</programlisting>
+    </para>
+    <para>
+    The <acronym>CJK</acronym> segmenter considers all
+    ideogram characters from the Unicode blocks
+    <literal>CJK Ideographs Extension A (U+3400 - U+4DB5)</literal>
+    and  <literal>CJK Ideographs (U+4E00 - U+9FA5)</literal>
+    as separate words. 
+    When indexing a document using the <acronym>CJK</acronym>
+    segmenter, &mnogo;
+    stores information about every ideogram character separately.
+    </para>
+    <para>
+    At search time, the search query you type
+    is preprocessed by the <acronym>CJK</acronym> sementer
+    and some delimiters are inserted between the ideograms.
+    </para>
+    <para>
+    If you pass the <literal>m=phrase</literal> 
+    query string parameter to &search.cgi;
+    (which means <literal>exact phrase search</literal>),
+    the <acronym>CJK</acronym> segmenter uses the 
+    dash character as a delimiter, and the space character
+    otherwise (that is in case of <literal>all words</literal>
+    and <literal>any of the words</literal> search modes).
+    </para>
+    <para>
+    Imagine you type the query ``<userinput>ABCD</userinput>'',
+    where <literal>A</literal>, <literal>B</literal>,
+    <literal>C</literal>, <literal>D</literal> are
+    some ideographic characters. In case when
+    the <literal>exact phrase search</literal> mode is
+    <emphasis>not</emphasis> active, your query will be
+    preprocessed by the <acronym>CJK</acronym>
+    segmenter to ``<literal>A B C D</literal>'' and 
+    the four individual "words" will be searched. Note, that
+    &mnogo; ranks the documents
+    will smaller distance between the query words higher than
+    the documents having the same words in different parts
+    of the document, so if you have some documents 
+    the exact phrase <literal>ABCD</literal>,
+    it is very likely that they will be 
+    displayed in the top <literal>10</literal> results.
+    </para>
+    <note>
+      <para>
+      You can try different values for the
+      <xref linkend="cmdref-worddistanceweight"/> command
+      to see how distances between the query words
+      in the found documents affect their final score.
+      </para>
+    </note>
+    <para>
+    Now imagine you type the same query ``<userinput>ABCD</userinput>''
+    with the <literal>exact phrase search</literal>
+    mode <emphasis>enabled</emphasis>. The query will be
+    preprocessed by the <acronym>CJK</acronym>
+    segmenter to ``<literal>A-B-C-D</literal>''.
+    The dash character forces automatic phrase
+    search (see <xref linkend="search-phrase"/> for details
+    on automatic phrase search), so as a result
+    only those documents with exact phrase match will be found.
+    </para>
+
+    <note>
+    <para>
+    You can also use the ordinary &mnogo;
+    query syntax with quotes to enable phrase searches without having
+    to pass the <literal>m=all</literal> query string variable
+    (<literal>exact phrase search</literal> mode) .
+    For example, if you type ``<literal>"AB" "CD"</literal>'',
+    then the documents having the ideogram <literal>A</literal>
+    immediately followed by the ideogram <literal>B</literal>,
+    and at the same time, the ideogram <literal>C</literal>
+    immediately followed by the ideogram <literal>D</literal>
+    will be found. The mutual positions of the phrases
+    <literal>AB</literal> and <literal>CD</literal> will
+    not affect the result set, and will affect only the
+    result ordering.
+    </para>
+    </note>
+    
+    <para>
+    Although, the <acronym>CJK</acronym> phrase segmenter
+    is not aware of the real word boundaries, tests made
+    by the native speakers indicated that in many
+    cases it works even better and more predictable
+    than the
+    <application>Mecab</application>-based,
+    <application>Chasen</application>-based,
+    and the frequency-based segmenters.
+    </para>
+  </sect2>
+
+</sect1>
