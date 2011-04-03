@@ -1,0 +1,320 @@
+2009-10-29  Dmitry Dulepov  <dmitry.dulepov@gmail.com>
+
+	* Changed parameter name in the user initialization hook
+	* Move code to inject tags into <head> into the separate function
+	* Refactored TSFE postproc hook to use smaller functions
+	* Now adding a special <meta> tag with a usergroup id to the indexed output to create a mnogosearch section for filtering
+	* Add a security measure: use URL parameter for groups only if the indexer is running
+	* Added a hook to set mnogosearch variables to config
+	* Allow indexing restricted pages in the postproc hook
+	* Changed recommended mnogosearh version to 3.3.8 in the manual
+
+2009-10-28  Dmitry Dulepov  <dmitry.dulepov@gmail.com>
+
+	* Added explicit cdon/cdoff to the indexer configuration
+	* Added a method to obtain configuration lines directly from configuration. This will be used when usergroup indexing is impemented.
+	* Removed anonymous and "any" items from user groups; clarified some form titles
+	* Temporarily removed user group configuration for the realm
+	* Added tag generation for user groups. No group parameter injection yet.
+	* Added group parameter injection to server configuration
+
+2009-10-22  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Activate the new command line tool
+
+2009-10-21  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Added a new TSFE hook to force user groups for pages and content
+	* Added a user group field to the indexing configuration record
+	* Added a hook to exclude tx_mnogosearch_gid from cHash parameters
+	* Added new classes for more structured processing in the command line tool
+
+2009-10-20  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Renamed TSFE postproc hook class
+	* Moved TCEmain and CMSLayout hook classes
+
+2009-04-16  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed issue with HTML tags in search results title
+
+2009-04-15  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed bug #3040: uppercase extensions are not recognized
+	* Tuned search results so that subject has more weight than body
+	* Fixed bug #3067: order of the checkboxes (or selections) for advanced search
+	* Fixed bug #2531: some issues about xhtml validation
+	* Fixed bug #3036: Problems with hypenated database names
+
+2009-02-23  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Applied Emile's changes to the template
+
+2009-02-17  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed wrong CSS property
+
+2009-01-21  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Changed "Last-modified" handling to provide more realistic modification dates
+	* Misc updates in the manual
+
+2009-01-20  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Released version 2.2
+
+2009-01-17  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed bug #2370: Pi1 is always USER_INT
+	* Updated manual with the information about configuring the advanced search form
+	* Fixed bug #1937: little changes in the manual
+	* Added hook to preprocess htdb:/ URLs (for www.calis.lv)
+	* Added a function too obtain controller from view in hooks
+	* Fixed typo in class name
+	* Added controller reference to hook parameters
+	* Advanced form uses <div> instead of <table>
+	* Added a setting for the explicit default value in the advanced search form
+	* Found terms are now shown as bold
+	* Changed internal limit processing to allow more flexible customization using hooks
+	* Added information about error 139 to the FAQ
+	* Fixed wrong default value for the title field
+	* Allow indexing period to be an expression
+
+2009-01-16  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Implemented advanced search form and custom search limits
+	* Fixed bug #3240: Indication of number of found items
+
+2009-01-15  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Added title field to the indexing config (to be used in the advanced search form)
+	* Added site selector to TS and HTML templates
+	* Added site selector procesing to the form (untested)
+
+2009-01-07  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Removed hook definition for TCEMain's processCmdMap because it was not used
+	* Fixed bug #2417: mnoGoSearch + TemplaVoila cause wrong RealURL paths
+	* Updated dependency for pagepath extension to 0.1.3
+	* Updated code for displaying result time and clones
+	* Fixed bug #2368: Error in TS object browser
+	* Fixed bug #2341: template.html does not validate
+	* Released version 2.1.6
+	* Fixed wrong XCLASSes
+
+2008-12-12  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed bug: if title field for the records is empty, HTDBDoc produces error in CLI script
+
+2008-12-11  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Added new column to the records indexing to allow recording "Last modified" time for records
+	* Changed index on tx_mnogosearch_urllog
+
+2008-12-10  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Updated manual with the information about TYPO3SEARCH_xxx and more advanced https:// indexing
+	* Updated manual: added information about conflict with nc_staticfilecache
+	* Updated manual: added information about indexing files without using HTTP
+	* Deleted old manual
+	* Released version 2.1.5
+	* Added new markers (date and size) to the output
+	* Added "Last-modified" header generation while indexing (only if not set already)
+	* Added tt_news hook to set page modification date correctly
+
+2008-12-09  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed: period was incorrectly specified
+	* Fixed: file names with spaces shows %20 in titles
+	* Added more extensions to "disallow" in CLI script
+
+2008-12-04  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Manual update with information about order fo allow/disallow records
+
+2008-12-03  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed non-localized string in the long search form
+	* Fixed wrong Realm command in CLI script
+
+2008-11-28  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Updated manual to show how to index https:// sites
+	* Fixed small typo in the TS comment
+
+2008-11-27  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Fixed bug #2232: TYPO3SEARCH markers not respected
+	* Fixed: CSS list was not aligned properly vertically
+	* Fixed bug #2233: (No title) for found documents with spaces
+	* Fixed bug #2236: Not all pages of the site are indexed
+	* Small manual updates
+	* Disable debug logging for now
+	* Released version 2.1.4
+
+2008-11-22  Dmitry Dulepov  <dmitry@typo3.org>
+
+	* Make found symbols bold by default
+	* Fix regex to detect new lines in the title tag
+
+11-11-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Remove old pager code
+	* Fix search limit for records
+	* Explain search limiting in the manual
+	* Released version 2.1.3
+
+06-11-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Do not attempt to create page title if none exists
+	* Add information about Debian to the manual
+	* Remove sending HTTP status code 304 as it may cause problems with some pages that contain records
+	* Disable usage of "No index" flag
+	* Check all ways to set page title in post processing hook
+	* Released version 2.1.1
+	* Fix "(no title)" for files
+	* Remove UdmComment from everywhere because it may conflict with post processing hook
+	* Released version 2.1.2
+
+05-11-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Fixed SQL error in TCEmain hook
+
+31-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Make sure that functions are not defined more than once in tca.php
+	* Add record reindexing to CLI script and TCEmain hook
+	* Record only indexable pages in URL log
+	* Rewrite manual
+	* Added file icons
+	* Add support for indexing OpenOffice documents
+	* Released version 2.1.0
+
+29-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Change to TCEmain to use 'pagepath' extension to get path in FE
+	* Record new url when page/record is renamed
+	* Get rid of 'FE' option during extension installation
+	* Update index on urllog table to search for urls faster
+	* Get rid of old flexform options
+	* Add a function to get mnoGoSearch API version
+	* Remove unused CSS definition
+	* Released version 2.0.2
+	* Fixed empty search time
+	* Released version 2.0.3
+
+25-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Major refactoring and change of classes to use TS options and simplify flexform. Dropped TV renderer.
+	* Renamed res/ to resources/
+	* Move some classes toward MVC model
+	* Made page browser more distinct on the page
+	* Made TCEmain hook 4.3-compatible
+
+21-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Changed template file to add more markers, look like Google, use pagebrowse extension
+	* Fixed very low page rank
+	* Fixed problem with t3lib_div::getDomainStartPage() not finding correct domain
+
+15-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Added template file and more markers
+
+14-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Fixed problem: URL log was never emptied
+	* Indexing configuration records now can exist only on regular pages
+	* Fix: htdb:/ records did not show full URL in search results in certain cases
+	* Added feature to limit search on htdb:/ domains
+	* Fixed problem: TYPO3SEARCH_xxx was not working
+	* Fixed problem: indexing configuration is still not on pages
+	* Fixed problem: page 1 is always displayed in the results
+	* Removed site title from search results
+	* Added better label for indexing records
+
+09-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* CLI script supports indexing database tables
+	* pi1 supports record indexing
+	* Added XCLASS to CLI script
+	* Added new fields for record indexing
+	* Added slash to the database URL
+	* Optimized postProc to use only one function
+	* Updated manual
+	* Post processing for content is now executed only if mnogosearch is running
+
+08-10-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Fix: multiple copies of the same URL for indexing
+
+10-09-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Added site limiting through piVars
+	* Fixed bug: number of results was never displayed
+
+10-03-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Lots of changes related to better search
+
+07-03-2008	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Removed one of two TS templates and merged its code into remaining
+	* Removed RealURL lookup completely, now rely only on FE check
+	* Manual updated after test installation of mnoGoSearch at TUE/Netherlands
+	* CLI: added -d option and phpDoc comments
+
+26-12-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* New implementation to obtain URL from FE
+	* Fix for plugin info in Page module
+
+26-12-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Updated documentation: fixed small error in the description of build procedure
+
+08-09-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Updated documentation: added section about TypoScript templates
+	* Added renderer for CMS layout (4.2 feature)
+
+24-08-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Reindex also pages that have "clearCache" TSConfig option set
+	* Added automatic table creation before reindexing
+	* Updated manual: added section about creating mnogosearch database
+
+22-08-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Completed implementation of MTB renderer
+	* Updated manual
+
+21-08-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Added template test mode in flexform configuration for pi1
+	* Added exported mapped templavoila templates
+
+19-08-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Perform post processing only for typeNum=0
+	* Removed extra quotes in template files
+	* Started MTB implementation: added markers to template
+
+14-07-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Small fix in the manual about compiling PHP extension. Thanks to Wolfgang Klinger
+
+11-07-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Fix: same link is displayed below excerpt for all results
+	* manual.sxw updates
+
+02-07-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Fix: CLI script did not postprocess blob fields
+	* Added verbose option (-v) to CLI script
+	* Changed pi1/class.tx_mnogosearch_pi1.php to use 'q' instead of 'submit' to check if search results should be displayed
+
+31-05-2007	Dmitry Dulepov	<dmitry@typo3.org>
+
+	* Initial release

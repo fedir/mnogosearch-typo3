@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'mnogosearch'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.list_type_pi1">mnoGoSearch</label>
+			<label index="tx_mnogosearch_indexconfig">mnoGoSearch indexing configuration</label>
+			<label index="tx_mnogosearch_indexconfig.title">Title for the advanced search form:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_type">Configuration type:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_type.server">Server</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_type.realm">Realm</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_type.records">Records</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_url">Indexing path:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_method">Indexing method:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_method.allow">Allow</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_method.disallow">Disallow</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_method.href_only">HrefOnly</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_method.check_only">CheckOnly</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_method.skip">Skip</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_subsection">Subsection type:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_subsection.path">Path</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_subsection.site">Site</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_subsection.world">World</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_subsection.page">Page</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_cmpoptions">Comparison options:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_cmpoptions.case">Case-sensitive</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_cmpoptions.match">No match</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_cmptype">Comparison type:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_cmptype.string">String</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_cmptype.regexp">Regular expression</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_period">Indexing period (hours or expression):</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_additional_config">Additional indexer configuration:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_table">Table to index:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_title_field">Title field for the record:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_body_field">Body text fields for the record:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_lastmod_field">Field with record's "last modified" time:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_url_parameters">Single view URL parameters:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_display_pid">Page to display these records:</label>
+			<label index="tx_mnogosearch_indexconfig.tx_mnogosearch_pid_only">Limit to records at:</label>
+			<label index="tx_mnogosearch_indexconfig.access_div">Access</label>
+			<label index="tx_mnogosearch_indexconfig.user_groups">Index also for these user groups:</label>
+			<label index="tx_mnogosearch_urllog">[mnoGoSearch] Modified records (for indexing)</label>
+			<label index="tx_mnogosearch_urllog.tx_mnogosearch_url">Address:</label>
+			<label index="ds_short_search_form">[mnoGoSearch] Short search form</label>
+			<label index="ds_long_search_form">[mnoGoSearch] Long search form</label>
+			<label index="ds_search_results">[mnoGoSearch] Search results</label>
+			<label index="cms_layout.mode_shortform">Short search form</label>
+			<label index="cms_layout.mode_longform">Long search form</label>
+			<label index="cms_layout.mode_searchresults">Search results</label>
+			<label index="cms_layout.mode_none">No mode set (plugin is not configured?)</label>
+			<label index="table_records">Records: %s</label>
+			<label index="generic_crdate">Record creation date and time</label>
+			<label index="generic_tstamp">Record modification date and time</label>
+		</languageKey>
+	</data>
+</T3locallang>

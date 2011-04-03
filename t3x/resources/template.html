@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="lv" lang="lv">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>Search form template</title>
+<!-- ###HEADER_ADDITIONS### begin -->
+<link type="text/css" rel="stylesheet" href="###SITE_REL_PATH###resources/styles.css" />
+<script type="text/javascript" src="###SITE_REL_PATH###resources/scripts.js"></script>
+<!-- ###HEADER_ADDITIONS### end -->
+</head>
+<body>
+
+
+<!-- ###SHORT_SEARCH_FORM### begin -->
+<div class="tx-mnogosearch-short-search-form">
+	<!-- WARNING! Do not change method to "post"! -->
+	<form action="###SHORT_SEARCH_FORM_ACTION###" method="get">
+		<fieldset>
+			<input type="text" name="tx_mnogosearch_pi1[q]" value="###SHORT_SEARCH_FORM_VALUE###" />
+			<input type="submit" name="tx_mnogosearch_pi1[submit]" value="###TEXT_SEARCH###" />
+		</fieldset>
+	</form>
+</div>
+<!-- ###SHORT_SEARCH_FORM### end -->
+
+
+
+
+
+
+
+
+<hr />
+<!-- ###LONG_SEARCH_FORM### begin -->
+<div id="long-search-form">
+	<!-- WARNING! Do not change method to "post"! -->
+	<form class="tx-mnogosearch-long-form" action="###LONG_SEARCH_FORM_ACTION###" method="get">
+		<fieldset>
+			<div class="tx-mnogosearch-form-field">
+				<label for="tx_mnogosearch_pi1_q">###TEXT_SEARCH_FOR###</label>
+				<input size="50" type="text" name="tx_mnogosearch_pi1[q]" id="tx_mnogosearch_pi1_q" value="###LONG_SEARCH_FORM_VALUE###" />
+			</div>
+
+			<!-- ###SITESEL_SELECT### begin -->
+			<div class="tx-mnogosearch-form-field">
+				<label for="tx_mnogosearch_pi1_l">###TEXT_SEARCH_WHERE###</label>
+				<select name="tx_mnogosearch_pi1[l][]" id="tx_mnogosearch_pi1_l">
+					<!-- ###SITESEL_OPTION### begin -->
+					<option value="###VALUE###"###SELECTED###>###TEXT###</option>
+					<!-- ###SITESEL_OPTION### end -->
+				</select>
+			</div>
+			<!-- ###SITESEL_SELECT### end -->
+
+			<!-- ###SITESEL_RADIO### begin -->
+			<div class="tx-mnogosearch-form-field">
+				<label for="tx_mnogosearch_pi1_l">###TEXT_SEARCH_WHERE###</label>
+				<span id="tx_mnogosearch_pi1_l">
+				<!-- ###SITESEL_OPTION### begin -->
+				<input type="radio" class="reset" name="tx_mnogosearch_pi1[l][]"###CHECKED### value="###VALUE###" />###TEXT###
+				<!-- ###SITESEL_OPTION### end -->
+				</span>
+			</div>
+			<!-- ###SITESEL_RADIO### end -->
+
+			<!-- ###SITESEL_CHECK### begin -->
+			<div class="tx-mnogosearch-form-field">
+				<label for="tx_mnogosearch_pi1_l">###TEXT_SEARCH_WHERE###</label>
+				<span id="tx_mnogosearch_pi1_l">
+				<!-- ###SITESEL_OPTION### begin -->
+				<input type="checkbox" class="reset" name="tx_mnogosearch_pi1[l][]"###CHECKED### value="###VALUE###" />###TEXT###
+				<!-- ###SITESEL_OPTION### end -->
+				</span>
+			</div>
+			<!-- ###SITESEL_CHECK### end -->
+
+			<div class="tx-mnogosearch-form-field">
+				<input type="submit" class="reset" name="tx_mnogosearch_pi1[submit]" id="tx_mnogosearch_pi1_submit" value="###TEXT_SEARCH###" />
+			</div>
+		</fieldset>
+	</form>
+</div>
+<!-- ###LONG_SEARCH_FORM### end -->
+
+
+
+
+
+
+
+<hr />
+<!-- ###SEARCH_RESULTS### begin -->
+<div id="tx-mnogosearch-search-results">
+	<div class="tx-mnogosearch-summary">
+		<!-- Search for: abc xyz -->
+		<!-- Hidden by default!
+		###TEXT_SEARCH_TEXT### ###SEARCH_RESULTS_TERMS###.
+		-->
+		<!-- Results: abc: 5, xyz: 6 -->
+		###TEXT_SEARCH_RESULTS### ###SEARCH_RESULTS_STATISTICS### (###SEARCH_TOOK_SHORT###)
+		<!-- Search took: 0.001 seconds -->
+		<!-- Hidden by default
+		###SEARCH_TOOK###.
+		-->
+		<br />
+		<!-- Displaying results 1-10 of 100. Page 1 of 10. -->
+		###RESULT_RANGE###. ###PAGE_RANGE###.
+	</div>
+	<div id="tx-mnogosearch-results">
+
+		<!-- ###SEARCH_RESULTS_EMPTY### begin -->
+			###TEXT_NOTHING_FOUND###
+		<!-- ###SEARCH_RESULTS_EMPTY### end -->
+
+		<!-- ###SEARCH_RESULTS_CONTENT### begin -->
+			<ol id="tx-mnogosearch-result" type="1" start="###SEARCH_RESULTS_FIRST###">
+			<!-- ###SEARCH_RESULTS_RESULT### begin -->
+				<li>
+					<h3>
+						<!-- ###ICON### begin -->
+						<img src="###ICON_SRC###" alt="" />
+						<!-- ###ICON### end -->
+						<a href="###SEARCH_RESULTS_RESULT_URL###">###SEARCH_RESULTS_RESULT_TITLE###</a>
+					</h3>
+					<p class="tx-mnogosearch-result-excerpt">
+						###SEARCH_RESULTS_RESULT_EXCERPT###
+					</p>
+					<p class="tx-mnogosearch-result-url">
+						<span class="tx-mnogosearch-relevancy-bg-bar" title="###SEARCH_RESULTS_RESULT_RELEVANCY###%">
+							<span class="tx-mnogosearch-relelvancy-fg-bar" style="width: ###SEARCH_RESULTS_RESULT_RELEVANCY###%" title="###SEARCH_RESULTS_RESULT_RELEVANCY###%">.</span>
+						</span>
+						###SEARCH_RESULTS_RESULT_URL### &ndash; ###SEARCH_RESULTS_RESULT_SIZE### ###SEARCH_RESULTS_RESULT_LASTMOD###
+					</p>
+					<!-- ###SEARCH_RESULTS_RESULT_LINKS### begin -->
+					<div class="tx-mnogosearch-result-links">
+						<a href="javascript:void(0)" onclick="tx_mnogosearch_show_similar('###UNIQID###')">###TEXT_ADDITIONAL_RESULTS###</a>
+						<ul id="###UNIQID###">
+							<!-- ###SEARCH_RESULTS_RESULT_ALT_LINK### begin -->
+							<li>
+								<a href="###SEARCH_RESULTS_RESULT_ALT_LINK_URL###">###SEARCH_RESULTS_RESULT_ALT_LINK_TITLE###</a>
+							</li>
+							<!-- ###SEARCH_RESULTS_RESULT_ALT_LINK### end -->
+						</ul>
+					</div>
+					<!-- ###SEARCH_RESULTS_RESULT_LINKS### end -->
+				</li>
+			<!-- ###SEARCH_RESULTS_RESULT### end -->
+			</ol>
+		<!-- ###SEARCH_RESULTS_CONTENT### end -->
+	</div>
+
+	<div class="tx-mnogosearch-page-browser">
+		###PAGE_BROWSER###
+	</div>
+</div>
+<!-- ###SEARCH_RESULTS### end -->
+
+</body>
+</html>

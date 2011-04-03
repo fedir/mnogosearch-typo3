@@ -1,0 +1,125 @@
+
+/* Search results */
+
+.tx-mnogosearch-summary {
+	background-color: #e7e7e7;
+	padding: 3px 10px;
+	margin: 3px 0;
+}
+
+.tx-mnogosearch-page-browser {
+	padding: 15px 0;
+	margin: 10px 0;
+}
+
+.tx-mnogosearch-summary-value {
+	font-weight: bold;
+}
+
+#tx-mnogosearch-results {
+	margin: 5px 0;
+}
+
+ol#tx-mnogosearch-result {
+	list-style: none inside none;
+	padding: 0 0;
+}
+
+ol#tx-mnogosearch-result > li {
+	margin-bottom: 10px;
+}
+
+ol#tx-mnogosearch-result > li img {
+	vertical-align: middle;
+}
+
+#tx-mnogosearch-result p {
+	margin: 0 0;
+	padding: 0 0;
+}
+
+ol#tx-mnogosearch-result li h3 {
+	font-weight: bold;
+	font-size: 16px;
+	margin: 20px 0 5px 0;
+}
+
+ol#tx-mnogosearch-result li h3 a {
+	text-decoration: underline;
+}
+
+.tx-mnogosearch-result-url {
+	margin: 0 0;
+	padding: 0 0;
+	font-size: 90%;
+	color: #008000;
+}
+
+.tx-mnogosearch-relevancy-bg-bar {
+	display: block;
+	width: 48px;
+	height: 5px;
+	padding: 2px 1px;
+	background-image: url(images/relevance.gif);
+	float: left;
+	margin: 5px 10px 0 0;
+}
+.tx-mnogosearch-relelvancy-fg-bar {
+	display: block;
+	background-color: #A7D3A7;
+	color: #A7D3A7;
+	height: 5px;
+	overflow: hidden;
+}
+
+.tx-mnogosearch-result-excerpt {
+	margin: 3px 0 0 0;
+	padding: 0 0;
+}
+
+.tx-mnogosearch-result-excerpt-selection {
+	font-weight: bold;
+}
+
+.tx-mnogosearch-result-links {
+	border-left: 5px solid #e7e7e7;
+	padding-left: 5px;
+}
+
+.tx-mnogosearch-result-links ul {
+	display: none;
+	list-style: none inside none;
+	padding: 1px 0 3px 20px;
+	margin: 0 0;
+}
+
+.tx-mnogosearch-short-search-form fieldset,
+.tx-mnogosearch-long-form fieldset {
+	border: none;
+}
+
+.tx-mnogosearch-form-field {
+	clear: left;
+	margin-bottom: 5px;
+	overflow: hidden;
+}
+
+.tx-mnogosearch-form-field label {
+	display: block;
+	float: left;
+	padding-right: 9px;
+	width: 100px;
+}
+
+#tx_mnogosearch_pi1_submit {
+	margin-left: 109px;
+}
+
+.tx-mnogosearch-pi1-result-excerpt-selection {
+	/*
+	border: 1px dotted silver;
+	margin: 0 3px;
+	padding: 2px 2px;
+	*/
+	font-weight: bold;
+}

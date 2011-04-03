@@ -1,0 +1,20 @@
+# cat=basic/enable; type=string; label=Path to mnoGoSearch installation:Specify path to mnoGoSearch installation directory
+mnoGoSearchPath = /opt/mnogosearch
+
+# cat=basic/enable; type=string; label=Database connection string:mnoGoSearch connection URL
+dbaddr = mysql://user:pass@host/dbname/?dbmode=multi
+
+# cat=basic/enable; type=string; label=Charset for database:Search engine will use this character set to store data in the database.  May not be empty!
+LocalCharset = utf-8
+
+# cat=basic/enable; type=string; label=Charset for results:Search engine will provide results in this character set. May not be empty!
+BrowserCharset = utf-8
+
+# cat=basic/enable; type=string; label=Extra configuration:If specificed, this file will be included to indexer configuration. Must be absolute path, accessible to cron user.
+IncludeFile =
+
+# cat=basic/enable; type=options[Disable=,File (fileadmin/mnogosearch.log)=file,TYPO3 devLog=devlog]; label=Enable debug logging:Writes messages to debug log if enabled. If you select "TYPO3 devLog", make sure you install cc_devlog or rlmp_filedevlog. Disable when not needed!
+#debugLog =
+
+# cat=basic/enable; type=boolean; label=Hide internal tables in List module
+hide_internal_tables = 1

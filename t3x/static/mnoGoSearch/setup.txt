@@ -1,0 +1,127 @@
+# Enable mnoGoSearch
+config.tx_mnogosearch_enable = 1
+
+# Declare plugin
+plugin.tx_mnogosearch_pi1 = USER_INT
+plugin.tx_mnogosearch_pi1 {
+	includeLibs = EXT:mnogosearch/pi1/class.tx_mnogosearch_pi1.php
+	userFunc = tx_mnogosearch_pi1->main
+
+	# Template file
+	templateFile = {$plugin.tx_mnogosearch_pi1.templateFile}
+
+	# Mode: short_form, long_form, results
+	mode = long_form,results
+
+	# Search forms
+	form {
+		# Page id where plugin instance with search results is located. If not set, current page is assumed
+		resultsPage = {$plugin.tx_mnogosearch_pi1.resultsPage}
+
+		# Advanced search form options
+		advanced {
+			# Valid values are: disabled, select, radio, checkboxes
+			siteSelector = disabled
+			# Valid values are: 1, 0
+			siteSelector.searchAll = 1
+			# A list of indexing configurations to exclude from the form only
+			siteSelector.exclude =
+			# Default value to select (empty means "select searchAll")
+			siteSelector.default =
+		}
+	}
+
+	# Search options
+	search {
+
+		# Defines search time look ("Search took XYZ seconds"). Default will look like "0.123"
+		time_format = %0.3f
+
+		resultTime_stdWrap {
+			# Next two lines check that value is not empty. If it is, stdWrap returns empty value too
+			# The first one sets "$this->data[$this->currentValKey]=$content;", the last checks
+			# that "$this->data[$this->currentValKey]" is not empty or zero
+			setContentToCurrent = 1
+			if.isTrue.current = 1
+
+			strftime = %x %X
+			noTrimWrap = |&ndash; ||
+		}
+
+		# Limit search to these sites
+		siteList = {$plugin.tx_mnogosearch_pi1.siteList}
+
+		# Search options
+		options {
+			track_queries = 0
+			cache_queries = 1
+			use_spell_data = 1
+			crosswords = 1
+			detect_clones = 0
+			phrase_search = 1
+			# Suggest is useful only with ISpell data loaded
+			suggest_mode = 1
+			# Word forms is useful only with ISpell data loaded
+			search_word_forms = 1
+		}
+
+		# These are direct mnogosearch configuration directives (like "PopRankShowCntWeight = 0.1"). They are passed as is after all other commands. Use only if you know what you are doing!
+		extendedConfiguration {
+		}
+
+		# Number of results per page
+		resultsPerPage = {$plugin.tx_mnogosearch_pi1.resultsPerPage}
+
+		# Wrap numbers
+		number_stdWrap.wrap = <b>|</b>
+
+		# Minimum word length
+		minimumWordLength = 3
+
+		# Maximum word length
+		maximumWordLength = 32
+
+		# Excerpt size
+		excerptSize = 384
+
+		excerptPadding = 20
+
+		# Hightlight for found words
+		excerptHighlight = <span class="tx-mnogosearch-pi1-result-excerpt-selection">|</span>
+
+		# Sort mode: RPD or PRD. Passing wrong values will cause unpredictable results. No validation, so be careful!
+		sortMode = RPD
+
+		# Number of sections. Do not change this unless you added more sections to indexing!
+		numberOfSections = 4
+		
+		# Weight factor for search. This is a hexadecimal number. See http://www.mnogosearch.org/doc33/msearch-doingsearch.html#search-changeweight for details.
+		# Do not change this value unless you absolutely know what you are doing!
+		weightFactor = 00F8
+
+		# Page browser configuration
+		pageBrowser < plugin.tx_pagebrowse_pi1
+		pageBrowser.disableCacheHash = 1
+	}
+
+	defaultFileIcon = EXT:mnogosearch/resources/icons/file.png
+	icons {
+		c = EXT:mnogosearch/resources/icons/c.png
+		cpp = EXT:mnogosearch/resources/icons/cplusplus.png
+		doc = EXT:mnogosearch/resources/icons/word.png
+		h = EXT:mnogosearch/resources/icons/h.png
+		html =
+		log = EXT:mnogosearch/resources/icons/text.png
+		ods = EXT:mnogosearch/resources/icons/oocalc.png
+		odt = EXT:mnogosearch/resources/icons/oowriter.png
+		odp = EXT:mnogosearch/resources/icons/ooimpress.png
+		pdf = EXT:mnogosearch/resources/icons/acrobat.png
+		php =
+		ppt = EXT:mnogosearch/resources/icons/powerpoint.png
+		sxc = EXT:mnogosearch/resources/icons/oocalc.png
+		sxi = EXT:mnogosearch/resources/icons/ooimpress.png
+		sxw = EXT:mnogosearch/resources/icons/oowriter.png
+		txt = EXT:mnogosearch/resources/icons/text.png
+		xls = EXT:mnogosearch/resources/icons/excel.png
+	}
+}

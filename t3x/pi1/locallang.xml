@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_mnogosearch_pi1&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mode.label">Display:</label>
+			<label index="mode.short-form">Short search form</label>
+			<label index="mode.long-form">Long search form</label>
+			<label index="mode.results">Search results</label>
+			<label index="results_page">Page with search results:</label>
+			<label index="templatetestmode.label">Template test mode:</label>
+			<label index="templatetestmode.enable">Enable (read manual first!!!)</label>
+			<label index="template_file">Template file:</label>
+			<label index="renderer_not_implemented">Function '%s' is empty in default renderer and must be overwritten in implementation!</label>
+			<label index="cannot_create_renderer">[mnoGoSearch] Cannot instantiate renderer!</label>
+			<label index="no_mnogosearch">Error: mnoGoSearch PHP extension is not installed.</label>
+			<label index="mnogosearch_too_old">Error: mnoGoSearch PHP extension version is too old (at least %s is required!)</label>
+			<label index="agent_alloc_failure">Error: unable to allocate mnoGoSearch agent</label>
+			<label index="bad_local_charset">Error: local character set "%s" is not known to mnoGoSearch</label>
+			<label index="bad_browser_charset">Error: browser character set "%s" is not known to mnoGoSearch</label>
+			<label index="mnogosearch_error">mnoGoSearch error %d: "%s"</label>
+			<label index="site_list">Limit search to:</label>
+			<label index="no_ts_setup">mnoGoSearch plugin error: plugin TypoScript setup is not included into site setup. Please, include it! If you indexed your site already, you will have to reindex it because existing index data will have too much irrelevant information.</label>
+			<label index="text_submit_short">Search</label>
+			<label index="text_submit_long">Search now!</label>
+			<label index="text_search_text">Search for:</label>
+			<label index="text_search_results">Search results - </label>
+			<label index="search_took">Search took %s seconds</label>
+			<label index="search_took_short">%s seconds</label>
+			<label index="result_range">Displaying results %1$s-%2$s of %3$s</label> <!-- + stdWrap for numbers! -->
+			<label index="page_range">Page %1$s of %2$s</label> <!-- + stdWrap for numbers! -->
+			<label index="text_nothing_found">The search returned no results.</label>
+			<label index="text_additional_results">Similar pages</label>
+			<label index="no_page_title">(no title)</label>
+			<label index="file_sizes">B,K,M,G</label>
+
+			<label index="search_all">Everywhere</label>
+			<label index="search_where">Where:</label>
+		</languageKey>
+	</data>
+</T3locallang>

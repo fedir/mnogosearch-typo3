@@ -1,0 +1,20 @@
+automake
+autoconf
+gcc
+php-devel
+
+configure.in, find "HAVE_PGSQL", there [1], change to [0]
+
+cd /tmp/mnogosearch-3.3.3
+./configure --prefix=/opt/mnogosearch --disable-mp3 --disable-news --without-debug --with-pgsql=no --with-freetds=no --with-oracle8=no --with-oracle8i=no --with-iodbc=no --with-unixODBC=no --with-db2=no --with-solid=no --with-openlink=no --with-easysoft=no --with-sapdb=no --with-ibase=no --with-ctlib=no --with-zlib --with-mysql --enable-mysql-fulltext-plugin
+make
+make install
+
+cd ../tmp
+tar xzf mnogosearch-php-extension-1.96.tar.gz
+mv 1.96 mnogosearch-php-extension-1.96
+cd mnogosearch-php-extension-1.96
+phpize
+./configure --with-mnogosearch=/opt/mnogosearch
+>>>edit php_mnogo.c and add "#undef HAVE_PG" after "#include "php.h""
+make
