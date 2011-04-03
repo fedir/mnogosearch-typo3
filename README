@@ -1,16 +1,16 @@
-= mnoGoSearch for TYPO3 CMS =
+# mnoGoSearch for TYPO3 CMS #
 
-== Description ==
+## Description ##
 
 Systematization of elements to proceed installation of mnoGoSearch search engine on TYPO3 CMS 4.x.
 
-== Project structure ==
+## Project structure ##
 
 * mnoGoSearch searche engine original source
 * TYPO3 extension
 * shell script for automatic installation on Debian Lenny
 
-== Steps ==
+## Steps ##
 
 * Compile and install the mnoGoSearch search engine from sources
 * Copy the TYPO3 extension into typo3conf/ext folder
