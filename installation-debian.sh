@@ -11,7 +11,7 @@ ok() {
 	echo "[OK] ${MSG}"
 }
 
-apt-get install automake autoconf gcc php5-dev mysql-server libmysqlclient15-dev zlib1g zlib1g-dev
+apt-get install make automake autoconf gcc php5-dev mysql-server libmysqlclient15-dev zlib1g zlib1g-dev
 ok "Dependencies installation for mnoGoSearch compilation"
 
 # Install search engine
