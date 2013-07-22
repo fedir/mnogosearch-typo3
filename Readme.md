@@ -12,7 +12,7 @@ Systematization of elements to proceed installation of mnoGoSearch search engine
 
 ## Steps ##
 
-* Compile and install the mnoGoSearch search engine from sources
+* Compile mnoGoSearch search engine from sources under root account 
  * You could use installation script for Debian / Ubuntu systems
 * Copy the TYPO3 extension sources into Your typo3conf/ext folder
 * Configure the extension in TYPO3 BE after official manual
