@@ -15,9 +15,8 @@ apt-get install make automake autoconf gcc php5-dev mysql-server libmysqlclient1
 ok "Dependencies installation for mnoGoSearch compilation"
 
 # Install search engine
-LOCAL_SOURCES=
 echo -n "Would You like to use local mnogosearch sources ? [y/N] "
-read query
+read LOCAL_SOURCES
 if [ "${LOCAL_SOURCES}" = "y" ] || [ "${LOCAL_SOURCES}" = "Y" ]; then
 	cd mnogosearch-sources
 else
