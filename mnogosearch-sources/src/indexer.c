@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ UdmHrefsCheckDocPerSite(UDM_AGENT *Indexer)
           rc= UdmCheckDocPerSite(Indexer, H, &doc_per_site,
                                  hostinfo, hostinfo_length);
           UdmLog(Indexer, UDM_LOG_DEBUG, "DocPerSite: %d/%d",
-                 doc_per_site, H->max_doc_per_site);
+                 (int) doc_per_site, (int) H->max_doc_per_site);
           UdmURLFree(&url);
       
           if (rc != UDM_OK)
@@ -173,7 +173,7 @@ UdmHrefsCheckDocPerSite(UDM_AGENT *Indexer)
         if (doc_per_site > H->max_doc_per_site)
         {
           UdmLog(Indexer, UDM_LOG_DEBUG,
-                 "Too many docs (%d) per site, skip it", doc_per_site);
+                 "Too many docs (%d) per site, skip it", (int) doc_per_site);
           H->method = UDM_METHOD_DISALLOW;
           H->stored= 1;
         }
@@ -276,21 +276,16 @@ static int UdmDocBaseHref(UDM_AGENT *Indexer,UDM_DOCUMENT *Doc){
     
     UdmURLInit(&baseURL);
     
-    if(!(parse_res=UdmURLParse(&baseURL, basehref)) && baseURL.schema)
+    if (UDM_URL_OK == (parse_res= UdmURLParse(&baseURL, basehref)) &&
+        UDM_URL_OK == (parse_res= (baseURL.schema ? UDM_URL_OK : UDM_URL_BAD)))
     {
-      UdmURLParse(&Doc->CurURL,basehref);
+      UdmURLParse(&Doc->CurURL, basehref);
       UdmLog(Indexer, UDM_LOG_DEBUG, "BASE HREF '%s'", basehref);
     }
     else
     {
-      switch(parse_res){
-      case UDM_URL_LONG:
-        UdmLog(Indexer,UDM_LOG_ERROR,"BASE HREF too long: '%s'",basehref);
-        break;
-      case UDM_URL_BAD:
-      default:
-        UdmLog(Indexer,UDM_LOG_ERROR,"Error in BASE HREF URL: '%s'",basehref);
-      }
+      UdmLog(Indexer, UDM_LOG_ERROR, "BASE HREF: %s: '%s'",
+                                      UdmURLErrorStr(parse_res), basehref);
     }
     UdmURLFree(&baseURL);
   }
@@ -402,16 +397,12 @@ int UdmConvertHref(UDM_AGENT *Indexer, UDM_URL *CurURL,
   
   UdmURLInit(&newURL);
 
-  
-  if((parse_res=UdmURLParse(&newURL, Href->url))){
-    switch(parse_res){
-      case UDM_URL_LONG:
-        UdmLog(Indexer,UDM_LOG_DEBUG,"URL too long: '%s'",Href->url);
-        break;
-      case UDM_URL_BAD:
-      default:
-        UdmLog(Indexer,UDM_LOG_DEBUG,"Error in URL: '%s'",Href->url);
-    }
+  if ((parse_res= UdmURLParse(&newURL, Href->url)))
+  {
+    UdmLog(Indexer, UDM_LOG_DEBUG, "%s: '%s'",
+                                   UdmURLErrorStr(parse_res), Href->url);
+    Href->method= UDM_METHOD_DISALLOW;
+    goto ret;
   }
   
   RelLink(CurURL, &newURL, &newhref);
@@ -421,7 +412,8 @@ int UdmConvertHref(UDM_AGENT *Indexer, UDM_URL *CurURL,
           aliassize = strlen(Alias->arg) + strlen(Alias->pattern) + strlen(newhref) + 8;
     alias = (char*)UdmRealloc(alias, aliassize);
     if (alias == NULL) {
-      UdmLog(Indexer, UDM_LOG_ERROR, "No memory (%d bytes). %s line %d", aliassize, __FILE__, __LINE__);
+      UdmLog(Indexer, UDM_LOG_ERROR, "No memory (%d bytes). %s line %d",
+             (int) aliassize, __FILE__, __LINE__);
       goto ret;
     }
     UdmMatchApply(alias,aliassize,newhref,Alias->arg,Alias,nparts,Parts);
@@ -438,7 +430,7 @@ int UdmConvertHref(UDM_AGENT *Indexer, UDM_URL *CurURL,
   Href->method= UDM_METHOD_GET;
   Href->site_id = 0;
   if(!(Srv = UdmServerFind(Indexer->Conf, &Indexer->Conf->Servers, newhref, NULL))) {
-    UdmLog(Indexer,UDM_LOG_DEBUG,"no Server, skip it",newhref);
+    UdmLog(Indexer,UDM_LOG_DEBUG,"no Server, skip it");
     Href->method=UDM_METHOD_DISALLOW;
     goto ret;
   }
@@ -458,7 +450,7 @@ int UdmConvertHref(UDM_AGENT *Indexer, UDM_URL *CurURL,
     goto ret;
   
   if (!strcasecmp(UDM_NULL2EMPTY(newURL.schema), "mailto") || !strcasecmp(UDM_NULL2EMPTY(newURL.schema), "javascript")) {
-    UdmLog(Indexer,UDM_LOG_DEBUG,"'%s' schema, skip it", newURL.schema, newhref);
+    UdmLog(Indexer,UDM_LOG_DEBUG,"'%s' schema, skip it", newURL.schema);
     Href->method=UDM_METHOD_DISALLOW;
     goto ret;
   }
@@ -615,18 +607,10 @@ __C_LINK int __UDMCALL UdmURLFile(UDM_AGENT *Indexer,
       UdmHrefListAdd(&Indexer->Conf->Hrefs, &Href);
       break;
     case UDM_URL_FILE_PARSE:
-      res=UdmURLParse(&myurl, str);
-      if((res != UDM_OK) && (myurl.schema == NULL))
-        res=UDM_URL_BAD;
-      if(res){
-        switch(res){
-        case UDM_URL_LONG:
-          UdmLog(Indexer,UDM_LOG_ERROR,"URL too long: '%s'",str);
-          break;
-        case UDM_URL_BAD:
-        default:
-          UdmLog(Indexer,UDM_LOG_ERROR,"Error in URL: '%s'",str);
-        }
+      if ((UDM_URL_OK != (res= UdmURLParse(&myurl, str))) ||
+          (UDM_URL_OK != (res= myurl.schema ? UDM_URL_OK : UDM_URL_BAD)))
+      {
+        UdmLog(Indexer,UDM_LOG_ERROR,"%s: '%s'", UdmURLErrorStr(res), str);
         result= UDM_ERROR;
         goto ex;
       }
@@ -963,32 +947,27 @@ UdmDocProcessResponseHeaders(UDM_AGENT *Indexer,UDM_DOCUMENT *Doc)
 
   if ((var= UdmVarListFind(&Doc->Sections, "Location")))
   {
+    int err;
     UDM_URL newURL;
-          
     UdmURLInit(&newURL);
-    switch(UdmURLParse(&newURL, var->val))
+    if (UDM_URL_OK == (err= UdmURLParse(&newURL, var->val)) &&
+        UDM_URL_OK == (err= newURL.schema ? UDM_URL_OK : UDM_URL_BAD))
     {
-      case UDM_URL_OK:
-        if (UDM_NULL2EMPTY(newURL.schema) != NULL)
-        {
-          UDM_HREF Href;
-          UdmHrefInit(&Href);
-          Href.url= var->val;
-          Href.hops= UdmVarListFindInt(&Doc->Sections,"Hops",0)+1;
-          Href.referrer= UdmVarListFindInt(&Doc->Sections,"Referrer-ID",0);
-          Href.method= UDM_METHOD_GET;
-          Href.site_id= UdmVarListFindInt(&Doc->Sections, "Site_id", 0);
-          Href.server_id= UdmVarListFindInt(&Doc->Sections,"Server_id", 0);
-          Href.collect_links= Doc->Spider.collect_links;
-          UdmHrefListAdd(&Doc->Hrefs,&Href);
-        }
-        break;
-      case UDM_URL_LONG:
-        UdmLog(Indexer,UDM_LOG_ERROR,"Redirect URL too long: '%s'",var->val);
-        break;
-      case UDM_URL_BAD:
-      default:
-        UdmLog(Indexer,UDM_LOG_ERROR,"Error in redirect URL: '%s'",var->val);
+      UDM_HREF Href;
+      UdmHrefInit(&Href);
+      Href.url= var->val;
+      Href.hops= UdmVarListFindInt(&Doc->Sections,"Hops",0)+1;
+      Href.referrer= UdmVarListFindInt(&Doc->Sections,"Referrer-ID",0);
+      Href.method= UDM_METHOD_GET;
+      Href.site_id= UdmVarListFindInt(&Doc->Sections, "Site_id", 0);
+      Href.server_id= UdmVarListFindInt(&Doc->Sections,"Server_id", 0);
+      Href.collect_links= Doc->Spider.collect_links;
+      UdmHrefListAdd(&Doc->Hrefs,&Href);
+    }
+    else
+    {
+      UdmLog(Indexer, UDM_LOG_ERROR, "Redirect: %s: '%s'",
+                                     UdmURLErrorStr(err), var->val);
     }
     UdmURLFree(&newURL);
   }
@@ -1043,7 +1022,8 @@ static int UdmPutCachedCopy(UDM_AGENT *Indexer, UDM_DOCUMENT * Doc)
     goto ex;
   
   UdmLog(Indexer, UDM_LOG_DEBUG, "Stored rec_id: %d Size: %d Ratio: %5.2f%%",
-          rec_id, content_size, (double)100.0 * zstream.total_out / content_size);
+          rec_id, (int) content_size,
+          (double)100.0 * zstream.total_out / content_size);
   
   if (!Sec->val &&
       !(Sec->val= UdmRealloc(Sec->val, Sec->maxlen + 1)))
@@ -1360,7 +1340,9 @@ UdmDocContentDecode(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc)
 }
 
 
-static int UdmDocParseContent(UDM_AGENT * Indexer, UDM_DOCUMENT * Doc){
+int UdmDocParseContent(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc);
+
+int UdmDocParseContent(UDM_AGENT * Indexer, UDM_DOCUMENT * Doc){
   
 #ifdef USE_PARSER
   UDM_PARSER  *Parser;
@@ -1406,7 +1388,8 @@ static int UdmDocParseContent(UDM_AGENT * Indexer, UDM_DOCUMENT * Doc){
   if(!real_content_type)real_content_type=ct;
   UdmVarListAddStr(&Doc->Sections,"Parser.Content-Type",real_content_type);
   
-  if (!strcasecmp(real_content_type, "application/http"))
+  if (!strcasecmp(real_content_type, "application/http") ||
+      !strcasecmp(real_content_type, "message/http"))
   {
     size_t old_hdr_len= Doc->Buf.content - Doc->Buf.buf;
     size_t new_response_len= Doc->Buf.size - old_hdr_len;
@@ -1439,54 +1422,57 @@ static int UdmDocParseContent(UDM_AGENT * Indexer, UDM_DOCUMENT * Doc){
   if(Doc->method == UDM_METHOD_HEAD)
     return result;
   
-  if(!strncasecmp(real_content_type,"text/plain",10))
+  switch (UdmContentTypeByName(real_content_type))
   {
-    UdmParseSections(Indexer, &Indexer->Conf->SectionMatch, Doc, NULL);
-    UdmParseText(Indexer,Doc);
-  }
-  else if(!strncasecmp(real_content_type,"text/tab-separated-values",25))
-  {
-    UdmParseSections(Indexer, &Indexer->Conf->SectionMatch, Doc, NULL);
-    UdmParseText(Indexer,Doc);
-  }
-  else if(!strncasecmp(real_content_type,"text/css",8))
-  {
-    UdmParseSections(Indexer, &Indexer->Conf->SectionMatch, Doc, NULL);
-    UdmParseText(Indexer,Doc);
-  }
-  else if(!strncasecmp(real_content_type,"text/html",9))
-  {
-    UdmHTMLParse(Indexer,Doc);
-    UdmParseSections(Indexer, &Indexer->Conf->SectionMatch, Doc, NULL);
-  }
-  else if(!strncasecmp(real_content_type, "text/xml",8) ||
-          !strncasecmp(real_content_type, "application/xml",15) ||
-          !strncasecmp(real_content_type, "application/rss+xml",19) ||
-          strstr(real_content_type, "xml") ||
-          strstr(real_content_type, "rss"))
-  {
-    int rc;
-    UdmVarListReplaceStr(&Indexer->Conf->Vars, "XMLDefaultSection", "body");
-    rc= UdmXMLParse(Indexer, Doc);
-    if (rc != UDM_OK)
+    case UDM_CONTENT_TYPE_TEXT_PLAIN:
+      UdmParseSections(Indexer, &Indexer->Conf->SectionMatch, Doc, NULL);
+      UdmParseText(Indexer,Doc);
+      break;
+
+    case UDM_CONTENT_TYPE_TEXT_HTML:
+      UdmHTMLParse(Indexer,Doc);
+      UdmParseSections(Indexer, &Indexer->Conf->SectionMatch, Doc, NULL);
+      break;
+
+    case UDM_CONTENT_TYPE_TEXT_XML:
     {
-      UdmLog(Indexer, UDM_LOG_ERROR, "Error: %s",
-             UdmVarListFindStr(&Doc->Sections, "X-Reason", ""));
+      int rc;
+      UdmVarListReplaceStr(&Indexer->Conf->Vars, "XMLDefaultSection", "body");
+      rc= UdmXMLParse(Indexer, Doc);
+      if (rc != UDM_OK)
+      {
+        UdmLog(Indexer, UDM_LOG_ERROR, "Error: %s",
+               UdmVarListFindStr(&Doc->Sections, "X-Reason", ""));
+      }
+      break;
     }
-  }
-  else if(!strncasecmp(real_content_type, "audio/mpeg",10))
-  {
-    UdmMP3Parse(Indexer,Doc);
-  }
-  else if (!strncasecmp(real_content_type, "mnogosearch/htdb", 16))
-  {
-    /* Do nothing */
-  }
-  else
-  {
-    /* Unknown Content-Type  */
-    UdmLog(Indexer,UDM_LOG_WARN,"Unsupported Content-Type '%s'",real_content_type);
-    UdmVarListReplaceInt(&Doc->Sections,"Status",UDM_HTTP_STATUS_UNSUPPORTED_MEDIA_TYPE);
+
+    case UDM_CONTENT_TYPE_MESSAGE_RFC822:
+      UdmMessageRFC822Parse(Indexer, Doc);
+      break;
+
+    case UDM_CONTENT_TYPE_AUDIO_MPEG:
+      UdmMP3Parse(Indexer,Doc);
+      break;
+
+    case UDM_CONTENT_TYPE_HTDB:
+      /* Do nothing */
+      break;
+
+    case UDM_CONTENT_TYPE_DOCX:
+      UdmDOCXParse(Indexer, Doc);
+      break;
+
+    case UDM_CONTENT_TYPE_TEXT_RTF:
+      UdmRTFParse(Indexer, Doc);
+      break;
+
+    default:
+    {
+      /* Unknown Content-Type  */
+      UdmLog(Indexer,UDM_LOG_WARN, "Unsupported Content-Type '%s'", real_content_type);
+      UdmVarListReplaceInt(&Doc->Sections, "Status", UDM_HTTP_STATUS_UNSUPPORTED_MEDIA_TYPE);
+    }
   }
   return result;
 }
@@ -2106,7 +2092,7 @@ UdmDocGetRemote(UDM_AGENT *A, UDM_DOCUMENT *Doc,
 __C_LINK int __UDMCALL
 UdmIndexNextURL(UDM_AGENT *Indexer)
 {
-  int rc= UDM_OK, status= 0;
+  int rc= UDM_OK, status= 0, parse_res;
   UDM_DOCUMENT  Doc;
   UDM_CHARSET *doccs= NULL;
   const char  *url, *alias;
@@ -2161,9 +2147,9 @@ UdmIndexNextURL(UDM_AGENT *Indexer)
   }
   
   /* Check that URL has valid syntax */
-  if (UdmURLParse(&Doc.CurURL,url))
+  if (UDM_URL_OK != (parse_res= UdmURLParse(&Doc.CurURL,url)))
   {
-    UdmLog(Indexer,UDM_LOG_WARN,"Invalid URL: %s",url);
+    UdmLog(Indexer, UDM_LOG_WARN, "%s: %s", UdmURLErrorStr(parse_res), url);
     Doc.method = UDM_METHOD_DISALLOW;
     goto flush;
   }
@@ -2254,10 +2240,10 @@ UdmIndexNextURL(UDM_AGENT *Indexer)
      (Doc.Spider.max_net_errors))
   {
     size_t next_index_time= time(NULL) + Doc.Spider.net_error_delay_time;
-    char  buf[64];
+    char  buf[UDM_MAXTIMESTRLEN];
     UdmLog(Indexer,UDM_LOG_WARN,"Too many network errors (%d) for this server", Doc.connp.net_errors);
     UdmVarListReplaceInt(&Doc.Sections,"Status",UDM_HTTP_STATUS_SERVICE_UNAVAILABLE);
-    UdmTime_t2HttpStr((int)next_index_time, buf);
+    UdmTime_t2HttpStr((int)next_index_time, buf, sizeof(buf));
     UdmVarListReplaceStr(&Doc.Sections,"Next-Index-Time",buf);
     Doc.method= UDM_METHOD_VISITLATER;
     goto flush;
@@ -2767,7 +2753,8 @@ void * thread_main(void *arg)
       if (M < 1.0) K = ((udm_timer_t)Indexer->nbytes) / 1024.0 / sec;
     }
     UdmLog(Indexer,UDM_LOG_ERROR,"Done (%d seconds, %u documents, %llu bytes, %5.2f %cbytes/sec.)",
-           sec, Indexer->ndocs, Indexer->nbytes, (M < 1.0) ? K : M, (M < 1.0) ? 'K' : 'M' );
+           (int) sec, (int) Indexer->ndocs, (unsigned long long) Indexer->nbytes,
+           (M < 1.0) ? K : M, (M < 1.0) ? 'K' : 'M' );
 #if !defined(WIN32) && defined(HAVE_PTHREAD)
     {
       int z;

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -323,7 +323,7 @@ static int UdmHTTPSGet(UDM_AGENT *Indexer,UDM_DOCUMENT *Doc)
   int res= 0, status;
   SSL_CTX* ctx;
   SSL*     ssl=NULL;
-  SSL_METHOD *meth;
+  const SSL_METHOD *meth;
   time_t start_time;
   int buf_size= UDM_NET_BUF_SIZE;
   pid_t pid;
@@ -439,7 +439,7 @@ static int UdmHTTPSGet(UDM_AGENT *Indexer,UDM_DOCUMENT *Doc)
 static int UdmFTPGet(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc)
 {
   int  last_mod_tm, code, res=0;
-  char  buf[256], *full_path=NULL;
+  char *full_path=NULL;
   size_t  len,buf_size;
   time_t  last_mod_time=UdmHttpDate2Time_t(UdmVarListFindStr(&Doc->Sections,"Last-Modified",""));
   
@@ -555,7 +555,8 @@ static int UdmFTPGet(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc)
       }
       else
       {
-        UdmTime_t2HttpStr(last_mod_tm, buf);
+        char dbuf[UDM_MAXTIMESTRLEN];
+        UdmTime_t2HttpStr(last_mod_tm, dbuf, sizeof(dbuf));
         if (Doc->method!=UDM_METHOD_HEAD)
         {
           int s, f= -1;
@@ -579,7 +580,7 @@ static int UdmFTPGet(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc)
             udm_snprintf(Doc->Buf.buf, Doc->Buf.maxsize, 
                          "HTTP/1.1 20%c OK\r\nLast-Modified: %s\r\n\r\n", 
                          (Doc->connp.connp->err == UDM_NET_FILE_TL) ? '6' : '0',
-                          buf);
+                          dbuf);
             Doc->Buf.size= strlen(Doc->Buf.buf);
             if (Doc->connp.connp->buf_len+Doc->Buf.size >= Doc->Buf.maxsize)
               buf_size= Doc->Buf.maxsize - Doc->Buf.size;
@@ -609,7 +610,7 @@ static int UdmFTPGet(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc)
                   "HTTP/1.1 200 OK\r\n"
                   "Content-Type: text/html\r\n"
                   "Content-Length: %d\r\n"
-                  "Last-Modified: %s\r\n\r\n", size, buf);
+                  "Last-Modified: %s\r\n\r\n", (int) size, dbuf);
           Doc->Buf.size= strlen(Doc->Buf.buf);
         }
       }
@@ -823,7 +824,6 @@ static int UdmNNTPGet(UDM_AGENT * Indexer,UDM_DOCUMENT *Doc)
   int  to=0;
   int  headers=1;
   int  has_content=0;
-  ssize_t nbytes;
   
   memset(cmd,0,sizeof(cmd));
   end=Doc->Buf.buf;
@@ -856,11 +856,10 @@ static int UdmNNTPGet(UDM_AGENT * Indexer,UDM_DOCUMENT *Doc)
     if(!strncasecmp(tok,"If-Modified-Since: ",19))has_if_modified=1;
     if(!strncasecmp(tok,"Authorization: ",15))
     {
-      size_t l;
       char * auth=UdmTrim(tok+15," \t\r\n");
       strncpy(str,auth,sizeof(str)-1);
       UDM_TERM(str);
-      l=udm_base64_decode(user,str,sizeof(user)-1);
+      udm_base64_decode(user,str,sizeof(user)-1);
       if((auth=strchr(user,':')))
       {
         *auth++='\0';
@@ -1025,16 +1024,16 @@ static int UdmNNTPGet(UDM_AGENT * Indexer,UDM_DOCUMENT *Doc)
       break;
       
     case UDM_NNTP_RECV:
-      nbytes=NNTPRecv(str,sizeof(str),fd);
+      /*nbytes=*/ NNTPRecv(str,sizeof(str),fd);
       break;
       
     case UDM_NNTP_RECVCMD:
-      nbytes=NNTPRecv(str,sizeof(str),fd);
+      /*nbytes=*/ NNTPRecv(str,sizeof(str),fd);
       status=atoi(str);
       break;
       
     case UDM_NNTP_SEND:
-      nbytes=NNTPSend(str,strlen(str),fd);
+      /*nbytes=*/NNTPSend(str,strlen(str),fd);
       break;
       
     case UDM_NNTP_READER:
@@ -1688,7 +1687,7 @@ UdmFILEGet(UDM_AGENT *Indexer,UDM_DOCUMENT *Doc)
     {
       sprintf(Doc->Buf.buf,"HTTP/1.0 200 OK\r\n");
       strcpy(UDM_STREND(Doc->Buf.buf),"Last-Modified: ");
-      UdmTime_t2HttpStr(sb.st_mtime, UDM_STREND(Doc->Buf.buf));
+      UdmTime_t2HttpStr(sb.st_mtime, UDM_STREND(Doc->Buf.buf), UDM_MAXTIMESTRLEN);
       strcpy(UDM_STREND(Doc->Buf.buf),"\r\n");
       sprintf(UDM_STREND(Doc->Buf.buf),"\r\n");
       len= strlen(Doc->Buf.buf);

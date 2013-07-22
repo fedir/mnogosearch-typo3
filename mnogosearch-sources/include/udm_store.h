@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -24,5 +24,5 @@
 
 extern __C_LINK char * __UDMCALL UdmExcerptDoc(UDM_AGENT *query, UDM_RESULT *Res,UDM_DOCUMENT *Doc, size_t size, size_t padding);
 extern int UdmCachedCopyUnpack(UDM_DOCUMENT *Doc, const char *sval, size_t l);
-
+extern int UdmCachedCopyGet(UDM_AGENT *Agent);
 #endif

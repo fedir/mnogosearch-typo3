@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include "udm_parsehtml.h"
 #include "udm_parsexml.h"
 #include "udm_vars.h"
+#include "udm_searchtool.h"
 
 #include "udm_db.h" /* for UdmURLAction */
 
@@ -56,15 +57,7 @@ void __UDMCALL UdmResultFree(UDM_RESULT * Res)
   size_t i;
   if(!Res)return;
   UDM_FREE(Res->ItemList.items);
-  if (Res->URLData.Item)
-  {
-    for (i= 0; i < Res->URLData.nitems; i++)
-    {
-      UDM_FREE(Res->URLData.Item[i].url);
-      UDM_FREE(Res->URLData.Item[i].section);
-    } 
-    UdmFree(Res->URLData.Item);
-  }
+  UdmURLDataListFree(&Res->URLData);
   UdmWideWordListFree(&Res->WWList);
   if(Res->Doc)
   {
@@ -87,7 +80,6 @@ void __UDMCALL UdmResultFree(UDM_RESULT * Res)
 
 
 int UdmResultFromTextBuf(UDM_RESULT *R,char *buf){
-	size_t	num_rows=0;
 	char	*tok,*lt;
 	
 	for(tok = udm_strtok_r(buf,"\r\n",&lt); tok; tok = udm_strtok_r(NULL,"\r\n",&lt)) {
@@ -102,7 +94,7 @@ int UdmResultFromTextBuf(UDM_RESULT *R,char *buf){
 		if(!memcmp(tok,"<WRD",4)){
 			size_t		i;
 			UDM_HTMLTOK	tag;
-			const char	*htok,*last;
+			const char	*last;
 			UDM_WIDEWORD	*W;
 			
 			R->WWList.Word=(UDM_WIDEWORD*)UdmRealloc(R->WWList.Word,sizeof(R->WWList.Word[0])*(R->WWList.nwords+1));
@@ -110,7 +102,7 @@ int UdmResultFromTextBuf(UDM_RESULT *R,char *buf){
 			bzero((void*)W, sizeof(*W));
 			
 			UdmHTMLTOKInit(&tag);
-			htok=UdmHTMLToken(tok,&last,&tag);
+			UdmHTMLToken(tok,&last,&tag);
 			
 			for(i=0;i<tag.ntoks;i++){
 				size_t  nlen=tag.toks[i].nlen;
@@ -136,10 +128,10 @@ int UdmResultFromTextBuf(UDM_RESULT *R,char *buf){
 		}else{
 			size_t		i;
 			UDM_HTMLTOK	tag;
-			const char	*htok,*last;
+			const char	*last;
 			
 			UdmHTMLTOKInit(&tag);
-			htok=UdmHTMLToken(tok,&last,&tag);
+			UdmHTMLToken(tok,&last,&tag);
 			
 			for(i=0;i<tag.ntoks;i++){
 				size_t  nlen=tag.toks[i].nlen;
@@ -156,7 +148,7 @@ int UdmResultFromTextBuf(UDM_RESULT *R,char *buf){
 					R->total_found=atoi(data);
 				}else
 				if(!strcmp(name,"rows")){
-					num_rows=atoi(data);
+					/*num_rows=atoi(data);*/
 				}
 				UDM_FREE(name);
 				UDM_FREE(data);
@@ -171,12 +163,13 @@ int UdmResultToTextBuf(UDM_RESULT *R,char *buf,size_t len){
 	char	*end=buf;
 	size_t	i;
 	
-	end+=sprintf(end,"<RES\ttotal=\"%d\"\trows=\"%d\"\tfirst=\"%d\"\tlast=\"%d\">\n", R->total_found, R->num_rows, R->first, R->last);
+	end+=sprintf(end,"<RES\ttotal=\"%d\"\trows=\"%d\"\tfirst=\"%d\"\tlast=\"%d\">\n",
+                 (int) R->total_found, (int) R->num_rows, (int) R->first, (int) R->last);
 	
 	for (i = 0; i< R->WWList.nwords; i++) {
 		UDM_WIDEWORD	*W=&R->WWList.Word[i];
 		end+=sprintf(end,"<WRD\tword=\"%s\"\torder=\"%d\"\tcount=\"%d\"\torigin=\"%d\">\n",
-			W->word,W->order,W->count,W->origin);
+			         W->word, (int) W->order, (int) W->count, W->origin);
 	}
 	
 	for(i=0;i<R->num_rows;i++){
@@ -278,7 +271,7 @@ PD_ReplaceLastModified(RES_PARSER_DATA *D,
                        const char *val, size_t len)
 {
   time_t last_mod_time;
-  char tmp[64];
+  char tmp[UDM_MAXTIMESTRLEN];
   len= len >= sizeof(tmp) ? sizeof(tmp) - 1 : len;
   memcpy(tmp, val, len);
   tmp[len]= '\0';
@@ -287,7 +280,7 @@ PD_ReplaceLastModified(RES_PARSER_DATA *D,
   if ((len= strftime(tmp, sizeof(tmp)-1, D->date_format, localtime(&last_mod_time))))
     tmp[len]= '\0';
   else
-    UdmTime_t2HttpStr(last_mod_time, tmp);
+    UdmTime_t2HttpStr(last_mod_time, tmp, sizeof(tmp));
   UdmVarListReplaceStr(&D->Doc.Sections, "Last-Modified", tmp);
   return UDM_OK;
 }
@@ -625,8 +618,8 @@ UdmResultFromXML(UDM_AGENT *A, UDM_RESULT *Res,
     udm_snprintf(err, sizeof(err), 
                  "XML parsing error: %s at line %d pos %d\n",
                   UdmXMLErrorString(&parser),
-                  UdmXMLErrorLineno(&parser),
-                  UdmXMLErrorPos(&parser));
+                  (int) UdmXMLErrorLineno(&parser),
+                  (int) UdmXMLErrorPos(&parser));
     res= UDM_ERROR;
   }
 

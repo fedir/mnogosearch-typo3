@@ -1,5 +1,5 @@
 #
-# $Id: english.aff,v 1.2 2007/10/29 12:27:51 bar Exp $
+# $Id$
 #
 # Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -39,10 +39,7 @@
 #
 #	Affix table for English
 #
-# $Log: english.aff,v $
-# Revision 1.2  2007/10/29 12:27:51  bar
-# "flags" commands in ispell affix files can have leading spaces.
-#
+# $Log$
 # Revision 1.1  2004/11/17 11:59:20  bar
 # Add ispell and ispell+synonym tests.
 #

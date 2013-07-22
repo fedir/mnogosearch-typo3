@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -196,9 +196,9 @@ static int UdmVarCopyValueEnv(UDM_VAR *D, UDM_VAR *S)
 static int UdmVarListMethodEnvAddLine(UDM_VARLIST *Lst, UDM_VAR *Var,
                                       UDM_VAR **args, size_t nargs)
 {
+  int rc= UDM_OK;
   if (Var->handler->type == UDM_VAR_ENV)
   {
-    int rc;
     UDM_CFG Cfg;
     UDM_AGENT Agent;
     UDM_SERVER Srv;
@@ -215,22 +215,8 @@ static int UdmVarListMethodEnvAddLine(UDM_VARLIST *Lst, UDM_VAR *Var,
     UdmServerFree(&Srv);
     Env->Cfg_Srv= NULL;
   }
-  return UDM_OK;
+  return rc;
 }
-
-
-#if 0
-static int UdmVarListPrint(UDM_VARLIST *Vars)
-{
-  size_t i;
-  for (i= 0; i < Vars->nvars; i++)
-  {
-  UDM_VAR *v= &Vars->Var[i];
-  /*fprintf(stderr, "[%d] '%s'='%s'\n", i, v->name, v->val);*/
-  }
-  return UDM_OK;
-}
-#endif
 
 
 /*
@@ -464,7 +450,7 @@ static int UdmVarListMethodResultFetch(UDM_VARLIST *Vars, UDM_VAR *Var,
     UDM_RESULT *Res= (UDM_RESULT*) Var->val;
     char rowname[32];
     char prmname[64];
-    udm_snprintf(rowname, sizeof(rowname), args[1]->val);
+    udm_snprintf(rowname, sizeof(rowname), "%s", args[1]->val);
     udm_snprintf(prmname, sizeof(prmname), "%s.*", rowname);
     UdmVarListDelByName(Vars, prmname);
     if (Res->cur_row < Res->num_rows)
@@ -523,7 +509,7 @@ static int UdmVarListMethodResultSQLFetch(UDM_VARLIST *Vars, UDM_VAR *Var,
     {
       for (i= 0; i < Res->nCols; i++)
       {
-        udm_snprintf(prmname, sizeof(prmname), "%s.%u", rowname, i);
+        udm_snprintf(prmname, sizeof(prmname), "%s.%u", rowname, (int) i);
         UdmVarListReplaceStr(Vars, prmname, UdmSQLValue(Res, Res->curRow, i));
       }
       Res->curRow++;
@@ -687,6 +673,12 @@ static int UdmVarListAddNamed(UDM_VARLIST *Lst,UDM_VAR *S, const char *name)
   return UDM_OK;
 }
 
+
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif /* __GNUC__ */
+
 UDM_VAR * UdmVarListFind(UDM_VARLIST * vars,const char * name)
 {
   UDM_VAR key;
@@ -694,8 +686,24 @@ UDM_VAR * UdmVarListFind(UDM_VARLIST * vars,const char * name)
   fprintf(stderr, "Find: '%s'\n", name);
 #endif
   if (!vars->nvars) return NULL;
+
   key.name= (char*)name;
   return (UDM_VAR*)UdmBSearch(&key, vars->Var, vars->nvars, sizeof(UDM_VAR), (udm_qsort_cmp)varcmp);
+}
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif /* __GNUC__ */
+
+
+UDM_VAR *UdmVarListFindBySecno(UDM_VARLIST *vars, int secno)
+{
+  UDM_VAR *v;
+  for (v= vars->Var; v < vars->Var + vars->nvars; v++)
+  {
+    if (v->section == secno)
+      return v;
+  }
+  return NULL;
 }
 
 int UdmVarListDelBySection(UDM_VARLIST *vars, int sec)
@@ -1007,7 +1015,7 @@ int UdmVarListReplaceDouble(UDM_VARLIST * vars, const char * name, double val)
   char num[128];
   if((var = UdmVarListFind(vars, name)) != NULL)
   {
-    udm_snprintf(num, 128, "%lf", val);
+    udm_snprintf(num, 128, "%f", val);
     UdmVarListReplaceStr(vars, name, num);
   }
   else
@@ -1144,11 +1152,41 @@ int UdmVarListMerge(UDM_VARLIST * Lst,UDM_VARLIST *Src1, UDM_VARLIST *Src2)
   Add environment variables 
   into a varlist
 */
-
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wredundant-decls"
+#endif /* HAVE_GCC_PRAGMA_PUSH */
 extern char **environ;
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif /* HAVE_GCC_PRAGMA_PUSH */
 
 int UdmVarListAddEnviron(UDM_VARLIST *Vars, const char *name)
 {
+#ifdef WIN32
+  /*
+    GetEnvironmentStrings() returns all environment variables in this format:
+
+    Name1=Val1\0
+    Name2=Val2\0
+    ...
+    NameN=ValN\0\0
+  */
+  const char *env= GetEnvironmentStrings();
+  while (env && *env)
+  {
+    char buf[1024], *val;
+    const char *end= env + strlen(env);
+    udm_snprintf(buf, sizeof(buf), "%s%s%s",
+                 name ? name : "", name ? "." : "", env, end - env);
+    if ((val= strchr(buf, '=')) && val > buf)
+    {
+      *val++= '\0';
+      UdmVarListAddStrWithSection(Vars, buf, val, UDM_VARSRC_ENV, 0);
+    }
+    env= end + 1; /* The next character after '\0' - start of the next name */
+  }
+#else
   char  **e, *val, *str;
   size_t  lenstr = 1024;
   
@@ -1175,6 +1213,7 @@ int UdmVarListAddEnviron(UDM_VARLIST *Vars, const char *name)
   }
   UdmVarListSort(Vars);
   UDM_FREE(str);
+#endif /* WIN32 */
   return UDM_OK;
 }
 
@@ -1196,4 +1235,50 @@ int UdmVarListConvert(UDM_VARLIST *Vars, UDM_CONV *conv)
     }
   }
   return UDM_OK;
+}
+
+
+UDM_CHARSET *
+UdmVarListFindCharset(UDM_VARLIST *Lst, const char *name, UDM_CHARSET *def)
+{
+  UDM_CHARSET *res;
+  if ((name= UdmVarListFindStr(Lst, name, NULL)) && (res= UdmGetCharSet(name)))
+    return res;
+  return def;
+}
+
+
+UDM_VAR *
+UdmVarListFindByPrefix(UDM_VARLIST *Vars,
+                       const char *prefix, size_t prefix_length)
+{
+  size_t i;
+  for (i= 0; i < Vars->nvars; i++)
+  {
+    UDM_VAR *V= &Vars->Var[i];
+    if (!strncasecmp(V->name, prefix, prefix_length))
+      return V;
+  }
+  return NULL;
+}
+
+void
+UdmVarListPrint(UDM_VARLIST *L, FILE *f)
+{
+  size_t i;
+  char str[128];
+  for (i= 0; i < L->nvars; i++)
+  {
+    UDM_VAR *V= &L->Var[i];
+    if (!strcasecmp(V->name, "DBAddr")   ||
+        !strcasecmp(V->name, "ConfDir")  ||          /* TODO */
+        !strcasecmp(V->name, "ShareDir") ||          /* TODO */
+        !strcasecmp(V->name, "TmpDir")   ||          /* TODO */
+        !strcasecmp(V->name, "Request.User-Agent"))  /* TODO */
+      continue;
+    udm_snprintf(str, sizeof(str),
+                 "%s \"%s\"",
+                 V->name, V->val);
+    fprintf(f, "%s\n", str);
+  }
 }

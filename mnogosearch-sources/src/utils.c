@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -76,19 +76,70 @@ UdmHexEncode(char *dst, const char *src, size_t len)
 }
 
 
-static int
+static inline int
+udm_isdigit(int ch)
+{
+  return ch >= '0' && ch <= '9';
+}
+
+
+static inline int
+udm_isupper(int ch)
+{
+  return ch >= 'A' && ch <= 'Z';
+}
+
+
+static inline int
+udm_islower(int ch)
+{
+  return ch >= 'a' && ch <= 'z';
+}
+
+
+static inline int
+udm_isxdigit(int ch)
+{
+  return udm_isdigit(ch) || udm_isupper(ch) || udm_islower(ch);
+}
+
+
+static char
 ch2x(int ch)
 {
-  if (ch >= '0' && ch <= '9')
+  if (udm_isdigit(ch))
     return ch - '0';
-  
-  if (ch >= 'a' && ch <= 'f')
-    return 10 + ch - 'a';
-  
-  if (ch >= 'A' && ch <= 'F')
-    return 10 + ch - 'A';
-  
-  return -1;
+  else if (udm_isupper(ch))
+    return ch - 'A' + 10;
+  else if (udm_islower(ch))
+    return ch - 'a' + 10;
+  else
+    return -1;
+}
+
+
+
+
+
+/*
+  Decode a HEX-encoded string.
+
+  When a non-hex digit character is met,
+  we break and return the length of the well-formed hex prefix.
+  DecodeHexStr() needs this, as Oracle pads RAW values with spaces.
+*/
+size_t
+UdmHexDecode(char *dst, const char *src, size_t len)
+{
+  char *dst0= dst;
+  for ( ; len > 1; len-= 2)
+  {
+    int hi, lo;
+    if ((hi= ch2x(*src++)) < 0 || (lo= ch2x(*src++)) < 0)
+      break; /* Bad character */
+    *dst++= hi << 4 | lo;
+  }
+  return dst - dst0;
 }
 
 
@@ -1000,17 +1051,20 @@ UdmGetDir(char *d, size_t dlen, enum udm_dirtype_t type)
 {
 #ifdef WIN32
   HKEY hKey;
-  LONG res= RegOpenKeyEx(HKEY_LOCAL_MACHINE, UDM_REG_DIRS_KEY, 0, KEY_READ, &hKey);
+  LONG res= RegOpenKeyEx(HKEY_LOCAL_MACHINE, UDM_REG_DIRS_KEY, 0,
+                         KEY_READ | KEY_WOW64_32KEY, &hKey);
   size_t ret= 0;
   if (res == ERROR_SUCCESS)
   {
-    char buf[MAX_PATH];
+    char buf[MAX_PATH]= "";
     DWORD dwType;
     DWORD cbData= MAX_PATH;
     if (ERROR_SUCCESS == RegQueryValueEx(hKey, UDM_REG_INSTALLDIR_VALUE,
                                          NULL, &dwType, (LPBYTE)buf, &cbData))
-      ret= udm_snprintf(d, dlen, "%s%s",
-                        buf, type == UDM_DIRTYPE_SHARE ? "\\create" : "");
+      ret= udm_snprintf(d, dlen, "%s%s", buf,
+                        type == UDM_DIRTYPE_SHARE ? "\\share" :
+                        type == UDM_DIRTYPE_VAR ? "\\var" :
+                        type == UDM_DIRTYPE_CONF ? "\\etc" : "");
     RegCloseKey(hKey);
   }
   return ret ?  ret : GetCurrentDirectory(dlen, d);
@@ -1051,3 +1105,127 @@ UdmGetFileName(char *d, size_t dlen, enum udm_dirtype_t type, const char *fname)
     len+= udm_snprintf(d + len, dlen - len, "%s%s", UDMSLASHSTR, fname);
   return len;
 }
+
+
+static int log_10_int[]=
+{      
+         1,
+        10,
+       100,
+      1000,
+     10000,
+    100000,
+   1000000,
+  10000000,
+ 100000000,
+1000000000,
+};
+
+
+int UdmNormalizeDecimal(char *dst, size_t dlen, const char *src)
+{
+  int ipart, fpart;
+  char *endptr;
+  long long int nr;
+  
+  ipart= strtol(src, &endptr, 10);
+  if (*endptr ==  '.')
+  {
+    size_t flen;
+    char *endptr2;
+    endptr++;
+    fpart= strtol(endptr, &endptr2, 10);
+    if ((flen= endptr2 - endptr) <= 9)
+      fpart*= log_10_int[9 - flen];
+  }
+  else
+    fpart= 0;
+  nr= (((long long int) ipart) * 1000000000) + fpart;
+  udm_snprintf(dst, dlen, "%018lld", nr);
+  return 0;
+}
+
+/*********** Const string routines *********/
+void UdmConstStrSet(UDM_CONST_STR *str, const char *s, size_t length)
+{
+  str->str= s;
+  str->length= length;
+}
+
+
+int UdmConstStrNCaseCmp(const UDM_CONST_STR *str, const char *s, size_t length)
+{
+  if (str->length != length)
+    return 1;
+  return strncasecmp(str->str, s, length);
+}
+
+
+char *UdmConstStrDup(const UDM_CONST_STR *str)
+{
+  return UdmStrndup(str->str, str->length);
+}
+
+
+void UdmConstStrTrim(UDM_CONST_STR *str, const char *sep)
+{
+  for ( ; str->length > 0 && strchr(sep, str->str[0]) ; str->str++, str->length--);
+  for ( ; str->length > 0 && strchr(sep, str->str[str->length - 1]); str->length--);
+}
+
+
+/**************** Quoted printable *************************/
+/*
+  Quoted-printable decoding (according to RFC 2045)
+*/
+size_t
+udm_quoted_printable_decode(const char *src, size_t srclen,
+                            char *dst, size_t dstlen)
+{
+  const char *srcend= src + srclen;
+  const char *dstend= dst + dstlen, *dst0= dst;
+
+  while (src < srcend && dst < dstend)
+  {
+    if (*src != '=')
+    {
+      *dst++= *src++;
+      continue;
+    }
+
+    if (src + 2 < srcend && udm_isxdigit(src[1]) && udm_isxdigit(src[2]))
+    {
+      *dst++= ch2x((int) src[1]) * 16 + ch2x((int) src[2]);
+      src+= 3;
+    }
+    else  /* Test soft line-break */
+    {
+      const char *lb;
+      for (lb= src + 1; lb < srcend && (*lb == ' ' || *lb == '\t'); )
+      {
+        /* Possibly, skip spaces/tabs at the end of line */
+        lb++;
+      }
+      if (lb == srcend) /* End of line */
+      {
+        src= lb;
+        break;
+      }
+      else if (lb[0] == '\r' && lb + 1 < srcend && lb[1] == '\n') /* CRLF */
+      {
+        src= lb + 2;
+      }
+      else if (*lb == '\r' || *lb == '\n') /* CR or LF */
+      {
+        src= lb + 1;
+      }
+      else
+      {
+        *dst++= *src++;
+      }
+    }
+  }
+  return dst - dst0;
+}
+
+/***************************************************************/

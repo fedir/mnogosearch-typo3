@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -160,6 +160,13 @@ static UDM_WIDEWORDLIST *UdmAllForms1(UDM_AGENT *Indexer,
             }
             ResCur+= cres;
           }
+        }
+
+        /* Free normalized forms*/
+        for (N= Norm;  N < NormCur; N++)
+        {
+          UdmFree(N->word);
+          UdmFree(N->flags);
         }
       }
     }
@@ -536,13 +543,12 @@ UdmComplexSynonymAdd(UDM_AGENT *A, UDM_SYNONYMLIST *SL,
   size_t i;
   for (i= 0; i < nwords; i++)
   {
-    UDM_WIDEWORD *W= &WWL->Word[i];
-    if (W->order == order)
+    UDM_WIDEWORD W= WWL->Word[i];
+    if (W.order == order)
     {
       int need_more= (phrase_length_limit > 0);
       size_t len= udm_snprintf(str, str_reminder_size, "%s%s",
-                               phrase_length_current > 0 ? " " : "",
-                               W->word);
+                               phrase_length_current > 0 ? " " : "", W.word);
       if (need_more)
       {
         UdmComplexSynonymAdd(A, SL,
@@ -558,7 +564,7 @@ UdmComplexSynonymAdd(UDM_AGENT *A, UDM_SYNONYMLIST *SL,
         UDM_WIDEWORDLIST Tmp;
         UDM_WIDEWORD WW;
         UdmWideWordListInit(&Tmp);
-        WW= W[0];
+        WW= W;
         WW.word= strbeg;
         WW.len= strlen(strbeg);
         UdmSynonymListFind(&Tmp, SL, &WW);
@@ -572,8 +578,8 @@ UdmComplexSynonymAdd(UDM_AGENT *A, UDM_SYNONYMLIST *SL,
           {
             if ((WW.order_extra_width= UdmMultiWordPhraseLength(WW.word)))
             {
-              UDM_ASSERT(W->order >= phrase_length_current);
-              WW.order= W->order - phrase_length_current;
+              UDM_ASSERT(W.order >= phrase_length_current);
+              WW.order= W.order - phrase_length_current;
               WW.order_extra_width++;
             }
             else

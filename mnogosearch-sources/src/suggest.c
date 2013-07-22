@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -53,17 +53,21 @@ UdmWordStatQuery(UDM_AGENT *A, UDM_DB *db, const char *src)
     const char *word;
     int count;
     size_t wordlen;
-    char snd[32];
-    char insert[128];
+    char snd[UDM_MAXWORDSIZE];
+    char insert[64 + 2 * UDM_MAXWORDSIZE];
+    /*
+      Skip words that are longer than UDM_MAXWORDSIZE.
+    */
+    if ((wordlen= UdmSQLLen(&SQLRes, row, 0)) > sizeof(snd))
+      continue;
     word= UdmSQLValue(&SQLRes, row, 0);
-    wordlen= UdmSQLLen(&SQLRes, row, 0);
     count= UDM_ATOI(UdmSQLValue(&SQLRes, row, 1));
-    UdmSoundex(A->Conf->lcs, snd, word, wordlen);
+    UdmSoundex(A->Conf->lcs, snd, sizeof(snd), word, wordlen);
     if (snd[0])
     {
-      sprintf(insert,
-              "INSERT INTO wrdstat (word, snd, cnt) VALUES ('%s','%s',%d)",
-              word, snd, count);
+      udm_snprintf(insert, sizeof(insert),
+                   "INSERT INTO wrdstat (word, snd, cnt) VALUES ('%s','%s',%d)",
+                   word, snd, count);
       if (UDM_OK!= (rc= UdmSQLQuery(db, NULL, insert)))
         return rc;
     }
@@ -172,7 +176,7 @@ UdmResSuggest(UDM_AGENT *A, UDM_DB *db, UDM_RESULT *Res, size_t dbnum)
       
       UdmSQLTopClause(db, 100, &Top);
       
-      UdmSoundex(A->Conf->lcs, snd, W->word, W->len);
+      UdmSoundex(A->Conf->lcs, snd, sizeof(snd), W->word, W->len);
       UdmLog(A, UDM_LOG_DEBUG, "Suggest for '%s': '%s'", W->word, snd);
       udm_snprintf(qbuf, sizeof(qbuf),
                    "SELECT %sword, cnt FROM wrdstat WHERE snd='%s'%s"
@@ -183,7 +187,7 @@ UdmResSuggest(UDM_AGENT *A, UDM_DB *db, UDM_RESULT *Res, size_t dbnum)
         return rc;
       
       rows=UdmSQLNumRows(&SQLRes);
-      UdmLog(A, UDM_LOG_DEBUG, "%d suggestions found", rows);
+      UdmLog(A, UDM_LOG_DEBUG, "%d suggestions found", (int) rows);
       if (rows > 0)
       {
         UdmLog(A, UDM_LOG_DEBUG, "<%s>: <%s>/<%s>/<%s>/<%s>", 
@@ -217,7 +221,8 @@ UdmResSuggest(UDM_AGENT *A, UDM_DB *db, UDM_RESULT *Res, size_t dbnum)
                                         word_proximity_factor);
         final_weight= (count_weight + proximity_weight);
         UdmLog(A, UDM_LOG_DEBUG, "%s: %d/%d/%d/%d", 
-               sg.word, sg.count, count_weight, proximity_weight, final_weight);
+               sg.word, (int) sg.count, (int) count_weight,
+               (int) proximity_weight, (int) final_weight);
         sg.count= final_weight;
 
         nbytes= (sg.len + 1) * sizeof(int);

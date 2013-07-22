@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ httpd_main(UDM_AGENT *Agent, int ctl_sock,
         exit(1);
       }
       UdmLog(Agent,verb,"Connect %s", inet_ntoa(client_addr.sin_addr));
-      udm_snprintf(addr,sizeof(addr)-1,inet_ntoa(client_addr.sin_addr));
+      udm_snprintf(addr,sizeof(addr)-1,"%s",inet_ntoa(client_addr.sin_addr));
       
       /*
       M=UdmMatchListFind(&Agent->Conf->Filters,addr,10,P);
@@ -213,7 +213,6 @@ int UdmStartHTTPD(UDM_AGENT *Agent, int (*routine)(int sock, UDM_AGENT *A))
   struct sockaddr_in server_addr;
   int ctl_sock, on=1;
   int verb= UDM_LOG_ERROR;
-  int res=0;
   const char *lstn;
 
   UdmLog(Agent,verb,"Starting HTTP daemon");
@@ -270,7 +269,7 @@ int UdmStartHTTPD(UDM_AGENT *Agent, int (*routine)(int sock, UDM_AGENT *A))
     
   UdmLog(Agent,verb,"HTTPD Ready");
   
-  res= httpd_main(Agent, ctl_sock, routine);
+  httpd_main(Agent, ctl_sock, routine);
   closesocket(ctl_sock);
 
   UdmLog(Agent,verb,"HTTPD Shutdown");

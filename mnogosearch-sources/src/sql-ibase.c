@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -203,7 +203,7 @@ UdmIBPrepare(UDM_DB *db, const char *query)
   char    query_info[] = { isc_info_sql_stmt_type };
   char    info_buffer[18];
   
-  ib->query_handle= NULL;
+  ib->query_handle= 0;
   ib->in_sqlda.sqln= 0;
   ib->in_sqlda.sqld= 0;
   ib->in_sqlda.version= 1;
@@ -321,7 +321,7 @@ UdmIBExecInternal(UDM_DB *db, UDM_SQLRES *res, int free_stmt)
           var->sqldata = (char*)UdmMalloc(sizeof(short));
           break;
         case SQL_LONG:
-          var->sqldata = (char*)UdmMalloc(sizeof(long));
+          var->sqldata = (char*)UdmMalloc(sizeof(ISC_LONG));
           break;
         case SQL_FLOAT:
           var->sqldata = (char*)UdmMalloc(sizeof(float));
@@ -385,7 +385,8 @@ UdmIBExecInternal(UDM_DB *db, UDM_SQLRES *res, int free_stmt)
             len= vary->len;
             break;
           case SQL_LONG:
-            len= sprintf(shortdata,"%ld",*(long*)(var->sqldata));
+            /* SQL_LONG is in fact int4 on both x86 and x86_64 */
+            len= sprintf(shortdata,"%d", (int) (*(ISC_LONG*) (var->sqldata)));
             p = (char*)UdmStrdup(shortdata);
             break;
           case SQL_SHORT:
@@ -402,7 +403,7 @@ UdmIBExecInternal(UDM_DB *db, UDM_SQLRES *res, int free_stmt)
             break;
           case SQL_BLOB:
             {
-              isc_blob_handle blob_handle= NULL;
+              isc_blob_handle blob_handle= 0;
               unsigned short blob_seg_len, blob_segment_size= 32*1024;
               char blob_items[]= {isc_info_blob_total_length };
               char res_buffer[20], *res_buffer_ptr;
@@ -532,10 +533,10 @@ blob_close:
     if (isc_commit_transaction(ib->status, &ib->tr_handle))
     {
       db->errcode=1; 
-      ib->tr_handle=NULL;
+      ib->tr_handle= 0;
       return UDM_ERROR;
     }
-    ib->tr_handle=NULL;
+    ib->tr_handle= 0;
   }
   
   return UDM_OK;
@@ -549,7 +550,7 @@ static int
 UdmIBCreateBlob(UDM_IB *ib, const char *blob_data, size_t blob_length,
                 ISC_QUAD *blob_id)
 {
-  isc_blob_handle blob_handle= NULL;
+  isc_blob_handle blob_handle= 0;
   unsigned short seg_max_length = 32*1024;
   
   if (isc_create_blob(ib->status, &ib->DBH, &ib->tr_handle, &blob_handle, blob_id))
@@ -655,7 +656,7 @@ sql_ibase_query(UDM_DB *db, UDM_SQLRES *res, const char *query)
         UdmIBaseDisplayError(db, "isc_commit_transaction");
         rc= UDM_ERROR;
       }
-      ib->tr_handle=NULL;
+      ib->tr_handle= 0;
       ib->autocommit= 1;
     }
     else
@@ -751,7 +752,14 @@ UdmIBBind(UDM_DB *db, int position, const void *data, int size, int type)
     ib->in_sqlda.sqln= position;
     ib->in_sqlda.sqld= position;
   }
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
   var->sqldata= (char*) data;
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
   var->sqllen= size;
   var->sqltype= UdmSQLType2IBType(type) + 1;
   var->sqlind= &flag0;

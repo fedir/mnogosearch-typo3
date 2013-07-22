@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -323,6 +323,20 @@ scan_month_name(struct tm *ds, const char *monstr)
   ds->tm_mon= mon;
 }
 
+
+static void
+scan_time_zone(time_t *zone, const char *str)
+{
+  if (ap_checkmask(str, "+####") ||
+      ap_checkmask(str, "-####"))
+  {
+    int h= ((int) (str[1] - '0')) * 10 + (str[2] - '0');
+    int m= ((int) (str[3] - '0')) * 10 + (str[4] - '0');
+    *zone= (h * 60 + m) * 60 * ((str[0] == '-') ? -1 : 1);
+  }
+}
+
+
 /*
  * Parses an HTTP date in one of three standard forms:
  *
@@ -372,6 +386,7 @@ scan_month_name(struct tm *ds, const char *monstr)
  */
 time_t UdmHttpDate2Time_t(const char *date){
   struct tm ds;
+  time_t zone= 0;
 
   if (!date)
     return BAD_DATE;
@@ -407,6 +422,8 @@ time_t UdmHttpDate2Time_t(const char *date){
     goto check_valid_date;
   }                         /* 01234567890123456789 */
   else if (ap_checkmask(date, "####-##-##T##:##:##Z") ||
+           /* ####-##-##T##:##:##.##Z is used in docx, in docProps/core.xml */
+           ap_checkmask(date, "####-##-##T##:##:##.##Z") ||
            ap_checkmask(date, "####-##-##T##:##:##+##:##") ||
            ap_checkmask(date, "####-##-##T##:##:##-##:##"))
   {
@@ -448,11 +465,14 @@ time_t UdmHttpDate2Time_t(const char *date){
     /*
       RFC 1123 format
       Sun, 06 Nov 1994 08:49:37 GMT
+      Sun, 06 Nov 1994 08:49:37 +0400
+      Sun, 06 Nov 1994 08:49:37 -0400
     */
     scan_yyyy(&ds, date + 7);
     ds.tm_mday= ((date[0] - '0') * 10) + (date[1] - '0');
     scan_month_name(&ds, date + 3);
     scan_hh_mm_ss(&ds, date + 12);
+    scan_time_zone(&zone, date + 21);
   }                          /*0123456789ABCDEFGHIJK*/
   else if (ap_checkmask(date, "# @$$ #### ##:##:## *"))
   {
@@ -464,6 +484,7 @@ time_t UdmHttpDate2Time_t(const char *date){
     ds.tm_mday= date[0] - '0';
     scan_month_name(&ds, date + 2);
     scan_hh_mm_ss(&ds, date + 11);
+    scan_time_zone(&zone, date + 20);
   }
   else if (ap_checkmask(date, "##-@$$-## ##:##:## *"))
   {
@@ -477,6 +498,7 @@ time_t UdmHttpDate2Time_t(const char *date){
     ds.tm_mday= ((date[0] - '0') * 10) + (date[1] - '0');
     scan_month_name(&ds, date + 3);
     scan_hh_mm_ss(&ds, date + 10);
+    scan_time_zone(&zone, date + 19);
   }
   else if (ap_checkmask(date, "@$$ ~# ##:##:## ####*"))
   {
@@ -529,7 +551,7 @@ check_valid_date:
   }
 #endif
 
-  return ap_tm2sec(&ds);
+  return ap_tm2sec(&ds) - zone;
 }
 
 /********
@@ -645,23 +667,18 @@ int main(int argc, char **argv){
 #endif /* DEBUG_DP2TIME */
 
 
-void UdmTime_t2HttpStr(time_t t, char *str){
-    struct tm *tim;
-/*    if (t==0)
-	*str='\0';
-    else*/ {
-	/* FIXME: I suspect that gmtime IS NOT REENTRANT */
-
-	tim=gmtime(&t);
+void UdmTime_t2HttpStr(time_t t, char *str, size_t str_size)
+{
+  struct tm *tim;
+  /* FIXME: I suspect that gmtime IS NOT REENTRANT */
+  tim= gmtime(&t);
 
 #ifdef WIN32
-	if (!strftime(str, UDM_MAXTIMESTRLEN, "%a, %d %b %Y %H:%M:%S GMT", tim))
+  if (!strftime(str, str_size, "%a, %d %b %Y %H:%M:%S GMT", tim))
 #else
-	if (!strftime(str, UDM_MAXTIMESTRLEN, "%a, %d %b %Y %H:%M:%S %Z", tim))
+  if (!strftime(str, str_size, "%a, %d %b %Y %H:%M:%S %Z", tim))
 #endif
-		*str='\0';
-	/* /FIXME end of BAD code */
-    }
+    *str= '\0';
 }
 
 /* Find out tz_offset for the functions above

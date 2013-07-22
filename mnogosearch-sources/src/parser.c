@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -147,6 +147,7 @@ static char *parse1(UDM_AGENT * Agent, char *buf, size_t buflen, char *cmd, size
   {
     /* Parent process */
     char string[1024];
+    ssize_t nbytes;
 
     /* Close other pipe ends */
     close(wr[0]);
@@ -156,8 +157,9 @@ static char *parse1(UDM_AGENT * Agent, char *buf, size_t buflen, char *cmd, size
     result=buf;
     memset(result,0,maxlen);
     memset(string,0,sizeof(string));
-    while (read(rd[0],string,sizeof(string)-1)>0)
+    while ((nbytes= read(rd[0],string,sizeof(string)-1)) > 0)
     {
+      string[nbytes]= '\0';
       strncat(result,string,maxlen-strlen(result));
       memset(string,0,sizeof(string));
     }
@@ -228,11 +230,14 @@ static char *parse2(UDM_AGENT * Agent, char *buf, char *cmd, size_t maxlen)
 #endif
   if(f){
     int fd;
-          char string[1024];
+    char string[1024];
+    ssize_t nbytes;
     
     fd=fileno(f);
     memset(string,0,sizeof(string));
-    while (read(fd,string,sizeof(string)-1)>0){
+    while ((nbytes= read(fd,string,sizeof(string)-1)) > 0)
+    {
+      string[nbytes]= '\0';
       strncat(result,string,maxlen-strlen(result));
       memset(string,0,sizeof(string));
     }
@@ -415,6 +420,7 @@ static char *parse_file(UDM_AGENT *Agent,
 __C_LINK UDM_PARSER * __UDMCALL UdmParserFind(UDM_PARSERLIST *List,const char *mime_type)
 {
   size_t i;
+  UDM_ASSERT(mime_type != NULL);
   for(i=0;i<List->nparsers;i++)
   {
     if(!UdmWildCaseCmp(mime_type,List->Parser[i].from_mime))

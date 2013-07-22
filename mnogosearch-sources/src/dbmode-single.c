@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -93,7 +93,6 @@ StoreWordsSingle(UDM_AGENT *Indexer, UDM_DB *db, UDM_DOCUMENT *Doc)
 {
   size_t  i;
   char  qbuf[256]="";
-  time_t  stmp;
   int  rc=UDM_OK;
   urlid_t  url_id = UdmVarListFindInt(&Doc->Sections, "ID", 0);
   const char      *qu = (db->DBType == UDM_DB_PGSQL) ? "'" : "";
@@ -106,8 +105,6 @@ StoreWordsSingle(UDM_AGENT *Indexer, UDM_DB *db, UDM_DOCUMENT *Doc)
     if (UDM_OK!= (rc= UdmWordListSaveSectionSize(Doc)))
       return rc;
   }
-  
-  stmp=time(NULL);
   
   /*
     Don't need to delete words here,
@@ -318,20 +315,20 @@ UdmFindWordSingleInternal(UDM_FINDWORD_ARGS *args,
   {
     udm_snprintf(qbuf, sizeof(qbuf) - 1,"\
 SELECT %s.url_id,%s.intag FROM %s, url%s \
-WHERE %s.word%s AND url.rec_id=%s.url_id AND %s",
+WHERE %s.%s AND url.rec_id=%s.url_id AND %s",
     table, table, table, args->db->from,
     table, args->cmparg, table, args->where);
   }
   else if (!join)
   {
     udm_snprintf(qbuf, sizeof(qbuf) - 1,
-      "SELECT url_id,intag FROM %s WHERE word%s", table, args->cmparg);
+      "SELECT url_id,intag FROM %s WHERE %s", table, args->cmparg);
   }
   else
   {
 
     udm_snprintf(qbuf,sizeof(qbuf)-1,"\
-SELECT url_id,intag FROM %s,url WHERE %s.word%s AND url.rec_id=%s.url_id",
+SELECT url_id,intag FROM %s,url WHERE %s.%s AND url.rec_id=%s.url_id",
        table, table, args->cmparg, table);
   }
   
@@ -418,6 +415,10 @@ UdmFindWordSingle(UDM_FINDWORD_ARGS *args)
   {
     args->Word.count= CoordList.ncoords;
     UdmURLCRDListListAddWithSort2(args, &CoordList);
+  }
+  else
+  {
+    UdmFree(CoordList.Coords);
   }
   return(UDM_OK);
 }

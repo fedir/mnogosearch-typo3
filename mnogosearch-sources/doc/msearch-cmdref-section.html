@@ -7,7 +7,7 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="mnoGoSearch 3.3.11 reference manual"
+TITLE="mnoGoSearch 3.3.14 reference manual"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="mnoGoSearch command reference"
@@ -47,7 +47,7 @@ ALIGN="center"
 ><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> 3.3.11 reference manual: Full-featured search engine software</TH
+> 3.3.14 reference manual: Full-featured search engine software</TH
 ></TR
 ><TR
 ><TD
@@ -86,7 +86,7 @@ NAME="cmdref-section"
 ><DIV
 CLASS="refnamediv"
 ><A
-NAME="AEN12135"
+NAME="AEN12327"
 ></A
 ><H2
 >Name</H2
@@ -108,7 +108,7 @@ CLASS="filename"
 ><DIV
 CLASS="refsynopsisdiv"
 ><A
-NAME="AEN12142"
+NAME="AEN12334"
 ></A
 ><H2
 >Synopsis</H2
@@ -116,12 +116,12 @@ NAME="AEN12142"
 ><B
 CLASS="command"
 >Section</B
->  {name} {number} {maxlen} [when] [format] [cloneflag] [separator] [{source}  {pattern}  {replacement}]</P
+>  {name} {number} {maxlen} [datatype] [when] [format] [cloneflag] [separator] [{source}  {pattern}  {replacement}]</P
 ></DIV
 ><DIV
 CLASS="refsect1"
 ><A
-NAME="AEN12156"
+NAME="AEN12349"
 ></A
 ><H2
 >Description</H2
@@ -153,7 +153,7 @@ HREF="msearch-doingsearch.html#search-secnoref"
 >the Section called <I
 >Restricting search words to a section
     <A
-NAME="AEN5093"
+NAME="AEN5238"
 ></A
 ></I
 > in Chapter 10</A
@@ -244,6 +244,51 @@ CLASS="varname"
 CLASS="filename"
 >search.htm</TT
 >.
+    </P
+><P
+>&#13;    The <CODE
+CLASS="parameter"
+>datatype</CODE
+> parameter is optional.
+    If the parameter is omitted, then the words of this section
+    are treated as usual words, i.e. they are stored and compared
+    lexicographically.
+    </P
+><P
+>&#13;    If the <CODE
+CLASS="parameter"
+>datatype</CODE
+> is set to <TT
+CLASS="literal"
+>decimal</TT
+>,
+    then the words of this section are treated as decimal numbers with up
+    to <TT
+CLASS="literal"
+>9</TT
+> integral digits and up to <TT
+CLASS="literal"
+>9</TT
+>
+    fractional digits. The words of this section are stored as a 
+    <TT
+CLASS="literal"
+>18</TT
+>-digit words in the format
+    <TT
+CLASS="literal"
+>IIIIIIIIIFFFFFFFFF</TT
+>, where 
+    <TT
+CLASS="literal"
+>IIIIIIIII</TT
+> is the integral part left padded with 
+    zeroes, and 
+    <TT
+CLASS="literal"
+>FFFFFFFFF</TT
+> is the fractional part right padded
+    with zeros.
     </P
 ><P
 >&#13;    <CODE
@@ -457,10 +502,10 @@ CLASS="acronym"
 >URL</ACRONYM
 > scheme)
     <A
-NAME="AEN2254"
+NAME="AEN2840"
 ></A
 ></I
-> in Chapter 4</A
+> in Chapter 6</A
 > for details about simple
     <A
 HREF="msearch-cmdref-htdbdoc.html"
@@ -745,7 +790,7 @@ Section nobody 1 256
 ><DIV
 CLASS="refsect1"
 ><A
-NAME="AEN12312"
+NAME="AEN12516"
 ></A
 ><H2
 >Examples</H2
@@ -754,7 +799,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN12314"
+NAME="AEN12518"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -810,7 +855,7 @@ Section 2 256 colimn2 html
 ><DIV
 CLASS="refsect1"
 ><A
-NAME="AEN12316"
+NAME="AEN12520"
 ></A
 ><H2
 >See also</H2

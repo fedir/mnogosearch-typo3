@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->mnoGoSearch 3.3.11 reference manual</TITLE
+>mnoGoSearch 3.3.14 reference manual</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -39,14 +39,14 @@ NAME="AEN2"
 ><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> 3.3.11 reference manual</A
+> 3.3.14 reference manual</A
 ></H1
 ><H2
 CLASS="subtitle"
 >Full-featured search engine software</H2
 ><P
 CLASS="copyright"
->Copyright &copy; 2001-2010 Lavtech.com corp.</P
+>Copyright &copy; 2001-2013 Lavtech.com corp.</P
 ><HR></DIV
 ><DIV
 CLASS="TOC"
@@ -83,7 +83,7 @@ CLASS="application"
 >mnoGoSearch</SPAN
 >.
       <A
-NAME="AEN141"
+NAME="AEN149"
 ></A
 ></A
 ></DT
@@ -92,7 +92,7 @@ NAME="AEN141"
 HREF="msearch-disclaimer.html"
 >Disclaimer
       <A
-NAME="AEN149"
+NAME="AEN157"
 ></A
 ></A
 ></DT
@@ -101,7 +101,7 @@ NAME="AEN149"
 HREF="msearch-authors.html"
 >Authors
       <A
-NAME="AEN158"
+NAME="AEN166"
 ></A
 ></A
 ></DT
@@ -110,7 +110,7 @@ NAME="AEN158"
 HREF="msearch-contriblist.html"
 >Contributors (in no particular order)
        <A
-NAME="AEN236"
+NAME="AEN244"
 ></A
 ></A
 ></DT
@@ -119,7 +119,7 @@ NAME="AEN236"
 HREF="msearch-faq.html"
 >Frequently Asked Questions
       <A
-NAME="AEN378"
+NAME="AEN386"
 ></A
 ></A
 ></DT
@@ -133,7 +133,7 @@ CLASS="application"
 >mnoGoSearch</SPAN
 >
     <A
-NAME="AEN519"
+NAME="AEN527"
 ></A
 ></A
 ></DT
@@ -165,7 +165,7 @@ CLASS="application"
 >mnoGoSearch</SPAN
 >
       <A
-NAME="AEN713"
+NAME="AEN734"
 ></A
 ></A
 ></DT
@@ -189,7 +189,7 @@ CLASS="application"
 HREF="msearch-installproblem.html"
 >Possible installation
       problems <A
-NAME="AEN975"
+NAME="AEN996"
 ></A
 ></A
 ></DT
@@ -232,7 +232,7 @@ CLASS="acronym"
 >SQL</ACRONYM
 > table structure
       <A
-NAME="AEN1056"
+NAME="AEN1076"
 ></A
 ></A
 ></DT
@@ -244,7 +244,7 @@ CLASS="acronym"
 >SQL</ACRONYM
 > table structure
       <A
-NAME="AEN1075"
+NAME="AEN1095"
 ></A
 ></A
 ></DT
@@ -258,7 +258,7 @@ CLASS="application"
 ></DT
 ><DT
 ><A
-HREF="msearch-indexing.html#AEN1105"
+HREF="msearch-indexing.html#AEN1125"
 >HTTP redirects</A
 ></DT
 ><DT
@@ -276,7 +276,7 @@ HREF="msearch-indexing.html#general-subsect"
 HREF="msearch-indexing.html#general-cleardb"
 >How to clear the database
       <A
-NAME="AEN1177"
+NAME="AEN1197"
 ></A
 ></A
 ></DT
@@ -285,7 +285,7 @@ NAME="AEN1177"
 HREF="msearch-indexing.html#general-dbstat"
 >Database Statistics
       <A
-NAME="AEN1192"
+NAME="AEN1212"
 ></A
 ></A
 ></DT
@@ -297,7 +297,7 @@ CLASS="application"
 >indexer</SPAN
 > for site validation
       <A
-NAME="AEN1280"
+NAME="AEN1300"
 ></A
 ></A
 ></DT
@@ -309,7 +309,7 @@ CLASS="application"
 >indexer</SPAN
 > instances for crawling
       <A
-NAME="AEN1298"
+NAME="AEN1318"
 ></A
 ></A
 ></DT
@@ -321,7 +321,7 @@ CLASS="application"
 >indexer</SPAN
 > with multiple threads
       <A
-NAME="AEN1332"
+NAME="AEN1352"
 ></A
 ></A
 ></DT
@@ -340,7 +340,7 @@ CLASS="application"
 HREF="msearch-content-enc.html"
 >Content-Encoding support
     <A
-NAME="AEN1461"
+NAME="AEN1481"
 ></A
 ></A
 ></DT
@@ -366,7 +366,7 @@ HREF="msearch-indexer-configuration.html#aliases"
 HREF="msearch-indexer-configuration.html#srvtable"
 >ServerTable
     <A
-NAME="AEN1892"
+NAME="AEN1912"
 ></A
 ></A
 ></DT
@@ -375,7 +375,7 @@ NAME="AEN1892"
 HREF="msearch-indexer-configuration.html#flushsrvtable"
 >FlushServerTable
     <A
-NAME="AEN1998"
+NAME="AEN2018"
 ></A
 ></A
 ></DT
@@ -386,7 +386,7 @@ NAME="AEN1998"
 HREF="msearch-syslog.html"
 >Using syslog
   <A
-NAME="AEN2005"
+NAME="AEN2025"
 ></A
 ></A
 ></DT
@@ -400,7 +400,7 @@ HREF="msearch-itips.html"
 HREF="msearch-stored.html"
 >Cached copies
     <A
-NAME="AEN2101"
+NAME="AEN2121"
 ></A
 ></A
 ></DT
@@ -432,221 +432,23 @@ HREF="msearch-stored.html#stored-remote"
 ></DD
 ><DT
 >4. <A
-HREF="msearch-extended-indexing.html"
->Extended indexing features</A
+HREF="msearch-file-formats.html"
+>Supported file formats and mime types</A
 ></DT
 ><DD
 ><DL
 ><DT
 ><A
-HREF="msearch-extended-indexing.html#news"
->News extensions
-<A
-NAME="AEN2188"
-></A
-></A
+HREF="msearch-file-formats.html#built-in-parsers"
+>Built-in parsers</A
 ></DT
 ><DT
 ><A
-HREF="msearch-extended-indexing.html#mp3"
->Creating an MP3 search engine
-  <A
-NAME="AEN2192"
-></A
-></A
-></DT
-><DD
-><DL
-><DT
-><A
-HREF="msearch-extended-indexing.html#mp3-indexer"
->MP3 <TT
-CLASS="filename"
->indexer.conf</TT
-> commands</A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#mp3-search"
->Restricting search to a certain MP3 section</A
-></DT
-></DL
-></DD
-><DT
-><A
-HREF="msearch-extended-indexing.html#htdb"
->Indexing <ACRONYM
-CLASS="acronym"
->SQL</ACRONYM
-> tables
-    (<TT
-CLASS="literal"
->htdb:/</TT
-> virtual <ACRONYM
-CLASS="acronym"
->URL</ACRONYM
-> scheme)
-    <A
-NAME="AEN2254"
-></A
-></A
-></DT
-><DD
-><DL
-><DT
-><A
-HREF="msearch-extended-indexing.html#htdb-indexer"
-><ACRONYM
-CLASS="acronym"
->HTDB</ACRONYM
-> <TT
-CLASS="filename"
->indexer.conf</TT
-> commands</A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#htdb-var"
-><ACRONYM
-CLASS="acronym"
->HTDB</ACRONYM
-> variables
-      <A
-NAME="AEN2423"
-></A
-></A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#htdb-many"
->Using multiple <ACRONYM
-CLASS="acronym"
->HTDB</ACRONYM
-> sources
-      <A
-NAME="AEN2459"
-></A
-></A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#htdb-fulltext"
->Using <SPAN
+HREF="msearch-htmlparser.html"
+><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> as an
-     external <ACRONYM
-CLASS="acronym"
->SQL</ACRONYM
-> full-text engine</A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#htdb-web"
->Indexing a database driven Web server</A
-></DT
-></DL
-></DD
-><DT
-><A
-HREF="msearch-extended-indexing.html#exec"
->Indexing a program output
-  (<TT
-CLASS="literal"
->exec:/</TT
-> and <TT
-CLASS="literal"
->cgi:/</TT
-> virtual URL schemes)
-  <A
-NAME="AEN2595"
-></A
-></A
-></DT
-><DD
-><DL
-><DT
-><A
-HREF="msearch-extended-indexing.html#exec-cgi"
->Passing parameters to the <TT
-CLASS="literal"
->cgi:/</TT
-> virtual scheme</A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#exec-exec"
->Passing parameters to the <TT
-CLASS="literal"
->exec:/</TT
-> virtual scheme</A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#exec-ext"
->Using the <TT
-CLASS="literal"
->exec:/</TT
-> virtual scheme as an external retrieval system</A
-></DT
-></DL
-></DD
-><DT
-><A
-HREF="msearch-extended-indexing.html#mirror"
->Mirroring
-  <A
-NAME="AEN2677"
-></A
-></A
-></DT
-><DD
-><DL
-><DT
-><A
-HREF="msearch-extended-indexing.html#mirror-creating"
->Creating a mirror</A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#mirror-as-cache"
->Using a mirror as crawler cache.
-    <A
-NAME="AEN2710"
-></A
-></A
-></DT
-></DL
-></DD
-><DT
-><A
-HREF="msearch-extended-indexing.html#dump-restore"
->Dumping and restoring the search database
-  <A
-NAME="AEN2762"
-></A
-></A
-></DT
-><DD
-><DL
-><DT
-><A
-HREF="msearch-extended-indexing.html#dump"
->Dumping the search database</A
-></DT
-><DT
-><A
-HREF="msearch-extended-indexing.html#restore"
->Restoring the search database</A
-></DT
-></DL
-></DD
-></DL
-></DD
-><DT
->5. <A
-HREF="msearch-htmlparser.html"
->mnoGoSearch <ACRONYM
+> <ACRONYM
 CLASS="acronym"
 >HTML</ACRONYM
 > parser</A
@@ -658,13 +460,13 @@ CLASS="acronym"
 HREF="msearch-htmlparser.html#htmlparser-tag"
 >Tag parser
       <A
-NAME="AEN2834"
+NAME="AEN2280"
 ></A
 ></A
 ></DT
 ><DT
 ><A
-HREF="msearch-htmlparser-spec.html"
+HREF="msearch-htmlparser.html#htmlparser-spec"
 ><ACRONYM
 CLASS="acronym"
 >HTML</ACRONYM
@@ -672,30 +474,32 @@ CLASS="acronym"
 ></DT
 ><DT
 ><A
-HREF="msearch-htmlparser-meta.html"
+HREF="msearch-htmlparser.html#htmlparser-meta"
 >META tags
 <A
-NAME="AEN2868"
+NAME="AEN2314"
 ></A
 ></A
 ></DT
 ><DT
 ><A
-HREF="msearch-htmlparser-links.html"
+HREF="msearch-htmlparser.html#htmlparser-links"
 >Links</A
 ></DT
 ><DT
 ><A
-HREF="msearch-htmlparser-comments.html"
+HREF="msearch-htmlparser.html#htmlparser-comments"
 >Comments</A
 ></DT
 ></DL
 ></DD
+></DL
+></DD
 ><DT
->6. <A
+>5. <A
 HREF="msearch-parsers.html"
 >External parsers<A
-NAME="AEN2953"
+NAME="AEN2399"
 ></A
 ></A
 ></DT
@@ -729,7 +533,7 @@ HREF="msearch-parsers.html#pars-pipes"
 HREF="msearch-parsers.html#pars-char"
 >Parsers and character sets
        <A
-NAME="AEN3065"
+NAME="AEN2509"
 ></A
 ></A
 ></DT
@@ -746,7 +550,7 @@ CLASS="varname"
 HREF="msearch-parsers.html#pars-links"
 >External parsers for the most common file types
     <A
-NAME="AEN3093"
+NAME="AEN2537"
 ></A
 ></A
 ></DT
@@ -831,6 +635,30 @@ CLASS="filename"
 ></DT
 ><DT
 ><A
+HREF="msearch-parsers.html#pars-wps"
+><SPAN
+CLASS="application"
+>MS Works 2, 3, 4, 5 (2000), and 8</SPAN
+>
+    (<TT
+CLASS="filename"
+>*.wps</TT
+>)</A
+></DT
+><DT
+><A
+HREF="msearch-parsers.html#pars-wpd"
+><SPAN
+CLASS="application"
+>Corel WordPerfect 4.x and and later</SPAN
+>
+    (<TT
+CLASS="filename"
+>*.wpd</TT
+>)</A
+></DT
+><DT
+><A
 HREF="msearch-parsers.html#parse-rpm"
 ><SPAN
 CLASS="application"
@@ -842,12 +670,225 @@ CLASS="application"
 ></DL
 ></DD
 ><DT
->7. <A
-HREF="msearch-howstore.html"
->Storing <SPAN
+>6. <A
+HREF="msearch-extended-indexing.html"
+>Extended indexing features</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="msearch-extended-indexing.html#news"
+>News extensions
+<A
+NAME="AEN2774"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#mp3"
+>Creating an MP3 search engine
+  <A
+NAME="AEN2778"
+></A
+></A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="msearch-extended-indexing.html#mp3-indexer"
+>MP3 <TT
+CLASS="filename"
+>indexer.conf</TT
+> commands</A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#mp3-search"
+>Restricting search to a certain MP3 section</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="msearch-extended-indexing.html#htdb"
+>Indexing <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> tables
+    (<TT
+CLASS="literal"
+>htdb:/</TT
+> virtual <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> scheme)
+    <A
+NAME="AEN2840"
+></A
+></A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="msearch-extended-indexing.html#htdb-indexer"
+><ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> <TT
+CLASS="filename"
+>indexer.conf</TT
+> commands</A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#htdb-var"
+><ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> variables
+      <A
+NAME="AEN3009"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#htdb-many"
+>Using multiple <ACRONYM
+CLASS="acronym"
+>HTDB</ACRONYM
+> sources
+      <A
+NAME="AEN3045"
+></A
+></A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#htdb-fulltext"
+>Using <SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> data</A
+> as an
+     external <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> full-text engine</A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#htdb-web"
+>Indexing a database driven Web server</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="msearch-extended-indexing.html#exec"
+>Indexing a program output
+  (<TT
+CLASS="literal"
+>exec:/</TT
+> and <TT
+CLASS="literal"
+>cgi:/</TT
+> virtual URL schemes)
+  <A
+NAME="AEN3181"
+></A
+></A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="msearch-extended-indexing.html#exec-cgi"
+>Passing parameters to the <TT
+CLASS="literal"
+>cgi:/</TT
+> virtual scheme</A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#exec-exec"
+>Passing parameters to the <TT
+CLASS="literal"
+>exec:/</TT
+> virtual scheme</A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#exec-ext"
+>Using the <TT
+CLASS="literal"
+>exec:/</TT
+> virtual scheme as an external retrieval system</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="msearch-extended-indexing.html#mirror"
+>Mirroring
+  <A
+NAME="AEN3263"
+></A
+></A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="msearch-extended-indexing.html#mirror-creating"
+>Creating a mirror</A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#mirror-as-cache"
+>Using a mirror as crawler cache.
+    <A
+NAME="AEN3296"
+></A
+></A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="msearch-extended-indexing.html#dump-restore"
+>Dumping and restoring the search database
+  <A
+NAME="AEN3348"
+></A
+></A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="msearch-extended-indexing.html#dump"
+>Dumping the search database</A
+></DT
+><DT
+><A
+HREF="msearch-extended-indexing.html#restore"
+>Restoring the search database</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>7. <A
+HREF="msearch-howstore.html"
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> word index formats</A
 ></DT
 ><DD
 ><DL
@@ -871,7 +912,7 @@ HREF="msearch-howstore.html#sql-stor-modes"
 HREF="msearch-howstore.html#sql-stor-single"
 >Storage mode - single
       <A
-NAME="AEN3301"
+NAME="AEN3438"
 ></A
 ></A
 ></DT
@@ -880,7 +921,7 @@ NAME="AEN3301"
 HREF="msearch-howstore.html#sql-stor-multi"
 >Storage mode - multi
       <A
-NAME="AEN3343"
+NAME="AEN3480"
 ></A
 ></A
 ></DT
@@ -889,7 +930,7 @@ NAME="AEN3343"
 HREF="msearch-howstore.html#sql-stor-blob"
 >Storage mode - blob
       <A
-NAME="AEN3379"
+NAME="AEN3516"
 ></A
 ></A
 ></DT
@@ -931,7 +972,7 @@ HREF="msearch-cachemode.html"
 HREF="msearch-perf.html"
 >mnoGoSearch performance issues
 <A
-NAME="AEN3564"
+NAME="AEN3701"
 ></A
 ></A
 ></DT
@@ -954,7 +995,7 @@ HREF="msearch-perf.html#perf-optimization"
 HREF="msearch-oracle.html"
 >Oracle notes
 <A
-NAME="AEN3593"
+NAME="AEN3730"
 ></A
 ></A
 ></DT
@@ -977,7 +1018,7 @@ HREF="msearch-oracle.html#oracle-install"
 HREF="msearch-db2.html"
 >IBM DB2 notes
     <A
-NAME="AEN3674"
+NAME="AEN3811"
 ></A
 ></A
 ></DT
@@ -995,7 +1036,7 @@ HREF="msearch-subsections.html"
 HREF="msearch-subsections.html#categories"
 >Categories
     <A
-NAME="AEN3692"
+NAME="AEN3829"
 ></A
 ></A
 ></DT
@@ -1041,7 +1082,7 @@ CLASS="application"
 ><DT
 >9. <A
 HREF="msearch-international.html"
->Multiple languages support</A
+>Internationalization</A
 ></DT
 ><DD
 ><DL
@@ -1050,7 +1091,7 @@ HREF="msearch-international.html"
 HREF="msearch-international.html#charset"
 >Character sets
     <A
-NAME="AEN3794"
+NAME="AEN3931"
 ></A
 ></A
 ></DT
@@ -1096,7 +1137,7 @@ HREF="msearch-international.html#charset-guesser"
 HREF="msearch-international.html#defcharset"
 >The default character set
       <A
-NAME="AEN4129"
+NAME="AEN4266"
 ></A
 ></A
 ></DT
@@ -1105,7 +1146,7 @@ NAME="AEN4129"
 HREF="msearch-international.html#deflang"
 >The default Language
       <A
-NAME="AEN4137"
+NAME="AEN4274"
 ></A
 ></A
 ></DT
@@ -1116,7 +1157,7 @@ NAME="AEN4137"
 HREF="msearch-multilang.html"
 >Search pages with multi-lingual interface
     <A
-NAME="AEN4150"
+NAME="AEN4287"
 ></A
 ></A
 ></DT
@@ -1151,7 +1192,7 @@ HREF="msearch-cjk.html"
 HREF="msearch-cjk.html#ja-segment"
 >Japanese phrase segmenter
       <A
-NAME="AEN4293"
+NAME="AEN4430"
 ></A
 ></A
 ></DT
@@ -1160,7 +1201,7 @@ NAME="AEN4293"
 HREF="msearch-cjk.html#zh-segment"
 >Chinese phrase segmenter
       <A
-NAME="AEN4309"
+NAME="AEN4446"
 ></A
 ></A
 ></DT
@@ -1169,7 +1210,7 @@ NAME="AEN4309"
 HREF="msearch-cjk.html#th-segment"
 >Thai phrase segmenter
       <A
-NAME="AEN4341"
+NAME="AEN4478"
 ></A
 ></A
 ></DT
@@ -1181,7 +1222,7 @@ CLASS="acronym"
 >CJK</ACRONYM
 > phrase segmenter
       <A
-NAME="AEN4361"
+NAME="AEN4498"
 ></A
 ></A
 ></DT
@@ -1218,7 +1259,7 @@ HREF="msearch-doingsearch.html#search-perform"
 HREF="msearch-doingsearch.html#search-params"
 >Search parameters
     <A
-NAME="AEN4477"
+NAME="AEN4614"
 ></A
 ></A
 ></DT
@@ -1253,7 +1294,7 @@ HREF="msearch-doingsearch.html#search-templates"
 HREF="msearch-doingsearch.html#search-bool"
 >Advanced Boolean search
     <A
-NAME="AEN5049"
+NAME="AEN5186"
 ></A
 ></A
 ></DT
@@ -1262,7 +1303,7 @@ NAME="AEN5049"
 HREF="msearch-doingsearch.html#search-secnoref"
 >Restricting search words to a section
     <A
-NAME="AEN5093"
+NAME="AEN5238"
 ></A
 ></A
 ></DT
@@ -1271,7 +1312,7 @@ NAME="AEN5093"
 HREF="msearch-doingsearch.html#search-phrase"
 >Phrase search
     <A
-NAME="AEN5110"
+NAME="AEN5255"
 ></A
 ></A
 ></DT
@@ -1280,7 +1321,7 @@ NAME="AEN5110"
 HREF="msearch-doingsearch.html#search-exactsectionmatch"
 >Exact section match
     <A
-NAME="AEN5126"
+NAME="AEN5271"
 ></A
 ></A
 ></DT
@@ -1296,7 +1337,7 @@ HREF="msearch-doingsearch.html#search-exp"
 HREF="msearch-templates.html"
 >How to write search result templates
     <A
-NAME="AEN5144"
+NAME="AEN5289"
 ></A
 ></A
 ></DT
@@ -1317,7 +1358,7 @@ HREF="msearch-templates.html#templates-variable-formats"
 HREF="msearch-templates.html#templates-sect"
 >Template sections
     <A
-NAME="AEN5197"
+NAME="AEN5342"
 ></A
 ></A
 ></DT
@@ -1432,7 +1473,7 @@ HREF="msearch-templates-oper.html#templates-oper-misc"
 HREF="msearch-rel.html"
 >Ranking documents
      <A
-NAME="AEN5905"
+NAME="AEN6050"
 ></A
 ></A
 ></DT
@@ -1443,7 +1484,7 @@ NAME="AEN5905"
 HREF="msearch-rel.html#score-commands"
 >Commands affecting document score
   <A
-NAME="AEN5921"
+NAME="AEN6066"
 ></A
 ></A
 ></DT
@@ -1461,7 +1502,7 @@ HREF="msearch-rel.html#score-debug"
 ><A
 HREF="msearch-rel.html#poprank"
 >Popularity rank<A
-NAME="AEN6079"
+NAME="AEN6224"
 ></A
 ></A
 ></DT
@@ -1469,7 +1510,7 @@ NAME="AEN6079"
 ><A
 HREF="msearch-rel.html#rel-cwords"
 >Crosswords<A
-NAME="AEN6139"
+NAME="AEN6284"
 ></A
 ></A
 ></DT
@@ -1480,7 +1521,7 @@ NAME="AEN6139"
 HREF="msearch-track.html"
 >Tracking search queries
     <A
-NAME="AEN6154"
+NAME="AEN6299"
 ></A
 ></A
 ></DT
@@ -1489,7 +1530,7 @@ NAME="AEN6154"
 HREF="msearch-srcache.html"
 >Search results cache
     <A
-NAME="AEN6181"
+NAME="AEN6326"
 ></A
 ></A
 ></DT
@@ -1505,7 +1546,7 @@ HREF="msearch-fuzzy.html"
 HREF="msearch-fuzzy.html#ispell"
 >Ispell
     <A
-NAME="AEN6232"
+NAME="AEN6377"
 ></A
 ></A
 ></DT
@@ -1514,7 +1555,7 @@ NAME="AEN6232"
 HREF="msearch-fuzzy.html#synonyms"
 >Synonyms
     <A
-NAME="AEN6307"
+NAME="AEN6452"
 ></A
 ></A
 ></DT
@@ -1523,7 +1564,7 @@ NAME="AEN6307"
 HREF="msearch-fuzzy.html#dehyphenation"
 >Dehyphenation
   <A
-NAME="AEN6411"
+NAME="AEN6556"
 ></A
 ></A
 ></DT
@@ -1535,7 +1576,7 @@ CLASS="acronym"
 >SQL</ACRONYM
 > database
   <A
-NAME="AEN6420"
+NAME="AEN6565"
 ></A
 ></A
 ></DT
@@ -1544,7 +1585,7 @@ NAME="AEN6420"
 HREF="msearch-fuzzy.html#dumpspell"
 >Dumping Ispell data
   <A
-NAME="AEN6427"
+NAME="AEN6572"
 ></A
 ></A
 ></DT
@@ -1553,7 +1594,7 @@ NAME="AEN6427"
 HREF="msearch-fuzzy.html#translit"
 >Transliteration
   <A
-NAME="AEN6446"
+NAME="AEN6591"
 ></A
 ></A
 ></DT
@@ -1562,7 +1603,7 @@ NAME="AEN6446"
 HREF="msearch-fuzzy.html#numericoperators"
 >Searching numbers
   <A
-NAME="AEN6457"
+NAME="AEN6602"
 ></A
 ></A
 ></DT
@@ -1571,7 +1612,7 @@ NAME="AEN6457"
 HREF="msearch-fuzzy.html#accentinsensitive"
 >Accent insensitive search
   <A
-NAME="AEN6479"
+NAME="AEN6624"
 ></A
 ></A
 ></DT
@@ -1659,7 +1700,7 @@ CLASS="application"
 >
    as an embedded search library
   <A
-NAME="AEN6793"
+NAME="AEN6985"
 ></A
 ></A
 ></DT
@@ -2576,6 +2617,11 @@ HREF="msearch-cmdref-usenumericoperators.html"
 >&nbsp;--&nbsp;defines whether to interpret numeric operators in a search query</DT
 ><DT
 ><A
+HREF="msearch-cmdref-userangeoperators.html"
+>UseRangeOperators</A
+>&nbsp;--&nbsp;defines whether to recognize range operators in a search query</DT
+><DT
+><A
 HREF="msearch-cmdref-useremotecontenttype.html"
 >UseRemoteContentType</A
 >&nbsp;--&nbsp;specifies whether to trust the <CODE
@@ -2746,6 +2792,21 @@ HREF="msearch-changelog.html#changelog-3-3"
 ><DL
 ><DT
 ><A
+HREF="msearch-changelog.html#changelog-3-3-14"
+>Changes in 3.3.14 (April 02, 2013)</A
+></DT
+><DT
+><A
+HREF="msearch-changelog.html#changelog-3-3-13"
+>Changes in 3.3.13 (March 03, 2013)</A
+></DT
+><DT
+><A
+HREF="msearch-changelog.html#changelog-3-3-12"
+>Changes in 3.3.12 (December 15, 2011)</A
+></DT
+><DT
+><A
 HREF="msearch-changelog.html#changelog-3-3-11"
 >Changes in 3.3.11 (January 27, 2011)</A
 ></DT
@@ -2825,27 +2886,27 @@ CLASS="LOT"
 ></DT
 ><DT
 >3-1. <A
-HREF="msearch-syslog.html#AEN2017"
+HREF="msearch-syslog.html#AEN2037"
 >Verbose levels</A
 ></DT
 ><DT
 >9-1. <A
-HREF="msearch-international.html#AEN3803"
+HREF="msearch-international.html#AEN3940"
 >Supported character sets</A
 ></DT
 ><DT
 >9-2. <A
-HREF="msearch-international.html#AEN3901"
+HREF="msearch-international.html#AEN4038"
 >Character set aliases</A
 ></DT
 ><DT
 >10-1. <A
-HREF="msearch-doingsearch.html#AEN4489"
+HREF="msearch-doingsearch.html#AEN4626"
 >Available search parameters</A
 ></DT
 ><DT
 >12-1. <A
-HREF="msearch-misc.html#AEN6746"
+HREF="msearch-misc.html#AEN6938"
 >Environment variables
         <SPAN
 CLASS="application"
@@ -2880,7 +2941,7 @@ CLASS="LOT"
 ></DT
 ><DT
 >1. <A
-HREF="msearch-c-api-udmenvinit.html#AEN14229"
+HREF="msearch-c-api-udmenvinit.html#AEN14477"
 ><CODE
 CLASS="function"
 >UdmEnvInit</CODE
@@ -2888,7 +2949,7 @@ CLASS="function"
 ></DT
 ><DT
 >2. <A
-HREF="msearch-c-api-udmenvinit.html#AEN14234"
+HREF="msearch-c-api-udmenvinit.html#AEN14482"
 ><CODE
 CLASS="function"
 >UdmEnvInit</CODE
@@ -2896,7 +2957,7 @@ CLASS="function"
 ></DT
 ><DT
 >1. <A
-HREF="msearch-c-api-udmenvfree.html#AEN14287"
+HREF="msearch-c-api-udmenvfree.html#AEN14535"
 ><CODE
 CLASS="function"
 >UdmEnvFree</CODE
@@ -2904,7 +2965,7 @@ CLASS="function"
 ></DT
 ><DT
 >2. <A
-HREF="msearch-c-api-udmenvfree.html#AEN14292"
+HREF="msearch-c-api-udmenvfree.html#AEN14540"
 ><CODE
 CLASS="function"
 >UdmEnvFree</CODE
@@ -2912,7 +2973,7 @@ CLASS="function"
 ></DT
 ><DT
 >1. <A
-HREF="msearch-c-api-udmagentinit.html#AEN14368"
+HREF="msearch-c-api-udmagentinit.html#AEN14616"
 ><CODE
 CLASS="function"
 >UdmAgentInit</CODE
@@ -2920,7 +2981,7 @@ CLASS="function"
 ></DT
 ><DT
 >2. <A
-HREF="msearch-c-api-udmagentinit.html#AEN14373"
+HREF="msearch-c-api-udmagentinit.html#AEN14621"
 ><CODE
 CLASS="function"
 >UdmAgentInit</CODE
@@ -2928,7 +2989,7 @@ CLASS="function"
 ></DT
 ><DT
 >1. <A
-HREF="msearch-c-api-udmagentfree.html#AEN14423"
+HREF="msearch-c-api-udmagentfree.html#AEN14671"
 ><CODE
 CLASS="function"
 >UdmAgentFree</CODE
@@ -2936,7 +2997,7 @@ CLASS="function"
 ></DT
 ><DT
 >2. <A
-HREF="msearch-c-api-udmagentfree.html#AEN14428"
+HREF="msearch-c-api-udmagentfree.html#AEN14676"
 ><CODE
 CLASS="function"
 >UdmAgentFree</CODE
@@ -2944,7 +3005,7 @@ CLASS="function"
 ></DT
 ><DT
 >1. <A
-HREF="msearch-c-api-udmagentaddline.html#AEN14492"
+HREF="msearch-c-api-udmagentaddline.html#AEN14740"
 ><CODE
 CLASS="function"
 >UdmAgentAddLine</CODE
@@ -2952,7 +3013,7 @@ CLASS="function"
 ></DT
 ><DT
 >1. <A
-HREF="msearch-c-api-udmfind2.html#AEN14559"
+HREF="msearch-c-api-udmfind2.html#AEN14807"
 ><CODE
 CLASS="function"
 >UdmFind2</CODE
@@ -2960,7 +3021,7 @@ CLASS="function"
 ></DT
 ><DT
 >2. <A
-HREF="msearch-c-api-udmfind2.html#AEN14564"
+HREF="msearch-c-api-udmfind2.html#AEN14812"
 ><CODE
 CLASS="function"
 >UdmFind2</CODE
@@ -2968,7 +3029,7 @@ CLASS="function"
 ></DT
 ><DT
 >3. <A
-HREF="msearch-c-api-udmfind2.html#AEN14569"
+HREF="msearch-c-api-udmfind2.html#AEN14817"
 ><CODE
 CLASS="function"
 >Makefile</CODE
@@ -2976,7 +3037,7 @@ CLASS="function"
 ></DT
 ><DT
 >1. <A
-HREF="msearch-c-api-udmresultfree.html#AEN14618"
+HREF="msearch-c-api-udmresultfree.html#AEN14866"
 ><CODE
 CLASS="function"
 >UdmResultFree</CODE

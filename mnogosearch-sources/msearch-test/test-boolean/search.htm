@@ -1,0 +1,65 @@
+<!--variables
+DBAddr $(ENV.UDM_TEST_DBADDR0)?dbmode=blob&$(ENV.UDM_TEST_DBADDR_PARAM)
+
+MinWordLength 3
+MaxWordLength 32
+
+HlBeg	<b>
+HlEnd	</b>
+-->
+
+<!--top-->
+----------------------
+WHERE=$(WhereCondition)
+<!--/top-->
+
+
+<!--restop-->
+Searching for: $&(q)
+Search results: $(W)
+<!--/restop-->
+
+
+<!--res-->
+<!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
+$(Order). $(URL) [$(Score)] BODY: $&(Body)
+<!--/res-->
+
+
+<!--resbot-->
+<!--/resbot-->
+
+<!--navleft-->
+<!--/navleft-->
+
+<!--navleft_nop-->
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<!--/navbar1-->
+
+<!--navbar0-->
+<!--/navbar0-->
+
+<!--navright-->
+<!--/navright-->
+
+<!--navright_nop-->
+<!--/navright_nop-->
+
+<!--notfound-->
+Search for $&(q)
+Search results: $(W)
+Sorry, your search for $&(q) did not find any results.
+<!--/notfound-->
+
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+
+<!--error-->
+An error occured: $(E)
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

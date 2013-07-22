@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ UdmLoadCachedQueryWords(UDM_AGENT *query, UDM_RESULT *Res,
   if (!pqid)
     return UDM_OK;
   
-  udm_snprintf(bqid, sizeof(bqid), pqid);
+  udm_snprintf(bqid, sizeof(bqid), "%s", pqid);
   if (!(tm= strchr(bqid, '-')))
     return UDM_OK;
   *tm++= '\0';
@@ -155,7 +155,7 @@ const char QCACHEID[]=
 "${q}.${pqid}.${SearchMode}.${orig_m}.${fl}.${wm}.${o}.${t}."
 "${cat}.${ul}.${wf}.${g}.${tmplt}.${GroupBySite}.${site}."
 "${type}.${sp}.${sy}.${dt}.${dp}.${dx}.${dm}.${dy}.${db}.${de}.${s}"
-"${ss}.${us}.${sl.*}";
+"${ss}.${us}.${su}.${sl.*}";
 
 
 static int
@@ -203,7 +203,7 @@ UdmQueryCacheGetSQL(UDM_AGENT *A, UDM_RESULT *Res, UDM_DB *db)
   {
     UdmLog(A, UDM_LOG_DEBUG,
            "Fetched from qcache %d documents, %d total found",
-           Res->URLData.nitems, Res->total_found);
+           (int) Res->URLData.nitems, (int) Res->total_found);
     udm_snprintf(qbuf, sizeof(qbuf), "QCache:%08X-%08X", id, qtm);
     UdmVarListReplaceStr(&A->Conf->Vars, "ResultSource", qbuf);
     udm_snprintf(qbuf, sizeof(qbuf), "%08X-%08X", id, qtm);
@@ -277,7 +277,7 @@ UdmResToXML(UDM_RESULT *Res, UDM_DSTR *wwl)
   size_t i;
   UdmDSTRAppendf(wwl, "<result>"); 
   UdmDSTRAppendf(wwl, "<totalResults>%d</totalResults>",
-                 Res->total_found);
+                 (int) Res->total_found);
   UdmDSTRAppendf(wwl,"<wordinfo>");
   for (i= 0; i < Res->WWList.nwords; i++)
   {
@@ -285,9 +285,10 @@ UdmResToXML(UDM_RESULT *Res, UDM_DSTR *wwl)
     UdmDSTRAppendf(wwl, "<word id='%d' order='%d' count='%d' len='%d' "
                          "origin='%d' weight='%d' match='%d' "
                          "secno='%d' phrlen='%d' phrpos='%d'>%s</word>",
-                    i, ww->order, ww->count, ww->len,
+                    (int) i, (int) ww->order, (int) ww->count, (int) ww->len,
                     ww->origin, ww->weight, ww->match,
-                    ww->secno, ww->phrlen, ww->phrpos, ww->word);
+                    (int) ww->secno, (int) ww->phrlen, (int) ww->phrpos,
+                    ww->word);
   }
   UdmDSTRAppendf(wwl, "</wordinfo></result>");
   return UDM_OK;
@@ -348,7 +349,8 @@ UdmQueryCachePutSQL(UDM_AGENT *Indexer, UDM_RESULT *Res, UDM_DB *db)
   if (!prevcache)
     return UDM_OK;
 
-  UdmLog(Indexer, UDM_LOG_DEBUG, "Start UdmQueryCachePut %d documents", Res->URLData.nitems);
+  UdmLog(Indexer, UDM_LOG_DEBUG,
+         "Start UdmQueryCachePut %d documents", (int) Res->URLData.nitems);
     
   if (db->DBType == UDM_DB_PGSQL)
   {
@@ -447,7 +449,7 @@ UdmApplyCachedQueryLimit(UDM_AGENT *query, UDM_URLSCORELIST *ScoreList, UDM_DB *
   if (pqid && UDM_OK == UdmLoadCachedQueryWords(query, &CachedResult, db, pqid))
   {
     UdmLog(query, UDM_LOG_DEBUG,
-           "Start applying pqid limit: %d docs", CachedData->nitems);
+           "Start applying pqid limit: %d docs", (int) CachedData->nitems);
     if (CachedData->nitems)
     {
       size_t i, to;
@@ -467,7 +469,8 @@ UdmApplyCachedQueryLimit(UDM_AGENT *query, UDM_URLSCORELIST *ScoreList, UDM_DB *
     {
       ScoreList->nitems= 0;
     }
-    UdmLog(query,UDM_LOG_DEBUG, "Stop applying pqid limit: %d docs", ScoreList->nitems);
+    UdmLog(query, UDM_LOG_DEBUG,
+           "Stop applying pqid limit: %d docs", (int) ScoreList->nitems);
   }
   UdmResultFree(&CachedResult);
   return UDM_OK;

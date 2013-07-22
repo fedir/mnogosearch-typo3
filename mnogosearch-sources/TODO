@@ -411,9 +411,24 @@ Things that will most likely be done in 3.3 (in no particular order)
 18. More databases:
 http://www.webresourcesdepot.com/25-alternative-open-source-databases-engines/
 
- 
+19. Reimplement link words. Get rid of the slow "crossdict" table.
+Make link words work cluster environment.
+
+20. Change date range syntax for something easier to use.
+
 For the near 3.3.x releases:
 ---------------------------
+
+- When MaxNetErrors is reached, unexpire documents from this domain:
+
+UPDATE url SET next_index_time=unix_timestamp()+NetErrorDelayTime
+WHERE url LIKE 'http://baddomain/%';
+
+or even
+
+UPDATE url SET next_index_time=unix_timestamp()+7*24*3600
+WHERE url LIKE 'http://baddomain/%'
+AND next_index_time < unix_timestamp()+7*24*3600; 
 
 - Document indexer and search.cgi command line options
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -205,7 +205,8 @@ static size_t PrintTextTemplate(UDM_AGENT *A, FILE *stream, char *dst,
                                 size_t dst_len, UDM_VARLIST *vars,
                                 const char *templ,
                                 const char *HlBeg,
-                                const char *HlEnd)
+                                const char *HlEnd,
+                                udm_bool_t auto_escape)
 {
   const char * s;
   size_t dlen=0;
@@ -283,6 +284,11 @@ static size_t PrintTextTemplate(UDM_AGENT *A, FILE *stream, char *dst,
 
         if((var=UdmVarListFind(vars,name)))
         {
+          if (type == '(' && auto_escape &&
+              (var->section == UDM_VARSRC_QSTRING ||
+               var->section == UDM_VARSRC_ENV))
+            type= '&';
+          /*printf("\nSRC=%d name=%s\n", var->section, name);*/
           switch(type)
           {
             case '&':
@@ -490,7 +496,7 @@ static int TemplateCompare(UDM_TEMPLATE *T)
   size_t vurlen = 256 + 4 * strlen(it->arg[1]);
   char  *vurl = (char*)UdmMalloc(vurlen);
   vurl[0]= '\0';
-  PrintTextTemplate(Agent, NULL, vurl, vurlen, vars, it->arg[1], T->HlBeg, T->HlEnd);
+  PrintTextTemplate(Agent, NULL, vurl, vurlen, vars, it->arg[1], T->HlBeg, T->HlEnd, UDM_FALSE);
   
   switch (it->cmdnum)
   {
@@ -518,7 +524,7 @@ static int TemplateFunc2(UDM_TEMPLATE *T)
   size_t vurlen = 256 + 4 * strlen(it->arg[1]);
   char  *vurl = (char*)UdmMalloc(vurlen);
   vurl[0]= '\0';
-  PrintTextTemplate(Agent, NULL, vurl, vurlen, vars, it->arg[1], T->HlBeg, T->HlEnd);
+  PrintTextTemplate(Agent, NULL, vurl, vurlen, vars, it->arg[1], T->HlBeg, T->HlEnd, UDM_FALSE);
   
   if (it->cmdnum == UDM_TMPL_STRPCASE)
   {
@@ -602,7 +608,7 @@ static int TemplateSetOrPut(UDM_TEMPLATE *T)
   size_t vurlen = 256 + 4 * strlen(it->arg[1]);
   char  *vurl = (char*)UdmMalloc(vurlen);
   vurl[0]= '\0';
-  PrintTextTemplate(T->Agent, NULL, vurl, vurlen, T->vars, it->arg[1], T->HlBeg, T->HlEnd);
+  PrintTextTemplate(T->Agent, NULL, vurl, vurlen, T->vars, it->arg[1], T->HlBeg, T->HlEnd, UDM_FALSE);
   if (it->cmdnum == UDM_TMPL_SET)
     UdmVarListReplaceStr(T->vars,it->arg[0], vurl);
   else
@@ -620,7 +626,7 @@ static int TemplateNum2(UDM_TEMPLATE *T)
   int val0= UdmVarListFindInt(T->vars, it->arg[0], 0); 
   int val1;
   vurl[0]= '\0';
-  PrintTextTemplate(T->Agent, NULL, vurl, vurlen, T->vars, it->arg[1], T->HlBeg, T->HlEnd);
+  PrintTextTemplate(T->Agent, NULL, vurl, vurlen, T->vars, it->arg[1], T->HlBeg, T->HlEnd, UDM_FALSE);
   val1= atoi(vurl);
   switch (it->cmdnum)
   {
@@ -641,7 +647,7 @@ static int TemplateCopy(UDM_TEMPLATE *T)
   size_t vurlen = 256 + 4 * strlen(it->arg[1]);
   char  *vurl = (char*)UdmMalloc(vurlen);
   vurl[0]= '\0';
-  PrintTextTemplate(T->Agent, NULL, vurl, vurlen, T->vars, it->arg[1], T->HlBeg, T->HlEnd);
+  PrintTextTemplate(T->Agent, NULL, vurl, vurlen, T->vars, it->arg[1], T->HlBeg, T->HlEnd, UDM_FALSE);
   val= UdmVarListFindStr(T->vars, vurl, "");
   UdmVarListReplaceStr(T->vars,it->arg[0],val);
   UdmFree(vurl);
@@ -670,7 +676,7 @@ static int CreateArg(UDM_TEMPLATE *tmpl, const char *name, const char *arg)
   char  *val = (char*)UdmMalloc(vallen);
   val[0]= '\0';
   PrintTextTemplate(tmpl->Agent, NULL, val, vallen, tmpl->vars,
-                    arg, tmpl->HlBeg, tmpl->HlEnd);
+                    arg, tmpl->HlBeg, tmpl->HlEnd, UDM_FALSE);
   UdmVarListReplaceStr(tmpl->vars, name, val);
   UdmFree(val);
   return UDM_OK;
@@ -730,7 +736,7 @@ static int TemplateInclude(UDM_TEMPLATE *T)
     UDM_DOCUMENT Inc;
     size_t vurlen = 256 + 4 * strlen(tag_content);
     char  *vurl = (char*)UdmMalloc(vurlen);
-    PrintTextTemplate(Agent, NULL, vurl, vurlen, vars, it->arg[1], T->HlBeg, T->HlEnd);
+    PrintTextTemplate(Agent, NULL, vurl, vurlen, vars, it->arg[1], T->HlBeg, T->HlEnd, UDM_FALSE);
 
     UdmDocInit(&Inc);
         
@@ -811,7 +817,7 @@ static size_t PrintTagTemplate(UDM_AGENT *Agent,FILE *stream,
   if (vname) { UDM_FREE(vname); }
   if (value) { UDM_FREE(value); }
 
-  res = PrintTextTemplate(Agent, stream, dst, dst_len, vars, opt, HlBeg, HlEnd);
+  res = PrintTextTemplate(Agent, stream, dst, dst_len, vars, opt, HlBeg, HlEnd, UDM_TRUE);
   UDM_FREE(opt);
   return res;
 }
@@ -829,7 +835,8 @@ static int TemplateTagOrText(UDM_TEMPLATE *tmpl)
         tmplen= PrintTextTemplate(tmpl->Agent, tmpl->stream,
                                   tmpl->dst , tmpl->dstlen, 
                                   tmpl->vars, it->arg[0],
-                                  tmpl->HlBeg, tmpl->HlEnd);
+                                  tmpl->HlBeg, tmpl->HlEnd,
+                                  UDM_TRUE);
         break;
       
       case UDM_TMPL_TAG:
@@ -1409,7 +1416,7 @@ static int HtmlTemplateCompile(UDM_TMPL_PRG *prg, const char *src)
 static void HtmlTemplateProgItemPrint(UDM_TMPL_PRGITEM *it)
 {
   if (it->jump)
-    printf("SOMEJMP %d\n", it->jump);
+    printf("SOMEJMP %d\n", (int) it->jump);
   else
   switch (it->cmd->nargs)
   {
@@ -1437,7 +1444,7 @@ static int HtmlTemplateProgPrint(UDM_TMPL_PRG *p)
   for (i=0 ; i < p->nitems ; i++)
   {
     UDM_TMPL_PRGITEM *it= &p->Items[i];
-    printf("%04X ", i);
+    printf("%04X ", (int) i);
     HtmlTemplateProgItemPrint(it);
   }
   return UDM_OK;
@@ -1581,7 +1588,6 @@ int UdmTemplateLoad(UDM_AGENT *Agent,
   FILE    *file;
   char    str[1024];
   char    ostr[1024];
-  const char  *dbaddr=NULL;
   int    variables=0, rc= UDM_OK;
   char    cursection[128]="";
   char    nameletter[]=
@@ -1691,26 +1697,18 @@ int UdmTemplateLoad(UDM_AGENT *Agent,
 #ifdef HAVE_SQL
   if(Env->dbl.nitems == 0)
   {
-    if (UDM_OK != (rc= UdmDBListAdd(&Env->dbl,
-                                    dbaddr= "mysql://localhost/mnogosearch",
-                                    UDM_OPEN_MODE_READ)))
-    {
-      sprintf(Env->errstr,"%s DBAddr: '%s'",
-              rc == UDM_UNSUPPORTED ? "Unsupported" : "Invalid",
-             (!dbaddr)?"NULL":dbaddr);
-      rc= UDM_ERROR;
+    if (UDM_OK != (rc= UdmEnvDBListAdd(Env,
+                                       "mysql://localhost/mnogosearch",
+                                       UDM_OPEN_MODE_READ)))
       goto ret;
-    }
   }
 #endif
   if(Env->dbl.nitems == 0)
   {
-    if (UDM_OK!= (rc= UdmDBListAdd(&Env->dbl, dbaddr=  "searchd://localhost/", UDM_OPEN_MODE_READ)))
-    {
-      sprintf(Env->errstr,"Invalid DBAddr: '%s'", (!dbaddr) ? "NULL" : dbaddr);
-      rc= UDM_ERROR;
+    if (UDM_OK!= (rc= UdmEnvDBListAdd(Env,
+                                      "searchd://localhost/",
+                                      UDM_OPEN_MODE_READ)))
       goto ret;
-    }
   }
 
 ret:  

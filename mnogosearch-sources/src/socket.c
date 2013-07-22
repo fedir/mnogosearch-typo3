@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -59,10 +59,7 @@ void socket_close( UDM_CONN *connp ){
 
 
 int socket_open( UDM_CONN *connp ) {
-	int op, len;
-	
-	op=1;
-	len = sizeof(struct sockaddr_in);
+	int op= 1;
 	
 	/* Create cocket */
 	connp->conn_fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -175,9 +172,7 @@ int socket_read( UDM_CONN *connp, size_t maxsize){
 
 
 int socket_read_line( UDM_CONN *connp ){
-	size_t num_read_total, buf_size;
-	
-        buf_size = UDM_NET_BUF_SIZE;
+	size_t num_read_total;
 	num_read_total = 0;
 
 	if (connp->buf)

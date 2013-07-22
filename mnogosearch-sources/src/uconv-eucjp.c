@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -8152,8 +8152,7 @@ udm_mb_wc_euc_jp(UDM_CONV *conv, UDM_CHARSET *cs,int *pwc,
       
     if (c2<0xF5)
     {
-      pwc[0]=udm_jisx0212_uni_onechar((c2-0x80)*256 + (c3-0x80));
-      if (!pwc)
+      if (!(pwc[0]= udm_jisx0212_uni_onechar((c2-0x80)*256 + (c3-0x80))))
         return UDM_CHARSET_ILSEQ3;
     }
     else

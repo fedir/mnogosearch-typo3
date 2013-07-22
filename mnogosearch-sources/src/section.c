@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ UdmSectionListPrint(UDM_SECTIONLIST *SectionList)
   UDM_SECTIONLIST *L= SectionList;
   size_t section;
   fprintf(stderr, "ncoords=%d nsec=%d\n",
-          SectionList->ncoords, SectionList->nsections);
+          (int) SectionList->ncoords, (int) SectionList->nsections);
   for (section= 0; section < L->nsections; section++)
   {
     UDM_SECTION *S= &L->Section[section];

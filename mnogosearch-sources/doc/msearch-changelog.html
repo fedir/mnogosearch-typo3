@@ -7,7 +7,7 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="mnoGoSearch 3.3.11 reference manual"
+TITLE="mnoGoSearch 3.3.14 reference manual"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="UdmResultFree"
@@ -44,7 +44,7 @@ ALIGN="center"
 ><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> 3.3.11 reference manual: Full-featured search engine software</TH
+> 3.3.14 reference manual: Full-featured search engine software</TH
 ></TR
 ><TR
 ><TD
@@ -90,6 +90,846 @@ CLASS="sect1"
 NAME="changelog-3-3"
 >Changes in 3.3</A
 ></H1
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-14"
+>Changes in 3.3.14 (April 02, 2013)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;         <SPAN
+CLASS="type"
+>DOCX</SPAN
+> and <SPAN
+CLASS="type"
+><ACRONYM
+CLASS="acronym"
+>RTF</ACRONYM
+></SPAN
+>
+         <A
+HREF="msearch-file-formats.html#built-in-parsers"
+>built-in parsers</A
+> were added.
+        </P
+></LI
+><LI
+><P
+>&#13;        It's now possible to use the <CODE
+CLASS="varname"
+>$(ConfDir)</CODE
+>,
+        <CODE
+CLASS="varname"
+>$(ShareDir)</CODE
+>, <CODE
+CLASS="varname"
+>$(VarDir)</CODE
+>,
+        <CODE
+CLASS="varname"
+>$(TmpDir)</CODE
+> template variables in <TT
+CLASS="filename"
+>search.htm</TT
+>, e.g.:
+<PRE
+CLASS="programlisting"
+>&#13;Include $(ConfDir)/common.inc
+DBAddr sqlite3:///$(VarDir)/mnogosearch.sqlite3/
+</PRE
+>
+        Previously these variables were understood only in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        A minor fix in installation layout was made:
+        the <TT
+CLASS="literal"
+>--docdir</TT
+> parameter to
+        <TT
+CLASS="filename"
+>configure</TT
+> is now
+        respected, and the <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> documentation is now
+        installed to <TT
+CLASS="filename"
+>PREFIX/share/doc/mnogosearch/</TT
+> by default.
+        Previously <TT
+CLASS="literal"
+>--docdir</TT
+> was ignored, and the
+        documentation was installed <TT
+CLASS="filename"
+>to PREFIX/doc/</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Files to build <SPAN
+CLASS="application"
+>rpm</SPAN
+> and
+        <SPAN
+CLASS="application"
+>deb</SPAN
+> binary packages were added.
+        </P
+></LI
+><LI
+><P
+>&#13;        A few minor problems discovered by the code static analysis tools  were fixed.
+        </P
+></LI
+><LI
+><P
+>    
+        Unassigned <TT
+CLASS="literal"
+>euc-jp</TT
+> characters were converted to
+        <TT
+CLASS="literal"
+>U+0000</TT
+> instead of the question mark when
+        converting to other character sets.
+        </P
+></LI
+><LI
+><P
+>&#13;        Context snippets did not work well if the <CODE
+CLASS="varname"
+>CachedCopy</CODE
+>
+        section name was written the in lower case in <TT
+CLASS="filename"
+>indexer.conf</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that static linking against <SPAN
+CLASS="application"
+>MySQL-5.5</SPAN
+>
+        client library failed because of the missing <TT
+CLASS="literal"
+>-ldl</TT
+>
+        linker flag.
+        </P
+></LI
+><LI
+><P
+>&#13;         Fixed a crash in <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> when compiled in extra debug mode with
+         <TT
+CLASS="literal"
+>--enable-trace</TT
+> on a 64-bit machine.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>indexer</SPAN
+> failed with the error
+        "<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Integer does not fit into column</I
+></SPAN
+>"
+        on 64-bit machines when running with the <SPAN
+CLASS="application"
+>OpenLink Virtuoso</SPAN
+> backend.
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-13"
+>Changes in 3.3.13 (March 03, 2013)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;        Bug#4818 "Arbitrary Files Reading in mnoGoSearch" was fixed.
+        This is a security bug. All users of the earlier
+        <TT
+CLASS="literal"
+>3.3.x</TT
+> releases are highly advised to upgrade.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4819 "Variables Overwriting in mnoGoSearch" was fixed.
+        <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> was vulnerable to Cross-Site Scripting in cases when
+        values of some empty pre-defined internal variables were replaced
+        in the <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+> query string
+        (e.g. <TT
+CLASS="literal"
+>search.cgi?q=test&#38;stored=%3Cscript%3E</TT
+>).
+        Now all variables coming from the query string are automatically
+        <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>-escaped in the <TT
+CLASS="literal"
+>$(var)</TT
+> template format.
+        </P
+><P
+>The meaning of <TT
+CLASS="literal"
+>$&#38;(var)</TT
+> has not changed,
+        it still applies <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> escaping to all variables,
+        both coming from the query string and those generated internally.
+        </P
+></LI
+><LI
+><P
+>&#13;        Support for "<TT
+CLASS="literal"
+>Content-Type: message/rfc822</TT
+>" was added
+        (<TT
+CLASS="filename"
+>*.eml</TT
+> and <TT
+CLASS="filename"
+>*.mht</TT
+> files),
+        including multi-part messages and messages with attachments,
+        with <TT
+CLASS="literal"
+>Content-Transfer-Encoding</TT
+> of types
+        <TT
+CLASS="literal"
+>7bit</TT
+>, <TT
+CLASS="literal"
+>8bit</TT
+>,
+        <TT
+CLASS="literal"
+>base64</TT
+> and <TT
+CLASS="literal"
+>quoted-printable</TT
+>.
+        When processing attachments, <SPAN
+CLASS="application"
+>indexer</SPAN
+> can use external parsers.
+        For example, if <SPAN
+CLASS="application"
+>indexer</SPAN
+> is configured to use
+        <SPAN
+CLASS="application"
+>catdoc</SPAN
+> for the documents of the type
+        <TT
+CLASS="literal"
+>application/msword</TT
+>,
+        then <SPAN
+CLASS="application"
+>indexer</SPAN
+> also executes <SPAN
+CLASS="application"
+>catdoc</SPAN
+>
+        for the attachments of this type.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4803 "buffer overflow detected with <SPAN
+CLASS="application"
+>search.cgi</SPAN
+>" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> did not use <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> entities
+        (<TT
+CLASS="literal"
+>&#38;lt;</TT
+>, <TT
+CLASS="literal"
+>&#38;gt;</TT
+>
+         and <TT
+CLASS="literal"
+>&#38;amp;</TT
+>)
+        to escape special characters when displaying cached copy for
+        a document of type <TT
+CLASS="literal"
+>text/plain</TT
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that the "<CODE
+CLASS="option"
+>dm</CODE
+>" search parameter
+        <A
+HREF="http://www.mnogosearch.org/board/message.php?id=21415"
+TARGET="_top"
+>&#13;        did not work</A
+> in some cases.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that the "<CODE
+CLASS="option"
+>su</CODE
+>" search parameter (user defined order)
+        was not taken into account by search query cache, thus
+        wrong cache hits were returned in some cases.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bugs in synonym processing were fixed:
+        a word form generated from synonyms could be searched twice in the database;
+        bad memory access when using
+        "<A
+HREF="msearch-cmdref-complexsynonyms.html"
+>ComplexSynonyms</A
+> <TT
+CLASS="literal"
+>yes</TT
+>".
+        </P
+></LI
+><LI
+><P
+>&#13;        A memory leak bug was fixed in the code producing word forms
+        from an <SPAN
+CLASS="application"
+>Ispell</SPAN
+> dictionary.
+        </P
+></LI
+><LI
+><P
+>&#13;        Improved compatibility with the latest versions of <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+>.
+        Escaping of the <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> character literals for
+        <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+> &#62;= <TT
+CLASS="literal"
+>90000</TT
+>
+        was changed from the C-alike stype (using backslash) to the
+        standard <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> style.
+        </P
+></LI
+><LI
+><P
+>&#13;        Data type for the column "url.url" for Firebird was changed
+        from varchar(127) to varchar(247), which is the longest indexable
+        varchar in a Firebird database with <TT
+CLASS="literal"
+>page_size=1024</TT
+>
+        (bug#2125).
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> did not work with <SPAN
+CLASS="application"
+>Mecab</SPAN
+>
+        (Japanese segmenter) dictionaries encoded in utf-8 encoded.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>indexer</SPAN
+> silently ignored the <CODE
+CLASS="option"
+>-u</CODE
+>
+        values (URL limits) longer than 64 characters (bug#4800, bug#4689).
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed a bug in the code handling excerpts. It did not work well in cases when context
+        following a highlighted word have no space characters and ExcerptPadding
+        ends in the middle of the next highlighted word. The entire excerpt
+        was erroneously highlighted in such cases.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that the <SPAN
+CLASS="application"
+>PHP</SPAN
+> extension module did not compile
+        with <SPAN
+CLASS="application"
+>PHP-5.4</SPAN
+> (bug#4808).
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed a crash in <SPAN
+CLASS="application"
+>indexer</SPAN
+> happened on processing a
+        <TT
+CLASS="literal"
+>message/http</TT
+> response in combination
+        with an external parser returning an empty response.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4806 "Command Proxy without argument" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4359 "buffer overflow when doing using -Ewordstat option"
+        was fixed.
+        </P
+></LI
+><LI
+><P
+>A few compilation warnings on 64bit platforms
+        were fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4722 "Error messages display directly on web page" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4718 "sqlite3 driver: (1) cannot start a transaction within a transaction"
+        was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that in case of <CODE
+CLASS="option"
+>LiveUpdates=yes</CODE
+>
+        <SPAN
+CLASS="application"
+>search.cgi</SPAN
+> erroneously printed the error
+        "<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>word index not found</I
+></SPAN
+>"
+        when the query produced no results.
+        </P
+></LI
+><LI
+><P
+>&#13;        A few dead links in <A
+HREF="msearch-parsers.html#pars-links"
+>the Section called <I
+>External parsers for the most common file types
+    <A
+NAME="AEN2537"
+></A
+></I
+> in Chapter 5</A
+> were fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4814 PATCH to add <SPAN
+CLASS="application"
+>libpwd</SPAN
+> parser
+        configuration for indexing <SPAN
+CLASS="application"
+>WordPerfect</SPAN
+> docs.
+        </P
+></LI
+><LI
+><P
+>&#13;        Bug#4817 PATCH to add <SPAN
+CLASS="application"
+>libpws</SPAN
+> (*.wps)
+        parser configuration for <SPAN
+CLASS="application"
+>MS Works</SPAN
+> docs.
+        </P
+></LI
+><LI
+><P
+>&#13;        <SPAN
+CLASS="application"
+>autoconf</SPAN
+> warnings were fixed.
+        <SPAN
+CLASS="application"
+>MySQL</SPAN
+> client library detection was improved for <SPAN
+CLASS="application"
+>OS X Lion</SPAN
+>.
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="changelog-3-3-12"
+>Changes in 3.3.12 (December 15, 2011)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;        An <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> injection that happened because of weak control
+        of valid characters in host names in hypertext links was fixed.
+        The injection was possible with the databases supporting
+        multiple statements in a single <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> query:
+        with <SPAN
+CLASS="application"
+>MySQL</SPAN
+> (when <CODE
+CLASS="option"
+>ClientMultiStatement=yes</CODE
+>
+        option is enabled in <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-dbaddr.html"
+>DBAddr</A
+></B
+>) as well as with <SPAN
+CLASS="application"
+>PostgreSQL</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        A new search query syntax for <A
+HREF="msearch-fuzzy.html#range-search"
+>range search</A
+>
+        was added. For example, <PRE
+CLASS="programlisting"
+>[jan TO john]</PRE
+>
+        will find documents having words in the range between <TT
+CLASS="literal"
+>jan</TT
+>
+        and <TT
+CLASS="literal"
+>john</TT
+>. The range search operators can be used
+        in combination with the other operators (e.g. phrase search, restricting
+        search word to a section, etc).
+        </P
+></LI
+><LI
+><P
+>&#13;        A new <TT
+CLASS="filename"
+>search.htm</TT
+> command
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-userangeoperators.html"
+>UseRangeOperators</A
+></B
+>
+        was added to activate range search operators
+        (which are disabled by default).
+        </P
+></LI
+><LI
+><P
+>&#13;        A new option <CODE
+CLASS="option"
+>decimal</CODE
+> was added to the
+        <B
+CLASS="command"
+><A
+HREF="msearch-cmdref-section.html"
+>Section</A
+></B
+> command. Words of the sections marked with this option
+        are treated as decimal numbers. This, for example,
+        allows numeric range search for the given section.
+        The query:
+        <PRE
+CLASS="programlisting"
+>title:t-shirt price:[10.1 TO 200]</PRE
+>
+        will find documents having <TT
+CLASS="literal"
+>t-shirt</TT
+> in
+        title and with price in the range <TT
+CLASS="literal"
+>10.1</TT
+> to
+        <TT
+CLASS="literal"
+>200</TT
+>. See the <A
+HREF="msearch-cmdref-section.html"
+>Section</A
+>
+        command description how to mark a section as decimal.
+        </P
+></LI
+><LI
+><P
+>&#13;        <CODE
+CLASS="option"
+>--help</CODE
+> command line <SPAN
+CLASS="application"
+>indexer</SPAN
+> option was added
+        as a synonym for <CODE
+CLASS="option"
+>-h</CODE
+>.
+        </P
+></LI
+><LI
+><P
+>A description how to use <SPAN
+CLASS="application"
+>pdftohtml</SPAN
+>
+        converter was added into <TT
+CLASS="filename"
+>indexer.conf-dist</TT
+> and into the
+        <A
+HREF="msearch-parsers.html#pars-pdf"
+>manual</A
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>indexer</SPAN
+> allowed malformed <ACRONYM
+CLASS="acronym"
+>URLs</ACRONYM
+> containing non-ASCII
+        characters in host names, which led to <ACRONYM
+CLASS="acronym"
+>SQL</ACRONYM
+> errors on attempt
+        to insert a malformed <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> into the database, for example:
+        <SAMP
+CLASS="computeroutput"
+>&#13;        PQexec: ERROR:  invalid byte sequence for encoding "UTF8": 0xbf.
+        </SAMP
+>
+        </P
+></LI
+><LI
+><P
+>&#13;        A bug in <SPAN
+CLASS="application"
+>udm-config</SPAN
+> was fixed.
+        Due to this bug, linking of the <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> <SPAN
+CLASS="application"
+>PHP</SPAN
+> module failed
+        with the error <SAMP
+CLASS="computeroutput"
+>cannot find -lmnogosearch</SAMP
+>.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that the <SPAN
+CLASS="application"
+>Firebird</SPAN
+> (<SPAN
+CLASS="application"
+>Interbase</SPAN
+>) API did not work
+        with SQL_LONG data type correctly on x86_64 platforms.
+        </P
+></LI
+><LI
+><P
+>&#13;        UDM_MAXTIMESTRSIZE constant was changed from 35 to 64,
+        as <CODE
+CLASS="function"
+>strftime()</CODE
+> can return a result
+        longer than 35 characters on some operating systems (e.g. AIX).
+        Too small constant value led to a wrong or a zero value in the
+        <CODE
+CLASS="varname"
+>$(Last-Modified)</CODE
+> template variable on AIX.
+        </P
+></LI
+><LI
+><P
+>&#13;        Fixed that <SPAN
+CLASS="application"
+>Microsoft SQL Server</SPAN
+> driver did not work with database names
+        consisting only of digit characters.
+        </P
+></LI
+><LI
+><P
+>&#13;        Compilation problems when building using
+        <CODE
+CLASS="option"
+>--without-pthreads</CODE
+> where fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        A compilation problem happened on AIX5/AIX6 because of wrong
+        thread compiler flags was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        A compilation problem with <SPAN
+CLASS="application"
+>Sybase</SPAN
+> client library on
+        64-bit <SPAN
+CLASS="application"
+>Linux</SPAN
+> platforms was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        "Bug#4704 Indexing various binaries as XML" was fixed.
+        </P
+></LI
+><LI
+><P
+>&#13;        "Bug#8299 Wrong score when UserScore gets 0 and UserScoreFactor is set"
+        was fixed.
+        </P
+></LI
+></UL
+></DIV
 ><DIV
 CLASS="sect2"
 ><H2
@@ -1315,7 +2155,7 @@ HREF="msearch-indexer-configuration.html#srvtable"
 >the Section called <I
 >ServerTable
     <A
-NAME="AEN1892"
+NAME="AEN1912"
 ></A
 ></I
 > in Chapter 3</A
@@ -1384,7 +2224,7 @@ HREF="msearch-fuzzy.html#synonyms"
 >the Section called <I
 >Synonyms
     <A
-NAME="AEN6307"
+NAME="AEN6452"
 ></A
 ></I
 > in Chapter 10</A

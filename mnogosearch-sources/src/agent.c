@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include "udm_agent.h"
 #include "udm_hrefs.h"
 #include "udm_result.h"
-
+#include "udm_vars.h"
 
 
 __C_LINK UDM_AGENT * __UDMCALL

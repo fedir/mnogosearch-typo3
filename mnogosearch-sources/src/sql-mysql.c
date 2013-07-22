@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -454,6 +454,8 @@ UdmSQLType2MySQLType(int type)
 }
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 static int
 UdmMySQLBind(UDM_DB *db, int position, const void *data, int size, int type)
 {
@@ -466,6 +468,7 @@ UdmMySQLBind(UDM_DB *db, int position, const void *data, int size, int type)
   b->length[0]= (unsigned long) size;
   return UDM_OK;
 }
+#pragma GCC diagnostic pop
 
 
 static int
@@ -526,7 +529,7 @@ UdmMySQLCopyStructure(UDM_DB *db, const char *from, const char *to)
 {
   char buf[256];
   udm_snprintf(buf, sizeof(buf),
-              "CREATE TABLE %s MAX_ROWS=300000000 AVG_ROW_LENGTH=512 "
+              "CREATE TABLE %s ENGINE=MyISAM MAX_ROWS=300000000 AVG_ROW_LENGTH=512 "
               "SELECT * FROM %s LIMIT 0", to, from);
   return UdmSQLExecDirect(db, NULL, buf);
 }

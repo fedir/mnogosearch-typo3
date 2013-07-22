@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -61,19 +61,58 @@ typedef struct udm_stack_parser_state_st
 {
   int secno;
   int secno_match_type;
-  int next_word_match_type;
+  int secno_flags;
   int use_numeric_operators;
-  int word_match;
-  int nphrasecmd;
-  int auto_phrase;
+  int use_range_operators;
   int dehyphenate;
   int strip_accents;
+  int nphrasecmd;
+  int word_match;
+  int next_word_match_type;
+  const char *lang;
+  int auto_phrase;
   int phrpos;
   int user_weight;
   size_t SubstringMatchMinWordLength;
-  const char *lang;
+  int range_command;
+  size_t range_nwords;
 } UDM_STACK_PARSER_STATE;
 
+
+static void
+UdmQueryParserStateInit(UDM_AGENT *A, UDM_STACK_PARSER_STATE *state)
+{
+  state->secno= 0;
+  state->secno_match_type= 0;
+  state->secno_flags= 0;
+  state->use_numeric_operators= UdmVarListFindBool(&A->Conf->Vars, "UseNumericOperators", 0);
+  state->use_range_operators= UdmVarListFindBool(&A->Conf->Vars, "UseRangeOperators", 0);
+  state->dehyphenate= UdmVarListFindBool(&A->Conf->Vars, "Dehyphenate", 0);
+  state->strip_accents= UdmVarListFindBool(&A->Conf->Vars, "StripAccents", 0);
+  state->nphrasecmd= 0;
+  state->word_match= UdmMatchMode(UdmVarListFindStr(&A->Conf->Vars, "wm", "wrd"));
+  state->next_word_match_type= state->word_match;
+  state->lang= UdmVarListFindStr(&A->Conf->Vars, "g", NULL);
+  state->auto_phrase= 0;
+  state->phrpos= 0;
+  state->user_weight= UDM_DEFAULT_USER_WORD_WEIGHT;
+  state->SubstringMatchMinWordLength=
+    (size_t) UdmVarListFindInt(&A->Conf->Vars, "SubstringMatchMinWordLength", 0);
+  state->range_command= 0;
+  state->range_nwords= 0;
+}
+
+
+/*
+  Set phrlen of the last phrase
+*/
+static void
+UdmWWListSetPhrlen(UDM_WIDEWORDLIST *WWL, size_t phrlen)
+{
+  UDM_WIDEWORD *W= &WWL->Word[WWL->nwords - 1];
+  for (; W >= WWL->Word && W->phrlen == 0; W--)
+    W->phrlen= phrlen;
+}
 
 
 static int
@@ -83,10 +122,11 @@ UdmStackItemListAddCmd(UDM_RESULT *Res,
 {
   int rc= UDM_OK;
   size_t i;
-  UDM_STACK_ITEM item;
   
   for (i = 0; i < length; i++)
   {
+    UDM_STACK_ITEM item;
+    bzero((void*) &item, sizeof(item));
      switch(lex[i])
      {
        case '&':
@@ -113,16 +153,57 @@ UdmStackItemListAddCmd(UDM_RESULT *Res,
        case '"':
          item.cmd= UDM_STACK_PHRASE;
          state->next_word_match_type= state->word_match;
-         state->nphrasecmd++;
+         state->nphrasecmd++;         
+         if (!(state->nphrasecmd % 2)) /* phrase has just closed */
+         {
+           if (state->phrpos > 0)
+           {
+             /*
+               It's possible when the closing quot sign is not
+               immeidately after the word: "aa bb "
+               TODO: get rid of duplicate UdmWWListSetPhrlen()
+               call in UdmStackItemListAddWord().
+             */
+             UdmWWListSetPhrlen(&Res->WWList, state->phrpos);
+             state->phrpos= 0;
+           }
+         }
          break;
        case '<':
          state->next_word_match_type= state->use_numeric_operators ?
                                       UDM_MATCH_NUMERIC_LT : state->word_match;
-         break;
+         continue;
        case '>':
          state->next_word_match_type= state->use_numeric_operators ? 
                                       UDM_MATCH_NUMERIC_GT : state->word_match;
-         break;
+         continue;
+       case '{':
+       case '[':
+         state->range_command= lex[i];
+         state->range_nwords= Res->WWList.nwords;
+         continue;
+       case '}':
+       case ']':
+         /*
+           fprintf(stderr, "nwords=%d-%d %d-%d\n",
+                   state->range_nwords, Res->WWList.nwords,
+                   state->range_command, lex[i]);
+         */
+         if (state->use_range_operators && state->range_command != 0 &&
+             Res->WWList.nwords - state->range_nwords == 3)
+         {
+           UDM_WIDEWORD *W= &Res->WWList.Word[state->range_nwords];
+           if (!strcmp(W[1].word, "to"))
+           {
+             UdmWideWordListMakeRange(&Res->WWList, state->range_command, lex[i]);
+             UDM_ASSERT(Res->ItemList.nitems > 2);
+             if (state->phrpos >= 2)
+               state->phrpos-= 2;
+             Res->ItemList.nitems-= 2;
+           }
+         }
+         state->range_command= 0;
+         continue;
        default:
          if (state->auto_phrase && !UdmAutoPhraseChar(lex[i]))
          {
@@ -238,9 +319,7 @@ UdmStackItemListAddWord(UDM_AGENT *query, UDM_RESULT *Res,
   if (phrlen > 1)
   {
     /* Phrase end found: set phrlen for all words in the same phrase */
-    UDM_WIDEWORD *W= &Res->WWList.Word[Res->WWList.nwords-1];
-    for (; W >= Res->WWList.Word && W->phrlen == 0; W--)
-      W->phrlen= phrlen;
+    UdmWWListSetPhrlen(&Res->WWList, phrlen);
   }
 
   /* Add the original word form */
@@ -298,46 +377,108 @@ UdmStackItemListAddWord(UDM_AGENT *query, UDM_RESULT *Res,
 }
 
 
+static int
+UdmParseSearchQuery(UDM_AGENT *A, UDM_RESULT *Res,
+                    UDM_STACK_PARSER_STATE *state,
+                    UDM_CONV *uni_lc, int *ustr, int *uend)
+{
+  UDM_UNIDATA *unidata= A->Conf->unidata;
+  int *lex, *lt, ctype;
+  int *(*UniGetSepToken)(UDM_UNIDATA *unidata,
+                         int *str, int *strend, int **last, int *ctype0)=
+       state->dehyphenate ? UdmUniGetSepToken2 :UdmUniGetSepToken;
+
+  for (lex= UniGetSepToken(unidata, ustr, uend, &lt , &ctype) ;
+       lex;
+       lex= UniGetSepToken(unidata, NULL, uend, &lt, &ctype))
+  {
+    char wrd[UDM_MAXWORDSIZE * sizeof("&#123456;") + 1];
+    size_t len, wlen= lt - lex;
+    len= UdmConv(uni_lc, wrd, sizeof(wrd), (char *) lex, sizeof(lex[0]) * wlen);
+    wrd[len]= '\0';
+    UdmTrim(wrd, " \t\r\n");
+/*
+fprintf(stderr, "ctype=%d lex[0]=%c wlen=%d wrd='%s'\n", ctype, lex[0], wlen, wrd);
+*/
+    if (ctype == UDM_UNI_SEPAR)
+    {
+      UdmStackItemListAddCmd(Res, state, lex, wlen);
+    } 
+    else
+    {
+      UDM_VAR *Section;
+      int rc;
+
+      if (lt[0] == ':' || lt[0] == '=')
+      {
+        if ((Section= UdmVarListFind(&A->Conf->Sections, wrd)))
+        {
+          state->secno= Section->section;
+          state->secno_match_type= lt[0];
+          state->secno_flags= Section->flags;
+          continue;
+        }
+        if (wlen > 5 && !strncmp(wrd, "secno", 5))
+        {
+          state->secno= atoi(wrd + 5);
+          state->secno_match_type= lt[0];
+          Section= UdmVarListFindBySecno(&A->Conf->Sections, state->secno);
+          state->secno_flags= Section ? Section->flags : 0;
+          continue;
+        }
+        else if (wlen > 10 && !strncmp(wrd, "importance", 10) &&
+                 wrd[10] >= '0' && wrd[10] <= '9')
+        {
+          state->user_weight= atoi(wrd + 10);
+          continue;
+        }
+      }
+      if ((state->secno_flags & UDM_VARFLAG_DECIMAL) &&
+          (wrd[0] >= '0' && wrd[0] <= '9'))
+      {
+        char *wend= wrd + wlen;
+        if (lt[0] == '.' && wend < wrd + sizeof(wrd) - 1)
+        {
+          *wend++= '.';
+          lt++;
+        }
+        for (; lt < uend && wend < wrd + sizeof(wrd) - 1; )
+        {
+          if (*lt < '0' || *lt > '9')
+            break;
+          *wend++= *lt++;
+        }
+        *wend= '\0';
+        UdmNormalizeDecimal(wrd, sizeof(wrd), wrd);
+      }
+      if (UDM_OK != (rc= UdmStackItemListAddWord(A, Res, state,
+                                                 wlen, lt, uend, wrd)))
+        return rc;
+    }
+  }
+  return UDM_OK;
+}
+
+
 int UdmPrepare(UDM_AGENT * query,UDM_RESULT *Res)
 {
   UDM_VARLIST *Vars= &query->Conf->Vars;
-  UDM_CHARSET * browser_cs, * local_cs, *sys_int;
-  int  ctype, rc;
-  int *ustr, *uend, *lt, *lex;
+  UDM_CHARSET *browser_cs, *local_cs;
+  int rc;
+  int *ustr, *uend;
   size_t ulen;
   const char * txt = UdmVarListFindStr(&query->Conf->Vars,"q","");
   const char * qprev = UdmVarListFindStr(&query->Conf->Vars,"qprev","");
   const char   *seg=  UdmVarListFindStr(&query->Conf->Vars, "Segmenter", NULL);
   char *ltxt;
-  size_t wlen, llen, obytes;
-  char *wrd;
-  int *uwrd, segmenter;
+  size_t llen, obytes;
+  int segmenter;
   UDM_CONV uni_lc, bc_uni, bc_lc;
   const char *lang;
   UDM_STACK_PARSER_STATE state;
-  int *(*UniGetSepToken)(UDM_UNIDATA *unidata,
-                         int *str, int *strend, int **last, int *ctype0);
   UDM_UNIDATA *unidata= query->Conf->unidata;
-  
-  state.secno= 0;
-  state.secno_match_type= 0;
-  state.use_numeric_operators= UdmVarListFindBool(&query->Conf->Vars, "UseNumericOperators", 0);
-  state.dehyphenate= UdmVarListFindBool(&query->Conf->Vars, "Dehyphenate", 0);
-  state.strip_accents= UdmVarListFindBool(&query->Conf->Vars, "StripAccents", 0);
-  state.nphrasecmd= 0;
-  state.word_match= UdmMatchMode(UdmVarListFindStr(&query->Conf->Vars, "wm", "wrd"));
-  state.next_word_match_type= state.word_match;
-  state.lang= UdmVarListFindStr(&query->Conf->Vars, "g", NULL);
-  state.auto_phrase= 0;
-  state.phrpos= 0;
-  state.user_weight= UDM_DEFAULT_USER_WORD_WEIGHT;
-  state.SubstringMatchMinWordLength=
-    (size_t) UdmVarListFindInt(&query->Conf->Vars, "SubstringMatchMinWordLength", 0);
-  UniGetSepToken= state.dehyphenate ? UdmUniGetSepToken2 :UdmUniGetSepToken;
-  
-  if ((wrd = (char*)UdmMalloc(query->Conf->WordParam.max_word_len * 12 + 1)) == NULL) return 0;
-  if ((uwrd = (int*)UdmMalloc(sizeof(int) * (query->Conf->WordParam.max_word_len + 1))) == NULL) { UDM_FREE(wrd); return 0; }
 
+  UdmQueryParserStateInit(query, &state);
 
   if (!(browser_cs = query->Conf->bcs))
     browser_cs=UdmGetCharSet("iso-8859-1");
@@ -345,11 +486,9 @@ int UdmPrepare(UDM_AGENT * query,UDM_RESULT *Res)
   if(!(local_cs = query->Conf->lcs))
     local_cs=UdmGetCharSet("iso-8859-1");
   
-  sys_int= &udm_charset_sys_int;
-  
-  UdmConvInit(&bc_uni,browser_cs,sys_int,UDM_RECODE_HTML);
-  UdmConvInit(&uni_lc,sys_int,local_cs,UDM_RECODE_HTML);
-  UdmConvInit(&bc_lc,browser_cs,local_cs,UDM_RECODE_HTML);
+  UdmConvInit(&bc_uni, browser_cs, &udm_charset_sys_int, UDM_RECODE_HTML);
+  UdmConvInit(&uni_lc, &udm_charset_sys_int, local_cs, UDM_RECODE_HTML);
+  UdmConvInit(&bc_lc, browser_cs, local_cs, UDM_RECODE_HTML);
   
   ulen= strlen(txt);
   ustr=(int*)(UdmMalloc((sizeof(int))*(ulen+1)));
@@ -401,51 +540,13 @@ int UdmPrepare(UDM_AGENT * query,UDM_RESULT *Res)
   }
   uend= ustr + UdmUniLen(ustr); /* TODO: get rid of it */
 
-  lex= UniGetSepToken(unidata, ustr, uend, &lt , &ctype);
-  for ( ;lex; lex= UniGetSepToken(unidata, NULL, uend, &lt, &ctype))
+  if (UDM_OK != (rc= UdmParseSearchQuery(query, Res, &state, &uni_lc,
+                                         ustr, uend)))
   {
-    wlen=lt-lex;
-    memcpy(uwrd, lex, (udm_min(wlen, query->Conf->WordParam.max_word_len)) * sizeof(int));
-    uwrd[udm_min(wlen, query->Conf->WordParam.max_word_len)] = 0;
-    UdmConv(&uni_lc, wrd, query->Conf->WordParam.max_word_len * 12,(char*)uwrd, sizeof(uwrd[0])*(wlen+1));
-    UdmTrim(wrd, " \t\r\n");
-    
-    if (ctype == UDM_UNI_SEPAR)
-    {
-      UdmStackItemListAddCmd(Res, &state, lex, wlen);
-    } 
-    else
-    {
-      UDM_VAR *Section;
-
-      if (lt[0] == ':' || lt[0] == '=')
-      {
-        if ((Section= UdmVarListFind(&query->Conf->Sections, wrd)))
-        {
-          state.secno= Section->section;
-          state.secno_match_type= lt[0];
-          continue;
-        }
-        if (wlen > 5 && !strncmp(wrd, "secno", 5))
-        {
-          state.secno= atoi(wrd + 5);
-          state.secno_match_type= lt[0];
-          continue;
-        }
-        else if (wlen > 10 && !strncmp(wrd, "importance", 10) &&
-                 wrd[10] >= '0' && wrd[10] <= '9')
-        {
-          state.user_weight= atoi(wrd + 10);
-          continue;
-        }
-      }
-      
-      if (UDM_OK != (rc= UdmStackItemListAddWord(query, Res, &state,
-                                                 wlen, lt, uend, wrd)))
-        return rc;
-    }
+    UdmFree(ustr);
+    return rc;
   }
-  
+
   if (state.nphrasecmd & 1)
   {
     UDM_STACK_ITEM item;
@@ -455,8 +556,6 @@ int UdmPrepare(UDM_AGENT * query,UDM_RESULT *Res)
     Res->ItemList.ncmds++;
   }
   UDM_FREE(ustr);
-  UDM_FREE(uwrd);
-  UDM_FREE(wrd);
   
   if (UdmVarListFindBool(Vars, "ComplexSynonyms", 0))
     UdmComplexSynonyms(query, &Res->WWList);

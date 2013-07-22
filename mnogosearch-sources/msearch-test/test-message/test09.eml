@@ -1,0 +1,55 @@
+From 
+Received: from rcsinet15.mnogosearch.org (/10.87.113.117)
+	by default (mnoGoSearch Gateway v4.0)
+	with ESMTP ; Tue, 11 Jan 2011 09:04:07 -0800
+Date: Tue, 11 Jan 2011 11:04:06 -0600
+From: Access Provisioning System (APS) <support@mnogosearch.org>
+Message-Id: <201101111704.p0BH46GQ011383@mnogosearch.org>
+To: bar@mnogosearch.org
+Reply-To: support@mnogosearch.org
+Subject: "Account Request (16978463) Has Been Processed."
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="included message-wf"
+X-Auth-Type: Internal IP
+X-CT-RefId: str=0001.AAAAAAAA.BBBBBBBB.0011,ss=1,fgs=0
+
+NOTEICE: Boundary of this message contains space character.
+
+--included message-wf
+Content-Type: text/html;
+Content-Transfer-Encoding: 7bit
+
+<HTML><HEAD></HEAD>
+<BODY BGCOLOR="#FFFFFF"><b>Workflow Notification (FYI)</b> 
+<br>
+From: <B></B>
+<br>
+<hr>
+<P>
+"Request (16978463) has been processed.<BR>
+<BR>
+--- Request Details ---<BR>
+Status: SUCCEEDED<BR>
+<BR>
+For details on how to access Calendar, please go to http://www.mnogosearch.org/<BR>
+<BR>
+--- End of Message ---"
+
+</BODY>
+</HTML>
+
+--included message-wf
+Content-Type: text/html; name="NOTIFICATION.html";
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="NOTIFICATION.html"
+
+<HTML>
+<HEAD>
+<TITLE>Detail notification</TITLE>
+</HEAD>
+<FRAMESET ROWS="*,100" TITLE="Notification Details">
+<FRAME NAME="top" MARGINHEIGHT=10 MARGINWIDTH=10 src="http://www.mnogosearch.org" TITLE="Notification Details">
+<FRAME NAME="bottom" MARGINHEIGHT=10 MARGINWIDTH=10 src="http://www.mnogosearch.org/" TITLE="Notification Details">
+</FRAMESET>
+</HTML>
+--included message-wf--

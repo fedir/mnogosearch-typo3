@@ -1,9 +1,8 @@
 <chapter id="parsers">
   <title>External parsers<indexterm><primary>Parsers</primary></indexterm></title>
 
-  <para>&mnogo; understands
-  <literal>text/plain</literal>, <literal>text/html</literal>
-  and <literal>text/xml</literal> Mime types out of the box,
+  <para>&mnogo; understands a number of
+  <link linkend="built-in-parsers">file formats</link> out of the box,
   and is able to index files of these types using the build-in parsers.
   For the other file types it can use <emphasis>external parsers</emphasis>.
   </para>
@@ -207,7 +206,9 @@ Mime  application/msword  "text/plain; charset=windows-1251" "catdoc -a $1"
       <listitem>
         <para><application>catdoc</application> <application>MS-Word</application>-to-text converter</para>
         <para>
-          <ulink url="http://freshmeat.net/redir/catdoc/1055/url_homepage/">Home page</ulink>, also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+          <ulink url="http://www.wagner.pp.ru/~vitus/software/catdoc/">Home page</ulink>,
+          <ulink url="http://alioth.debian.org/projects/catdoc/">Homepage (the Catdoc fork at Alioth project)</ulink>,
+           also listed on <ulink url="http://freecode.com/projects/catdoc/">Freecode</ulink>.
         </para>
         <para>
           &indexer.conf;:
@@ -220,7 +221,7 @@ Mime application/msword "text/plain; charset=utf-8"  "catdoc -d utf-8 $1"
         <para><application>wvWare</application> <application>MS-Word</application>-to-&html; converter</para>
         <para>
            <ulink url="http://wvware.sourceforge.net/">Home page</ulink>,
-           also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+           also listed on <ulink url="http://freecode.com/projects/wv/">Freecode</ulink>.
         </para>
         <para>
           &indexer.conf;:
@@ -233,7 +234,7 @@ Mime application/msword    "text/html; charset=utf-8"    "wvHtml --charset=utf-8
         <para><application>Tika</application>
       <application>MS-Word</application>-to-text converter</para>
         <para>
-           <ulink url="http://lucene.apache.org/tika">Home page</ulink>.
+           <ulink url="http://tika.apache.org/">Home page</ulink>.
         </para>
         <para>
           &indexer.conf;:
@@ -265,12 +266,13 @@ Mime application/vnd.ms-excel   text/plain      "xls2csv $1"
 </para>
       </listitem>
       <listitem>
-        <para><application>xlhtml</application> <application>Excel-XLS</application>-to-&html; converter</para>
+        <para><application>Excel-XLS</application>-to-&html; converter</para>
         <para>Available from the project
         <ulink url="http://www.xlhtml.org/">homepage</ulink>,
-        also listed on <ulink url="http://freshmeat.net/projects/xlhtml/">Freshmeat</ulink>.
+        also listed on <ulink url="http://freecode.com/projects/xlhtml/">Freecode</ulink>.
         and  <ulink url="http://chicago.sourceforge.net/xlhtml/">SourceForge</ulink>.
-        Download page includes <ulink url="http://chicago.sourceforge.net/xlhtml/binarys.html">binaries for Windows</ulink>.
+        Download page includes <ulink url="http://chicago.sourceforge.net/xlhtml/binarys.html">binaries for Windows</ulink>
+          and <ulink url="http://sourceforge.net/projects/chicago/files/xlhtml/backend/">source code at SourceForge</ulink>.
         </para>
         <para>
           &indexer.conf;:
@@ -292,9 +294,10 @@ Mime application/vnd.ms-excel  text/html  "xlhtml $1"
         </para>
         <para>A part of the <application>xlhtml</application> distribution. Available from the project
         <ulink url="http://www.xlhtml.org/">homepage</ulink>,
-        also listed on <ulink url="http://freshmeat.net/projects/xlhtml/">Freshmeat</ulink>.
+        also listed on <ulink url="http://freecode.com/projects/xlhtml/">Freecode</ulink>
         and  <ulink url="http://chicago.sourceforge.net/xlhtml/">SourceForge</ulink>.
-        Download page includes <ulink url="http://chicago.sourceforge.net/xlhtml/binarys.html">binaries for Windows</ulink>.
+        Download page includes <ulink url="http://chicago.sourceforge.net/xlhtml/binarys.html">binaries for Windows</ulink>
+          and <ulink url="http://sourceforge.net/projects/chicago/files/xlhtml/backend/">source code at SourceForge</ulink>.
         </para>
         <para>
           &indexer.conf;:
@@ -313,7 +316,7 @@ Mime application/vnd.ms-powerpoint   text/html   "ppthtml $1"
       <listitem>
         <para><application>MS Word 2007</application> files can be indexed with help of <application>unzip</application>.</para>
         <para>
-          <ulink url="http://www.info-zip.org/">unzip</ulink> is included into the majority of the modern
+          <ulink url="http://www.info-zip.org/UnZip.html">unzip</ulink> is included into the majority of the modern
           <application>Unix</application> distributions.
         </para>
         <para>
@@ -333,13 +336,14 @@ Mime application/vnd.openxmlformats-officedocument.wordprocessingml.document tex
       <listitem>
         <para><application>unrtf</application> <application>RTF</application>-to-&html; converter</para>
         <para>
-          <ulink url="ftp://ftp.gnu.org/pub/gnu/unrtf/">Homepage</ulink>
+          <ulink url="http://www.gnu.org/software/unrtf/">Homepage</ulink>,
+            and <ulink url="ftp://ftp.gnu.org/pub/gnu/unrtf/">FTP download page</ulink>.
         </para>
         <para>
           &indexer.conf;:
         <programlisting>
-Mime text/rtf*        text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1
-Mime application/rtf  text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1
+Mime text/rtf*        text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1"
+Mime application/rtf  text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1"
 </programlisting>
         </para>
       </listitem>
@@ -347,7 +351,7 @@ Mime application/rtf  text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1
         <para><application>rtfx</application> RTF-to-XML converter</para>
         <para>
           <ulink url="http://memberwebs.com/stef/software/rtfx/">Homepage</ulink>,
-          also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+            also listed on <ulink url="http://freecode.com/projects/rtfx/">Freecode</ulink>.
         </para>
           &indexer.conf;:
         <para>
@@ -376,11 +380,26 @@ Mime application/rtf text/html "rthc --use-stdout $1 2>/dev/null"
    <title><application>Adobe Acrobat</application> (<filename>*.pdf</filename>)</title>
    <itemizedlist>
       <listitem>
+        <para><application>pdftohtml</application> <application>Adobe PDF</application> converter</para>
+        <para>
+          <ulink url="http://pdftohtml.sourceforge.net/">Homepage (original)</ulink>,
+          <ulink url="http://poppler.freedesktop.org/">Homepage (the Poppler fork)</ulink>.
+        </para>
+        <para>
+          &indexer.conf;:
+<programlisting>
+Mime application/pdf text/html  "pdftohtml -noframes -enc UTF-8 -i -stdout $1"
+</programlisting>
+        </para>
+      </listitem>
+
+      <listitem>
         <para><application>pdftotext</application> <application>Adobe PDF</application> converter</para>
         <para>A part of the <application>xpdf</application> project.</para>
         <para>
-          <ulink url="http://freshmeat.net/redir/xpdf/12080/url_homepage/">Homepage</ulink>,
-          also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+          <ulink url="http://www.foolabs.com/xpdf/">Homepage</ulink>,
+          <ulink url="http://poppler.freedesktop.org/">Homepage (the Poppler fork)</ulink>,
+            also listed on <ulink url="http://freecode.com/projects/xpdf/">Freecode</ulink>.
         </para>
         <para>
           &indexer.conf;:
@@ -389,6 +408,7 @@ Mime application/pdf            text/plain      "pdftotext $1 -"
 </programlisting>
         </para>
       </listitem>
+
    </itemizedlist>
    </sect2>
 
@@ -401,7 +421,7 @@ Mime application/pdf            text/plain      "pdftotext $1 -"
         <para>A part of the <application>GhostScript</application> project.</para>
         <para>
           <ulink url="http://pages.cs.wisc.edu/~ghost/">Homepage</ulink>,
-          also listed on <ulink url="http://freshmeat.net/">Freshmeat</ulink>.
+            also listed on <ulink url="http://freecode.com/projects/ghostscript/">Freecode</ulink>.
         </para>
         <para>
           &indexer.conf;:
@@ -412,6 +432,62 @@ Mime application/postscript    text/plain  "ps2ascii $1"
       </listitem>
    </itemizedlist>
    </sect2>
+
+  <sect2 id="pars-wps">
+    <title><application>MS Works 2, 3, 4, 5 (2000), and 8</application>
+    (<filename>*.wps</filename>)</title>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <application>libwps</application>
+          <application>WPS</application>-to-&html; and
+          <application>WPS</application>-to-text converter
+        </para>
+        <para>
+          <ulink url="http://http://libwps.sourceforge.net//">Homepage</ulink>.
+        </para>  
+        <para>
+          &indexer.conf;:
+<programlisting>
+# Text output:
+Mime application/vnd.ms-works "text/plain; charset=utf-8"  "wps2text $1"
+</programlisting>
+<programlisting>
+# HTML output:
+Mime application/vnd.ms-works "text/html; charset=utf-8"  "wps2html $1"
+</programlisting>
+      </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="pars-wpd">
+    <title><application>Corel WordPerfect 4.x and and later</application>
+    (<filename>*.wpd</filename>)</title>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <application>libpwd</application>
+          <application>WPD</application>-to-&html; and
+          <application>WPD</application>-to-text converter
+        </para>
+        <para>
+          <ulink url="http://libwpd.sourceforge.net/">Homepage</ulink>.
+        </para>  
+        <para>
+        &indexer.conf;:
+        <programlisting>
+# For text output:
+Mime application/vnd.wordperfect "text/plain; charset=utf-8" "wpd2text $1"
+</programlisting>
+<programlisting>
+# For indexing HTML output
+Mime application/vnd.wordperfect "text/html; charset=utf-8" "wpd2html $1"
+</programlisting>
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect2>
 
 
    <sect2 id="parse-rpm">

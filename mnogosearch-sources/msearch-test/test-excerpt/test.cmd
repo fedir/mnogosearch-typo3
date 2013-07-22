@@ -58,6 +58,10 @@ fail !0 exec rm -f $(UDM_TEST_DIR)/expect-phr.rej
 
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.htm
 
+fail !0 exec $(SEARCH) -d $(UDM_TEST_DIR)/search0.htm "abcd" > $(UDM_TEST_DIR)/expect0-1.rej
+fail !0 mdiff $(UDM_TEST_DIR)/expect0-1.rej $(UDM_TEST_DIR)/expect0-1.res
+fail !0 exec rm -f $(UDM_TEST_DIR)/expect0-1.rej
+
 # Second part
 skip !0 exec $(INDEXER) -Echeck  $(UDM_TEST_DIR)/indexer2.conf 1>&2
 fail 20 exec $(INDEXER) -Edrop   $(UDM_TEST_DIR)/indexer2.conf 1>&2

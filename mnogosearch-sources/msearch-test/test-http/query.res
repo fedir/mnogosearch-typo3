@@ -22,6 +22,7 @@ SQL>'SELECT status, docsize, hops, crc32, url FROM url ORDER BY status, crc32'
 200	46	0	-1316669187	http://site1/test2.html
 200	18	0	-258172453	http://site1/test1.txt
 200	52	0	1189801760	http://site1/test3a.txt
+415	0	0	0	http://site1/test3b.txt
 SQL>'SELECT url.status,url.crc32,url.url,url.last_mod_time,urlinfo.sname,urlinfo.sval FROM url,urlinfo WHERE url.rec_id=urlinfo.url_id ORDER BY url.status,url.crc32,urlinfo.sname'
 200	-1316669187	http://site1/test2.html	1157982282	body	html1 html2 html3
 200	-258172453	http://site1/test1.txt	1157982282	body	text1 text2 text3

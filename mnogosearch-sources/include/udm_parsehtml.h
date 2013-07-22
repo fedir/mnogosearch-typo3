@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -38,7 +38,43 @@ extern int    UdmHTMLParse(UDM_AGENT*, UDM_DOCUMENT*);
 extern int UdmParseURLText(UDM_AGENT*, UDM_DOCUMENT*);
 extern int    UdmParseText(UDM_AGENT*, UDM_DOCUMENT*);
 extern int UdmParseHeaders(UDM_AGENT*, UDM_DOCUMENT*);
+extern int UdmMessageRFC822Parse(UDM_AGENT *, UDM_DOCUMENT *);
+extern int *UdmMessageRFC822ExcerptSource(UDM_AGENT *Agent,
+                                          UDM_RESULT *Res,
+                                          UDM_DOCUMENT *Doc,
+                                          UDM_CHARSET *bcs,
+                                          const UDM_CONST_STR *content,
+                                          size_t *length);
+extern int UdmMessageRFC822CachedCopy(UDM_AGENT *Agent,
+                                      UDM_RESULT *Res,
+                                      UDM_DOCUMENT *Doc,
+                                      UDM_DSTR *dstr);
+extern int UdmRTFParse(UDM_AGENT *, UDM_DOCUMENT *);
+extern int UdmRTFCachedCopy(UDM_AGENT *Agent,
+                             UDM_RESULT *Res,
+                             UDM_DOCUMENT *Doc,
+                             UDM_DSTR *dstr);
+extern int *UdmRTFExcerptSource(UDM_AGENT *Agent,
+                                UDM_RESULT *Res,
+                                UDM_DOCUMENT *Doc,
+                                UDM_CHARSET *bcs,
+                                const UDM_CONST_STR *content,
+                                size_t *length);
+extern int UdmDOCXParse(UDM_AGENT *, UDM_DOCUMENT *);
+extern int UdmDOCXCachedCopy(UDM_AGENT *Agent,
+                             UDM_RESULT *Res,
+                             UDM_DOCUMENT *Doc,
+                             UDM_DSTR *dstr);
+extern int *UdmDOCXExcerptSource(UDM_AGENT *Agent,
+                                 UDM_RESULT *Res,
+                                 UDM_DOCUMENT *Doc,
+                                 UDM_CHARSET *bcs,
+                                 const UDM_CONST_STR *content,
+                                 size_t *length);
 extern int UdmPrepareWords(UDM_AGENT*, UDM_DOCUMENT*);
+
+extern size_t UdmConvRFC1522(UDM_CONV *conv, char *dst, size_t dstlen,
+                             const char *src, size_t srclen);
 
 extern const char * UdmHTMLToken(const char * s, const char ** lt,UDM_HTMLTOK *t);
 extern int UdmHTMLParseTag(UDM_HTMLTOK * tag,UDM_DOCUMENT * Doc);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ UdmFindWordRawBlobInternal(UDM_FINDWORD_ARGS *args, int flags)
   udm_timer_t ticks;
   UDM_SQLRES SQLRes;
   UDM_URLCRDLIST CoordList;
-  size_t intagnum= UdmStrHash32(args->Word.word) & 0x1f;
+  int intagnum= UdmStrHash32(args->Word.word) & 0x1f;
   size_t rownum, nrows;
   int rc;
   const char *state_cmp= (flags & UDM_RAWBLOB_DELTA) ? "=" : ">=";
@@ -160,9 +160,13 @@ WHERE d.state%s1 AND url.rec_id=d.url_id AND %s",
     UdmURLCRDListSortByURLThenSecnoThenPos(&CoordList);
     UdmURLCRDListListAddWithSort2(args, &CoordList);
   }
+  else
+  {
+    UdmFree(CoordList.Coords);
+  }
   UdmLog(args->Agent, UDM_LOG_DEBUG,
          "Stop fetching from bdicti\t%.2f %d coords found",
-         UdmStopTimer(&ticks), CoordList.ncoords);
+         UdmStopTimer(&ticks), (int) CoordList.ncoords);
   return UDM_OK;
 }
 

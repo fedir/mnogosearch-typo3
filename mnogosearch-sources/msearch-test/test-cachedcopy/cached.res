@@ -598,3 +598,32 @@ in your <filename>indexer.conf</filename> file.
 </sect1>
 
 ######################
+Content-type: text/html; charset=iso-8859-1
+
+Size: 211
+Content-Type: text/plain
+Document:
+<pre>
+This is a <b>text</b> file!
+
+A typical HTML file looks like this:
+
+&#60;html&#62;
+&#60;head&#62;
+&#60;title&#62;test1 title&#60;/title&#62;
+&#60;meta name=&#34;Content-Type&#34; content=&#34;<b>text</b>/plain; charset=latin1&#34;&#62;
+&#60;/head&#62;
+&#60;body&#62;
+This is a body
+&#60;/body&#62;
+&#60;/html&#62;
+</pre>
+
+######################
+Content-type: text/html; charset=iso-8859-1
+
+Size: 
+Content-Type: 
+Document:
+
+######################

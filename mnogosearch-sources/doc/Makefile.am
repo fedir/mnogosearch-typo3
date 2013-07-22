@@ -13,6 +13,7 @@ cluster.xml \
 content-enc.xml \
 db2.xml \
 exec-cgi.xml \
+formats.xml \
 follow.xml \
 fuzzy.xml \
 general.xml \
@@ -200,6 +201,7 @@ msearch-cmdref-usecookie.html \
 msearch-cmdref-usecrc32urlid.html \
 msearch-cmdref-uselocalcachedcopy.html \
 msearch-cmdref-usenumericoperators.html \
+msearch-cmdref-userangeoperators.html \
 msearch-cmdref-usercachequery.html \
 msearch-cmdref-useremotecontenttype.html \
 msearch-cmdref-userorder.html \
@@ -223,15 +225,12 @@ msearch-disclaimer.html \
 msearch-doingsearch.html \
 msearch-extended-indexing.html \
 msearch-faq.html \
+msearch-file-formats.html \
 msearch-fuzzy.html \
 msearch-get.html \
 msearch-howstore.html \
 msearch-html.html \
-msearch-htmlparser-comments.html \
 msearch-htmlparser.html \
-msearch-htmlparser-links.html \
-msearch-htmlparser-meta.html \
-msearch-htmlparser-spec.html \
 msearch-http-codes.html \
 msearch-indexer-configuration.html \
 msearch-index.html \
@@ -278,7 +277,9 @@ samples/htdb.conf \
 samples/minimal.conf \
 samples/news.conf
 
-EXTRA_DIST = ${man_MANS} ${XML_SRC} ${doc_FILES} ${sample_FILES} \
+dist_doc_DATA = ${doc_FILES}
+
+EXTRA_DIST = ${man_MANS} ${XML_SRC} ${sample_FILES} \
 README.html catalog.in mnogo.dsl
 
 CLEANFILES= ${HTML_OUT} HTML.index HTML.manifest index.xml
@@ -287,19 +288,19 @@ CLEANFILES= ${HTML_OUT} HTML.index HTML.manifest index.xml
 JADE = @JADE@
 
 
-install-data-local: $(doc_FILES)
-	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc
-	echo ${INSTALL_DATA} docs $(DESTDIR)$(prefix)/doc/
-	list='${doc_FILES}'; \
-	for p in $$list; do \
-		${INSTALL_DATA} $(srcdir)/$$p $(DESTDIR)$(prefix)/doc/ ; \
-	done
+#install-data-local: $(doc_FILES)
+#	$(mkinstalldirs) $(DESTDIR)$(prefix)/doc
+#	echo ${INSTALL_DATA} docs $(DESTDIR)$(prefix)/doc/
+#	list='${doc_FILES}'; \
+#	for p in $$list; do \
+#		${INSTALL_DATA} $(srcdir)/$$p $(DESTDIR)$(prefix)/doc/ ; \
+#	done
 
-uninstall-local:
-	list='${doc_FILES}'; \
-	for p in $$list; do \
-		rm -f $(DESTDIR)$(prefix)/doc/$$p ; \
-	done
+#uninstall-local:
+#	list='${doc_FILES}'; \
+#	for p in $$list; do \
+#		rm -f $(DESTDIR)$(prefix)/doc/$$p ; \
+#	done
 
 index.html: $(XML_SRC_EN) mnogo.dsl
 	perl @COLLATEINDEX@ -N -i index -o index.xml HTML.index

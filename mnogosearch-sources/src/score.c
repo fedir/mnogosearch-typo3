@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -709,10 +709,13 @@ UdmDebugScore(char *str, size_t nbytes,
                "minmax=%.4f density=%.4f "
                "numword=%.4f %swordform=%.4f score=%d",
                score_parts->url_id, score_parts->cosine_factor,
-               score_parts->Cosine.Dsum_nodistance,
-               score_parts->Cosine.Dsum, score_parts->Cosine.RDsum,
+               (int) score_parts->Cosine.Dsum_nodistance,
+               (int) score_parts->Cosine.Dsum,
+               (int) score_parts->Cosine.RDsum,
                UdmWithDistanceToWithoutDistanceFactor(&score_parts->Cosine),
-               dstsum, score_parts->distance.sum, score_parts->distance.num,
+               (int) dstsum,
+               (int) score_parts->distance.sum,
+               (int) score_parts->distance.num,
                score_parts->min_max_factor, score_parts->density_factor,
                score_parts->numword_factor, numdistinctword_factor_str,
                score_parts->wordform_factor,(int) score);
@@ -869,8 +872,8 @@ UdmDebugCosine(UDM_SCORE_PARAM *score_param,
     if (added[offs])
     {
       UdmDSTRAppendf(&d, "(s%dw%d:%d:%d)",
-                     offs / score_param->WWList.nuniq,
-                     offs % score_param->WWList.nuniq,
+                     (int) (offs / score_param->WWList.nuniq),
+                     (int) (offs % score_param->WWList.nuniq),
                      score_param->Dsum_add[offs],
                      score_param->RDsum_add[offs]);
     }
@@ -1350,7 +1353,7 @@ UdmApplyIDFToWWList(UDM_AGENT *A, UDM_WIDEWORDLIST *WWList,
         W->weight= 8192;
       UdmLog(A, UDM_LOG_DEBUG,
              "Weight[%d]: doccount=%d factor=%.2f old=%d new=%d '%s'",
-             i, W->doccount, k, old_w, W->weight, W->word);
+             (int) i, (int) W->doccount, k, (int) old_w, W->weight, W->word);
     }
   }
 }
@@ -1408,8 +1411,9 @@ UdmCalcUserWordWeight(UDM_AGENT *A, UDM_SCORE_PARAM *param)
     {
       float factor= (float) W->user_weight / UDM_DEFAULT_USER_WORD_WEIGHT;
       int new_weight= (int) (factor * W->weight);
-      UdmLog(A, UDM_LOG_DEBUG, "Weight[%d]: importance=%d factor=%.2f old=%d new=%d '%s'",
-             i, W->user_weight, factor, W->weight, new_weight, W->word);
+      UdmLog(A, UDM_LOG_DEBUG,
+             "Weight[%d]: importance=%d factor=%.2f old=%d new=%d '%s'",
+             (int) i, W->user_weight, factor, W->weight, new_weight, W->word);
       W->weight= new_weight;
     }
   }
@@ -1488,7 +1492,7 @@ UdmCalcIDF(UDM_AGENT *A, UDM_SCORE_PARAM *param, UDM_SECTIONLIST *SectionList)
   */
   UdmLog(A, UDM_LOG_DEBUG,
          "max_secno=%d min_secno=%d ndocs=%d",
-         param->max_secno, param->min_secno, ndocs);
+         param->max_secno, param->min_secno, (int) ndocs);
   
   for (i= 0; i < param->WWList.nuniq; i++)
   {
@@ -1565,7 +1569,8 @@ UdmRareWordCountInit(UDM_AGENT *A, UDM_WIDEWORDLIST *WWL, size_t *count)
       if (!count[W->order])
       {
         count[W->order]= 1;
-        UdmLog(A, UDM_LOG_DEBUG, "Rare word %d count=%d", W->order, W->doccount);
+        UdmLog(A, UDM_LOG_DEBUG,
+               "Rare word %d count=%d", (int) W->order, (int) W->doccount);
       }
     }
   }
@@ -2267,7 +2272,7 @@ void UdmGroupByURL2(UDM_AGENT *query,
     int LooseMode= UdmSearchMode(loose_mode_str);
     UdmLog(query, UDM_LOG_DEBUG,
           "Too few results: %d, Threshold: %d, group using m=%s", 
-          strict_mode_found, threshold, loose_mode_str);
+          (int) strict_mode_found, (int) threshold, loose_mode_str);
     UdmGroupByURLInternal2(query, Res, SectionList, ScoreList, prm, LooseMode);
     if (ScoreList->nitems > strict_mode_found)
       UdmVarListReplaceInt(&query->Conf->Vars, "StrictModeFound", strict_mode_found);
@@ -2318,7 +2323,7 @@ UdmUserScoreListApplyToURLScoreList(UDM_AGENT *A,
                                       UserScoreList->nitems,
                                       sizeof(UDM_URL_INT4),
                                       (udm_qsort_cmp)UdmCmpURLID);
-    if (found)
+    if (found && found->param != 0)
     {
       nfound++;
       if (found->param >= 0)
@@ -2334,7 +2339,7 @@ UdmUserScoreListApplyToURLScoreList(UDM_AGENT *A,
   }
   UdmLog(A, UDM_LOG_DEBUG + 1,
          "UserScoreListApplyToURLScoreList: min=%d max=%d nitems=%d nfound=%d",
-         minval, maxval, UserScoreList->nitems, nfound);
+         minval, maxval, (int) UserScoreList->nitems, (int) nfound);
   return UDM_OK;
 }
 

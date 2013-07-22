@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -46,7 +46,8 @@
 #define UDM_LOG_DEBUG	5
 
 extern int UdmOpenLog(const char * appname,UDM_ENV *Env, int log2stderr);
-extern void UdmLog(UDM_AGENT *Agent, int level, const char *fmt, ...);
+extern void UdmLog(UDM_AGENT *Agent, int level, const char *fmt, ...)
+            __attribute__((format(printf,3,4)));
 /* if you do not have UDM_AGENT struct yet, use UdmLog_noagent */
 extern void UdmLog_noagent(UDM_ENV *Env, int level, const char *fmt, ...);
 

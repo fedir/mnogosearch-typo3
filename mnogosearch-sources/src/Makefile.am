@@ -42,7 +42,7 @@ sql-mysql.c sql-oracle.c sql-ibase.c sql-pgsql.c sql-sqlite.c sql-ctlib.c \
 base64.c section.c qcache.c urldata.c urlidlist.c wordinfo.c coords.c \
 wordcache.c dbmode-single.c dbmode-rawblob.c sql-odbc.c sqlmon.c \
 dbug.c string.c date.c suggest.c groupby.c distance.c sitemap.c getopt.c \
-features.c
+idn.c features.c message.c excerpt.c parsedocx.c parsertf.c
 
 EXTRA_libmnogosearch_la_SOURCES = efence.c ef_page.c ef_print.c
 libmnogosearch_la_LIBADD = @efOBJ@ -L. -L.libs -lmnogocharset

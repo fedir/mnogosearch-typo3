@@ -5,6 +5,18 @@ msearchtest_SOURCES = msearchtest.c
 
 CLEANFILES = msearchtest msearchtest.log sqlnet.log
 
+test_boolean_FILES = \
+test-boolean/htdocs/owner01.txt \
+test-boolean/htdocs/owner02.txt \
+test-boolean/htdocs/owner03.txt \
+test-boolean/htdocs/owner04.txt \
+test-boolean/htdocs/owner05.txt \
+test-boolean/htdocs/owner06.txt \
+test-boolean/indexer.conf \
+test-boolean/search.htm \
+test-boolean/search.res \
+test-boolean/test.cmd
+
 test_follow_FILES = \
 test-follow/indexer.conf \
 test-follow/indexer1.conf \
@@ -92,6 +104,14 @@ test-notmodified/htdocs/test1.html \
 test-notmodified/htdocs/test2.html \
 test-notmodified/htdocs/test3.html
 
+test_numeric_FILES = \
+test-numeric/indexer.conf \
+test-numeric/search.htm \
+test-numeric/search.res \
+test-numeric/test-100.html \
+test-numeric/test-200.html \
+test-numeric/test.cmd
+
 test_openxml_FILES = \
 test-openxml/indexer.conf \
 test-openxml/query.res \
@@ -102,6 +122,25 @@ test-openxml/sample.xlsx \
 test-openxml/search.htm \
 test-openxml/test.cmd
 
+test_parsedocx_FILES = \
+test-parsedocx/indexer.conf \
+test-parsedocx/query.res \
+test-parsedocx/query.tst \
+test-parsedocx/sample.docx \
+test-parsedocx/sample2.docx \
+test-parsedocx/sample4-lists.docx \
+test-parsedocx/search.htm \
+test-parsedocx/test.cmd
+
+test_parsertf_FILES = \
+test-parsertf/indexer.conf \
+test-parsertf/query.res \
+test-parsertf/query.tst \
+test-parsertf/search.htm \
+test-parsertf/test2.rtf \
+test-parsertf/test3.rtf \
+test-parsertf/test.cmd \
+test-parsertf/test.rtf
 
 test_parsexml_FILES = \
 test-parsexml/indexer.conf \
@@ -142,6 +181,14 @@ test-quotes/query.tst \
 test-quotes/test.cmd \
 test-quotes/htdocs/test1.txt
 
+test_range_FILES = \
+test-range/indexer.conf \
+test-range/search.htm \
+test-range/search.res \
+test-range/test1.html \
+test-range/test201.xml \
+test-range/test.cmd
+
 test_revalias_FILES = \
 test-revalias/dict.res \
 test-revalias/dict.tst \
@@ -178,6 +225,7 @@ test-meta/test.cmd
 
 test_multi_FILES = \
 test-multi/indexer.conf \
+test-multi/indexer2.conf \
 test-multi/query.res \
 test-multi/query.tst \
 test-multi/search.res \
@@ -270,6 +318,14 @@ test-catdoc/test.cmd \
 test-catdoc/htdocs/a.doc \
 test-catdoc/htdocs/b.doc
 
+test_pdftohtml_FILES = \
+test-pdftohtml/b.doc \
+test-pdftohtml/b.pdf \
+test-pdftohtml/indexer.conf \
+test-pdftohtml/query.res \
+test-pdftohtml/query.tst \
+test-pdftohtml/test.cmd
+
 test_pdftotext_FILES = \
 test-pdftotext/indexer.conf \
 test-pdftotext/query.res \
@@ -320,6 +376,7 @@ test-excerpt/expect-beg.res \
 test-excerpt/expect-end.res \
 test-excerpt/expect-sub.res \
 test-excerpt/expect-phr.res \
+test-excerpt/expect0-1.res \
 test-excerpt/expect1-1.res \
 test-excerpt/expect1-2.res \
 test-excerpt/expect1-3.res \
@@ -362,11 +419,13 @@ test-excerpt/indexer3.conf \
 test-excerpt/indexer4.conf \
 test-excerpt/indexer5.conf \
 test-excerpt/indexer6.conf \
+test-excerpt/search0.htm \
 test-excerpt/search1.htm \
 test-excerpt/search2.htm \
 test-excerpt/search3.htm \
 test-excerpt/test.cmd \
 test-excerpt/htdocs/test1.html \
+test-excerpt/htdocs/test1.txt \
 test-excerpt/htdocs/test2.html
 
 test_canonize_FILES = \
@@ -395,6 +454,7 @@ test-tmplang/test.cmd
 test_cachedcopy_FILES = \
 test-cachedcopy/htdocs/bug749.html \
 test-cachedcopy/htdocs/index.xml \
+test-cachedcopy/htdocs/test01.txt \
 test-cachedcopy/bug749.conf \
 test-cachedcopy/cached.res \
 test-cachedcopy/indexer.conf \
@@ -471,6 +531,38 @@ test-merge/search.res \
 test-merge/query.res \
 test-merge/query.tst \
 test-merge/indexer.conf
+
+test_message_FILES = \
+test-message/bad01.eml \
+test-message/indexer.conf \
+test-message/query.res \
+test-message/query.tst \
+test-message/search.htm \
+test-message/test01.eml \
+test-message/test04.eml \
+test-message/test07.eml \
+test-message/test08.eml \
+test-message/test09.eml \
+test-message/test10.eml \
+test-message/test11.eml \
+test-message/test12.eml \
+test-message/test14.eml \
+test-message/test15.eml \
+test-message/test16.eml \
+test-message/test17.eml \
+test-message/test18.eml \
+test-message/test19.eml \
+test-message/test20.eml \
+test-message/test.cmd \
+test-message/test.eml \
+test-message/test.mht
+
+test_message_catdoc_FILES = \
+test-message-catdoc/indexer.conf \
+test-message-catdoc/query.res \
+test-message-catdoc/query.tst \
+test-message-catdoc/test.cmd \
+test-message-catdoc/test.eml
 
 test_htdb_FILES = \
 test-htdb/htdb-create.sql \
@@ -561,6 +653,8 @@ test-rtfx/test.rtf
 
 test_search_FILES = \
 test-search/test.cmd \
+test-search/bad-dbaddr.htm \
+test-search/bad-dbaddr.res \
 test-search/htdocs/index.html \
 test-search/search.htm \
 test-search/search1.res \
@@ -588,7 +682,8 @@ test-suggest/indexer.conf \
 test-suggest/search.htm \
 test-suggest/search.res \
 test-suggest/test1.html \
-test-suggest/test.cmd
+test-suggest/test.cmd \
+test-suggest/test.sql
 
 test_cmdline_FILES = \
 test-cmdline/test.cmd \
@@ -618,10 +713,19 @@ test-cluster/test4g.xml \
 test-cluster/test.cmd \
 test-cluster/test.xml
 
+test_user_score_FILES= \
+test-user-score/indexer.conf \
+test-user-score/search.htm \
+test-user-score/search.res \
+test-user-score/test1.html \
+test-user-score/test2.html \
+test-user-score/test.cmd
+
 
 EXTRA_DIST = msearchtest-run \
  README \
  ${test_indexif_FILES} \
+ ${test_boolean_FILES} \
  ${test_follow_FILES}   \
  ${test_hrefonly_FILES} \
  ${test_idf_FILES} \
@@ -631,17 +735,23 @@ EXTRA_DIST = msearchtest-run \
  ${test_quotes_FILES}   \
  ${test_revalias_FILES} \
  ${test_revalias1_FILES} \
+ ${test_range_FILES} \
  ${test_multi_FILES} \
  ${test_mecab_FILES} \
  ${test_meta_FILES} \
+ ${test_message_FILES} \
+ ${test_message_catdoc_FILES} \
  ${test_complexbody_FILES} \
  ${test_content_encoding_FILES} \
  ${test_charset_FILES} \
  ${test_rtfx_FILES} \
  ${test_sections_FILES} \
  ${test_sample_FILES} \
+ ${test_parsedocx_FILES} \
  ${test_parsehtml_FILES} \
+ ${test_parsertf_FILES} \
  ${test_pdftotext_FILES} \
+ ${test_pdftohtml_FILES} \
  ${test_guesser_FILES} \
  ${test_catdoc_FILES} \
  ${test_density_FILES} \
@@ -653,6 +763,7 @@ EXTRA_DIST = msearchtest-run \
  ${test_cachedcopy_FILES} \
  ${test_notfound_FILES} \
  ${test_notmodified_FILES} \
+ ${test_numeric_FILES} \
  ${test_openxml_FILES} \
  ${test_parsexml_FILES} \
  ${test_unidata_FILES} \
@@ -675,5 +786,6 @@ EXTRA_DIST = msearchtest-run \
  ${test_nwf_FILES} \
  ${test_cluster_FILES} \
  ${test_cmdline_FILES} \
- ${test_segment_cjk_FILES}
+ ${test_segment_cjk_FILES} \
+ ${test_user_score_FILES}
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -146,6 +146,12 @@ PgUnescape(char *dst, const char *src, size_t length)
 {
   char *dst0= dst;
   const char *srcend= src + length;
+  
+  /* Postgres 9.0 hex format */
+  if (length > 1 && src[0] == '\\' && src[1] == 'x')
+    return UdmHexDecode(dst, src + 2, length - 2);
+  
+  /* Traditional Postgres escape format */
   for ( ; src < srcend; dst++, src++)
   {
     if (*src == '\\' && src + 4 <= srcend &&
@@ -385,7 +391,7 @@ UdmPgSQLBind(UDM_DB *db, int pos, const void *data, int size, int type)
   if (type == UDM_SQLTYPE_INT32)
   {
     char *tmp= pgdb->small[pos];
-    const char *src= (char*) data;
+    const char *src= (const char*) data;
     /* Postgres uses big endian values in the protocol */
     tmp[0]= src[3];
     tmp[1]= src[2];

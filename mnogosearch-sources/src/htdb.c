@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -106,11 +106,11 @@ static void include_params(UDM_DB *db,const char *src,char *path,char *dst,
     switch (db->DBType)
     {
       case UDM_DB_MYSQL:
-        sprintf(dst, " LIMIT %d,%d", start, limit);
+        sprintf(dst, " LIMIT %d,%d", (int) start, limit);
         break;
       case UDM_DB_PGSQL:
       default:
-        sprintf(dst, " LIMIT %d OFFSET %d", limit, start);
+        sprintf(dst, " LIMIT %d OFFSET %d", limit, (int) start);
         break;
     }
   }
@@ -193,7 +193,7 @@ UdmHTDBProcessNonHTTPResponse(UDM_AGENT *A,
   UDM_DSTR tbuf;
   int rc= UDM_OK, status= 200;
   size_t row, nrows, ncols= UdmSQLNumCols(SQLRes), length= 0;
-  char dbuf[128]= "";
+  char dbuf[UDM_MAXTIMESTRLEN]= "";
   bzero((void*)&Item, sizeof(Item));
   UdmDSTRInit(&tbuf, 1024);
   
@@ -245,7 +245,7 @@ UdmHTDBProcessNonHTTPResponse(UDM_AGENT *A,
       {
         int last_mod_time= atoi(sqlval);
         strcpy(dbuf, "Last-Modified: ");
-        UdmTime_t2HttpStr(last_mod_time, dbuf + 15);
+        UdmTime_t2HttpStr(last_mod_time, dbuf + 15, sizeof(dbuf) - 15);
       }
     }
   }
@@ -287,8 +287,7 @@ int UdmHTDBGet(UDM_AGENT *Indexer,UDM_DOCUMENT *Doc)
     UdmDBInit(&dbnew);
     if (UDM_OK != (rc= UdmDBSetAddr(db, htdbaddr, UDM_OPEN_MODE_READ)))
     {
-      UdmLog(Indexer, UDM_LOG_ERROR, "%s HTDB address: %s",
-             rc == UDM_UNSUPPORTED ? "Unsupported" : "Invalid", htdbaddr);
+      UdmLog(Indexer, UDM_LOG_ERROR, "Error: %s", db->errstr);
       return UDM_ERROR;
     }
   }

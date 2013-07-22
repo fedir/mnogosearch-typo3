@@ -311,3 +311,44 @@ Tag=tag1
 - 226 bytes
 - 01 Jan 2004 00:00:00
 ---------------------
+Sorry, your search for nonexistent xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx did not find any results.
+---------------------
+Search for: this xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Search results: this : 5 / 5, xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx : stopword
+Results 1-5 of 5
+
+1. 
+http://site/test1.txt [5.256%]
+Tag=tag1
+<b>This</b> is a text file. No title available....
+- 41 bytes
+- 24 Nov 2005 10:00:00
+
+2. Test 3 title
+http://site/test3.html [5.249%]
+Tag=tag1
+<b>This</b> is the third test. No more tests ...
+- 162 bytes
+- 01 Jan 2003 00:00:00
+
+3. Test 2 title
+http://site/test2.html [5.239%]
+Tag=tag1
+<b>This</b> is the second test page. Here is the ...
+- 198 bytes
+- 01 Jan 2002 00:00:00
+
+4. Test 1 title
+http://site/test1.html [5.229%]
+Tag=tag1
+<b>This</b> is the first test page. Here is the ...
+- 224 bytes
+- 01 Jan 2001 00:00:00
+
+5. Test 4 title
+http://site/test4.html [5.211%]
+Tag=tag1
+... is in the end of the body. The word is <b>THIS</b>....
+- 226 bytes
+- 01 Jan 2004 00:00:00
+---------------------

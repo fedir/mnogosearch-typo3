@@ -4,6 +4,7 @@
   <!ENTITY general SYSTEM "general.xml">
   <!ENTITY httpcodes SYSTEM "httpcodes.xml">
   <!ENTITY content-enc SYSTEM "content-enc.xml">
+  <!ENTITY formats SYSTEM "formats.xml">
   <!ENTITY htmlparser SYSTEM "htmlparser.xml">
   <!ENTITY follow SYSTEM "follow.xml">
   <!ENTITY aliases SYSTEM "aliases.xml">
@@ -76,6 +77,7 @@
   <!ENTITY mnogo                 '<application>mnoGoSearch</application>'>
   <!ENTITY indexer               '<application>indexer</application>'>
   <!ENTITY search.cgi            '<application>search.cgi</application>'>
+  <!ENTITY udm-config            '<application>udm-config</application>'>
   <!ENTITY indexer.conf          '<filename>indexer.conf</filename>'>
   <!ENTITY indexer.conf-dist     '<filename>indexer.conf-dist</filename>'>
   <!ENTITY search.htm            '<filename>search.htm</filename>'>
@@ -96,6 +98,7 @@
   <!ENTITY html                  '<acronym>HTML</acronym>'>
   <!ENTITY sgml                  '<acronym>SGML</acronym>'>
   <!ENTITY xml                   '<acronym>XML</acronym>'>
+  <!ENTITY rtf                   '<acronym>RTF</acronym>'>
   <!ENTITY cgi                   '<acronym>CGI</acronym>'>
   <!ENTITY ssi                   '<acronym>SSI</acronym>'>
   <!ENTITY ram                   '<acronym>RAM</acronym>'>
@@ -120,6 +123,7 @@
   <!ENTITY os-unix               '<application>UNIX</application>'>
   <!ENTITY os-windows            '<application>Windows</application>'>
   <!ENTITY os-freebsd            '<application>FreeBSD</application>'>
+  <!ENTITY os-x-lion             '<application>OS X Lion</application>'>
 
   <!ENTITY app-mysql             '<application>MySQL</application>'>
   <!ENTITY app-pgsql             '<application>PostgreSQL</application>'>
@@ -129,6 +133,7 @@
   <!ENTITY app-sybase            '<application>Sybase</application>'>
   <!ENTITY app-mssql             '<application>Microsoft SQL Server</application>'>
   <!ENTITY app-interbase         '<application>Interbase</application>'>
+  <!ENTITY app-firebird          '<application>Firebird</application>'>
   <!ENTITY app-mimer             '<application>MimerSQL</application>'>
   <!ENTITY app-virtuoso          '<application>OpenLink Virtuoso</application>'>
   <!ENTITY app-monetdb           '<application>MonetDB</application>'>
@@ -146,6 +151,8 @@
   <!ENTITY def-is-no             'The default value is <literal>no</literal>'>
   <!ENTITY def-is-0              'The default value is <literal>0</literal>'>
   <!ENTITY def-is-1              'The default value is <literal>1</literal>'>
+
+  <!ENTITY maxwordperquery       '<literal>64</literal>'>
 
   <!ENTITY scope-global-multiple 'takes global effect for the entire
                                   configuration file and can be used
@@ -180,10 +187,10 @@
 ]>
 <book>
   <bookinfo>
-    <title>&mnogo; 3.3.11 reference manual</title>
+    <title>&mnogo; 3.3.14 reference manual</title>
     <subtitle>Full-featured search engine software</subtitle>
     <copyright>
-      <year>2001-2010</year>
+      <year>2001-2013</year>
       <holder>Lavtech.com corp.</holder>
     </copyright>
   </bookinfo>
@@ -209,6 +216,15 @@
   &stored;
 </chapter>
 
+
+<chapter id="file-formats"> <!-- TODO34: rename this -->
+  <title>Supported file formats and mime types</title>
+  &formats;
+  &htmlparser;
+</chapter>
+
+&parsers;
+
 <chapter id="extended-indexing">
   <title>Extended indexing features</title>
     &news;
@@ -219,11 +235,9 @@
     &dump-restore;
 </chapter>
 
-&htmlparser;
-&parsers;
 
 <chapter id="howstore">
-  <title>Storing &mnogo; data </title>
+  <title>&mnogo; word index formats</title>
   &sql-stor;
   &cachemode;
   &perf;
@@ -240,7 +254,7 @@
 
 
 <chapter id="international">
-  <title>Multiple languages support</title>
+  <title>Internationalization</title>
   &charset;
   &negotiation;
   &cjk;

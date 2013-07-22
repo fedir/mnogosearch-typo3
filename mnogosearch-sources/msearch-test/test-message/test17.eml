@@ -1,0 +1,6 @@
+From: Alexander Barkov <bar@mnogosearch.org>
+Subject: Subj1 а б в г д Subj2
+Content-Type: text/plain; charset=utf-8
+X-Comment: testing non-encoded header with extended characters
+
+Body

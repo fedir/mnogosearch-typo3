@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -555,7 +555,7 @@ int UdmWordCacheWrite (UDM_AGENT *Indexer, UDM_DB *db, size_t limit)
 {
   size_t i;
   size_t in_num, in_limit= UdmVarListFindInt(&Indexer->Conf->Vars, "URLSelectCacheSize", URL_DELETE_CACHE);
-  size_t LastLocked = 0;
+  int LastLocked = 0;
   int rc;
   UDM_WORD_CACHE *cache = &db->WordCache;
   UDM_DSTR buf, qbuf;
@@ -564,7 +564,9 @@ int UdmWordCacheWrite (UDM_AGENT *Indexer, UDM_DB *db, size_t limit)
   char arg[128];
 
   if (cache->nbytes <= limit) return(UDM_OK);
-  UdmLog(Indexer, UDM_LOG_ERROR, "Writing words (%d words, %d bytes%s).", cache->nwords, cache->nbytes, limit ? "" : ", final");
+  UdmLog(Indexer, UDM_LOG_ERROR,
+         "Writing words (%d words, %d bytes%s).",
+         (int) cache->nwords, (int) cache->nbytes, limit ? "" : ", final");
 
   UDM_THREADINFO(Indexer, "Starting tnx", "");
   if(UDM_OK!=(rc=UdmSQLBegin(db)))
@@ -591,7 +593,7 @@ int UdmWordCacheWrite (UDM_AGENT *Indexer, UDM_DB *db, size_t limit)
     /* Don't allow too long IN list */
     if (++in_num >= in_limit || (i + 1) == cache->nurls)
     {
-      size_t dictno;
+      int dictno;
       for (dictno= 0; dictno <= MULTI_DICTS; dictno++)
       {
         udm_snprintf(arg, sizeof(arg), "dict%02X", dictno);
@@ -781,7 +783,6 @@ UdmStoreWordsMulti(UDM_AGENT *Indexer, UDM_DB *db, UDM_DOCUMENT *Doc)
   int rc= UDM_OK;
   urlid_t  url_id= UdmVarListFindInt(&Doc->Sections, "ID", 0);
   unsigned char PrevStatus= UdmVarListFindInt(&Doc->Sections, "PrevStatus", 0) ? 1 : 0;
-  int WordCacheSize= UdmVarListFindInt(&Indexer->Conf->Vars, "WordCacheSize", 0);
 
   /*
     Don't need to delete words here.
@@ -795,13 +796,9 @@ UdmStoreWordsMulti(UDM_AGENT *Indexer, UDM_DB *db, UDM_DOCUMENT *Doc)
       return rc;
   }
   
-  if (WordCacheSize <= 0) WordCacheSize = 0x800000;
-
   if (PrevStatus) UdmWordCacheAddURL(&db->WordCache, url_id);
 
-  rc= UdmWordCacheAddWordList(&db->WordCache, &Doc->Words, url_id);
-  rc= UdmWordCacheWrite(Indexer, db, WordCacheSize);
-  
+  rc= UdmWordCacheAddWordList(&db->WordCache, &Doc->Words, url_id);  
   return(rc);
 }
 
@@ -858,6 +855,10 @@ UdmMultiAddCoords(UDM_FINDWORD_ARGS *args, UDM_SQLRES *SQLRes)
     UdmURLCRDListSortByURLThenSecnoThenPos(&CoordList);
     UdmURLCRDListListAddWithSort2(args, &CoordList);
   }
+  else
+  {
+    UdmFree(CoordList.Coords);
+  }
   args->Word.count= CoordList.ncoords;
   return UDM_OK;
 }
@@ -868,7 +869,7 @@ UdmFindWordMulti(UDM_FINDWORD_ARGS *args)
 {
   char qbuf[4096], secno[64]= "";
   UDM_SQLRES SQLRes;
-  size_t tnum, tmin, tmax;
+  int tnum, tmin, tmax;
   udm_timer_t ticks;
   int rc;
 
@@ -888,7 +889,8 @@ UdmFindWordMulti(UDM_FINDWORD_ARGS *args)
   }
 
   if (args->Word.secno)
-    udm_snprintf(secno, sizeof(secno), " AND dict.secno=%d", args->Word.secno);
+    udm_snprintf(secno, sizeof(secno),
+                 " AND dict.secno=%d", (int) args->Word.secno);
 
   for(tnum= tmin; tnum <= tmax; tnum++)
   {
@@ -897,14 +899,14 @@ UdmFindWordMulti(UDM_FINDWORD_ARGS *args)
       udm_snprintf(qbuf, sizeof(qbuf) - 1,"\
 SELECT dict.url_id,dict.secno,dict.intag \
 FROM dict%02X dict, url%s \
-WHERE dict.word%s \
+WHERE dict.%s \
 AND url.rec_id=dict.url_id AND %s%s",
         tnum, args->db->from, args->cmparg, args->where, secno);
     }
     else
     {
       udm_snprintf(qbuf, sizeof(qbuf) - 1,
-                   "SELECT url_id,secno,intag FROM dict%02X dict WHERE word%s%s",
+                   "SELECT url_id,secno,intag FROM dict%02X dict WHERE %s%s",
                    tnum, args->cmparg, secno);
     }
 
@@ -924,7 +926,7 @@ AND url.rec_id=dict.url_id AND %s%s",
 static int
 UdmDeleteWordsFromURLMulti(UDM_AGENT *Indexer, UDM_DB *db, urlid_t url_id)
 {
-  size_t i;
+  int i;
   char qbuf[512];
   for(i= 0; i <= MULTI_DICTS; i++)
   {
@@ -942,7 +944,7 @@ static int
 UdmTruncateDictMulti(UDM_AGENT *Indexer,UDM_DB *db)
 {
   int rc= UDM_OK;
-  size_t i;
+  int i;
   for(i= 0 ; i <= MULTI_DICTS; i++)
   {
     char tablename[32];
@@ -957,8 +959,8 @@ UdmTruncateDictMulti(UDM_AGENT *Indexer,UDM_DB *db)
 static int
 UdmMulti2BlobSQL(UDM_AGENT *Indexer, UDM_DB *db, UDM_URLDATALIST *URLList)
 {
-  size_t t, i, use_deflate= 0;
-  int rc;
+  size_t i, use_deflate= 0;
+  int t, rc;
   UDM_SQLRES SQLRes;
   char buf[128], wtable[64];
   size_t srows = 0;
@@ -1054,7 +1056,7 @@ UdmMulti2BlobSQL(UDM_AGENT *Indexer, UDM_DB *db, UDM_URLDATALIST *URLList)
     }
   }
 
-  UdmLog(Indexer, UDM_LOG_ERROR, "Total records converted: %d", srows);
+  UdmLog(Indexer, UDM_LOG_ERROR, "Total records converted: %d", (int) srows);
   if (UDM_OK != (rc= UdmBlobWriteTimestamp(Indexer, db, wtable)))
     return rc;
 
@@ -1071,8 +1073,7 @@ UdmMulti2BlobSQL(UDM_AGENT *Indexer, UDM_DB *db, UDM_URLDATALIST *URLList)
 static int
 UdmWordStatCreateMulti(UDM_AGENT *A, UDM_DB *db)
 {
-  int rc;
-  size_t i;
+  int rc, i;
   
   for (i=0; i <= 0xFF; i++)
   {

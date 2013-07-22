@@ -1,0 +1,6 @@
+From: Alexander Barkov <bar@mnogosearch.org>
+Content-Type: application/xxx
+Content-Transfer-Encoding: base64
+
+This test checks mismatch between Content-Transfer-Encoding
+and the actual content.

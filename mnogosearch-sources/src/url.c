@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,6 +28,18 @@
 #include "udm_url.h"
 #include "udm_utils.h"
 
+
+const char *UdmURLErrorStr(int rc)
+{
+  switch (rc)
+  {
+    case UDM_URL_OK:   return "URL is OK";
+    case UDM_URL_LONG: return "URL is too long";
+    case UDM_URL_BAD:  return "Bad URL";
+    default: break;
+  }
+  return "Unknown error";
+}
 
 
 UDM_URL * __UDMCALL UdmURLInit(UDM_URL *url)
@@ -295,6 +307,31 @@ UdmURLQueryStringAppend(char *dst, const char *query)
 }
 
 
+/*
+ Microsoft Windows systems often use underscores in hostnames.
+ Let's allow underscores as well.
+*/
+static char hostname_valid_characters[256]=
+{
+/*00*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*10*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*20*/  0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,  /*  !"#$%&'()*+,-./ */
+/*30*/  1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,  /* 0123456789:;<=>? */
+/*40*/  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,  /* @ABCDEFGHIJKLMNO */
+/*50*/  1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,  /* PQRSTUVWXYZ[\]^_ */
+/*60*/  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,  /* `abcdefghijklmno */
+/*70*/  1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,  /* pqrstuvwxyz{|}~  */
+/*80*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*90*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*A0*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*B0*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*C0*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*D0*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*E0*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*F0*/  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+
+
 int UdmURLParse(UDM_URL *url,const char *src)
 {
   char *anchor, *query;
@@ -378,7 +415,12 @@ int UdmURLParse(UDM_URL *url,const char *src)
       }
       
       /* Convert hostname to lowercase */
-      for (s= url->hostname; *s; *s= tolower(*s), s++);
+      for (s= url->hostname; *s; *s= tolower(*s), s++)
+      {
+        /* TODO: convert to international domain format */
+        if (!hostname_valid_characters[((unsigned char *)s)[0]])
+          return UDM_URL_BAD;
+      }
     }
     else
     {

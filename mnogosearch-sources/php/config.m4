@@ -1,6 +1,6 @@
 dnl
-dnl $Source: /home/bar/cvsroot/mnogosearch33/php/config.m4,v $
-dnl $Id: config.m4,v 1.1 2006/10/04 13:15:45 bar Exp $
+dnl $Source$
+dnl $Id$
 dnl
 
 PHP_ARG_WITH(mnogosearch,for mnoGoSearch support,

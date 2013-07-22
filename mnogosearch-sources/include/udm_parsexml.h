@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -24,6 +24,16 @@
 
 #define UDM_XML_SKIP_TEXT_NORMALIZATION 1
 
+struct xml_stack_st;
+
+typedef struct xml_handler_st
+{
+  int (*enter_action)(struct xml_stack_st *st, const char *val, size_t len);
+  int (*value_action)(struct xml_stack_st *st, const char *val, size_t len);
+  int (*leave_action)(struct xml_stack_st *st, const char *val, size_t len);
+} UDM_XML_HANDLER;
+
+
 typedef struct xml_stack_st
 {
   char errstr[128];
@@ -35,9 +45,7 @@ typedef struct xml_stack_st
   char question;
   int flags;
   void *user_data;
-  int (*enter)(struct xml_stack_st *st, const char *val, size_t len);
-  int (*value)(struct xml_stack_st *st, const char *val, size_t len);
-  int (*leave_xml)(struct xml_stack_st *st, const char *val, size_t len);
+  UDM_XML_HANDLER handler;
 } UDM_XML_PARSER;
 
 
@@ -46,6 +54,7 @@ extern void UdmXMLParserFree(UDM_XML_PARSER *p);
 extern void UdmXMLSetValueHandler(UDM_XML_PARSER *p, int (*action)(UDM_XML_PARSER *p, const char *s, size_t l));
 extern void UdmXMLSetEnterHandler(UDM_XML_PARSER *p, int (*action)(UDM_XML_PARSER *p, const char *s, size_t l));
 extern void UdmXMLSetLeaveHandler(UDM_XML_PARSER *p, int (*action)(UDM_XML_PARSER *p, const char *s, size_t l));
+extern void UdmXMLSetHandler(UDM_XML_PARSER *p, const UDM_XML_HANDLER *handler);
 extern void UdmXMLSetUserData(UDM_XML_PARSER *p, void *user_data);
 extern const char *UdmXMLErrorString (UDM_XML_PARSER *p);
 extern size_t UdmXMLErrorPos(UDM_XML_PARSER *p);

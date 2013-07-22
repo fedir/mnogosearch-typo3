@@ -4,6 +4,357 @@
   <sect1 id="changelog-3-3">
     <title>Changes in 3.3</title>
 
+    <sect2 id="changelog-3-3-14">
+      <title>Changes in 3.3.14 (April 02, 2013)</title>
+      <itemizedlist>
+        <listitem><para>
+         <type>DOCX</type> and <type>&rtf;</type>
+         <link linkend="built-in-parsers">built-in parsers</link> were added.
+        </para></listitem>
+
+        <listitem><para>
+        It's now possible to use the <varname>$(ConfDir)</varname>,
+        <varname>$(ShareDir)</varname>, <varname>$(VarDir)</varname>,
+        <varname>$(TmpDir)</varname> template variables in &search.htm;, e.g.:
+<programlisting>
+Include $(ConfDir)/common.inc
+DBAddr sqlite3:///$(VarDir)/mnogosearch.sqlite3/
+</programlisting>
+        Previously these variables were understood only in &indexer.conf;.
+        </para></listitem>
+
+        <listitem><para>
+        A minor fix in installation layout was made:
+        the <literal>--docdir</literal> parameter to
+        <filename>configure</filename> is now
+        respected, and the &html; documentation is now
+        installed to <filename>PREFIX/share/doc/mnogosearch/</filename> by default.
+        Previously <literal>--docdir</literal> was ignored, and the
+        documentation was installed <filename>to PREFIX/doc/</filename>.
+        </para></listitem>
+
+        <listitem><para>
+        Files to build <application>rpm</application> and
+        <application>deb</application> binary packages were added.
+        </para></listitem>
+
+        <listitem><para>
+        A few minor problems discovered by the code static analysis tools  were fixed.
+        </para></listitem>
+
+        <listitem><para>    
+        Unassigned <literal>euc-jp</literal> characters were converted to
+        <literal>U+0000</literal> instead of the question mark when
+        converting to other character sets.
+        </para></listitem>
+
+        <listitem><para>
+        Context snippets did not work well if the <varname>CachedCopy</varname>
+        section name was written the in lower case in &indexer.conf;.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that static linking against <application>MySQL-5.5</application>
+        client library failed because of the missing <literal>-ldl</literal>
+        linker flag.
+        </para></listitem>
+
+        <listitem><para>
+         Fixed a crash in &search.cgi; when compiled in extra debug mode with
+         <literal>--enable-trace</literal> on a 64-bit machine.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that &indexer; failed with the error
+        "<emphasis>Integer does not fit into column</emphasis>"
+        on 64-bit machines when running with the &app-virtuoso; backend.
+        </para></listitem>
+      </itemizedlist>
+   </sect2>
+
+    <sect2 id="changelog-3-3-13">
+      <title>Changes in 3.3.13 (March 03, 2013)</title>
+      <itemizedlist>
+        <listitem><para>
+        Bug#4818 "Arbitrary Files Reading in mnoGoSearch" was fixed.
+        This is a security bug. All users of the earlier
+        <literal>3.3.x</literal> releases are highly advised to upgrade.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#4819 "Variables Overwriting in mnoGoSearch" was fixed.
+        &search.cgi; was vulnerable to Cross-Site Scripting in cases when
+        values of some empty pre-defined internal variables were replaced
+        in the &http; query string
+        (e.g. <literal>search.cgi?q=test&amp;stored=%3Cscript%3E</literal>).
+        Now all variables coming from the query string are automatically
+        &html;-escaped in the <literal>$(var)</literal> template format.
+        </para>
+        <para>The meaning of <literal>$&(var)</literal> has not changed,
+        it still applies &html; escaping to all variables,
+        both coming from the query string and those generated internally.
+        </para></listitem>
+
+        <listitem><para>
+        Support for "<literal>Content-Type: message/rfc822</literal>" was added
+        (<filename>*.eml</filename> and <filename>*.mht</filename> files),
+        including multi-part messages and messages with attachments,
+        with <literal>Content-Transfer-Encoding</literal> of types
+        <literal>7bit</literal>, <literal>8bit</literal>,
+        <literal>base64</literal> and <literal>quoted-printable</literal>.
+        When processing attachments, &indexer; can use external parsers.
+        For example, if &indexer; is configured to use
+        <application>catdoc</application> for the documents of the type
+        <literal>application/msword</literal>,
+        then &indexer; also executes <application>catdoc</application>
+        for the attachments of this type.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#4803 "buffer overflow detected with &search.cgi;" was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that &search.cgi; did not use &html; entities
+        (<literal>&amp;lt;</literal>, <literal>&amp;gt;</literal>
+         and <literal>&amp;amp;</literal>)
+        to escape special characters when displaying cached copy for
+        a document of type <literal>text/plain</literal>.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that the "<option>dm</option>" search parameter
+        <ulink url="http://www.mnogosearch.org/board/message.php?id=21415">
+        did not work</ulink> in some cases.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that the "<option>su</option>" search parameter (user defined order)
+        was not taken into account by search query cache, thus
+        wrong cache hits were returned in some cases.
+        </para></listitem>
+
+        <listitem><para>
+        Bugs in synonym processing were fixed:
+        a word form generated from synonyms could be searched twice in the database;
+        bad memory access when using
+        "<xref linkend="cmdref-complexsynonyms"/> <literal>yes</literal>".
+        </para></listitem>
+
+        <listitem><para>
+        A memory leak bug was fixed in the code producing word forms
+        from an &app-ispell; dictionary.
+        </para></listitem>
+
+        <listitem><para>
+        Improved compatibility with the latest versions of &app-pgsql;.
+        Escaping of the &sql; character literals for
+        &app-pgsql; &gt;= <literal>90000</literal>
+        was changed from the C-alike stype (using backslash) to the
+        standard &sql; style.
+        </para></listitem>
+
+        <listitem><para>
+        Data type for the column "url.url" for Firebird was changed
+        from varchar(127) to varchar(247), which is the longest indexable
+        varchar in a Firebird database with <literal>page_size=1024</literal>
+        (bug#2125).
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that &mnogo; did not work with <application>Mecab</application>
+        (Japanese segmenter) dictionaries encoded in utf-8 encoded.
+        </para></listitem>
+        
+        <listitem><para>
+        Fixed that &indexer; silently ignored the <option>-u</option>
+        values (URL limits) longer than 64 characters (bug#4800, bug#4689).
+        </para></listitem>
+        
+        <listitem><para>
+        Fixed a bug in the code handling excerpts. It did not work well in cases when context
+        following a highlighted word have no space characters and ExcerptPadding
+        ends in the middle of the next highlighted word. The entire excerpt
+        was erroneously highlighted in such cases.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that the &app-php; extension module did not compile
+        with <application>PHP-5.4</application> (bug#4808).
+        </para></listitem>
+
+        <listitem><para>
+        Fixed a crash in &indexer; happened on processing a
+        <literal>message/http</literal> response in combination
+        with an external parser returning an empty response.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#4806 "Command Proxy without argument" was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#4359 "buffer overflow when doing using -Ewordstat option"
+        was fixed.
+        </para></listitem>
+        <listitem><para>A few compilation warnings on 64bit platforms
+        were fixed.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#4722 "Error messages display directly on web page" was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#4718 "sqlite3 driver: (1) cannot start a transaction within a transaction"
+        was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that in case of <option>LiveUpdates=yes</option>
+        &search.cgi; erroneously printed the error
+        "<emphasis>word index not found</emphasis>"
+        when the query produced no results.
+        </para></listitem>
+
+        <listitem><para>
+        A few dead links in <xref linkend="pars-links"/> were fixed.
+        </para></listitem>
+        
+        <listitem><para>
+        Bug#4814 PATCH to add <application>libpwd</application> parser
+        configuration for indexing <application>WordPerfect</application> docs.
+        </para></listitem>
+
+        <listitem><para>
+        Bug#4817 PATCH to add <application>libpws</application> (*.wps)
+        parser configuration for <application>MS Works</application> docs.
+        </para></listitem>
+
+        <listitem><para>
+        <application>autoconf</application> warnings were fixed.
+        &app-mysql; client library detection was improved for &os-x-lion;.
+        </para></listitem>
+
+      </itemizedlist>
+   </sect2>
+
+
+
+    <sect2 id="changelog-3-3-12">
+      <title>Changes in 3.3.12 (December 15, 2011)</title>
+      <itemizedlist>
+
+        <listitem><para>
+        An &sql; injection that happened because of weak control
+        of valid characters in host names in hypertext links was fixed.
+        The injection was possible with the databases supporting
+        multiple statements in a single &sql; query:
+        with &app-mysql; (when <option>ClientMultiStatement=yes</option>
+        option is enabled in &cmd-dbaddr;) as well as with &app-pgsql;.
+        </para></listitem>
+
+        <listitem><para>
+        A new search query syntax for <link linkend="range-search">range search</link>
+        was added. For example, <programlisting>[jan TO john]</programlisting>
+        will find documents having words in the range between <literal>jan</literal>
+        and <literal>john</literal>. The range search operators can be used
+        in combination with the other operators (e.g. phrase search, restricting
+        search word to a section, etc).
+        </para>
+        </listitem>
+        
+        <listitem>
+        <para>
+        A new &search.htm; command
+        <command><xref linkend="cmdref-userangeoperators"/></command>
+        was added to activate range search operators
+        (which are disabled by default).
+        </para></listitem>
+
+        <listitem><para>
+        A new option <option>decimal</option> was added to the
+        &cmd-section; command. Words of the sections marked with this option
+        are treated as decimal numbers. This, for example,
+        allows numeric range search for the given section.
+        The query:
+        <programlisting>title:t-shirt price:[10.1 TO 200]</programlisting>
+        will find documents having <literal>t-shirt</literal> in
+        title and with price in the range <literal>10.1</literal> to
+        <literal>200</literal>. See the <xref linkend="cmdref-section"/>
+        command description how to mark a section as decimal.
+        </para></listitem>
+
+        <listitem><para>
+        <option>--help</option> command line &indexer; option was added
+        as a synonym for <option>-h</option>.
+        </para></listitem>
+
+        <listitem><para>A description how to use <application>pdftohtml</application>
+        converter was added into &indexer.conf-dist; and into the
+        <link linkend="pars-pdf">manual</link>.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that &indexer; allowed malformed &urls; containing non-ASCII
+        characters in host names, which led to &sql; errors on attempt
+        to insert a malformed &url; into the database, for example:
+        <computeroutput>
+        PQexec: ERROR:  invalid byte sequence for encoding "UTF8": 0xbf.
+        </computeroutput>
+        </para></listitem>
+
+        <listitem><para>
+        A bug in &udm-config; was fixed.
+        Due to this bug, linking of the &mnogo; &app-php; module failed
+        with the error <computeroutput>cannot find -lmnogosearch</computeroutput>.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that the &app-firebird; (&app-interbase;) API did not work
+        with SQL_LONG data type correctly on x86_64 platforms.
+        </para></listitem>
+
+        <listitem><para>
+        UDM_MAXTIMESTRSIZE constant was changed from 35 to 64,
+        as <function>strftime()</function> can return a result
+        longer than 35 characters on some operating systems (e.g. AIX).
+        Too small constant value led to a wrong or a zero value in the
+        <varname>$(Last-Modified)</varname> template variable on AIX.
+        </para></listitem>
+
+        <listitem><para>
+        Fixed that &app-mssql; driver did not work with database names
+        consisting only of digit characters.
+        </para></listitem>
+
+        <listitem><para>
+        Compilation problems when building using
+        <option>--without-pthreads</option> where fixed.
+        </para></listitem>
+
+        <listitem><para>
+        A compilation problem happened on AIX5/AIX6 because of wrong
+        thread compiler flags was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        A compilation problem with &app-sybase; client library on
+        64-bit &os-linux; platforms was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        "Bug#4704 Indexing various binaries as XML" was fixed.
+        </para></listitem>
+
+        <listitem><para>
+        "Bug#8299 Wrong score when UserScore gets 0 and UserScoreFactor is set"
+        was fixed.
+        </para></listitem>
+
+      </itemizedlist>
+   </sect2>
+
     <sect2 id="changelog-3-3-11">
       <title>Changes in 3.3.11 (January 27, 2011)</title>
       <itemizedlist>
@@ -125,14 +476,6 @@
         into the distribution, so <command><literal>make check</literal></command> did not work
         outside &mnogo; &app-cvs; tree.
         </para></listitem>
-
-<!--
-        <listitem><para>
-        </para></listitem>
-        <listitem><para>
-        </para></listitem>
-
--->
 
       </itemizedlist>
    </sect2>

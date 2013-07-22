@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -84,6 +84,16 @@ UdmWordInWWList(UDM_WIDEWORDLIST *List, int *tok, size_t toklen,
   return NULL;
 }
 #endif
+
+
+void
+UdmExcerptConvInit(UDM_HIGHLIGHT_CONV *cnv,
+                   UDM_CHARSET *wcs, UDM_CHARSET *src, UDM_CHARSET *dst)
+{
+  UdmConvInit(&cnv->uni_wcs, &udm_charset_sys_int, wcs, UDM_RECODE_HTML);
+  UdmConvInit(&cnv->src_uni, src, &udm_charset_sys_int, UDM_RECODE_HTML);
+  UdmConvInit(&cnv->uni_dst, &udm_charset_sys_int, dst, UDM_RECODE_HTML);
+}
 
 
 static UDM_WIDEWORD*
@@ -228,7 +238,7 @@ size_t
 UdmHlConvertExtWithConv(UDM_AGENT *Agent, char *dst, size_t dstmaxlen,
                         UDM_WIDEWORDLIST *List,
                         const char *src, size_t srclen,
-                        UDM_CONV *uni_wcs, UDM_CONV *lc_uni, UDM_CONV *uni_bc,
+                        UDM_HIGHLIGHT_CONV *ec,
                         int hilight_stopwords, int segmenter)
 {
   int		*tok, *lt, ctype, *uni, *uend;
@@ -246,7 +256,7 @@ UdmHlConvertExtWithConv(UDM_AGENT *Agent, char *dst, size_t dstmaxlen,
   /* Convert to unicode */
   unimaxlen= (srclen + 10) * sizeof(int);
   uni= (int *)UdmMalloc(unimaxlen);
-  ulen= UdmConv(lc_uni,(char*)uni, unimaxlen, src, srclen) / sizeof(int);
+  ulen= UdmConv(&ec->src_uni,(char*)uni, unimaxlen, src, srclen) / sizeof(int);
   uni[ulen]= '\0';
   if (segmenter)
   {
@@ -267,16 +277,16 @@ UdmHlConvertExtWithConv(UDM_AGENT *Agent, char *dst, size_t dstmaxlen,
       /* Don't append delimiters added by segmenter */
       if (segmenter && toklen == 1 && *tok == 0x09)
         continue;
-      dstlen= UdmHlAppend(uni_bc, NULL, dst, dstlen, dstmaxlen, tok, toklen);
+      dstlen= UdmHlAppend(&ec->uni_dst, NULL, dst, dstlen, dstmaxlen, tok, toklen);
     }
     else
     {
       UDM_WIDEWORD *found= UdmWordInWWList2(List, tok, toklen,
-                                            uni_wcs, lc_uni, uni_bc,
+                                            &ec->uni_wcs, &ec->src_uni, &ec->uni_dst,
                                             hilight_stopwords, expected_phrpos);
       if (found)
       {
-        dstlen= UdmHlAppend(uni_bc, found, dst, dstlen, dstmaxlen, tok, toklen);
+        dstlen= UdmHlAppend(&ec->uni_dst, found, dst, dstlen, dstmaxlen, tok, toklen);
         nfound++;
         if (found->phrpos + 1 == found->phrlen)
         {
@@ -296,7 +306,7 @@ UdmHlConvertExtWithConv(UDM_AGENT *Agent, char *dst, size_t dstmaxlen,
         /* No word found on expected phrase position, rollback */
         if (nfound)
         {          
-          dstlen= UdmRemoveHl(uni_bc->to, dst, dstlen_phr, dstlen);
+          dstlen= UdmRemoveHl(ec->uni_dst.to, dst, dstlen_phr, dstlen);
           /*
             Search the same word on the first position,
             it can start new phrase.
@@ -305,19 +315,19 @@ UdmHlConvertExtWithConv(UDM_AGENT *Agent, char *dst, size_t dstmaxlen,
             Query: "a-b"
           */
           found= UdmWordInWWList2(List, tok, toklen,
-                                  uni_wcs, lc_uni, uni_bc,
+                                  &ec->uni_wcs, &ec->src_uni, &ec->uni_dst,
                                   hilight_stopwords, 0);
           if (found)
           {
             dstlen_phr= dstlen;
             expected_phrpos= 1;
             nfound= 1;
-            dstlen= UdmHlAppend(uni_bc, found, dst, dstlen, dstmaxlen, tok, toklen);
+            dstlen= UdmHlAppend(&ec->uni_dst, found, dst, dstlen, dstmaxlen, tok, toklen);
             continue;
           }
         }
         
-        dstlen= UdmHlAppend(uni_bc, NULL, dst, dstlen, dstmaxlen, tok, toklen);
+        dstlen= UdmHlAppend(&ec->uni_dst, NULL, dst, dstlen, dstmaxlen, tok, toklen);
         dstlen_phr= dstlen;
         expected_phrpos= 0;
         nfound= 0;
@@ -332,10 +342,10 @@ UdmHlConvertExtWithConv(UDM_AGENT *Agent, char *dst, size_t dstmaxlen,
   if (expected_phrpos > 0)
   {
     /* Roll back: incomplete last phrase */
-    dstlen= UdmRemoveHl(uni_bc->to, dst, dstlen_phr, dstlen);
+    dstlen= UdmRemoveHl(ec->uni_dst.to, dst, dstlen_phr, dstlen);
   }
 
-  UdmConv(uni_bc, dst + dstlen, dstmaxlen, (char*) &i0, sizeof(i0));
+  UdmConv(&ec->uni_dst, dst + dstlen, dstmaxlen, (char*) &i0, sizeof(i0));
   UdmFree(uni);
   return dstlen;
 }
@@ -343,7 +353,7 @@ UdmHlConvertExtWithConv(UDM_AGENT *Agent, char *dst, size_t dstmaxlen,
 static char*
 UdmHlConvertExtWithConvDup(UDM_WIDEWORDLIST *List,
                            const char *src, size_t srclen,
-                           UDM_CONV *uni_wcs, UDM_CONV *lc_uni, UDM_CONV *uni_bc,
+                           UDM_HIGHLIGHT_CONV *ec,
                            int hlstop)
 {
   size_t dstlen;
@@ -353,7 +363,7 @@ UdmHlConvertExtWithConvDup(UDM_WIDEWORDLIST *List,
   dst= (char*)UdmMalloc(dstlen);
   UdmHlConvertExtWithConv(NULL, dst, dstlen,
                           List, src, srclen,
-                          uni_wcs, lc_uni, uni_bc, hlstop, 0);
+                          ec, hlstop, 0);
   return dst;
 }
 
@@ -467,13 +477,10 @@ size_t UdmHlConvertExt(UDM_AGENT *Agent, char *dst, size_t dstlen,
                        UDM_CHARSET * lcs, UDM_CHARSET * bcs,
                        int hlstop, int segmenter)
 {
-  UDM_CONV lc_uni, uni_bc, uni_wcs;
-  UdmConvInit(&lc_uni, lcs, &udm_charset_sys_int, UDM_RECODE_HTML);
-  UdmConvInit(&uni_bc, &udm_charset_sys_int, bcs, UDM_RECODE_HTML);
-  UdmConvInit(&uni_wcs, &udm_charset_sys_int, wcs, UDM_RECODE_HTML);
+  UDM_HIGHLIGHT_CONV ec;
+  UdmExcerptConvInit(&ec, wcs, lcs, bcs);
   return UdmHlConvertExtWithConv(Agent, dst, dstlen, List, src, length,
-                                 &uni_wcs, &lc_uni, &uni_bc,
-                                 hlstop, segmenter);
+                                 &ec, hlstop, segmenter);
 }
 
 static
@@ -481,13 +488,9 @@ char *UdmHlConvertExtDup(UDM_WIDEWORDLIST *List, UDM_CHARSET *wcs,
                          const char * src, size_t srclen,
                          UDM_CHARSET * lcs, UDM_CHARSET * bcs, int hlstop)
 {
-  UDM_CONV lc_uni, uni_bc, uni_wcs;
-  UdmConvInit(&uni_wcs, &udm_charset_sys_int, wcs, UDM_RECODE_HTML);
-  UdmConvInit(&lc_uni, lcs, &udm_charset_sys_int, UDM_RECODE_HTML);
-  UdmConvInit(&uni_bc, &udm_charset_sys_int, bcs, UDM_RECODE_HTML);
-  return UdmHlConvertExtWithConvDup(List, src, srclen,
-                                    &uni_wcs, &lc_uni, &uni_bc,
-                                    hlstop);
+  UDM_HIGHLIGHT_CONV ec;
+  UdmExcerptConvInit(&ec, wcs, lcs, bcs);
+  return UdmHlConvertExtWithConvDup(List, src, srclen, &ec, hlstop);
 }
 
 
@@ -503,26 +506,29 @@ int UdmConvert(UDM_ENV *Conf, UDM_RESULT *Res,
                UDM_CHARSET *lcs, UDM_CHARSET *bcs)
 {
   size_t i;
-  UDM_CONV lc_bc, lc_uni, uni_bc;
+  UDM_CONV lc_bc;
+  UDM_HIGHLIGHT_CONV ec;
   int hlstop= UdmVarListFindBool(&Conf->Vars, "ExcerptStopword", 1);
 
   /* Init converters */
-  UdmConvInit(&lc_bc,lcs,bcs,UDM_RECODE_HTML);
-  UdmConvInit(&lc_uni, lcs, &udm_charset_sys_int, UDM_RECODE_HTML);
-  UdmConvInit(&uni_bc, &udm_charset_sys_int, bcs, UDM_RECODE_HTML);
-  
+  UdmConvInit(&lc_bc, lcs, bcs, UDM_RECODE_HTML);
+  UdmExcerptConvInit(&ec, bcs, lcs, bcs);
+
   /* Convert word list */
   for(i=0;i<Res->WWList.nwords;i++)
   {
     UDM_WIDEWORD *W=&Res->WWList.Word[i];
     size_t len= strlen(W->word);
-    char *newval= (char*)UdmMalloc(len * 12 + 1);
-
-    len= UdmConv(&lc_bc,newval,len*12+1,W->word,len);
-    newval[len]= '\0';
-    UDM_FREE(W->word);
-    W->word=newval;
-    W->len= len;
+    size_t newlen= UdmConvSizeNeeded(&lc_bc, len, UDM_RECODE_HTML);
+    char *newval= (char*)UdmMalloc(newlen + 1);
+    if (newval)
+    {
+      len= UdmConv(&lc_bc, newval, newlen, W->word, len);
+      newval[len]= '\0';
+      UDM_FREE(W->word);
+      W->word=newval;
+      W->len= len;
+    }
   }
   
   /* Convert document sections */
@@ -555,7 +561,7 @@ int UdmConvert(UDM_ENV *Conf, UDM_RESULT *Res,
           continue;
         newval= UdmHlConvertExtWithConvDup(&Res->WWList,
                                            Var->val, Var->curlen,
-                                           &uni_bc, &lc_uni, &uni_bc, hlstop);
+                                           &ec, hlstop);
         UDM_FREE(Var->val);
         Var->val= newval;
       }
@@ -571,11 +577,15 @@ int UdmConvert(UDM_ENV *Conf, UDM_RESULT *Res,
         strcasecmp(Var->name, "HlEnd"))
     {
       size_t len= strlen(Var->val);
-      char *newval= (char*)UdmMalloc(len * 12 + 1);
-    
-      UdmConv(&lc_bc, newval, len * 12 + 1, Var->val, len + 1);
-      UDM_FREE(Var->val);
-      Var->val= newval;
+      size_t newlen= UdmConvSizeNeeded(&lc_bc, len, UDM_RECODE_HTML);
+      char *newval= (char*) UdmMalloc(newlen + 1);
+      if (newval)
+      {
+        size_t convlen= UdmConv(&lc_bc, newval, newlen, Var->val, len);
+        newval[convlen]= '\0';
+        UDM_FREE(Var->val);
+        Var->val= newval;
+      }
     }
   }
   

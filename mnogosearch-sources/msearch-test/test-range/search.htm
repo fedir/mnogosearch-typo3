@@ -1,0 +1,59 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=blob&$(ENV.UDM_TEST_DBADDR_PARAM)
+
+HlBeg	<b>
+HlEnd	</b>
+LogLevel 6
+UseRangeOperators yes
+
+Section body  1 256
+Section title 2 256
+
+Section price 5 256 decimal
+-->
+
+<!--top-->
+<!--/top-->
+<!--restop-->
+Search for: $(q)
+Search results: $(WE)
+Results $(first)-$(last) of $(total)
+<!--/restop-->
+<!--res-->
+<!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
+$(Order). $&(Title)
+$(URL) [$(Score)]
+Tag=$(tag)
+$&(Body)...
+- $(Content-Length) bytes
+<!--/res-->
+<!--resbot-->
+<!--/resbot-->
+<!--clone-->
+<!--/clone-->
+<!--navleft-->
+<!--/navleft-->
+<!--navleft_nop-->
+<!--/navleft_nop-->
+<!--navbar1-->
+<!--/navbar1-->
+<!--navbar0-->
+<!--/navbar0-->
+<!--navright-->
+<!--/navright-->
+<!--navright_nop-->
+<!--/navright_nop-->
+<!--notfound-->
+Sorry, your search for $&(q) did not find any results.
+$(WE)
+<!--/notfound-->
+<!--noquery-->
+You haven't typed any word(s) to search for.
+<!--/noquery-->
+<!--error-->
+Error: $(E)
+<!--/error-->
+<!--bottom-->
+---------------------
+<!--/bottom-->

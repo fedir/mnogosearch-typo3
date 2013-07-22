@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ extern int UdmVarListAddEnviron(UDM_VARLIST *vars, const char *name);
 
 extern int UdmVarAppendStrn(UDM_VAR *var, const char *val, size_t len);
 extern __C_LINK int __UDMCALL UdmVarListAddStr(UDM_VARLIST * vars,const char * name, const char * val);
+extern int UdmVarListAddStrn(UDM_VARLIST * vars, const char * name, const char * val, size_t len);
 extern int UdmVarListAddQueryStr(UDM_VARLIST * vars,const char * name, const char * val);
 extern int UdmVarListAddInt(UDM_VARLIST * vars,const char * name, int val);
 extern int UdmVarListAddUnsigned(UDM_VARLIST * vars, const char * name, uint4 val);
@@ -62,14 +63,19 @@ extern int UdmVarListInsStr(UDM_VARLIST * vars,const char * name,const char * va
 extern int UdmVarListInsInt(UDM_VARLIST * vars,const char * name,int val);
 
 extern UDM_VAR *UdmVarListFind(UDM_VARLIST * vars,const char * name);
+extern UDM_VAR *UdmVarListFindBySecno(UDM_VARLIST *vars, int secno);
 extern UDM_VAR *UdmVarListFindWithValue(UDM_VARLIST * vars,const char * name,const char * val);
-
+extern UDM_VAR *UdmVarListFindByPrefix(UDM_VARLIST *Vars,
+                                       const char *prefix, size_t prefix_length);
 extern __C_LINK const char * __UDMCALL UdmVarListFindStr(UDM_VARLIST * vars,const char * name,const char * defval);
 extern __C_LINK int          UdmVarListFindInt(UDM_VARLIST * vars,const char * name,int defval);
 extern __C_LINK int          UdmVarListFindBool(UDM_VARLIST * vars,const char * name,int defval);
 extern __C_LINK unsigned     UdmVarListFindUnsigned(UDM_VARLIST * vars, const char * name, unsigned defval);
 extern __C_LINK double       UdmVarListFindDouble(UDM_VARLIST * vars, const char * name, double defval);
+extern __C_LINK UDM_CHARSET *UdmVarListFindCharset(UDM_VARLIST *Lst, const char *name, UDM_CHARSET *def);
 
 extern int UdmVarListConvert(UDM_VARLIST *L, UDM_CONV *conv);
+extern void UdmVarListPrint(UDM_VARLIST *L, FILE *f);
+
 extern void UdmFeatures(UDM_VARLIST *L);
 #endif

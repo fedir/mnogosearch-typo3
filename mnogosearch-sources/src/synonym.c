@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ __C_LINK int __UDMCALL UdmSynonymListLoad(UDM_ENV * Env,const char * filename)
   int          origin= UDM_WORD_ORIGIN_SYNONYM;
   UDM_UNIDATA  *unidata= Env->unidata;
   UDM_SYNONYMLIST Synonyms;
-  size_t       lineno= 0;
+  int          lineno= 0;
   
   UdmSynonymListInit(&Synonyms);
   
@@ -311,7 +311,7 @@ UdmSynonymListFind(UDM_WIDEWORDLIST *Res,
     
     /* Find first and last synonym */
     UdmWideWordListAddSynonymIterate(Res, List, res, wword, wword->word, -1);
-    UdmWideWordListAddSynonymIterate(Res, List, res, wword, wword->word, +1);
+    UdmWideWordListAddSynonymIterate(Res, List, res + 1, wword, wword->word, +1);
     
     /* Now find each of them in reverse order */
     nnorm=Res->nwords;
@@ -329,7 +329,7 @@ UdmSynonymListFind(UDM_WIDEWORDLIST *Res,
         /* Find first and last synonym */
         UdmWideWordListAddSynonymIterate(Res, List, res, wword, syn.p, -1);
         /* Note, "ww" is not valid here anymore, realloc could happen */
-        UdmWideWordListAddSynonymIterate(Res, List, res, wword, syn.p, +1);
+        UdmWideWordListAddSynonymIterate(Res, List, res + 1, wword, syn.p, +1);
       }
     }
   }

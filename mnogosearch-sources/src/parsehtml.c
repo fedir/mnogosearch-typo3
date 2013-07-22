@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -47,21 +47,6 @@
 #include "udm_searchtool.h"
 
 /****************************************************************/
-
-static UDM_VAR *
-UdmVarListFindByPrefix(UDM_VARLIST *Vars,
-                       const char *prefix, size_t prefix_length)
-{
-  size_t i;
-  for (i= 0; i < Vars->nvars; i++)
-  {
-    UDM_VAR *V= &Vars->Var[i];
-    if (!strncasecmp(V->name, prefix, prefix_length))
-      return V;
-  }
-  return NULL;
-}
-
 
 static int UdmReallocSection(UDM_AGENT *Indexer, UDM_VAR *Sec)
 {
@@ -112,7 +97,7 @@ int UdmPrepareWords(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc){
   int    crossec;
   int    strip_accents;
   char   *lcsword;  /* Word in LocalCharset */
-  size_t max_word_len, min_word_len, uwordlen = UDM_MAXWORDSIZE;
+  size_t uwordlen = UDM_MAXWORDSIZE;
   UDM_VAR *Sec;
   int raw_sections= (UdmVarListFindByPrefix(&Doc->Sections, "Raw.", 4) != NULL);
   const char *content_language= UdmVarListFindStr(&Doc->Sections, "Content-Language", "");
@@ -141,11 +126,6 @@ int UdmPrepareWords(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc){
 
   UdmConvInit(&dc_uni,doccs,sys_int,UDM_RECODE_HTML);
   UdmConvInit(&uni_lc,sys_int,loccs,UDM_RECODE_HTML);
-
-  UDM_GETLOCK(Indexer, UDM_LOCK_CONF);
-  max_word_len = Indexer->Conf->WordParam.max_word_len;
-  min_word_len = Indexer->Conf->WordParam.min_word_len;
-  UDM_RELEASELOCK(Indexer, UDM_LOCK_CONF);
   
   
   /* Now convert everything to UNICODE format and calculate CRC32 */
@@ -157,29 +137,50 @@ int UdmPrepareWords(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc){
     int    *lt, *tok, *ustr = NULL;
     UDM_TEXTITEM  *Item=&tlist->Item[i];
     char    secname[128];
+    char decimal[128];
 
     if (!Sec || strcasecmp(Sec->name, Item->section_name))
       Sec= UdmVarListFind(&Doc->Sections, Item->section_name);
 
-    srclen= strlen(Item->str);
+    if (Sec && (Sec->flags & UDM_VARFLAG_DECIMAL))
+    {
+      UdmNormalizeDecimal(decimal, sizeof(decimal), Item->str);
+      srclen= strlen(decimal);
+      src= decimal;
+    }
+    else
+    {
+      srclen= strlen(Item->str);
+      src= Item->str;
+    }
+    
     dstlen= (3 * (srclen + 1))*sizeof(int);  /* with '\0' */
     
     if ((ustr = (int*)UdmMalloc(dstlen)) == NULL)
     {
-      UdmLog(Indexer, UDM_LOG_ERROR, "%s:%d Can't alloc %u bytes", __FILE__, __LINE__, dstlen);
+      UdmLog(Indexer, UDM_LOG_ERROR,
+             "%s:%d Can't alloc %u bytes", __FILE__, __LINE__, (int) dstlen);
       res= UDM_ERROR;
       goto ex;
     }
     
-    src=Item->str;
     dst=(char*)ustr;
-    cnvlen= UdmConv(&dc_uni,dst,dstlen,src,srclen) / 4;
+    cnvlen= (Item->flags & UDM_TEXTLIST_FLAG_RFC1522) ?
+            UdmConvRFC1522(&dc_uni, dst, dstlen, src, srclen) / 4 :
+            UdmConv(&dc_uni, dst, dstlen, src, srclen) / 4;
     ustr[cnvlen]= 0;
     
     ustr_char_len= UdmUniRemoveDoubleSpaces(ustr);
 
-    /* Append section text */
-    if(Sec && Sec->curlen < Sec->maxlen &&
+    /*
+      Append section text.
+      Note, we need to check ustr_char_len,
+      because if the original string consisting of entities like "&nbsp;",
+      it can turn into an empty string after UdmUniRemoveDoubleSpaces().
+      No needs to call UdmReallocSection() in this case,
+      to avoid unnecessary extra space delimiter.
+    */
+    if(Sec && Sec->curlen < Sec->maxlen && ustr_char_len &&
        !(Item->flags & UDM_TEXTLIST_FLAG_SKIP_ADD_SECTION))
     {
       int cnvres;
@@ -337,15 +338,6 @@ UdmTextListAddWithConversion(UDM_DOCUMENT *Doc,
   return UDM_OK;  
 }
 
-
-static UDM_CHARSET *
-UdmVarListFindCharset(UDM_VARLIST *Lst, const char *name, UDM_CHARSET *def)
-{
-  UDM_CHARSET *res;
-  if ((name= UdmVarListFindStr(Lst, name, NULL)) && (res= UdmGetCharSet(name)))
-    return res;
-  return def;
-}
 
 int UdmParseURLText(UDM_AGENT *A,UDM_DOCUMENT *Doc)
 {
@@ -703,16 +695,6 @@ UdmDocAddHref(UDM_DOCUMENT *Doc, char *href, const char *crosstext)
 }
 
 
-static inline int
-udm_strnncasecmp(const char *s, size_t slen, const char *t, size_t tlen)
-{
-  if (slen != tlen)
-    return 1;
-  return strncasecmp(s, t, slen);
-}
-
-
-
 int UdmHTMLParseTag(UDM_HTMLTOK * tag,UDM_DOCUMENT * Doc)
 {
   UDM_TEXTITEM Item;
@@ -782,7 +764,7 @@ int UdmHTMLParseTag(UDM_HTMLTOK * tag,UDM_DOCUMENT * Doc)
     {
       char secname[128];
       udm_snprintf(secname, sizeof(secname), "attribute.%.*s",
-                   tag->toks[i].nlen, tag->toks[i].name);
+                   (int) tag->toks[i].nlen, tag->toks[i].name);
 
       if ((Sec= UdmVarListFind(&Doc->Sections, secname)) && Doc->Spider.index)
       {

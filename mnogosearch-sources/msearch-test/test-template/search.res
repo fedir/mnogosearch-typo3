@@ -1,7 +1,9 @@
+Content-type: text/html; charset=iso-8859-1
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
    
   <!-- INCLUDE was broken in 3.2.32 -->
-fail !0 exec $(SEARCH) > $(UDM_TEST_DIR)/search.rej
+fail !0 exec QUERY_STRING="test&xxx=%3CXXX%3E&ResultContentType=IgnoreThis&charset=IgnoreThis" $(SEARCH)  > $(UDM_TEST_DIR)/search.rej
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej $(UDM_TEST_DIR)/search.res
 pass 0 exec rm -f $(UDM_TEST_DIR)/search.rej
 
@@ -260,3 +262,27 @@ aHR0cDovL3NvbWUudXJsLmNvbQ==
 <!-- no trailing ')' character in a variable name -->
 $(aaaa
 $(aaaa
+
+<!-- Bug#4819 Variables Overwriting in mnoGoSearch -->
+<!-- Checking that variables coming from query string are HTML-escaped -->
+<!-- automatically, even if no & specified -->
+xxx=&#60;XXX&#62;
+xxx=&#60;XXX&#62;
+xxx=%3CXXX%3E
+<!-- Checking how query string variables work in IF statement -->
+IF-UNDERSTANDS-UNESCAPED-LITERAL
+IF-DOES-NOT-UNDERSTAND-ESCAPED-CODEPOINT-LITERAL
+IF-DOES-NOT-UNDERSTAND-ESCAPED-LTGT-LITERAL
+
+<!-- Checking how query string variables work in IF statement -->
+IF-UNDERSTANDS-UNESCAPED-VARIABLE
+IF-DOES-NOT-UNDERSTAND-ESCAPED-CODEPOINT-VARIABLE
+IF-DOES-NOT-UNDERSTAND-ESCAPED-LTGT-VARIABLE
+
+<!-- Checking how query string variables work in SET/TEXT -->
+<XXX>
+&#60;XXX&#62;
+%3CXXX%3E
+
+<!--/Bug#4819 Variables Overwriting in mnoGoSearch -->
+

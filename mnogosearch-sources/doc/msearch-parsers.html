@@ -7,14 +7,16 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="mnoGoSearch 3.3.11 reference manual"
+TITLE="mnoGoSearch 3.3.14 reference manual"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Comments"
-HREF="msearch-htmlparser-comments.html"><LINK
+TITLE="
+    mnoGoSearch HTML parser
+  "
+HREF="msearch-htmlparser.html"><LINK
 REL="NEXT"
-TITLE="Storing mnoGoSearch data "
-HREF="msearch-howstore.html"><LINK
+TITLE="Extended indexing features"
+HREF="msearch-extended-indexing.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="mnogo.css"><META
@@ -44,7 +46,7 @@ ALIGN="center"
 ><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> 3.3.11 reference manual: Full-featured search engine software</TH
+> 3.3.14 reference manual: Full-featured search engine software</TH
 ></TR
 ><TR
 ><TD
@@ -52,7 +54,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="msearch-htmlparser-comments.html"
+HREF="msearch-htmlparser.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -66,7 +68,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="msearch-howstore.html"
+HREF="msearch-extended-indexing.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -81,8 +83,8 @@ CLASS="chapter"
 ><A
 NAME="parsers"
 ></A
->Chapter 6. External parsers<A
-NAME="AEN2953"
+>Chapter 5. External parsers<A
+NAME="AEN2399"
 ></A
 ></H1
 ><DIV
@@ -120,7 +122,7 @@ HREF="msearch-parsers.html#pars-pipes"
 HREF="msearch-parsers.html#pars-char"
 >Parsers and character sets
        <A
-NAME="AEN3065"
+NAME="AEN2509"
 ></A
 ></A
 ></DT
@@ -137,7 +139,7 @@ CLASS="varname"
 HREF="msearch-parsers.html#pars-links"
 >External parsers for the most common file types
     <A
-NAME="AEN3093"
+NAME="AEN2537"
 ></A
 ></A
 ></DT
@@ -147,18 +149,11 @@ NAME="AEN3093"
 ><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> understands
-  <TT
-CLASS="literal"
->text/plain</TT
->, <TT
-CLASS="literal"
->text/html</TT
->
-  and <TT
-CLASS="literal"
->text/xml</TT
-> Mime types out of the box,
+> understands a number of
+  <A
+HREF="msearch-file-formats.html#built-in-parsers"
+>file formats</A
+> out of the box,
   and is able to index files of these types using the build-in parsers.
   For the other file types it can use <SPAN
 CLASS="emphasis"
@@ -317,7 +312,7 @@ CLASS="filename"
         </P
 ><P
 >&#13;        <A
-NAME="AEN3002"
+NAME="AEN2446"
 ></A
 >
         If you want to index local files or an FTP server,
@@ -343,7 +338,7 @@ CLASS="programlisting"
 ><LI
 ><P
 >&#13;          <A
-NAME="AEN3011"
+NAME="AEN2455"
 ></A
 >
           Add parsers
@@ -470,7 +465,7 @@ CLASS="application"
 ></H2
 ><P
 >&#13;  <A
-NAME="AEN3045"
+NAME="AEN2489"
 ></A
 >
   To prevent <SPAN
@@ -547,7 +542,7 @@ CLASS="sect2"
 NAME="pars-char"
 >Parsers and character sets
        <A
-NAME="AEN3065"
+NAME="AEN2509"
 ></A
 ></A
 ></H2
@@ -654,7 +649,7 @@ CLASS="sect1"
 NAME="pars-links"
 >External parsers for the most common file types
     <A
-NAME="AEN3093"
+NAME="AEN2537"
 ></A
 ></A
 ></H1
@@ -686,13 +681,19 @@ CLASS="application"
 >-to-text converter</P
 ><P
 >&#13;          <A
-HREF="http://freshmeat.net/redir/catdoc/1055/url_homepage/"
+HREF="http://www.wagner.pp.ru/~vitus/software/catdoc/"
 TARGET="_top"
 >Home page</A
->, also listed on <A
-HREF="http://freshmeat.net/"
+>,
+          <A
+HREF="http://alioth.debian.org/projects/catdoc/"
 TARGET="_top"
->Freshmeat</A
+>Homepage (the Catdoc fork at Alioth project)</A
+>,
+           also listed on <A
+HREF="http://freecode.com/projects/catdoc/"
+TARGET="_top"
+>Freecode</A
 >.
         </P
 ><P
@@ -726,9 +727,9 @@ TARGET="_top"
 >Home page</A
 >,
            also listed on <A
-HREF="http://freshmeat.net/"
+HREF="http://freecode.com/projects/wv/"
 TARGET="_top"
->Freshmeat</A
+>Freecode</A
 >.
         </P
 ><P
@@ -755,7 +756,7 @@ CLASS="application"
 >-to-text converter</P
 ><P
 >&#13;           <A
-HREF="http://lucene.apache.org/tika"
+HREF="http://tika.apache.org/"
 TARGET="_top"
 >Home page</A
 >.
@@ -826,9 +827,6 @@ CLASS="programlisting"
 ><P
 ><SPAN
 CLASS="application"
->xlhtml</SPAN
-> <SPAN
-CLASS="application"
 >Excel-XLS</SPAN
 >-to-<ACRONYM
 CLASS="acronym"
@@ -842,9 +840,9 @@ TARGET="_top"
 >homepage</A
 >,
         also listed on <A
-HREF="http://freshmeat.net/projects/xlhtml/"
+HREF="http://freecode.com/projects/xlhtml/"
 TARGET="_top"
->Freshmeat</A
+>Freecode</A
 >.
         and  <A
 HREF="http://chicago.sourceforge.net/xlhtml/"
@@ -855,6 +853,11 @@ TARGET="_top"
 HREF="http://chicago.sourceforge.net/xlhtml/binarys.html"
 TARGET="_top"
 >binaries for Windows</A
+>
+          and <A
+HREF="http://sourceforge.net/projects/chicago/files/xlhtml/backend/"
+TARGET="_top"
+>source code at SourceForge</A
 >.
         </P
 ><P
@@ -913,10 +916,10 @@ TARGET="_top"
 >homepage</A
 >,
         also listed on <A
-HREF="http://freshmeat.net/projects/xlhtml/"
+HREF="http://freecode.com/projects/xlhtml/"
 TARGET="_top"
->Freshmeat</A
->.
+>Freecode</A
+>
         and  <A
 HREF="http://chicago.sourceforge.net/xlhtml/"
 TARGET="_top"
@@ -926,6 +929,11 @@ TARGET="_top"
 HREF="http://chicago.sourceforge.net/xlhtml/binarys.html"
 TARGET="_top"
 >binaries for Windows</A
+>
+          and <A
+HREF="http://sourceforge.net/projects/chicago/files/xlhtml/backend/"
+TARGET="_top"
+>source code at SourceForge</A
 >.
         </P
 ><P
@@ -970,7 +978,7 @@ CLASS="application"
 >.</P
 ><P
 >&#13;          <A
-HREF="http://www.info-zip.org/"
+HREF="http://www.info-zip.org/UnZip.html"
 TARGET="_top"
 >unzip</A
 > is included into the majority of the modern
@@ -1025,10 +1033,15 @@ CLASS="acronym"
 > converter</P
 ><P
 >&#13;          <A
-HREF="ftp://ftp.gnu.org/pub/gnu/unrtf/"
+HREF="http://www.gnu.org/software/unrtf/"
 TARGET="_top"
 >Homepage</A
->
+>,
+            and <A
+HREF="ftp://ftp.gnu.org/pub/gnu/unrtf/"
+TARGET="_top"
+>FTP download page</A
+>.
         </P
 ><P
 >&#13;          <TT
@@ -1037,8 +1050,8 @@ CLASS="filename"
 >:
         <PRE
 CLASS="programlisting"
->&#13;Mime text/rtf*        text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1
-Mime application/rtf  text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1
+>&#13;Mime text/rtf*        text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1"
+Mime application/rtf  text/html  "/usr/local/mnogosearch/sbin/unrtf --html $1"
 </PRE
 >
         </P
@@ -1055,10 +1068,10 @@ HREF="http://memberwebs.com/stef/software/rtfx/"
 TARGET="_top"
 >Homepage</A
 >,
-          also listed on <A
-HREF="http://freshmeat.net/"
+            also listed on <A
+HREF="http://freecode.com/projects/rtfx/"
 TARGET="_top"
->Freshmeat</A
+>Freecode</A
 >.
         </P
 ><TT
@@ -1123,6 +1136,39 @@ CLASS="filename"
 ><P
 ><SPAN
 CLASS="application"
+>pdftohtml</SPAN
+> <SPAN
+CLASS="application"
+>Adobe PDF</SPAN
+> converter</P
+><P
+>&#13;          <A
+HREF="http://pdftohtml.sourceforge.net/"
+TARGET="_top"
+>Homepage (original)</A
+>,
+          <A
+HREF="http://poppler.freedesktop.org/"
+TARGET="_top"
+>Homepage (the Poppler fork)</A
+>.
+        </P
+><P
+>&#13;          <TT
+CLASS="filename"
+>indexer.conf</TT
+>:
+<PRE
+CLASS="programlisting"
+>&#13;Mime application/pdf text/html  "pdftohtml -noframes -enc UTF-8 -i -stdout $1"
+</PRE
+>
+        </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="application"
 >pdftotext</SPAN
 > <SPAN
 CLASS="application"
@@ -1135,14 +1181,19 @@ CLASS="application"
 > project.</P
 ><P
 >&#13;          <A
-HREF="http://freshmeat.net/redir/xpdf/12080/url_homepage/"
+HREF="http://www.foolabs.com/xpdf/"
 TARGET="_top"
 >Homepage</A
 >,
-          also listed on <A
-HREF="http://freshmeat.net/"
+          <A
+HREF="http://poppler.freedesktop.org/"
 TARGET="_top"
->Freshmeat</A
+>Homepage (the Poppler fork)</A
+>,
+            also listed on <A
+HREF="http://freecode.com/projects/xpdf/"
+TARGET="_top"
+>Freecode</A
 >.
         </P
 ><P
@@ -1196,10 +1247,10 @@ HREF="http://pages.cs.wisc.edu/~ghost/"
 TARGET="_top"
 >Homepage</A
 >,
-          also listed on <A
-HREF="http://freshmeat.net/"
+            also listed on <A
+HREF="http://freecode.com/projects/ghostscript/"
 TARGET="_top"
->Freshmeat</A
+>Freecode</A
 >.
         </P
 ><P
@@ -1210,6 +1261,134 @@ CLASS="filename"
 <PRE
 CLASS="programlisting"
 >&#13;Mime application/postscript    text/plain  "ps2ascii $1"
+</PRE
+>
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="pars-wps"
+><SPAN
+CLASS="application"
+>MS Works 2, 3, 4, 5 (2000), and 8</SPAN
+>
+    (<TT
+CLASS="filename"
+>*.wps</TT
+>)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>libwps</SPAN
+>
+          <SPAN
+CLASS="application"
+>WPS</SPAN
+>-to-<ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> and
+          <SPAN
+CLASS="application"
+>WPS</SPAN
+>-to-text converter
+        </P
+><P
+>&#13;          <A
+HREF="http://http://libwps.sourceforge.net//"
+TARGET="_top"
+>Homepage</A
+>.
+        </P
+><P
+>&#13;          <TT
+CLASS="filename"
+>indexer.conf</TT
+>:
+<PRE
+CLASS="programlisting"
+>&#13;# Text output:
+Mime application/vnd.ms-works "text/plain; charset=utf-8"  "wps2text $1"
+</PRE
+>
+<PRE
+CLASS="programlisting"
+>&#13;# HTML output:
+Mime application/vnd.ms-works "text/html; charset=utf-8"  "wps2html $1"
+</PRE
+>
+      </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="pars-wpd"
+><SPAN
+CLASS="application"
+>Corel WordPerfect 4.x and and later</SPAN
+>
+    (<TT
+CLASS="filename"
+>*.wpd</TT
+>)</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          <SPAN
+CLASS="application"
+>libpwd</SPAN
+>
+          <SPAN
+CLASS="application"
+>WPD</SPAN
+>-to-<ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> and
+          <SPAN
+CLASS="application"
+>WPD</SPAN
+>-to-text converter
+        </P
+><P
+>&#13;          <A
+HREF="http://libwpd.sourceforge.net/"
+TARGET="_top"
+>Homepage</A
+>.
+        </P
+><P
+>&#13;        <TT
+CLASS="filename"
+>indexer.conf</TT
+>:
+        <PRE
+CLASS="programlisting"
+>&#13;# For text output:
+Mime application/vnd.wordperfect "text/plain; charset=utf-8" "wpd2text $1"
+</PRE
+>
+<PRE
+CLASS="programlisting"
+>&#13;# For indexing HTML output
+Mime application/vnd.wordperfect "text/html; charset=utf-8" "wpd2html $1"
 </PRE
 >
         </P
@@ -1316,7 +1495,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="msearch-htmlparser-comments.html"
+HREF="msearch-htmlparser.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -1334,7 +1513,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="msearch-howstore.html"
+HREF="msearch-extended-indexing.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -1344,7 +1523,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Comments</TD
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> parser</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -1354,10 +1539,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Storing <SPAN
-CLASS="application"
->mnoGoSearch</SPAN
-> data</TD
+>Extended indexing features</TD
 ></TR
 ></TABLE
 ></DIV

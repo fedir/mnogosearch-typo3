@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in 
 AUTOMAKE_OPTIONS = foreign no-installinfo
-SUBDIRS = include src doc etc create misc scripts msearch-test
+SUBDIRS = build include src doc etc create misc scripts msearch-test
 ACLOCAL_AMFLAGS= -I build/m4
 
 # We need /var directory - external parsers store temporary files there
@@ -8,12 +8,13 @@ install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(localstatedir)
 
 uninstall-local:
-	-rmdir $(DESTDIR)$(datadir)
+	-rmdir $(DESTDIR)$(docdir)
+	-rmdir $(DESTDIR)$(datadir)/doc
+	-rmdir $(DESTDIR)$(datadir)/create
 	-rmdir $(DESTDIR)$(sysconfdir)
 	-rmdir $(DESTDIR)$(mandir)/man1
 	-rmdir $(DESTDIR)$(mandir)/man5
 	-rmdir $(DESTDIR)$(mandir)
-	-rmdir $(DESTDIR)$(prefix)/doc
 	-rmdir $(DESTDIR)$(localstatedir)
 	-rmdir $(DESTDIR)$(bindir)
 	-rmdir $(DESTDIR)$(sbindir)

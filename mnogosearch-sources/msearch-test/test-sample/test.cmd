@@ -31,6 +31,32 @@ fail !0 exec $(SEARCH) "the&ps=1000" >> $(UDM_TEST_DIR)/search.rej
 fail !0 exec $(SEARCH) "the&ps=1100&ResultsLimit=2000" >> $(UDM_TEST_DIR)/search.rej
 # TODO: add aslo "the&ps=300&ResultsLimit=300". Should return "not found".
 
+# Test long query
+fail !0 exec $(SEARCH) "xxx+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+
+# Test long limits
+fail !0 exec $(SEARCH) "the&ul=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&ue=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&u=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&tag=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&t=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&lang=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&g=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&sl.xxx=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&cat=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&type=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "the&typ=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+
+# Long unknown variables are allowed
+fail !0 exec $(SEARCH) "xxx&unknown=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej
+
+#
+# Bug#4818 Arbitrary Files Reading in mnoGoSearch
+# Don't allow passing template name as command line argument when under HTTPD
+fail !0 exec QUERY_STRING="q=bug4818" $(SEARCH) -d /tmp/ignore-this.htm >> $(UDM_TEST_DIR)/search.rej
+fail !0 exec REQUEST_METHOD=GET $(SEARCH) -d /tmp/ignore-this.htm >> $(UDM_TEST_DIR)/search.rej
+
+
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej $(UDM_TEST_DIR)/search.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.rej
 

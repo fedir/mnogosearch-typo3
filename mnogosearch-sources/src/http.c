@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -34,6 +34,50 @@
 #include "udm_url.h"
 #include "udm_vars.h"
 #include "udm_hrefs.h"
+
+
+udm_content_type_t
+UdmContentTypeByName(const char *str)
+{
+  if (!strncasecmp(str, UDM_CSTR_WITH_LEN("text/plain")) ||
+      !strncasecmp(str, UDM_CSTR_WITH_LEN("text/tab-separated-values")) ||
+      !strncasecmp(str, UDM_CSTR_WITH_LEN("text/x-diff")) ||
+      !strncasecmp(str, UDM_CSTR_WITH_LEN("text/x-patch")) ||
+      !strncasecmp(str, UDM_CSTR_WITH_LEN("application/x-patch")) ||
+      !strncasecmp(str, UDM_CSTR_WITH_LEN("text/css")))
+    return UDM_CONTENT_TYPE_TEXT_PLAIN;
+
+  if (!strncasecmp(str,"text/html", 9))
+    return UDM_CONTENT_TYPE_TEXT_HTML;
+
+  if (!strncasecmp(str, "text/xml", 8) ||
+      !strncasecmp(str, "application/xml", 15) ||
+      !strncasecmp(str, "application/rss+xml", 19) ||
+      strstr(str, "+xml") ||
+      strstr(str, "rss"))
+    return UDM_CONTENT_TYPE_TEXT_XML;
+
+  if (!strncasecmp(str, UDM_CSTR_WITH_LEN("message/rfc822")))
+    return UDM_CONTENT_TYPE_MESSAGE_RFC822;
+
+  if (!strncasecmp(str, "audio/mpeg", 10))
+    return UDM_CONTENT_TYPE_AUDIO_MPEG;
+
+  if (!strncasecmp(str, "mnogosearch/htdb", 16))
+    return UDM_CONTENT_TYPE_HTDB;
+
+  if (!strncasecmp(str, UDM_CSTR_WITH_LEN("application/vnd.openxmlformats-officedocument.wordprocessingml.document")))
+    return UDM_CONTENT_TYPE_DOCX;
+
+  /* Note: text/richtext and text/enriched is not rtf, it's something else */
+  if (!strncasecmp(str, UDM_CSTR_WITH_LEN("text/rtf")) ||
+      !strncasecmp(str, UDM_CSTR_WITH_LEN("application/rtf")) ||
+      !strncasecmp(str, UDM_CSTR_WITH_LEN("application/x-rtf")))
+    return UDM_CONTENT_TYPE_TEXT_RTF;
+
+  return UDM_CONTENT_TYPE_UNKNOWN;
+}
+
 
 int UdmHTTPConnect(UDM_ENV * Conf, UDM_CONN *connp,
                    char *hostname, int port, int timeout)
@@ -91,7 +135,12 @@ void UdmParseHTTPResponse(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc){
   }
   
   /* Bad response, return */
-  if(!Doc->Buf.content)return;
+  if(!Doc->Buf.content)
+  {
+    /* Put content pointer to the very end of the buffer */
+    Doc->Buf.content= Doc->Buf.buf + Doc->Buf.size;
+    return;
+  }
   
   /* Copy headers not to break them */
   headers = (char*)UdmStrdup(Doc->Buf.buf);

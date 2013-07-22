@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ static void UdmPrintLangMap(UDM_LANGMAP *map, size_t model_length)
   size_t i;
   
   printf("#\n");
-  printf("# Model data length: %d\n", model_length);
+  printf("# Model data length: %d\n", (int) model_length);
   printf("#\n");
   printf("\n");
   printf("Language: %s\n",map->lang);
@@ -96,7 +96,7 @@ static void UdmPrintLangMap(UDM_LANGMAP *map, size_t model_length)
       if(*s==' ')
         *s='_';
     }
-    printf("%s\t%d\n", map->memb[i].str, map->memb[i].count);
+    printf("%s\t%d\n", map->memb[i].str, (int) map->memb[i].count);
   }
 }
 
@@ -164,7 +164,7 @@ int main(int argc, char ** argv)
       return 1;
 
     if(verbose)
-      fprintf(stderr, "%d maps found\n", env.nmaps);
+      fprintf(stderr, "%d maps found\n", (int) env.nmaps);
   }
   
   /* Add each STDIN line statistics */
@@ -234,7 +234,7 @@ int main(int argc, char ** argv)
     /* Display results. Best language is shown first. */
     for(i= 0; (i < env.nmaps) && (i < n); i++)
       printf("%dh %dm\t%s\t%s\n",
-             mapstat[i].hits, mapstat[i].miss,
+             (int) mapstat[i].hits, (int) mapstat[i].miss,
              mapstat[i].map->lang, mapstat[i].map->charset);
 
     /* Free variables */

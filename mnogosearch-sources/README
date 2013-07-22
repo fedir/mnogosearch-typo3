@@ -7,19 +7,15 @@ Please see the file COPYING for license information
 General
 -------
 
-mnoGoSearch is a full-featured SQL based web search engine.
+mnoGoSearch is a full-featured web search engine.
 mnoGoSearch consists of two parts. The first part is indexing mechanism (indexer).
-Indexer walks over html hypertext references and stores found words and
-new references into an SQL database. The second part is web CGI front-end to
+Indexer walks over html hypertext links and stores found words and
+new references into its database. The second part is web CGI front-end to
 provide search using data collected by indexer.
-There are also PHP3 and Perl front-ends available from our site
-http://www.mnogosearch.org/.
+PHP3 and Perl front-ends are also included.
 
 
 Main features are:
-* SQLite, MySQL, PostgreSQL, IBM DB2, InterBase, Oracle, 
-  MS SQL, Mimer, Sybase backends support.
-* iODBC, unixODBC, EasySoft ODBC-ODBC bridge interfaces support.
 * HTTP support
 * HTTP proxy support
 * HTTPS support
@@ -28,29 +24,30 @@ Main features are:
 * HTDB virtual URL scheme support
   You can build a full-text index on big text columns
   of your SQL table.
-* text/html, text/plain and text/xml built-in support
+* SQLite, MySQL, PostgreSQL, IBM DB2, InterBase, Oracle,
+  MS SQL, Mimer, Sybase databases support.
+* iODBC, unixODBC, EasySoft ODBC-ODBC bridge interfaces support.
+* built-in parsers for HTML, XML, text, DOCX, RTF and message (*.eml) files
 * external parsers support for other document types
 * gzip, compress, deflate Content-Encoding support
-* it can search for all of the word forms using 
-  ispell affixes and dictionaries
-* synonyms support
-* basic authorization support. One may index password protected
-  intranet HTTP servers
+* fuzzy search: stemming, synonyms, substring search
+* basic authorization support to index password protected sites
 * proxy authorization support
-* it's reenterant. One may use several indexing and searching processes 
-  at the same time even on the same database.
-* Multi-threaded indexing support
+* it's reenterant. Multiple indexing and search processes
+  are possible at the same time on the search same database.
+* Multi-threaded crawling
 * stop-list support
-* <META NAME="robots" content="..."> and robots.txt support
+* Robots exclusion protocol is fully supported, including robots.txt,
+  robot meta tags and HTTP headers
 * C language CGI, PHP3, Perl web front-ends
 * phrase search
 * boolean query language support
-* best documents are found first
-* almost all widely used character sets support, including multi-byte
-  Korean, Chinese, Japanese character sets as well as UTF8.
+* sorting results by score, date, title, as well as user defined sorting
+* most of the modern widely used character sets are supported,
+  including multi-byte Korean, Chinese, Japanese character sets and UTF8.
 * automatic language/charset guesser for about 70 language/charset
   combinations
-* HTML templates to easily customize search results
+* HTML templates to customize search results look
 * advanced search options like time limits etc.
 
 
@@ -64,8 +61,8 @@ http://www.mnogosearch.org/
 Support
 -------
 
-You can get help with mnoGoSearch using our mail lists
-and webboards. We also offer some extended support options.
+You can get help on our mail lists and webboards.
+We also offer some extended support options.
 Please refer to our support page for further information:
 
 http://www.mnogosearch.org/support.html
@@ -74,18 +71,8 @@ http://www.mnogosearch.org/support.html
 How do I use it?
 ----------------
 
-Please read INSTALL for installation instructions and 
-files in /doc subdirectory to start using mnoGoSearch.
-Online documentation is available at 
-  http://www.mnogosearch.org/doc.html
-
-Contribution
-------------
-
-If you want to contribute to the development, have
-some ideas or patches, please write to the mnoGoSearch
-Developers Team <devel@mnogosearch.org>.
-
+Refer to our online documentation at
+http://www.mnogosearch.org/doc.html
 
 Disclaimer (see COPYING for details)
 ------------------------------------
@@ -106,6 +93,5 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 Obtaining a commercial license
 ------------------------------
-If you don't want to be restricted by GNU GPL terms,
-please write to <order@mnogosearch.org> to obtain
-a commercial license.
+If you don't want to be restricted by the terms of GNU GPL,
+please contact  <order@mnogosearch.org> to obtain a commercial license.

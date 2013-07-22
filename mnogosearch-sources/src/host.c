@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -81,17 +81,15 @@ static int host_addr_add(UDM_HOSTLIST *List,
   }
   else
   {
-    int min;
     size_t i;
 
-    min= List->host_addr[0].last_used;
     min_id= 0;
     /* find last used host */
     for (i= 0; i<List->nhost_addr; i++)
-      if(List->host_addr[i].last_used < List->host_addr[min_id].last_used){
-        min= List->host_addr[i].last_used;
+    {
+      if(List->host_addr[i].last_used < List->host_addr[min_id].last_used)
         min_id=i;
-      }
+    }
   }
 
   List->host_addr[min_id].last_used= time(NULL);

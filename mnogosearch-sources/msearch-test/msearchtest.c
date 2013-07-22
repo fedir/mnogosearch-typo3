@@ -669,9 +669,9 @@ int main (int argc, char **argv)
   char *mask;
   size_t rpos;
   char **recs;
-  size_t test_pass= 0;
-  size_t test_fail= 0;
-  size_t test_skip= 0;
+  int test_pass= 0;
+  int test_fail= 0;
+  int test_skip= 0;
   
   mask= (argc == 2) ? argv[1] : NULL;
   

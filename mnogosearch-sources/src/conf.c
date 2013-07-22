@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -225,14 +225,10 @@ rel_name(UDM_ENV *Env, char *res, size_t maxlen,
 {
   size_t    n;
   const char  *dir= UdmVarListFindStr(&Env->Vars, varname, dirname);
-  if(name[0]=='/')
-    n= udm_snprintf(res,maxlen,name);
+  if(name[0]=='/' || (name[0] && name[1] == ':'))
+    n= udm_snprintf(res, maxlen, "%s", name);
   else
-#ifdef WIN32
-    n= udm_snprintf(res,maxlen,"%s", name);
-#else
     n= udm_snprintf(res,maxlen,"%s%s%s",dir,UDMSLASHSTR,name);
-#endif
   res[maxlen]='\0';
   return n;
 }
@@ -311,7 +307,7 @@ static size_t rel_var_name(UDM_ENV *Env,char *res,size_t maxlen,
 {
   size_t    n;
   const char  *dir=UdmVarListFindStr(&Env->Vars,"VarDir",UDM_VAR_DIR);
-  if(name[0]=='/')n = udm_snprintf(res,maxlen,name);
+  if(name[0]=='/')n = udm_snprintf(res, maxlen, "%s", name);
   else    n = udm_snprintf(res,maxlen,"%s%s%s",dir,UDMSLASHSTR,name);
   res[maxlen]='\0';
   return n;
@@ -779,6 +775,8 @@ static int add_section(void *Cfg, size_t ac,char **av)
       cdon= 0;
     else if (!strcasecmp(av[0], "html"))
       S.flags|= UDM_VARFLAG_HTMLSOURCE;
+    else if (!strcasecmp(av[0], "decimal"))
+      S.flags|= UDM_VARFLAG_DECIMAL;
     else if (!strcasecmp(av[0], "wiki"))
       S.flags|= UDM_VARFLAG_HTMLSOURCE | UDM_VARFLAG_WIKI;
     else if (!strcasecmp(av[0], "noindex"))
@@ -1025,7 +1023,7 @@ static int add_url(void *Cfg, size_t ac,char **av)
   }
   return UDM_OK;
 }
-    
+
 
 static int add_srv_table(void *Cfg, size_t ac,char **av)
 {
@@ -1045,15 +1043,16 @@ static int add_srv_table(void *Cfg, size_t ac,char **av)
     return UDM_OK;
 
   UdmDBListInit(&dbl);
-  UdmDBListAdd(&dbl, av[1], UDM_OPEN_MODE_READ);
+  if (UDM_OK != (res= UdmEnvDBListAdd(Conf, av[1], UDM_OPEN_MODE_READ)))
+    goto ex;
   db = &dbl.db[0];
 
 #ifdef HAVE_SQL
   res = UdmSrvActionSQL(C->Indexer, &Conf->Servers, UDM_SRV_ACTION_TABLE, db);
 #endif
   if(res != UDM_OK)
-    strcpy(Conf->errstr,db->errstr);
-
+    udm_snprintf(Conf->errstr, sizeof(Conf->errstr), "%s", db->errstr);
+ex:
   UdmDBListFree(&dbl);
   return res;
 }
@@ -1284,14 +1283,9 @@ static int env_rpl_var(void *Cfg, size_t ac,char **av)
   if(!strcasecmp(av[0],"DBAddr"))
   {
     int rc;
-    if(UDM_OK != (rc= UdmDBListAdd(&Conf->dbl, av[1] ? av[1] : "",
-                                   UDM_OPEN_MODE_WRITE)))
-    {
-      sprintf(Conf->errstr, "%s DBAddr: '%s'",
-              rc == UDM_UNSUPPORTED ? "Unsupported" : "Invalid",
-              av[1]?av[1]:"");
-      return UDM_ERROR;
-    }
+    if(UDM_OK != (rc= UdmEnvDBListAdd(Conf, av[1] ? av[1] : "",
+                                      UDM_OPEN_MODE_WRITE)))
+      return rc;
   }
   if (!strcasecmp(av[0], "Segmenter"))
   {
@@ -1506,6 +1500,7 @@ static UDM_CONFCMD commands[] =
   {"HlBeg",                1,1,   env_rpl_var},     /* Documented */
   {"HlEnd",                1,1,   env_rpl_var},     /* Documented */
   {"Log2stderr",           1,1,   env_rpl_var},     /* Documented */
+  {"LogFlags",             1,1,   env_rpl_num_var}, /* TODO     */
   {"PagesPerScreen",       1,1,   env_rpl_var},     /* Documented */
   {"SQLClearDBHook",       1,1,   env_rpl_var},     /* TODO       */
   {"UserCacheQuery",       1,1,   env_rpl_var},     /* Documented */
@@ -1545,6 +1540,7 @@ static UDM_CONFCMD commands[] =
   {"UseCookie",            1,1,   env_rpl_bool_var},/* Documented */
   {"UseSitemap",           1,1,   env_rpl_bool_var},/* Documented */
   {"UseNumericOperators",  1,1,   env_rpl_bool_var},/* Documented */
+  {"UseRangeOperators",    1,1,   env_rpl_bool_var},/* TODO */
   {"SaveSectionSize",      1,1,   env_rpl_bool_var},/* Documented */
   {"Dehyphenate",          1,1,   env_rpl_bool_var},/* Documented */
   {"HyphenateNumbers",     1,1,   env_rpl_bool_var},/* TODO       */
@@ -1585,7 +1581,7 @@ static UDM_CONFCMD commands[] =
   {"DefaultLang",          1,1,   srv_rpl_var},      /* Documented */
   {"Category",             1,1,   srv_rpl_category}, /* Documented */
   {"Tag",                  1,1,   srv_rpl_var},      /* Documented */
-  {"Proxy",                1,1,   srv_rpl_var},      /* Documented */
+  {"Proxy",                0,1,   srv_rpl_var},      /* Documented */
   {"VaryLang",             1,1,   srv_rpl_var},      /* Documented */
   {"UseRobotsTxtURL",      1,1,   srv_rpl_var},      /* TODO       */
   {"MaxNetErrors",         1,1,   srv_rpl_num_var},  /* Documented */
@@ -1637,7 +1633,7 @@ static UDM_CONFCMD commands[] =
   {"AddType",              1,100, add_type},         /* Documented */
   {"AddEncoding",          1,100, add_encoding},     /* Documented */
   {"Mime",                 2,4,   add_parser},       /* Documented */
-  {"Section",              3,9,   add_section},      /* Documented */
+  {"Section",              3,9,   add_section},      /* Documented */ /* TODO: index/noindex */
   {"Affix",                3,3,   add_affix},        /* Documented */
   {"Spell",                3,3,   add_spell},        /* Documented */
   {"StopwordFile",         1,1,   add_stoplist},     /* Documented */
@@ -1722,7 +1718,7 @@ __C_LINK int __UDMCALL UdmAgentAddLine(UDM_AGENT *Agent, const char *line)
   char str[1024];
   bzero((void*) &Cfg, sizeof(Cfg));
   Cfg.Indexer= Agent;
-  udm_snprintf(str, sizeof(str) - 1, line);
+  udm_snprintf(str, sizeof(str) - 1, "%s", line);
   return UdmEnvAddLine(&Cfg, str);
 }
 
@@ -1737,7 +1733,8 @@ static int EnvLoad(UDM_CFG *Cfg,const char *cname)
   if ((str0 = (char*)UdmMalloc(str0size)) == NULL)
   {
     sprintf(Cfg->Indexer->Conf->errstr,
-            "Can't alloc %d bytes at '%s': %d", str0size, __FILE__, __LINE__);
+            "Can't alloc %d bytes at '%s': %d",
+            (int) str0size, __FILE__, __LINE__);
     return UDM_ERROR;
   }
   str0[0]=0;
@@ -1774,7 +1771,9 @@ static int EnvLoad(UDM_CFG *Cfg,const char *cname)
         str0size += 4096 + str1len;
         if ((str0 = (char*)UdmRealloc(str0, str0size)) == NULL)
         {
-          sprintf(Cfg->Indexer->Conf->errstr, "Can't realloc %d bytes at '%s': %d", str0size, __FILE__, __LINE__);
+          sprintf(Cfg->Indexer->Conf->errstr,
+                  "Can't realloc %d bytes at '%s': %d",
+                  (int) str0size, __FILE__, __LINE__);
           return UDM_ERROR;
         }
       }
@@ -1789,7 +1788,7 @@ static int EnvLoad(UDM_CFG *Cfg,const char *cname)
     {
       char  err[2048];
       strcpy(err,Cfg->Indexer->Conf->errstr);
-      sprintf(Cfg->Indexer->Conf->errstr,"%s:%d: %s",cname,line,err);
+      sprintf(Cfg->Indexer->Conf->errstr,"%s:%d: %s", cname, (int) line, err);
       break;
     }
     
@@ -1820,12 +1819,8 @@ __C_LINK  int __UDMCALL UdmEnvLoad(UDM_AGENT *Indexer,
   /* Set DBAddr if for example passed from environment */
   if((dbaddr=UdmVarListFindStr(&Indexer->Conf->Vars,"DBAddr",NULL)))
   {
-    if(UDM_OK != UdmDBListAdd(&Indexer->Conf->dbl, dbaddr, UDM_OPEN_MODE_WRITE))
-    {
-      sprintf(Indexer->Conf->errstr, "Invalid DBAddr: '%s'", dbaddr);
-      rc=UDM_ERROR;
+    if(UDM_OK != (rc= UdmEnvDBListAdd(Indexer->Conf, dbaddr, UDM_OPEN_MODE_WRITE)))
       goto freeex;
-    }
   }
   
   if(UDM_OK == (rc=EnvLoad(&Cfg,cname)))
@@ -1891,30 +1886,7 @@ UdmSectionListPrint(FILE *f, UDM_VARLIST *L)
     UDM_VAR *V= &L->Var[i];
     udm_snprintf(str, sizeof(str),
                  "Section %s %d %d",
-                 V->name, V->section, V->maxlen);
-    fprintf(f, "%s\n", str);
-  }
-  return UDM_OK;
-}
-
-
-static int
-UdmVarListPrint(FILE *f, UDM_VARLIST *L)
-{
-  size_t i;
-  char str[128];
-  for (i= 0; i < L->nvars; i++)
-  {
-    UDM_VAR *V= &L->Var[i];
-    if (!strcasecmp(V->name, "DBAddr")   ||
-        !strcasecmp(V->name, "ConfDir")  ||          /* TODO */
-        !strcasecmp(V->name, "ShareDir") ||          /* TODO */
-        !strcasecmp(V->name, "TmpDir")   ||          /* TODO */
-        !strcasecmp(V->name, "Request.User-Agent"))  /* TODO */
-      continue;
-    udm_snprintf(str, sizeof(str),
-                 "%s \"%s\"",
-                 V->name, V->val);
+                 V->name, V->section, (int) V->maxlen);
     fprintf(f, "%s\n", str);
   }
   return UDM_OK;
@@ -1973,10 +1945,9 @@ UdmServerOptionsPrint(FILE *f, UDM_SERVER *Prev, UDM_SERVER *Curr)
       {
         if (cval[0])
         {
-          size_t length;
           char encoded[128], decoded[128];
           udm_snprintf(encoded, sizeof(encoded), "%s", cval);
-          length= udm_base64_decode(decoded, encoded, sizeof(decoded));
+          udm_base64_decode(decoded, encoded, sizeof(decoded));
           fprintf(f, "%s '%s'\n", cmd->name, decoded);
         }
       }
@@ -2177,7 +2148,7 @@ __C_LINK  int __UDMCALL UdmEnvSave(UDM_AGENT *Indexer,
   fprintf(f, "BrowserCharset %s\n", E->bcs->name);
 
   UdmSectionListPrint(f, &E->Sections);
-  UdmVarListPrint(f, &E->Vars);  
+  UdmVarListPrint(&E->Vars, f);
 
   UdmMatchListPrint(f, &E->MimeTypes, "AddType");
   UdmParserListPrint(f, &E->Parsers);

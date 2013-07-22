@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-# $Source: /home/bar/cvsroot/mnogosearch33/install.pl,v $
-# $Id: install.pl,v 1.7 2006/02/25 16:50:49 bar Exp $
+# $Source$
+# $Id$
 
 use Cwd 'abs_path';
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,7 +40,6 @@
 */
 
 int UdmExecGet(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc){
-	int res;
 	char * args;
 	char cmdline[1024];
 	FILE * f;
@@ -91,7 +90,7 @@ int UdmExecGet(UDM_AGENT * Indexer,UDM_DOCUMENT * Doc){
 			Doc->Buf.size += bytes;
 			Doc->Buf.buf[Doc->Buf.size] = '\0';
 		}
-		res=pclose(f);
+		pclose(f);
 	}else{
 		int status;
 		printf("error=%s\n",strerror(errno));

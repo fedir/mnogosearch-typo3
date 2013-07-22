@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -37,10 +37,17 @@
 #include <process.h>
 #endif
 
+/*
+  Oracle headers have some "Function declaration is not a prototype"
+  warnings. Let's suppress them.
+*/
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-prototypes"
 #include <oci.h>
+#pragma GCC diagnostic pop
 
 #define MAX_BIND_PARAM		UDM_SQL_MAX_BIND_PARAM
-#define	MAX_COLS_IN_TABLE	32
+#define	MAX_COLS_IN_TABLE	64
 #define BUF_OUT_SIZE		16
 
 /* (C) copyleft 2000 Anton Zemlyanov, az@hotmail.ru */
@@ -562,7 +569,10 @@ UdmOraExecDirect(UDM_DB *db, UDM_SQLRES *res, const char *qbuf)
       }
     }
     if (!db->connected)
+    {
+      rc= UDM_ERROR;
       goto error;
+    }
   }
 
 
@@ -616,6 +626,9 @@ UdmOraBind(UDM_DB *db, int position, const void *data, int size, int type)
   db->errcode= 0;
   db->errstr[0]= 0;
   ob->bndhp[position]= NULL;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
   rc= OCIBindByPos(ob->stmthp, &ob->bndhp[position], ob->errhp,
                   (ub4) position,
                   (dvoid *) data,
@@ -624,6 +637,7 @@ UdmOraBind(UDM_DB *db, int position, const void *data, int size, int type)
                   (dvoid *) 0,
                   (ub2 *)0, (ub2 *)0, (ub4)0, (ub4 *)0,
                   (ub4) OCI_DEFAULT);
+#pragma GCC diagnostic pop
 
   if (!SQL_OK(rc))
   {

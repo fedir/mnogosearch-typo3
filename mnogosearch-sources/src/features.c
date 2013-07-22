@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -123,6 +123,11 @@ UdmFeatures(UDM_VARLIST *V)
   UdmVarListReplaceStr(V,"HAVE_DB2","yes");
 #else
   UdmVarListReplaceStr(V,"HAVE_DB2","no");
+#endif
+#ifdef HAVE_DEBUG
+  UdmVarListReplaceStr(V,"HAVE_DEBUG","yes");
+#else
+  UdmVarListReplaceStr(V,"HAVE_DEBUG","no");
 #endif
 #ifdef HAVE_SOLID
   UdmVarListReplaceStr(V,"HAVE_SOLID","yes");

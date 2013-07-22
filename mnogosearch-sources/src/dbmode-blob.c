@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -173,7 +173,7 @@ UdmBlobCacheRealloc(UDM_BLOB_CACHE *cache)
       cache->errors++;
       if (cache->errors < 10 || (cache->errors % 2048) == 0)
       fprintf(stderr, "BlobCacheRealloc: failed %d times: %d bytes, %d records\n",
-              cache->errors, nbytes, (cache->awords + 256));
+              (int) cache->errors, (int) nbytes, (int) (cache->awords + 256));
       return 1;
     }
     cache->words = tmp;
@@ -376,7 +376,7 @@ UdmBlobGetWTable(UDM_AGENT *A, UDM_DB *db, char *name, size_t namelen)
     return UDM_OK;
   }
   
-  udm_snprintf(name, namelen, UdmBlobGetTableNamePrefix(db));
+  udm_snprintf(name, namelen, "%s", UdmBlobGetTableNamePrefix(db));
   if (UdmBlobGetTable(A, db) == 4)
     udm_snprintf(name, namelen, "%s00", UdmBlobGetTableNamePrefix(db));
   return UDM_OK;
@@ -438,7 +438,9 @@ UdmRewriteURL(UDM_AGENT *Indexer)
     if ((tr && UDM_OK != (rc= UdmSQLBegin(db))) ||
         UDM_OK != (rc= UdmBlobWriteURL(Indexer, db, tablename, use_deflate)) ||
         (tr && UDM_OK != (rc= UdmSQLCommit(db))))
-      return rc;
+    {
+      /* Do nothing at this point, need to unlock */;
+    }
     UDM_RELEASELOCK(Indexer, UDM_LOCK_DB);
     if (rc != UDM_OK)
     {
@@ -853,7 +855,8 @@ udm_coord_len(const char *str)
 
 
 static inline void
-udm_coord_statistics(const char *s, const char *e, size_t *nbytes, size_t *ncoords)
+udm_coord_statistics(const char *s, const char *e, size_t *nbytes,
+                     udm_pos_t *ncoords)
 {
   size_t crd, tmp;
   for (ncoords[0]= 0, nbytes[0]= 0; s < e; s+= tmp, nbytes[0]+= tmp, ncoords[0]++)
@@ -865,7 +868,7 @@ udm_coord_statistics(const char *s, const char *e, size_t *nbytes, size_t *ncoor
 }
 
 
-static inline size_t
+static size_t /* Inlining make "gcc -O3" produce a warning */
 udm_coord_put(size_t wc, unsigned char *r, unsigned char *e)
 {
   int count;
@@ -959,7 +962,7 @@ UdmBlobCacheWordReportError(UDM_BLOB_CACHE_WORD *w)
 {
   fprintf(stderr, "BlobCachePackOneWord: DSTRAppend() failed: "
                   "word='%s' secno=%d len=%d",
-                   w->word, w->secno, w->ntaglen);
+                   w->word, w->secno, (int) w->ntaglen);
 }
 
 
@@ -1223,7 +1226,7 @@ UdmBlobCachePackOneWordForBdictURLIDRangeMulti(UDM_BLOB_CACHE_WORD *First,
   /* Store ranges */
   for (nranges= 0, w= First; w < Last; w++)
   {
-    urlid_t urlid_prev= w->url_id;
+    /*urlid_t urlid_prev= w->url_id;*/
     if (!UdmDSTRAppendINT4(buf, w->url_id))
       return;
     /*fprintf(stderr, "first=%d\n", w->url_id);*/
@@ -1239,7 +1242,7 @@ UdmBlobCachePackOneWordForBdictURLIDRangeMulti(UDM_BLOB_CACHE_WORD *First,
         nranges++;
         break;
       }
-      urlid_prev= w->url_id;
+      /*urlid_prev= w->url_id;*/
     }
   }
   /*
@@ -1786,13 +1789,14 @@ UdmBlobCoordsGetCompressionType(UDM_FINDWORD_ARGS *args,
   {
     Stat->nranges= udm_get_int4(s + header_size);
     Stat->range_offset= header_size + 4;
-    UdmLog(args->Agent, UDM_LOG_DEBUG, "URLID-Range-Multi compression, nranges=%d", Stat->nranges);
+    UdmLog(args->Agent, UDM_LOG_DEBUG,
+           "URLID-Range-Multi compression, nranges=%d", (int) Stat->nranges);
     return header_size + 4 + 8 * Stat->nranges;
   }
   else if (Stat->compression_type != UDM_BLOB_COMP_NONE)
   {
     UdmLog(args->Agent, UDM_LOG_DEBUG,
-           "Unknown coompression type: %08X", Stat->compression_type);
+           "Unknown coompression type: %08X", (int) Stat->compression_type);
   }
   return 0;
 }
@@ -1872,7 +1876,7 @@ UdmSectionListBlobCoordsUnpack(UDM_FINDWORD_ARGS *args,
   range_ptr= s0 + Stat.range_offset;
 
   UdmLog(args->Agent, UDM_LOG_DEBUG+1, "Secno=%d len=%d",
-         SectionTemplate->secno, length);
+         SectionTemplate->secno, (int) length);
   single_range= (Stat.compression_type == UDM_BLOB_COMP_SINGLE_RANGE);
   range_multi= (Stat.compression_type == UDM_BLOB_COMP_URLID_RANGE_MULTI);
   compr_urlid_delta= (Stat.compression_type == UDM_BLOB_COMP_URLID_DELTA_VARIABLE);
@@ -2152,7 +2156,6 @@ UdmStoreWordBlobUsingHex(UDM_DB *db, urlid_t url_id,
                          UDM_DSTR *qbuf)
 {
   size_t i;
-  int rc;
   const char *prefix= ",0x"; /* 0xAABBCC syntax by default */
   const char *suffix= "";
   size_t prefix_length= 3;
@@ -2193,7 +2196,7 @@ UdmStoreWordBlobUsingHex(UDM_DB *db, urlid_t url_id,
       UdmDSTRAppend(qbuf, ",''", 3);
   }
   UdmDSTRAppend(qbuf, ")", 1);
-  return rc;
+  return UDM_OK;
 }
 
 
@@ -2499,7 +2502,8 @@ UdmBlobModeInflateOrSelf(UDM_AGENT *A,
       {
         src= buf->data;
         len[0]= reslen;
-        UdmLog(A,UDM_LOG_DEBUG, "%d to %d bytes inflated", len0, reslen);
+        UdmLog(A, UDM_LOG_DEBUG, "%d to %d bytes inflated",
+                                 (int) len0, (int) reslen);
         break;
       }
     }
@@ -2510,10 +2514,12 @@ UdmBlobModeInflateOrSelf(UDM_AGENT *A,
   {
     udm_timer_t ticks= UdmStartTimer();
     char *zint4_buf= UdmMalloc(*len);
-    UdmLog(A, UDM_LOG_DEBUG, "zint4 header detected (zint4ed data length: %d)", *len);
+    UdmLog(A, UDM_LOG_DEBUG, "zint4 header detected (zint4ed data length: %d)",
+                             (int) (*len));
     if (! zint4_buf)
     {
-      UdmLog(A, UDM_LOG_ERROR, "Malloc failed. Requested %u bytes", *len);
+      UdmLog(A, UDM_LOG_ERROR, "Malloc failed. Requested %u bytes",
+                               (int) (*len));
       return(NULL);
     }
     memcpy(zint4_buf, src, *len);
@@ -2521,13 +2527,13 @@ UdmBlobModeInflateOrSelf(UDM_AGENT *A,
     {
       UdmFree(zint4_buf);
       UdmLog(A, UDM_LOG_ERROR, "UdmDSTRRealloc failed. Requested %u bytes",
-             *len * 7);
+             (int) (*len * 7));
       return(NULL);
     }
     *len= udm_dezint4(zint4_buf, (int4 *)buf->data, *len) * 4;
     src= buf->data;
     UdmFree(zint4_buf);
-    UdmLog(A, UDM_LOG_ERROR, "dezint4ed data length: %d", *len);
+    UdmLog(A, UDM_LOG_ERROR, "dezint4ed data length: %d", (int) (*len));
     UdmLog(A, UDM_LOG_ERROR, "dezint4 done: %.2f", UdmStopTimer(&ticks));
   }
   return src;
@@ -2587,7 +2593,8 @@ UdmAddCollationMatch(UDM_FINDWORD_ARGS *args, const char *word, size_t count)
     Let's assume it is a substring, to avoid long 
     word lists in $(WE).
   */
-  if (args->Word.match == UDM_MATCH_FULL)
+  if (args->Word.match == UDM_MATCH_FULL ||
+      args->Word.match == UDM_MATCH_RANGE)
   {
     UDM_WIDEWORD WW= args->WWList->Word[args->Word.order];
     WW.origin= UDM_WORD_ORIGIN_COLLATION;
@@ -2674,15 +2681,15 @@ UdmFindWordBlobFromTable(UDM_FINDWORD_ARGS *args, const char *table_name)
   ticks= UdmStartTimer();
   UdmLog(args->Agent, UDM_LOG_DEBUG, "Start fetching");
   if (args->Word.secno)
-    udm_snprintf(secno, sizeof(secno), " AND secno=%d", args->Word.secno);
+    udm_snprintf(secno, sizeof(secno), " AND secno=%d", (int) args->Word.secno);
   /*
     When performing substring or number search,
     don't include special data, like '#last_mod_time' or '#rec_id'
   */
-  if (args->cmparg[0] != '=')
+  if (args->Word.match != UDM_MATCH_FULL)
     udm_snprintf(special, sizeof(special), " AND word NOT LIKE '#%%'");
   udm_snprintf(qbuf, sizeof(qbuf),
-               "SELECT secno,intag,word FROM %s WHERE word%s%s%s",
+               "SELECT secno,intag,word FROM %s WHERE %s%s%s",
                table_name, args->cmparg, secno, special);
   if(UDM_OK != (rc= UdmSQLQuery(args->db, &SQLRes, qbuf)))
     return rc;
@@ -2744,8 +2751,7 @@ UdmBlobLoadLiveUpdateLimit(UDM_FINDWORD_ARGS *args, UDM_AGENT *A, UDM_DB *db)
     return rc;
   UdmLog(A, UDM_LOG_DEBUG,
          "Stop loading LiveUpdate url_id list: %.02f, %d updated docs found",
-         UdmStopTimer(&ticks),
-         args->live_update_deleted_urls.nurls);
+         UdmStopTimer(&ticks), (int) args->live_update_deleted_urls.nurls);
   args->live_update_deleted_urls.exclude= 1;
   UdmURLIdListCopy(&args->live_update_active_urls, &args->urls);
   UdmURLIdListMerge(&args->urls, &args->live_update_deleted_urls);
@@ -2865,11 +2871,11 @@ UdmBlobWriteWordUsingEncoding(UDM_DB *db,  const char *table,
   if (UdmDSTRAlloc(buf, nbytes))
   {
     fprintf(stderr, "BlobWriteWord: DSTRAlloc(%d) failed: word='%s' secno=%d len=%d",
-            nbytes, word, secno, len);
+            (int) nbytes, word, (int) secno, (int) len);
     return UDM_OK; /* Skip this word - try to continue */
   }
   UdmDSTRAppendf(buf, "INSERT INTO %s VALUES('%s', %d, %s%s",
-                 table, word, secno, E, pf);
+                 table, word, (int) secno, E, pf);
   s= buf->data + buf->size_data;
   if (db->DBType == UDM_DB_PGSQL)
   {
@@ -2903,7 +2909,7 @@ UdmBlobWriteWordUsingMultiInsert(UDM_DB *db,  const char *table,
   if (UdmDSTRRealloc(buf, nbytes))
   {
     fprintf(stderr, "DSTRAlloc(%d) failed: word='%s' secno=%d len=%d",
-            nbytes, word, secno, len);
+            (int) nbytes, word, (int) secno, (int) len);
     return UDM_ERROR;
   }
 
@@ -2913,7 +2919,7 @@ UdmBlobWriteWordUsingMultiInsert(UDM_DB *db,  const char *table,
     comma= "";
   }
 
-  UdmDSTRAppendf(buf, "%s('%s',%d,0x", comma, word, secno);
+  UdmDSTRAppendf(buf, "%s('%s',%d,0x", comma, word, (int) secno);
   buf->size_data+= UdmHexEncode(buf->data + buf->size_data, data, len);
   UdmDSTRAppendf(buf, ")");
   return UDM_OK;
@@ -3341,7 +3347,7 @@ UdmBlobCacheAddPair(UDM_BLOB_CACHE *cache,
 */
   if (0)
   fprintf(stderr, "[%d:%d] %d/%d  %s\n",
-          url_id, secno, mindiff, npairs, word_pair_key);
+          url_id, secno, (int) mindiff, (int) npairs, word_pair_key);
   return  UdmBlobCacheAdd(&cache[word_seed],
                           url_id, secno, word_pair_key,
                           nintags, (char*) buf, beg - buf);
@@ -3427,10 +3433,10 @@ UdmBlob2BlobV2ConvertDistances(UDM_BLOB_CACHE *cache,
   for (i= 0; i < 256; i++)
   {
     int rc;
-    if (UDM_OK != UdmBlob2BlobV2ConvertDistancesForSection(cache,
-                                                           &WLL->Item[i],
-                                                           PL,
-                                                           url_id, i, prm))
+    if (UDM_OK != (rc= UdmBlob2BlobV2ConvertDistancesForSection(cache,
+                                                                &WLL->Item[i],
+                                                                PL,
+                                                                url_id, i, prm)))
       return rc;
   }
   return UDM_OK;
@@ -3745,7 +3751,7 @@ UdmBlob2BlobV2ConvertOneColumn(UDM_SQLRES *SQLRes,
                         url_id, secno, word, nintags, buf, buflen);
         if (0)
         fprintf(stderr, "url_id=%d secno=%d idens=%d (%d/%d) ncoords=%d word=%s\n",
-                url_id, secno, st.seclen / st.ncoords, st.seclen, st.ncoords, nintags, word);
+                url_id, secno, st.seclen / st.ncoords, st.seclen, st.ncoords, (int) nintags, word);
         
       }
       s+= coord_len;
@@ -3847,8 +3853,7 @@ UdmBlob2BlobConsequent(UDM_AGENT *Indexer, UDM_DB *db,
                        UDM_BLOB_CACHE *cache, const char *wtable,
                        int use_deflate)
 {
-  size_t t;
-  int rc= UDM_OK;
+  int t, rc= UDM_OK;
   size_t srows= 0;
   udm_uint8 nbytes= 0;
   const char *state_cond= UdmBlobStateCondition(Indexer);
@@ -3867,7 +3872,7 @@ UdmBlob2BlobConsequent(UDM_AGENT *Indexer, UDM_DB *db,
     nrows= UdmSQLNumRows(&SQLRes);
     timer_blob_cache_load+= (UdmStartTimer() - ticks);
     UdmLog(Indexer, UDM_LOG_DEBUG, "Loading intag%02X done, %d rows, %.2f sec",
-                                   t, nrows, UdmStopTimer(&ticks));
+                                   t, (int) nrows, UdmStopTimer(&ticks));
     
     ticks= UdmStartTimer();
     UdmLog(Indexer, UDM_LOG_ERROR, "Converting intag%02X", t);
@@ -3887,7 +3892,8 @@ UdmBlob2BlobConsequent(UDM_AGENT *Indexer, UDM_DB *db,
     UdmLog(Indexer, UDM_LOG_DEBUG,
            "Writing intag%02X done, %.2f sec", t, UdmStopTimer(&ticks));
   }
-  UdmLog(Indexer, UDM_LOG_ERROR, "Total converted: %d records, %llu bytes", srows, nbytes);
+  UdmLog(Indexer, UDM_LOG_ERROR, "Total converted: %d records, %llu bytes",
+                                 (int) srows, (unsigned long long) nbytes);
 ret:
   return rc;
 }
@@ -3929,7 +3935,7 @@ UdmBlob2BlobParallelQuery(UDM_AGENT *Indexer, UDM_DB *db, UDM_SQLRES *SQLRes,
   if (UDM_OK != (rc= UdmSQLQuery(db, SQLRes, buf)))
     goto ex;
   UdmLog(Indexer, UDM_LOG_DEBUG, "Loading documents done, %d rows, %.2f sec",
-                                  UdmSQLNumRows(SQLRes), UdmStopTimer(&ticks));
+                                  (int) UdmSQLNumRows(SQLRes), UdmStopTimer(&ticks));
 ex:
   timer_blob_cache_load+= UdmStartTimer() - ticks;
   return rc;
@@ -3943,16 +3949,20 @@ UdmBlob2BlobParallel(UDM_AGENT *Indexer, UDM_DB *db,
                      int use_deflate, size_t step)
 {
   int rc= UDM_OK;
-  size_t srows= 0, id;
+  size_t srows= 0, id, min_id, max_id;
   udm_uint8 nbytes= 0;
-  size_t min_id= URLList->Item[0].url_id;
-  size_t max_id= URLList->Item[URLList->nitems - 1].url_id;
   const char *state_cond= UdmBlobStateCondition(Indexer);
   int NewBlob= UdmVarListFindBool(&Indexer->Conf->Vars, "NewBlob", 0);
 
+  if (!URLList->nitems)
+    goto ret;
+
+  min_id= URLList->Item[0].url_id;
+  max_id= URLList->Item[URLList->nitems - 1].url_id;
   for (id= min_id; id <= max_id; id+= step)
   {
-    size_t nrows, t;
+    int t;
+    size_t nrows;
     UDM_SQLRES SQLRes;
 
     if (UDM_OK != (rc= UdmBlob2BlobParallelQuery(Indexer, db, &SQLRes,
@@ -3995,8 +4005,9 @@ sql_free:
     /* Can't free SQLRes earlier, "cache" has pointers to it */
     UdmSQLFree(&SQLRes);
   }
-  UdmLog(Indexer, UDM_LOG_ERROR, "Total converted: %d records, %llu bytes", srows, nbytes);
 ret:
+  UdmLog(Indexer, UDM_LOG_ERROR, "Total converted: %d records, %llu bytes",
+                                 (int) srows, (unsigned long long) nbytes);
   return rc;
 }
 
@@ -4163,7 +4174,7 @@ ret:
 int
 UdmBlobWriteURL(UDM_AGENT *A, UDM_DB *db, const char *table, int use_deflate)
 {
-  const char *url;
+  const char *url, *dummy_where;
   int use_zint4= UdmVarListFindBool(&db->Vars, "zint4", UDM_DEFAULT_ZINT4);
   UDM_DSTR buf;
   UDM_DSTR r, s, l, p, z, *pz= use_deflate ? &z : NULL;
@@ -4174,7 +4185,8 @@ UdmBlobWriteURL(UDM_AGENT *A, UDM_DB *db, const char *table, int use_deflate)
   udm_timer_t ticks= UdmStartTimer();
 
   /* Need this if "indexer -Erewriteurl" */
-  UdmSQLBuildWhereCondition(A->Conf, db);
+  if (UDM_OK != (rc= UdmSQLBuildWhereCondition(A->Conf, db, &dummy_where)))
+    return rc;
   url= (db->from && db->from[0]) ? "url." : "";
 
   UdmDSTRInit(&buf, 8192);
@@ -4206,7 +4218,7 @@ UdmBlobWriteURL(UDM_AGENT *A, UDM_DB *db, const char *table, int use_deflate)
   }
   UdmSQLFree(&SQLRes);
   UdmLog(A, UDM_LOG_DEBUG, "Loading basic URL data %d rows done: %.2f sec",
-         nrows, UdmStopTimer(&ticks));
+                           (int) nrows, UdmStopTimer(&ticks));
   
   if (use_zint4)
   {
@@ -4338,7 +4350,8 @@ UdmURLDataUnpackRecID(UDM_AGENT *A, UDM_URLDATALIST *DataList, size_t nrows,
   {
     skip+= (ncoords - j);
     UdmLog(A, UDM_LOG_DEBUG,
-           "Warning: %d out of %d coords didn't have URL data", skip, DataList->nitems);
+           "Warning: %d out of %d coords didn't have URL data",
+           (int) skip, (int) DataList->nitems);
     j= DataList->nitems;
   }
   return j;
@@ -4451,7 +4464,7 @@ UdmLoadURLDataFromBdict(UDM_AGENT *A,
       Use 0 as pop_rank values.
     */
     UdmLog(A, UDM_LOG_DEBUG, "Warning: s=R is requested, but '#pop_rank' record not found");
-    UdmLog(A, UDM_LOG_DEBUG, "Perhaps you forgot to run 'indexer -n0 -R' before running 'indexer -Eblob'");
+    UdmLog(A, UDM_LOG_DEBUG, "Perhaps you forgot to run 'indexer -n0 -R' before running 'indexer --index'");
     need_pop_rank= 0;
   }
   
@@ -4463,7 +4476,7 @@ UdmLoadURLDataFromBdict(UDM_AGENT *A,
     size_t j, nrows= rec_id_len / 4;
 
     ticks= UdmStartTimer();
-    UdmLog(A, UDM_LOG_DEBUG, "Unpacking URL Data %d rows", nrows);
+    UdmLog(A, UDM_LOG_DEBUG, "Unpacking URL Data %d rows", (int) nrows);
     if (need_pop_rank || need_last_mod_time ||
         (!group_by_site && need_site_id) /* GroupBySite=rank */)
     {
@@ -4500,7 +4513,8 @@ UdmLoadURLDataFromBdict(UDM_AGENT *A,
 
     if (j != DataList->nitems)
     {
-      UdmLog(A,UDM_LOG_DEBUG,"Expected to load %d URLs, loaded %d", DataList->nitems, j);
+      UdmLog(A,UDM_LOG_DEBUG, "Expected to load %d URLs, loaded %d",
+                              (int) DataList->nitems, (int) j);
       UdmLog(A,UDM_LOG_DEBUG,"Couldn't load URL data from bdict");
       goto load_from_url;
     }
@@ -4606,7 +4620,7 @@ UdmBlobWriteLimitsInternal(UDM_AGENT *A, UDM_DB *db,
     UDM_FREE(list.urls);
     UDM_FREE(UserScore.Item);
     UdmLog(A, UDM_LOG_DEBUG, "%d documents written to '%s': %.2f",
-                              ndocs, lname, UdmStopTimer(&ticks));
+                              (int) ndocs, lname, UdmStopTimer(&ticks));
   }
 ret:
   UdmDSTRFree(&l);
@@ -4755,7 +4769,7 @@ UdmBlobLoadFastOrder(UDM_AGENT *A, UDM_DB *db,
   UDM_SQLRES SQLRes;
 
   if (UDM_OK != (rc= UdmBlobLoadFastOrderOrFastScore(A, db, &SQLRes, "order", name)) ||
-      UDM_OK != (rc= rc= UdmBlobUnpackFastOrder(List, &SQLRes, 4)))
+      UDM_OK != (rc= UdmBlobUnpackFastOrder(List, &SQLRes, 4)))
     goto ret;
 
 ret:
@@ -4772,7 +4786,7 @@ UdmBlobLoadFastScore(UDM_AGENT *A, UDM_DB *db,
   UDM_SQLRES SQLRes;
   
   if (UDM_OK != (rc= UdmBlobLoadFastOrderOrFastScore(A, db, &SQLRes, "score", name)) ||
-      UDM_OK != (rc= rc= UdmBlobUnpackFastOrder(List, &SQLRes, 5)))
+      UDM_OK != (rc= UdmBlobUnpackFastOrder(List, &SQLRes, 5)))
     goto ret;
   
 ret:
@@ -4804,7 +4818,7 @@ UdmWordStatCreateBlob(UDM_AGENT *A, UDM_DB *db)
       udm_snprintf(expr, sizeof(expr), "octet_length(intag)");
   }
   udm_snprintf(qbuf, sizeof(qbuf),
-               "SELECT word, sum(%s) FROM %s GROUP BY word",
+               "SELECT word, sum(%s) FROM %s WHERE word NOT LIKE '#%%' GROUP BY word",
                expr, tablename);
   return UdmWordStatQuery(A, db, qbuf);
 }

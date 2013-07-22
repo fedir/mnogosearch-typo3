@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -335,6 +335,7 @@ extern __C_LINK void __UDMCALL UdmConvInit(UDM_CONV *c,
 extern __C_LINK int  __UDMCALL UdmConv(UDM_CONV *c,
                                        char *d, size_t dlen,
                                        const char *s, size_t slen);
+extern size_t UdmConvSizeNeeded(const UDM_CONV *cnv, size_t srclen, int flags);
 extern void UdmConvFree(UDM_CONV *c);
 
 #endif

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@
 #include "udm_indexer.h"
 #include "udm_textlist.h"
 #include "udm_parsehtml.h"
-
+#include "udm_wild.h"
 
 
 /************** some forward declarations ********************/
@@ -250,7 +250,7 @@ UdmCheckDateParam(UDM_DATE_PARAM *d,
   }
   else if (!strcmp(var, "dm"))
   {
-    d->dm= (intval) ? intval : 1;
+    d->dm= intval; /* 0=Jan, 1=Feb,..., 11=Dec.*/
   }
   else if (!strcmp(var, "dy"))
   {
@@ -323,9 +323,44 @@ UdmSQLWhereDateParam(UDM_DSTR *cond, UDM_DATE_PARAM *d)
   }
 }
 
+typedef struct udm_search_param_st
+{
+  const char *name;
+} UDM_SEARCH_PARAM;
 
-const char*
-UdmSQLBuildWhereCondition(UDM_ENV * Conf,UDM_DB *db)
+
+static const UDM_SEARCH_PARAM search_params[]=
+{
+  {"ul"},
+  {"ue"},
+  {"u"},
+  {"tag"},
+  {"t"},
+  {"lang"},
+  {"g"},
+  {"cat"},
+  {"type"},
+  {"typ"},
+  {"sl.*"},
+  {NULL}
+};
+
+
+static const UDM_SEARCH_PARAM*
+UdmFindStringParam(const char *name)
+{
+  const UDM_SEARCH_PARAM *param;
+  for (param= search_params; param->name; param++)
+  {
+    if (!UdmWildCaseCmp(name, param->name))
+      return param;
+  }
+  return NULL;
+}
+
+
+int
+UdmSQLBuildWhereCondition(UDM_ENV * Conf,UDM_DB *db, char const **dst)
 {
   size_t  i;
   int     fromserver = 1, fromurlinfo_lang = 1, fromurlinfo_type = 1, fromurlinfo = 1;
@@ -334,10 +369,15 @@ UdmSQLBuildWhereCondition(UDM_ENV * Conf,UDM_DB *db)
   UDM_DSTR ue, seed, status, site, from, server, url, tag, lang, cat, type;
   UDM_DSTR urlinfo, timecond;
   int need_new= UdmVarListFindBool(&Conf->Vars, "delta", 0);
+  int rc= UDM_OK;
   const char *need_new_str= need_new ?
     "url.rec_id IN (SELECT url_id FROM bdicti WHERE state=1)" : "";
   
-  if(db->where)return(db->where);
+  if(db->where)
+  {
+    *dst= db->where;
+    return UDM_OK;
+  }
   
   bzero((void*)&tm, sizeof(struct tm));
   UdmDateParamInit(&datep);
@@ -361,14 +401,26 @@ UdmSQLBuildWhereCondition(UDM_ENV * Conf,UDM_DB *db)
     const char *val=Conf->Vars.Var[i].val?Conf->Vars.Var[i].val:"";
     int intval=atoi(val);
     char varbuf[64];
-    char valbuf[64];
-    size_t varlen, vallen;
-    
-    if(!val[0] ||
-       (varlen= strlen(var)) >= sizeof(varbuf) ||
-       (vallen= strlen(val)) >= sizeof(valbuf))
+    char valbuf[128];
+    int varlen= (int) strlen(var);
+    int vallen= (int) strlen(val);
+
+    if (!vallen || varlen > sizeof(varbuf))
       continue;
-    
+
+    if (vallen > sizeof(valbuf))
+    {
+      vallen= sizeof(valbuf);
+      if (UdmFindStringParam(var))
+      {
+        udm_snprintf(db->errstr, sizeof(db->errstr),
+                     "Limit is too long: %.*s=%.*s",
+                     (int) varlen, var, (int) vallen, val);
+        rc= UDM_ERROR;
+        goto ret;
+      }
+    }
+
     /* Protection against SQL injection */
     var= UdmSQLEscStrSimple(db, varbuf, var, varlen);
     val= UdmSQLEscStrSimple(db, valbuf, val, vallen);
@@ -498,6 +550,10 @@ UdmSQLBuildWhereCondition(UDM_ENV * Conf,UDM_DB *db)
 
   WhereConditionAddAnd(db->where, need_new_str);
 
+  /* Need this for test purposes */
+  UdmVarListReplaceStr(&Conf->Vars, "WhereCondition", db->where);
+  *dst= db->where;
+
 ret:
   UdmDSTRFree(&from);
   UdmDSTRFree(&server);
@@ -512,10 +568,7 @@ ret:
   UdmDSTRFree(&type);
   UdmDSTRFree(&urlinfo);
   UdmDSTRFree(&timecond);
-
-  /* Need this for test purposes */
-  UdmVarListReplaceStr(&Conf->Vars, "WhereCondition", db->where);
-  return db->where;
+  return rc;
 }
 
 
@@ -824,7 +877,7 @@ UdmLoadServerTable(UDM_AGENT * Indexer, UDM_SERVERLIST *S, UDM_DB *db)
       {
         udm_snprintf(db->errstr, sizeof(db->errstr),
                     "Error while loading ServerTable '%s' at row %d: %s",
-                    name, i, errstr);
+                    name, (int) i, errstr);
         break;
       }
     }
@@ -942,7 +995,10 @@ UdmServerTableAdd(UDM_SERVERLIST *S, UDM_DB *db)
       goto ex;
     
     if (!UdmSQLNumRows(&SQLRes))
+    {
+      UdmSQLFree(&SQLRes);
       break; /* Not found */
+    }
     
     UdmServerInitFromRecord(&Old, &SQLRes, 0);
     found= !strcasecmp(S->Server->Match.pattern, UdmSQLValue(&SQLRes, 0, 1));
@@ -1057,11 +1113,14 @@ UdmServerTableGetId(UDM_AGENT *Indexer, UDM_SERVERLIST *S, UDM_DB *db)
   {
     udmhash32_t     rec_id;
     int done = 1;
-  
+
+     UdmSQLEscStr(db, arg,  /* Server pattern */
+                  UDM_NULL2EMPTY(S->Server->Match.pattern),
+                  strlen(UDM_NULL2EMPTY(S->Server->Match.pattern)));
+
     udm_snprintf(buf, len, "SELECT rec_id FROM server WHERE command='%c' AND url='%s'",
-           S->Server->command,
-           UDM_NULL2EMPTY(S->Server->Match.pattern)
-     );
+                 S->Server->command, arg);
+
     res = UdmSQLQuery(db, &SQLRes, buf);
     if ((res == UDM_OK) && UdmSQLNumRows(&SQLRes))
     {
@@ -1097,10 +1156,6 @@ UdmServerTableGetId(UDM_AGENT *Indexer, UDM_SERVERLIST *S, UDM_DB *db)
       UdmSQLFree(&SQLRes);
       return res;
     }
-
-     UdmSQLEscStr(db, arg,  /* Server pattern */
-                  UDM_NULL2EMPTY(S->Server->Match.pattern),
-                  strlen(UDM_NULL2EMPTY(S->Server->Match.pattern)));
 
     udm_snprintf(buf, len, "\
 INSERT INTO server (rec_id, enabled, tag, category, command, parent, ordre, weight, url) \
@@ -1316,7 +1371,7 @@ UdmLoadSlowLimit(UDM_AGENT *A, UDM_DB *db, UDM_URLID_LIST *list, const char *q)
   
 sqlfree:
   UdmLog(A, UDM_LOG_DEBUG, "Limit query retured %d rows: %.2f",
-         list->nurls, UdmStopTimer(&ticks));
+         (int) list->nurls, UdmStopTimer(&ticks));
   UdmSQLFree(&SQLRes);
 ret:
   return rc;
@@ -1361,7 +1416,7 @@ UdmSlowLimitLoadForConv(UDM_AGENT *A,
   if (UDM_OK != (rc= UdmLoadSlowLimitWithSort(A, db, fl_urls, q)))
     return rc;
   UdmLog(A, UDM_LOG_DEBUG, "Limit '%s' loaded%s, %d records, %.2f sec",
-         fl, fl_urls->exclude ? " type=excluding" : "", fl_urls->nurls,
+         fl, fl_urls->exclude ? " type=excluding" : "", (int) fl_urls->nurls,
          UdmStopTimer(&ticks));
   return rc;
 }
@@ -1490,8 +1545,8 @@ UdmLoadURLDataFromURLForConv(UDM_AGENT *A,
     UdmSort(C->Item, C->nitems, sizeof(UDM_URLDATA), (udm_qsort_cmp) cmp_data_urls);
 
 fin:
-  UdmLog(A, UDM_LOG_DEBUG,
-         "URL list loaded: %d urls, %.2f sec", C->nitems, UdmStopTimer(&ticks));
+  UdmLog(A, UDM_LOG_DEBUG, "URL list loaded: %d urls, %.2f sec",
+                           (int) C->nitems, UdmStopTimer(&ticks));
   return rc;
 }
 
@@ -1752,7 +1807,7 @@ UdmUserScoreListLoad(UDM_AGENT *A, UDM_DB *db,
   {
     udm_snprintf(db->errstr, sizeof(db->errstr),
                  "User Score query must return 2 columns, returned %d columns",
-                 UdmSQLNumCols(&SQLRes));
+                 (int) UdmSQLNumCols(&SQLRes));
     rc= UDM_ERROR;
     db->errcode= 1;
     goto sqlfree;
@@ -1773,7 +1828,7 @@ UdmUserScoreListLoad(UDM_AGENT *A, UDM_DB *db,
 
   UdmLog(A, UDM_LOG_DEBUG,
          "UserScore query returned %d columns, %d rows: %.2f",
-         UdmSQLNumCols(&SQLRes), List->nitems, UdmStopTimer(&ticks));
+         (int) UdmSQLNumCols(&SQLRes), (int) List->nitems, UdmStopTimer(&ticks));
   
 
 sqlfree:
@@ -1815,7 +1870,7 @@ UdmUserScoreListLoadAndApplyToURLScoreList(UDM_AGENT *Agent,
 
 ret:  
   UdmLog(Agent, UDM_LOG_DEBUG, "%-30s%.2f (%d docs found)",
-         "Stop  loading UserScore",  UdmStopTimer(&ticks), UserScoreList.nitems);
+         "Stop  loading UserScore",  UdmStopTimer(&ticks), (int) UserScoreList.nitems);
   UDM_FREE(UserScoreList.Item);
   return rc;
 }
@@ -1876,8 +1931,10 @@ int UdmConvert2BlobSQL(UDM_AGENT *Indexer, UDM_DB *db)
 {
   int rc;
   UDM_URLDATALIST List;
+  const char *dummy_where;
   
-  UdmSQLBuildWhereCondition(Indexer->Conf, db);
+  if (UDM_OK != (rc= UdmSQLBuildWhereCondition(Indexer->Conf, db, &dummy_where)))
+    return rc;
   
   if (UDM_OK != (rc= UdmLoadURLDataFromURLAndSlowLimitForConv(Indexer, db, &List)))
     return rc;
@@ -2171,7 +2228,7 @@ static void
 SQLResToDoc(UDM_ENV *Conf, UDM_DOCUMENT *D, UDM_SQLRES *sqlres, size_t i)
 {
   time_t    last_mod_time;
-  char    dbuf[128];
+  char    dbuf[UDM_MAXTIMESTRLEN];
   const char  *format = UdmVarListFindStr(&Conf->Vars, "DateFormat", "%a, %d %b %Y, %X %Z");
   double          pr;
   
@@ -2179,9 +2236,9 @@ SQLResToDoc(UDM_ENV *Conf, UDM_DOCUMENT *D, UDM_SQLRES *sqlres, size_t i)
   UdmVarListReplaceInt(&D->Sections, "URL_ID", UdmStrHash32(UdmSQLValue(sqlres,i,1)));
   last_mod_time=atol(UdmSQLValue(sqlres,i,2));
   UdmVarListReplaceInt(&D->Sections, "Last-Modified-Timestamp", (int) last_mod_time);
-  if (strftime(dbuf, 128, format, localtime(&last_mod_time)) == 0)
+  if (strftime(dbuf, sizeof(dbuf), format, localtime(&last_mod_time)) == 0)
   {
-    UdmTime_t2HttpStr(last_mod_time, dbuf);
+    UdmTime_t2HttpStr(last_mod_time, dbuf, sizeof(dbuf));
   }
   UdmVarListReplaceStr(&D->Sections,"Last-Modified",dbuf);
   UdmVarListReplaceStr(&D->Sections,"Content-Length",UdmSQLValue(sqlres,i,3));
@@ -2189,9 +2246,9 @@ SQLResToDoc(UDM_ENV *Conf, UDM_DOCUMENT *D, UDM_SQLRES *sqlres, size_t i)
   sprintf(dbuf, "%.2f", pr);
   UdmVarListReplaceStr(&D->Sections,"Content-Length-K",dbuf);  
   last_mod_time=atol(UdmSQLValue(sqlres,i,4));
-  if (strftime(dbuf, 128, format, localtime(&last_mod_time)) == 0)
+  if (strftime(dbuf, sizeof(dbuf), format, localtime(&last_mod_time)) == 0)
   {
-    UdmTime_t2HttpStr(last_mod_time, dbuf);
+    UdmTime_t2HttpStr(last_mod_time, dbuf, sizeof(dbuf));
   }
   UdmVarListReplaceStr(&D->Sections,"Next-Index-Time",dbuf);
   UdmVarListReplaceInt(&D->Sections, "Referrer-ID", UDM_ATOI(UdmSQLValue(sqlres,i,5)));
@@ -2208,7 +2265,7 @@ SQLResToDoc(UDM_ENV *Conf, UDM_DOCUMENT *D, UDM_SQLRES *sqlres, size_t i)
 #endif
 
   pr = atof(UdmSQLValue(sqlres, i, 8));
-  snprintf(dbuf, 128, "%.5f", pr);
+  udm_snprintf(dbuf, sizeof(dbuf), "%.5f", pr);
   UdmVarListReplaceStr(&D->Sections, "Pop_Rank", dbuf);
 }
 
@@ -2238,7 +2295,7 @@ UdmGetURLInfoOneDoc(UDM_AGENT *Indexer, UDM_DB *db,
     if (!sval)
       sval = "";
 
-    if (!strcmp(sname, "CachedCopy")) 
+    if (!strcasecmp(sname, "CachedCopy")) 
     {
       if (unpack_cached_copy)
       {
@@ -2289,7 +2346,12 @@ UdmGetCachedCopy(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc, UDM_DB *db)
   if (UDM_OK != (rc= UdmSQLQuery(db, &SQLRes, buf)))
     return rc;
   
-  if (! UdmSQLNumRows(&SQLRes)) return(UDM_ERROR);
+  if (! UdmSQLNumRows(&SQLRes))
+  {
+    UdmSQLFree(&SQLRes);
+    return UDM_ERROR;
+  }
+
   SQLResToDoc(Indexer->Conf, Doc, &SQLRes, 0);
   UdmSQLFree(&SQLRes);
 
@@ -2317,7 +2379,8 @@ UdmMarkForReindex(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc, UDM_DB *db)
   UDM_DSTR buf;
 
   UDM_LOCK_CHECK_OWNER(Indexer, UDM_LOCK_CONF);
-  where = UdmSQLBuildWhereCondition(Indexer->Conf, db);
+  if (UDM_OK != (rc= UdmSQLBuildWhereCondition(Indexer->Conf, db, &where)))
+    return rc;
   
   if (db->flags & UDM_SQL_HAVE_SUBSELECT &&
       db->DBType != UDM_DB_MYSQL)
@@ -2468,12 +2531,12 @@ UdmUpdateUrlWithLangAndCharset(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc,UDM_DB *db)
   udm_snprintf(qbuf, 1023, "\
 UPDATE url SET \
 status=%d,\
-next_index_time=%li,\
+next_index_time=%d,\
 docsize=%d,\
 crc32=%d%s, site_id=%s%i%s, server_id=%s%i%s \
 WHERE rec_id=%s%i%s",
   status,
-  UdmHttpDate2Time_t(UdmVarListFindStr(&Doc->Sections,"Next-Index-Time","")),
+  (int) UdmHttpDate2Time_t(UdmVarListFindStr(&Doc->Sections,"Next-Index-Time","")),
   UdmVarListFindInt(&Doc->Sections,"Content-Length",0),
   UdmVarListFindInt(&Doc->Sections,"crc32",0),
   qsmall,
@@ -2535,7 +2598,7 @@ UdmDocInsertSectionsUsingBind(UDM_DB *db, UDM_DOCUMENT *Doc)
 
 static int
 UdmDocInsertSectionsUsingEscapeBuildQuery(UDM_DB *db,
-                                          size_t url_id,
+                                          urlid_t url_id,
                                           const char *name,
                                           const char *val,
                                           size_t vallen,
@@ -2678,6 +2741,13 @@ commit:
   if(use_tnx && rc == UDM_OK)
     rc= UdmSQLCommit(db);
 
+  if (rc == UDM_OK && db->DBMode == UDM_DBMODE_MULTI)
+  {
+    int WordCacheSize= UdmVarListFindInt(&Indexer->Conf->Vars, "WordCacheSize", 0);
+    if (WordCacheSize <= 0) WordCacheSize = 0x800000;
+    /* UdmWordCacheWrite starts its own transaction */
+    rc= UdmWordCacheWrite(Indexer, db, WordCacheSize);
+  }
   return rc;
 }
 
@@ -2770,7 +2840,7 @@ UdmCloneListSQL(UDM_AGENT * Indexer, UDM_DOCUMENT *Doc, UDM_RESULT *Res, UDM_DB 
   for(i = 0; i < nadd; i++)
   {
     time_t    last_mod_time;
-    char    buf[128];
+    char    buf[UDM_MAXTIMESTRLEN];
     UDM_DOCUMENT  *D = &Res->Doc[Res->num_rows + i];
     
     UdmDocInit(D);
@@ -2778,9 +2848,9 @@ UdmCloneListSQL(UDM_AGENT * Indexer, UDM_DOCUMENT *Doc, UDM_RESULT *Res, UDM_DB 
     UdmVarListAddStr(&D->Sections,"URL",UdmSQLValue(&SQLres,i,1));
     UdmVarListReplaceInt(&D->Sections, "URL_ID", UdmStrHash32(UdmSQLValue(&SQLres,i,1)));
     last_mod_time=atol(UdmSQLValue(&SQLres,i,2));
-    if (strftime(buf, 128, format, localtime(&last_mod_time)) == 0)
+    if (strftime(buf, sizeof(buf), format, localtime(&last_mod_time)) == 0)
     {
-      UdmTime_t2HttpStr(last_mod_time, buf);
+      UdmTime_t2HttpStr(last_mod_time, buf, sizeof(buf));
     }
     UdmVarListAddStr(&D->Sections,"Last-Modified",buf);
     UdmVarListAddInt(&D->Sections,"Content-Length",atoi(UdmSQLValue(&SQLres,i,3)));
@@ -2813,26 +2883,28 @@ UdmSQLTopClause(UDM_DB *db, size_t top_num, UDM_SQL_TOP_CLAUSE *Top)
   UdmSQLTopInit(Top);
   if(db->flags & UDM_SQL_HAVE_LIMIT)
   {
-    udm_snprintf(Top->limit, UDM_SQL_TOP_BUF_SIZE, " LIMIT %d", top_num);
+    udm_snprintf(Top->limit, UDM_SQL_TOP_BUF_SIZE, " LIMIT %d", (int) top_num);
   }
   else if (db->flags & UDM_SQL_HAVE_TOP)
   {
-    udm_snprintf(Top->top, UDM_SQL_TOP_BUF_SIZE, " TOP %d ", top_num);
+    udm_snprintf(Top->top, UDM_SQL_TOP_BUF_SIZE, " TOP %d ", (int) top_num);
   }
   else if (db->flags & UDM_SQL_HAVE_FIRST_SKIP)
   {
-    udm_snprintf(Top->top, UDM_SQL_TOP_BUF_SIZE, " FIRST %d ", top_num);
+    udm_snprintf(Top->top, UDM_SQL_TOP_BUF_SIZE, " FIRST %d ", (int) top_num);
   }
   else if (db->DBType == UDM_DB_ORACLE8)
   {
 #if HAVE_ORACLE8
     if(db->DBDriver==UDM_DB_ORACLE8)
     {
-      udm_snprintf(Top->rownum, UDM_SQL_TOP_BUF_SIZE, " AND ROWNUM<=%d", top_num); 
+      udm_snprintf(Top->rownum, UDM_SQL_TOP_BUF_SIZE,
+                   " AND ROWNUM<=%d", (int) top_num);
     }
 #endif
     if(!Top->rownum[0])
-      udm_snprintf(Top->rownum, UDM_SQL_TOP_BUF_SIZE, " AND ROWNUM<=%d", top_num); 
+      udm_snprintf(Top->rownum, UDM_SQL_TOP_BUF_SIZE,
+                   " AND ROWNUM<=%d", (int) top_num); 
   }
 }
 
@@ -2900,7 +2972,7 @@ static void
 UdmTargetSQLResToDoc(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc,
                      UDM_SQLRES *SQLRes, size_t i)
 {
-  char buf[64]= "";
+  char buf[UDM_MAXTIMESTRLEN]= "";
   time_t last_mod_time;
   UdmVarListAddStr(&Doc->Sections,"URL",UdmSQLValue(SQLRes,i,0));
   UdmVarListAddInt(&Doc->Sections, "ID", UDM_ATOI(UdmSQLValue(SQLRes,i,1)));
@@ -2909,7 +2981,7 @@ UdmTargetSQLResToDoc(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc,
   UdmVarListAddInt(&Doc->Sections,"Hops",atoi(UdmSQLValue(SQLRes,i,4)));
   UdmVarListAddInt(&Doc->Sections,"crc32",atoi(UdmSQLValue(SQLRes,i,5)));
   last_mod_time= (time_t) atol(UdmSQLValue(SQLRes,i,6));
-  UdmTime_t2HttpStr(last_mod_time, buf);
+  UdmTime_t2HttpStr(last_mod_time, buf, sizeof(buf));
   if (last_mod_time != 0 && strlen(buf) > 0)
   {
     UdmVarListReplaceStr(&Doc->Sections, "Last-Modified", buf);
@@ -2948,7 +3020,8 @@ UdmTargetsSQL(UDM_AGENT *Indexer, UDM_DB *db)
   url_num= UdmVarListFindInt(&Indexer->Conf->Vars, "URLSelectCacheSize", URL_SELECT_CACHE);
   if (Indexer->Conf->url_number < url_num)
     url_num= Indexer->Conf->url_number;
-  where= UdmSQLBuildWhereCondition(Indexer->Conf, db);
+  if (UDM_OK != (rc= UdmSQLBuildWhereCondition(Indexer->Conf, db, &where)))
+    return rc;
   qbuflen= 1024 + 4 * strlen(where);
   
   if ((qbuf = (char*)UdmMalloc(qbuflen + 2)) == NULL)
@@ -3356,7 +3429,7 @@ UdmClearDBUsingIN(UDM_AGENT *Indexer, UDM_DB *db, UDM_URLID_LIST *list)
       
       case UDM_DBMODE_MULTI:
         {
-          size_t dictnum;
+          int dictnum;
           for (dictnum= 0; dictnum <= MULTI_DICTS; dictnum++)
           {
             UdmDSTRReset(&qbuf);
@@ -3429,18 +3502,18 @@ UdmClearDBUsingLoop(UDM_AGENT *Indexer, UDM_DB *db, UDM_URLID_LIST *list)
 int
 UdmClearDBSQL(UDM_AGENT *Indexer,UDM_DB *db)
 {
-  int rc, use_crosswords;
+  int rc;
   const char *where, *qu = (db->DBType == UDM_DB_PGSQL) ? "'" : "";
   char ClearDBHook[128];
 
   UDM_GETLOCK(Indexer, UDM_LOCK_CONF);
-  where = UdmSQLBuildWhereCondition(Indexer->Conf, db);
-  use_crosswords= UdmVarListFindBool(&Indexer->Conf->Vars, "CrossWords", 0);
-  udm_snprintf(ClearDBHook, sizeof(ClearDBHook),
+  rc= UdmSQLBuildWhereCondition(Indexer->Conf, db, &where);
+  udm_snprintf(ClearDBHook, sizeof(ClearDBHook), "%s",
                UdmVarListFindStr(&Indexer->Conf->Vars, "SQLClearDBHook", ""));
   UDM_RELEASELOCK(Indexer, UDM_LOCK_CONF);
   
-  if (ClearDBHook[0] && (UDM_OK != (rc= UdmSQLQuery(db, NULL, ClearDBHook))))
+  if (rc != UDM_OK ||
+      (ClearDBHook[0] && (UDM_OK != (rc= UdmSQLQuery(db, NULL, ClearDBHook)))))
     return rc;
   
   if(!where[0])
@@ -3743,11 +3816,11 @@ UdmSortAndGroupByURL(UDM_AGENT *A,
   ticks=UdmStartTimer();
   bzero((void*) &ScoreList, sizeof(ScoreList));
 
-  UdmLog(A,UDM_LOG_DEBUG, "Start GroupByURL %d sections", SectionList->nsections);
+  UdmLog(A,UDM_LOG_DEBUG, "Start GroupByURL %d sections", (int) SectionList->nsections);
   UdmGroupByURL2(A, db, Res, SectionList, &ScoreList);
 
   UdmLog(A, UDM_LOG_DEBUG, "%-30s%.2f (%d docs found)",
-         "Stop  GroupByURL", UdmStopTimer(&ticks), ScoreList.nitems);
+         "Stop  GroupByURL", UdmStopTimer(&ticks), (int) ScoreList.nitems);
 
 #ifdef HAVE_DEBUG
   if (UdmVarListFindBool(&A->Conf->Vars, "DebugGroupByURL", 0))
@@ -3764,7 +3837,7 @@ UdmSortAndGroupByURL(UDM_AGENT *A,
     goto ex;
 
   UdmLog(A,UDM_LOG_DEBUG,"Start load url data %d docs (%d best needed)",
-         ScoreList.nitems, num_best_rows);
+         (int) ScoreList.nitems, (int) num_best_rows);
   ticks=UdmStartTimer();
 
   nbytes= UdmHashSize(ScoreList.nitems) * sizeof(UDM_URLDATA);
@@ -3785,7 +3858,7 @@ UdmSortAndGroupByURL(UDM_AGENT *A,
     udm_timer_t ticks1;
     
     Res->total_found= ScoreList.nitems;
-    UdmLog(A,UDM_LOG_DEBUG,"Start SortByScore %d docs", ScoreList.nitems);
+    UdmLog(A, UDM_LOG_DEBUG, "Start SortByScore %d docs", (int) ScoreList.nitems);
     ticks1=UdmStartTimer();
     if (ScoreList.nitems > 1000)
     {
@@ -3813,7 +3886,7 @@ UdmSortAndGroupByURL(UDM_AGENT *A,
     UdmLog(A, UDM_LOG_DEBUG, "Trying to load fast section order '%s'", su);
     rc= UdmFastOrderLoadAndApplyToURLDataList(A, db, &DataList, su, &norder);
     UdmLog(A, UDM_LOG_DEBUG, "Loading fast order '%s' done, %d docs found, %.2f sec",
-           su, norder, UdmStopTimer(&ticks1));
+           su, (int) norder, UdmStopTimer(&ticks1));
     if (norder)
       flags^= UDM_URLDATA_SU;
   }
@@ -3853,7 +3926,7 @@ date_factor:
 
   UdmLog(A,UDM_LOG_DEBUG,"%-30s%.2f", "Stop  load url data:", UdmStopTimer(&ticks));
   
-  UdmLog(A,UDM_LOG_DEBUG,"Start SortByPattern %d docs", DataList.nitems);
+  UdmLog(A, UDM_LOG_DEBUG, "Start SortByPattern %d docs", (int) DataList.nitems);
   ticks=UdmStartTimer();
   if (DataList.nitems)
     UdmURLDataSortByPattern(&DataList, pattern);
@@ -3870,7 +3943,7 @@ date_factor:
       {
         char tmp[256];
         const char *s= UdmVarListFindStr(&A->Conf->Vars, "DebugScore", "");
-        udm_snprintf(tmp, sizeof(tmp), "%s rank=%d", s, i + 1);
+        udm_snprintf(tmp, sizeof(tmp), "%s rank=%d", s, (int) i + 1);
         UdmVarListReplaceStr(&A->Conf->Vars, "DebugScore", tmp);
         break;
       }
@@ -3883,7 +3956,11 @@ date_factor:
            (int) MaxResults, (int) Res->total_found);
     Res->total_found= MaxResults;
     if (Res->URLData.nitems > MaxResults)
+    {
+      /* Free the part of URLData that will not be unused */
+      UdmURLDataListFreeItems(&Res->URLData, MaxResults, Res->URLData.nitems);
       Res->URLData.nitems= MaxResults;
+    }
   }
 
 ex:
@@ -3949,32 +4026,97 @@ ex:
 }
 
 
+/*
+  MySQL: no cast needed
+  - SQLite: CAST(word AS INTEGER)
+  - PostgreSQL: CASE WHEN a~'^[0-9]*$' THEN a::integer ELSE 0 END
+  - MSSQL:    CAST(word AS INTEGER)
+    There is a function ISNUMERIC(). However, it returns true
+    for things like "0x0123d", Cast does not work for this.
+
+  - Sybase:   returns error when input is non-numeric
+  - Oracle:   returns error ...
+  - IBM DB2:  returns error ...
+  - Firebird: return error ...
+  - Mimer:    return error ...
+*/
+static void
+UdmBuildNumericOperatorCondition(UDM_DB *db, char *cmparg, size_t maxlen,
+                                 const char *op, int number)
+{
+  switch (db->DBType)
+  {
+    case UDM_DB_MYSQL:
+      udm_snprintf(cmparg, maxlen, "word%s%d", op, number);
+      break;
+    case UDM_DB_PGSQL:
+      udm_snprintf(cmparg, maxlen, "(word~'^[0-9]*$' AND word::integer%s%d)", op, number);
+      break;
+    default:
+      udm_snprintf(cmparg, maxlen, "(word>='0' AND word <='99999999999' AND CAST(word AS INTEGER)%s%d)", op, number);
+  }
+}
+
+
 int
 UdmBuildCmpArgSQL(UDM_DB *db, int match, const char *word,
                   char *cmparg, size_t maxlen)
 {
+  const char *left= "", *right= "";
+  size_t length= strlen(word);
   char escwrd[1000];
-  UdmSQLEscStr(db, escwrd, word, strlen(word)); /* Search word */
+
+  if (match == UDM_MATCH_RANGE)
+  {
+    UDM_ASSERT(length > 6);
+    if (*word == '[')
+      left= ">=";
+    else if (*word == '{')
+      left= ">";
+    if (word[length - 1] == ']')
+      right= "<=";
+    else if (word[length - 1] == '}')
+      right= "<";
+    word++;
+    length-= 2;
+  }
+
+  UdmSQLEscStr(db, escwrd, word, length); /* Search word */
   switch(match)
   {  
     case UDM_MATCH_BEGIN:
-      udm_snprintf(cmparg, maxlen, " LIKE '%s%%'", escwrd);
+      udm_snprintf(cmparg, maxlen, "word LIKE '%s%%'", escwrd);
       break;
     case UDM_MATCH_END:
-      udm_snprintf(cmparg, maxlen, " LIKE '%%%s'", escwrd);
+      udm_snprintf(cmparg, maxlen, "word LIKE '%%%s'", escwrd);
       break;
     case UDM_MATCH_SUBSTR:
-      udm_snprintf(cmparg, maxlen, " LIKE '%%%s%%'", escwrd);
+      udm_snprintf(cmparg, maxlen, "word LIKE '%%%s%%'", escwrd);
       break;
     case UDM_MATCH_NUMERIC_LT:
-      udm_snprintf(cmparg, maxlen, " < %d", atoi(escwrd));
+      UdmBuildNumericOperatorCondition(db, cmparg, maxlen, "<", atoi(escwrd));
       break;
     case UDM_MATCH_NUMERIC_GT:
-      udm_snprintf(cmparg, maxlen, " > %d", atoi(escwrd));
+      UdmBuildNumericOperatorCondition(db, cmparg, maxlen, ">", atoi(escwrd));
+      break;
+    case UDM_MATCH_RANGE:
+      {
+        char *first= escwrd;
+        char *second= strstr(first, " TO ");
+        if (!second)
+        {
+          udm_snprintf(cmparg, maxlen, "word='<ERROR>'");
+          return UDM_ERROR;
+        }
+        *second= '\0';
+        second+= 4;
+        udm_snprintf(cmparg, maxlen, "word%s'%s' AND word%s'%s'",
+                     left, first, right, second);
+      }
       break;
     case UDM_MATCH_FULL:
     default:
-      udm_snprintf(cmparg, maxlen, "='%s'", escwrd);
+      udm_snprintf(cmparg, maxlen, "word='%s'", escwrd);
       break;
   }
   return(UDM_OK);
@@ -4037,7 +4179,7 @@ UdmFindMultiWordSQL (UDM_FINDWORD_ARGS *args)
     rc= UdmFindOneWordSQL(args);
     UdmLog(args->Agent, UDM_LOG_DEBUG,
            "Stop searching for subword '%s' %d coords found: %.2f",
-           args->Word.word, args->Word.count, UdmStopTimer(&ticks1));
+           args->Word.word, (int) args->Word.count, UdmStopTimer(&ticks1));
     /* If the next word wasn't found - no need to search for others. */
     if (rc != UDM_OK || !args->Word.count)
       goto ret;
@@ -4145,18 +4287,21 @@ UdmMergeWords(UDM_FINDWORD_ARGS *args, UDM_SECTIONLIST *SectionList)
   udm_timer_t ticks= UdmStartTimer();
   UDM_AGENT *A= args->Agent;
 
-  UdmLog(A, UDM_LOG_DEBUG, "Start merging %d lists", args->SectionListList.nitems);
+  UdmLog(A, UDM_LOG_DEBUG,
+         "Start merging %d lists", (int) args->SectionListList.nitems);
   UdmSectionListListMergeSorted(&args->SectionListList, SectionList, 1);
   UdmLog(A, UDM_LOG_DEBUG, "%-30s%.2f (%d sections)",
-         "Stop  merging:", UdmStopTimer(&ticks), SectionList->nsections);
+         "Stop  merging:", UdmStopTimer(&ticks), (int) SectionList->nsections);
 
-  if (!SectionList->nsections && args->db->DBMode == UDM_DBMODE_BLOB)
+  if (!SectionList->nsections &&
+      args->db->DBMode == UDM_DBMODE_BLOB &&
+      !args->live_updates)
     return UdmCheckIndex(A, args->db);
   return UDM_OK;
 }
 
 
-static void
+static int
 UdmSearchParamInit(UDM_FINDWORD_ARGS *args,
                    UDM_AGENT *A,
                    UDM_RESULT *Res,
@@ -4172,11 +4317,11 @@ UdmSearchParamInit(UDM_FINDWORD_ARGS *args,
   args->db= db;
   args->WWList= &Res->WWList;
   args->Word.match= UdmMatchMode(UdmVarListFindStr(&A->Conf->Vars, "wm", "wrd"));
-  args->where= UdmSQLBuildWhereCondition(A->Conf, db);
   args->save_section_size= UdmVarListFindBool(&A->Conf->Vars, "SaveSectionSize", 1);
   args->live_updates= UdmVarListFindBool(&db->Vars, "LiveUpdates", 0);
   args->use_crosswords= UdmVarListFindBool(&A->Conf->Vars, "CrossWords", 0);
   args->use_qcache= UdmVarListFindBool(&db->Vars, "qcache", 0);
+  return UdmSQLBuildWhereCondition(A->Conf, db, &args->where);
 }
 
 
@@ -4212,7 +4357,8 @@ UdmFindLoadLimits(UDM_AGENT *query,
   if (*args->where)
   {
     LoadURL(db, args->where, &args->urls);
-    UdmLog(query, UDM_LOG_DEBUG, "WHERE limit loaded. %d URLs found", args->urls.nurls);
+    UdmLog(query, UDM_LOG_DEBUG,
+           "WHERE limit loaded. %d URLs found", (int) args->urls.nurls);
   }
   if (!args->urls.empty && fl[0])
   {
@@ -4227,12 +4373,12 @@ UdmFindLoadLimits(UDM_AGENT *query,
       goto ret;
     UdmLog(query,UDM_LOG_DEBUG, "Limit '%s' loaded%s%s %d URLs",
            fl, fl_urls.exclude ? " type=excluding" : "",
-           q ? " source=slow":"", fl_urls.nurls);
+           q ? " source=slow":"", (int) fl_urls.nurls);
 
     UdmURLIdListMerge(&args->urls, &fl_urls);
   }
   UdmLog(query,UDM_LOG_DEBUG,"%-30s%.2f (%d URLs found)",
-         "Stop  loading limits", UdmStopTimer(&ticks), args->urls.nurls);
+         "Stop  loading limits", UdmStopTimer(&ticks), (int) args->urls.nurls);
 ret:
   UDM_FREE(fl_urls.urls);
   return rc;
@@ -4296,7 +4442,7 @@ UdmFindWordsFetch(UDM_FINDWORD_ARGS *args,
 
     UdmLog(args->Agent, UDM_LOG_DEBUG,
            "Stop  search for %-13s%.2f (%u coords found)",
-           quoted_word, UdmStopTimer(&ticks), args->Word.count);
+           quoted_word, UdmStopTimer(&ticks), (int) args->Word.count);
 
     if (args->use_crosswords)
     {
@@ -4309,7 +4455,7 @@ UdmFindWordsFetch(UDM_FINDWORD_ARGS *args,
       
       UdmLog(args->Agent, UDM_LOG_DEBUG,
             "Stop search for crossword '%s'\t%.2f %d found",
-             args->Word.word, UdmStopTimer(&ticks), args->Word.count);
+             args->Word.word, UdmStopTimer(&ticks), (int) args->Word.count);
     }
   }
   UdmLog(args->Agent, UDM_LOG_DEBUG,
@@ -4333,7 +4479,13 @@ UdmFindWordsSQL(UDM_AGENT *query, UDM_RESULT *Res, UDM_DB *db,
 
   UDM_GETLOCK(query, UDM_LOCK_CONF);
   {
-    UdmSearchParamInit(&args, query, Res, db);
+    if (UDM_OK != (rc= UdmSearchParamInit(&args, query, Res, db)) &&
+        db->errstr[0])
+    {
+      udm_snprintf(query->Conf->errstr, sizeof(query->Conf->errstr),
+                   "%s", db->errstr);
+    }
+    
 
     always_found_word= UdmVarListFindStr(&query->Conf->Vars, "AlwaysFoundWord", NULL);
     fl= UdmVarListFindStr(&query->Conf->Vars, "fl", UdmVarListFindStr(&db->Vars, "fl", ""));
@@ -4342,6 +4494,8 @@ UdmFindWordsSQL(UDM_AGENT *query, UDM_RESULT *Res, UDM_DB *db,
     args.wf= wf;
   }
   UDM_RELEASELOCK(query, UDM_LOCK_CONF);
+  if (rc != UDM_OK)
+    goto ret;
 
   if ((db->DBMode == UDM_DBMODE_BLOB && args.where) || fl[0])
   {
@@ -4379,6 +4533,7 @@ UdmFindWordsSQL(UDM_AGENT *query, UDM_RESULT *Res, UDM_DB *db,
   if (args.CollationMatches.nwords)
   {
     size_t i;
+    UdmWideWordListSort(&args.CollationMatches);
     for (i= 0; i < args.CollationMatches.nwords; i++)
     {
       UdmWideWordListAdd(&Res->WWList, &args.CollationMatches.Word[i]);
@@ -4446,7 +4601,7 @@ int UdmTrackSQL(UDM_AGENT * query, UDM_RESULT *Res, UDM_DB *db)
                  "VALUES "
                  "(%d,'%s','%s',%d,%d,%d)",
                  rec_id, IP, text_escaped, qtime= (int)time(NULL),
-                 Res->work_time, Res->total_found);
+                 (int) Res->work_time, (int) Res->total_found);
     if (UDM_OK != (res = UdmSQLQuery(db, NULL, qbuf)))
       goto UdmTrack_exit;
   }
@@ -4460,7 +4615,7 @@ int UdmTrackSQL(UDM_AGENT * query, UDM_RESULT *Res, UDM_DB *db)
                  "('%s','%s',%d,%d,%d)",
                  quote_found, quote_found,
                  IP, text_escaped, qtime= (int)time(NULL),
-                 Res->work_time, Res->total_found);
+                 (int) Res->work_time, (int) Res->total_found);
   
     if (UDM_OK != (res= UdmSQLQuery(db, NULL, qbuf)))
       goto UdmTrack_exit;
@@ -4963,7 +5118,8 @@ UdmGetReferers(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc, UDM_DB *db)
   int    rc;
 
   UDM_LOCK_CHECK_OWNER(Indexer, UDM_LOCK_CONF);
-  where = UdmSQLBuildWhereCondition(Indexer->Conf, db);
+  if (UDM_OK != (rc= UdmSQLBuildWhereCondition(Indexer->Conf, db, &where)))
+    return rc;
   
   udm_snprintf(qbuf,sizeof(qbuf),"SELECT url.status,url2.url,url.url FROM url,url url2%s WHERE url.referrer=url2.rec_id %s %s",
     db->from, where[0] ? "AND" : "", where);
@@ -5019,7 +5175,8 @@ UdmStatActionSQL(UDM_AGENT *Indexer,UDM_STATLIST *Stats,UDM_DB *db)
     have_group=0;
 
   UDM_LOCK_CHECK_OWNER(Indexer, UDM_LOCK_CONF);
-  where = UdmSQLBuildWhereCondition(Indexer->Conf, db);
+  if (UDM_OK != (rc= UdmSQLBuildWhereCondition(Indexer->Conf, db, &where)))
+    return rc;
 
   if(have_group)
   {
@@ -5028,7 +5185,8 @@ UdmStatActionSQL(UDM_AGENT *Indexer,UDM_STATLIST *Stats,UDM_DB *db)
     switch(db->DBType)
     {
       case UDM_DB_MYSQL:
-        udm_snprintf(func,sizeof(func)-1, "next_index_time<=%d", Stats->time);
+        udm_snprintf(func, sizeof(func) - 1,
+                     "next_index_time<=%d", (int) Stats->time);
         break;
     
       case UDM_DB_PGSQL:
@@ -5038,16 +5196,20 @@ UdmStatActionSQL(UDM_AGENT *Indexer,UDM_STATLIST *Stats,UDM_DB *db)
       case UDM_DB_SQLITE:
       case UDM_DB_SQLITE3:
       default:
-        udm_snprintf(func,sizeof(func)-1, "case when next_index_time<=%d then 1 else 0 end", Stats->time);
+        udm_snprintf(func, sizeof(func) - 1,
+                     "case when next_index_time<=%d then 1 else 0 end",
+                     (int) Stats->time);
         break;
 
       case UDM_DB_ACCESS:
-        udm_snprintf(func,sizeof(func)-1, "IIF(next_index_time<=%d, 1, 0)", Stats->time);
+        udm_snprintf(func, sizeof(func)-1,
+                     "IIF(next_index_time<=%d, 1, 0)", (int) Stats->time);
         break;
 
       case UDM_DB_ORACLE8:
       case UDM_DB_SAPDB:
-        udm_snprintf(func,sizeof(func)-1, "DECODE(SIGN(%d-next_index_time),-1,0,1,1)", Stats->time);
+        udm_snprintf(func, sizeof(func) - 1,
+                     "DECODE(SIGN(%d-next_index_time),-1,0,1,1)", (int) Stats->time);
         break;
     }
 
@@ -5163,11 +5325,12 @@ UdmDumpData(UDM_AGENT *A, UDM_DOCUMENT *DocUnunsed, UDM_DB *db)
   UDM_SQLRES SQLRes;
   size_t i, nrows;
   int rc;
-  const char *where= UdmSQLBuildWhereCondition(A->Conf, db);
+  const char *where;
   UDM_DSTR eurl;
   
   UDM_ASSERT(db->dbmode_handler->DumpWordInfo != NULL);
-  
+  if (UDM_OK != (rc= UdmSQLBuildWhereCondition(A->Conf, db, &where)))
+    return rc;
   UdmDSTRInit(&eurl, 256);
   udm_snprintf(buf, sizeof(buf),
                "SELECT %s FROM url%s%s", select_url_str_for_dump,
@@ -5205,7 +5368,7 @@ UdmRestoreData(UDM_AGENT *A, UDM_DOCUMENT *Doc, UDM_DB *db)
   for (i= 0; i < Doc->Sections.nvars; i++)
   {
     UDM_VAR *S= &Doc->Sections.Var[i];
-    printf("%s[%d]=%s\n", S->name, S->curlen, S->val);
+    printf("%s[%d]=%s\n", S->name, (int) S->curlen, S->val);
     S->maxlen= S->curlen; /* TODO: init sections from indexer.conf */
   }
 

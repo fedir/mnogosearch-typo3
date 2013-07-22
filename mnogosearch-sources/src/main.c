@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -234,7 +234,7 @@ static int CreateOrDrop(UDM_AGENT *A, enum udm_indcmd cmd)
     prm.loglevel= UDM_LOG_DEBUG;
     UdmSQLMonitor(A, A->Conf,&prm);
     printf("%d queries sent, %d succeeded, %d failed\n",
-      prm.nqueries, prm.ngood, prm.nbad);
+           (int) prm.nqueries, (int) prm.ngood, (int) prm.nbad);
     fclose(infile);
   }
   return UDM_OK;
@@ -302,14 +302,18 @@ static int ShowStatistics(UDM_AGENT *Indexer)
   }
 #else
   {
-	struct tm *tm1;
+    struct tm *tm1;
     Stats.time= time(NULL);
-    tm1= localtime(&Stats.time);
+    tm= *(tm1= localtime(&Stats.time));
   }
 #endif
-  strftime(sbuf, sizeof(sbuf), "%Y-%m-%d %H:%M:%S", &tm);
-  res=UdmStatAction(Indexer,&Stats);
+  if (UDM_OK != (res= UdmStatAction(Indexer,&Stats)))
+  {
+    UdmLog(Indexer, UDM_LOG_ERROR, "Error: '%s'", UdmEnvErrMsg(Indexer->Conf));
+    goto ex;
+  }
 
+  strftime(sbuf, sizeof(sbuf), "%Y-%m-%d %H:%M:%S", &tm);
   printf("\n          Database statistics [%s]\n\n", sbuf);
   printf("%10s %10s %10s\n","Status","Expired","Total");
   printf("   -----------------------------\n");
@@ -323,9 +327,8 @@ static int ShowStatistics(UDM_AGENT *Indexer)
   printf("   -----------------------------\n");
   printf("%10s %10d %10d\n","Total",Total.expired,Total.total);
   printf("\n");
-  if (res != UDM_OK)
-    UdmLog(Indexer, UDM_LOG_ERROR, "Error: '%s'", UdmEnvErrMsg(Indexer->Conf));
 
+ex:
   UDM_FREE(Stats.Stat);
   return(res);
 }
@@ -379,7 +382,7 @@ static void display_charsets(FILE *file)
     if (cs->family != UDM_CHARSET_UNKNOWN)
       c[n++]=*cs;
   }
-  fprintf(file,"\n%d charsets available:\n",n);
+  fprintf(file,"\n%d charsets available:\n", (int) n);
 
   UdmSort(c,n,sizeof(UDM_CHARSET),&cmpgrp);
   for(i=0;i<n;i++)
@@ -473,7 +476,7 @@ static int usage(int level, UDM_CMDLINE_OPT *options)
   FILE *file= stdout;
   fprintf(file, "\n");
   fprintf(file, "indexer from %s-%s-%s\n", PACKAGE, VERSION, UDM_DBTYPE);
-  fprintf(file, "http://www.mnogosearch.org/ (C)1998-2010, LavTech Corp.\n");
+  fprintf(file, "http://www.mnogosearch.org/ (C)1998-2013, LavTech Corp.\n");
   fprintf(file, "\n");
   fprintf(file, "Usage: indexer [OPTIONS]  [configfile]\n");
 
@@ -517,7 +520,7 @@ static int UdmARGC;
 static char **UdmARGV;
 static enum udm_indcmd cmd = UDM_IND_CRAWL;
 static int insert = 0, expire = 0, pop_rank = 0, block = 0, help = 0;
-static char *url_filename=NULL;
+static const char *url_filename=NULL;
 
 
 /* 
@@ -633,7 +636,7 @@ UdmCmdLineHandleOption(UDM_CMDLINE_OPT *opt, const char *value)
       maxthreads=atoi(value);
       UdmVarListReplaceInt(&Conf.Vars, "CrawlerThreads", maxthreads);
       break;
-    case 'f': url_filename= (char*) value;break;
+    case 'f': url_filename= value; break;
     case 'i': insert=1;break;
     case 'w': warnings=0;break;
     case 'j': UdmVarListAddStr(&Conf.Vars, "stat_time", value); break;
@@ -714,7 +717,7 @@ static UDM_CMDLINE_OPT udm_indexer_options[]=
 
   {-1, "",  UDM_OPT_TITLE,NULL, "\nMisc. options:"},
   {'F', "", UDM_OPT_STR,  NULL, "Print compile configuration and exit (e.g.: indexer -F '*')"},
-  {'h', "", UDM_OPT_BOOL, NULL, "Print help page and exit; -hh print more help"},
+  {'h',"help",UDM_OPT_BOOL, NULL,"Print help page and exit; -hh print more help"},
   {'?', "", UDM_OPT_BOOL, NULL, "Print help page and exit; -?? print more help"},
   {'d', "", UDM_OPT_STR,  NULL, "Use the given configuration file instead of indexer.conf"
 #ifndef WIN32
@@ -816,11 +819,11 @@ create_shared_info(UDM_AGENT *A, char *str, size_t len)
                           "Cookies: %d,"
                           "Robots: %d,"
                           "Hosts: %d,",
-                          Env->Hrefs.nhrefs,
-                          Env->Targets.num_rows,
-                          Env->Cookies.nvars,
-                          Env->Robots.nrobots,
-                          Env->Hosts.nhost_addr);
+                          (int) Env->Hrefs.nhrefs,
+                          (int) Env->Targets.num_rows,
+                          (int) Env->Cookies.nvars,
+                          (int) Env->Robots.nrobots,
+                          (int) Env->Hosts.nhost_addr);
   return res;
 }
 
@@ -832,7 +835,7 @@ httpd_client_handler(int client, UDM_AGENT *A)
   char response[1024];
   char speed_info[128]= "";
   char shared_info[128]= "";
-  ssize_t nrecv,nsent;
+  ssize_t nrecv;
   size_t i, len, total_docs= 0, total_sec= 0;
   udm_uint8 total_bytes= 0;
   time_t now= time(0);
@@ -841,7 +844,7 @@ httpd_client_handler(int client, UDM_AGENT *A)
   UdmLog(A, UDM_LOG_ERROR, "Received request len=%d", (int) nrecv);
   udm_snprintf(response, sizeof(response) - 1,
                "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n");
-  nsent= UdmSend(client, response, strlen(response), 0);
+  UdmSend(client, response, strlen(response), 0);
   len= sprintf(response,
                "Threads:"
                "<table border=1 cellspacing=1 cellpadding=1>\n"
@@ -852,7 +855,7 @@ httpd_client_handler(int client, UDM_AGENT *A)
                "<th>Time</th>"
                "<th>Param</th>"
                "<th>Extra</th></tr>");
-  nsent= UdmSend(client, response, len, 0);
+  UdmSend(client, response, len, 0);
   for (i= 0; i < maxthreads; i++)
   {
     UDM_AGENT *Tmp= &ThreadIndexers[i];
@@ -864,7 +867,7 @@ httpd_client_handler(int client, UDM_AGENT *A)
          mutex++)
     {
       sprintf(UDM_STREND(mutex_owned_info), " #%d",
-              Tmp->State.mutex_owned[mutex]);
+              (int) Tmp->State.mutex_owned[mutex]);
     }
     
     /*
@@ -883,15 +886,15 @@ httpd_client_handler(int client, UDM_AGENT *A)
                  "<td>%s&nbsp;</td>"
                  "<td>%s%s%s&nbsp;</td></tr>\n",
                  Tmp->handle,
-                 Tmp->ndocs,
-                 Tmp->nbytes,
+                 (int) Tmp->ndocs,
+                 (unsigned long long) Tmp->nbytes,
                  Tmp->State.task,
                  (int) (now - Tmp->State.start_time),
                  UDM_NULL2EMPTY(Tmp->State.param),
                  mutex_owned_info[0] ? "Owner for mutex: " : "",
                  mutex_owned_info,
                  UDM_NULL2EMPTY(Tmp->State.extra));
-    nsent= UdmSend(client, response, len, 0);
+    UdmSend(client, response, len, 0);
     total_docs+= Tmp->ndocs;
     total_bytes+= Tmp->nbytes;
     sec= (size_t) (now - Tmp->start_time);
@@ -902,8 +905,8 @@ httpd_client_handler(int client, UDM_AGENT *A)
   {
     udm_snprintf(speed_info, sizeof(speed_info) - 1,
                  "%d seconds, %d docs/sec, %d bytes/sec",
-                 total_sec,
-                 total_docs / total_sec,
+                 (int) total_sec,
+                 (int) (total_docs / total_sec),
                  (int) (total_bytes / total_sec));
   }
   
@@ -915,14 +918,14 @@ httpd_client_handler(int client, UDM_AGENT *A)
                  "<td align=right>&nbsp;</td>"
                  "<td>%s&nbsp;</td>"
                  "<td>&nbsp;</td></tr>\n",
-                 total_docs,
-                 total_bytes,
+                 (int) total_docs,
+                 (unsigned long long) total_bytes,
                  speed_info);
-  nsent= UdmSend(client, response, len, 0);
+  UdmSend(client, response, len, 0);
   len= sprintf(response, "</table>\n");
-  nsent= UdmSend(client, response, len, 0);
+  UdmSend(client, response, len, 0);
   len= create_shared_info(A, shared_info, sizeof(shared_info));
-  nsent= UdmSend(client, shared_info, len, 0);
+  UdmSend(client, shared_info, len, 0);
   return UDM_OK;
 }
 
@@ -990,9 +993,11 @@ static int UdmConfirm(const char *msg)
   return (fgets(str,sizeof(str),stdin) && !strncmp(str,"YES",3));
 }
 
-static int UdmClear(UDM_AGENT *A, const char *url_fname)
+
+static int
+UdmIndDelete(UDM_AGENT *A)
 {
-  int clear_confirmed=1;
+  int clear_confirmed=1, rc= UDM_OK;
   if (warnings)
   {
     size_t i;
@@ -1008,28 +1013,27 @@ static int UdmClear(UDM_AGENT *A, const char *url_fname)
      
   if (clear_confirmed)
   {
-    if (url_fname)
+    if (url_filename)
     {
-      if (UDM_OK != UdmURLFile(A,url_fname,UDM_URL_FILE_CLEAR))
-      {
-        UdmLog(A,UDM_LOG_ERROR,"Error: '%s'",UdmEnvErrMsg(A->Conf));
-      }
+      rc= UdmURLFile(A ,url_filename, UDM_URL_FILE_CLEAR);
     }
     else
     {
       printf("Deleting...");
-      if (UDM_OK != UdmClearDatabase(A))
-      {
-        return UDM_ERROR;
-      }
-      printf("Done\n");
+      rc= UdmClearDatabase(A);
+      printf("%s\n", rc == UDM_OK ? "Done" : "");
     }
   }
   else
   {
     printf("Canceled\n");
   }
-  return UDM_OK;
+  if (rc != UDM_OK)
+  {
+    fflush(stdout);
+    UdmLog(A, UDM_LOG_ERROR, "Error: '%s'", UdmEnvErrMsg(A->Conf));
+  }
+  return rc;
 }
 
 #ifdef WIN32
@@ -1039,6 +1043,7 @@ typedef void *(*udm_thread_routine_t)(void*);
 #endif
 
 
+#ifdef HAVE_PTHREAD
 static int
 #ifdef WIN32
 UdmThreadCreate(udm_thread_t *thd, unsigned (__stdcall *start_routine)(void *), void *arg)
@@ -1046,24 +1051,27 @@ UdmThreadCreate(udm_thread_t *thd, unsigned (__stdcall *start_routine)(void *), 
 UdmThreadCreate(udm_thread_t *thd, void *(*start_routine)(void*), void *arg)
 #endif
 {
-  int res;
 #ifdef WIN32
   {
+    int res;
     res= _beginthreadex(NULL, 0, start_routine, arg, 0, NULL);
     UDM_ASSERT(res != -1);
+    return res <= 0; /* res must be positive on success */
   }
 #else
   {
+    int res;
     pthread_attr_t attr;
     size_t stksize= 1024 * 512;
     pthread_attr_init(&attr);
     pthread_attr_setstacksize(&attr, stksize);
-    pthread_create(thd, &attr, start_routine, arg);
+    res= pthread_create(thd, &attr, start_routine, arg);
     pthread_attr_destroy(&attr);
+    return res; /* res must be 0 on success */
   }
 #endif
-  return res;
 }
+#endif
 
 
 static int UdmIndex(UDM_AGENT *A)
@@ -1080,12 +1088,14 @@ static int UdmIndex(UDM_AGENT *A)
   
   if ((Listen= UdmVarListFind(&A->Conf->Vars, "Listen")))
   {
+#ifdef HAVE_PTHREAD
     if (Listen->val && Listen->val[0])
     {
       udm_thread_t httpd_thread;
       UdmThreadCreate(&httpd_thread, thread_main_httpd, &httpd_agent);
     }
     else
+#endif
     {
       UdmLog(A, UDM_LOG_ERROR, "Not starting HTTPD");
     }
@@ -1147,24 +1157,6 @@ static int UdmIndex(UDM_AGENT *A)
 }
 
 
-static void
-UdmEnvSetDirs(UDM_ENV *Env)
-{
-  char dir[256];
-  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_CONF);
-  UdmVarListReplaceStr(&Env->Vars, "ConfDir", dir);
-
-  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_SHARE);
-  UdmVarListReplaceStr(&Env->Vars, "ShareDir", dir);
-
-  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_VAR);
-  UdmVarListReplaceStr(&Env->Vars, "VarDir", dir);
-
-  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_VAR);
-  UdmVarListReplaceStr(&Env->Vars, "TmpDir", dir);
-}
-
-
 static int
 UdmDumpDocument(UDM_AGENT *A, UDM_DOCUMENT *D)
 {
@@ -1193,17 +1185,13 @@ static int
 UdmDumpDocuments(UDM_AGENT *A)
 {
   int rc;
-  char errmgs[256];
   A->Conf->DumpDoc= UdmDumpDocument;
   
   /* printf("<rss><channel>\n"); */
   if (UDM_OK != (rc= UdmURLAction(A, NULL, UDM_URL_ACTION_DUMPDATA)))
-  {
-    fprintf(stderr, "error: %s\n", errmgs);
-    return 1;
-  }
+    return rc;
   /* printf("</channel></rss>\n"); */
-  return 0;
+  return UDM_OK;
 }
 
 
@@ -1398,18 +1386,6 @@ UdmIndExpire(UDM_AGENT *Agent)
   int rc= url_filename ?
           UdmURLFile(Agent, url_filename, UDM_URL_FILE_REINDEX) :
           UdmURLAction(Agent, NULL, UDM_URL_ACTION_EXPIRE);
-  if (rc != UDM_OK)
-    UdmLog(Agent, UDM_LOG_ERROR, "Error: '%s'", UdmEnvErrMsg(Agent->Conf));
-  return rc;
-}
-
-
-static int
-UdmIndDelete(UDM_AGENT *Agent)
-{
-  int rc;
-  if (UDM_OK != (rc= UdmClear(Agent, url_filename)))
-    UdmLog(Agent, UDM_LOG_ERROR, "Error: '%s'", UdmEnvErrMsg(Agent->Conf));
   return rc;
 }
 
@@ -1420,7 +1396,7 @@ UdmIndCrawl(UDM_AGENT *Agent)
   int rc;
   if (block && UDM_OK != (rc= UdmIndBlock()))
     goto ex;
-  UdmLog(Agent, UDM_LOG_ERROR, "indexer from %s-%s-%s started with '%s'", PACKAGE, VERSION, UDM_DBTYPE, cname);
+  UdmLog(Agent, UDM_LOG_WARN, "indexer from %s-%s-%s started with '%s'", PACKAGE, VERSION, UDM_DBTYPE, cname);
   UdmStoreHrefs(Agent);    /**< store hrefs from config and command line */
   UdmSigHandlersInit(Agent);
 

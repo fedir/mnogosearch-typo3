@@ -1,5 +1,5 @@
-/* $Source: /home/bar/cvsroot/mnogosearch33/php/php_mnogo.h,v $ */
-/* $Id: php_mnogo.h,v 1.2 2007/09/12 10:25:01 bar Exp $ */
+/* $Source$ */
+/* $Id$ */
 
 /* 
    +----------------------------------------------------------------------+

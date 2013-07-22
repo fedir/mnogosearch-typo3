@@ -1,0 +1,88 @@
+From 
+Date: Mon, 16 Apr 2012 08:31:32 -0400
+From: Scott <scott@mnogosearch.org>
+To: Alexander <bar@mnogosearch.org>
+Subject: This is a subject of the reply
+Content-Type: multipart/mixed;
+ boundary="------------040304090507030807020809"
+
+This is a multi-part message in MIME format.
+--------------040304090507030807020809
+Content-Type: multipart/alternative;
+ boundary="------------080405000107070309030406"
+
+
+--------------080405000107070309030406
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+This is a text part of the reply.
+
+
+--------------080405000107070309030406
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    This is a html part of the reply.
+  </body>
+</html>
+
+--------------080405000107070309030406--
+
+--------------040304090507030807020809
+Content-Type: message/rfc822;
+ name="Attached Message"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="Attached Message"
+
+Date: Sun, 01 Apr 2012 12:32:50 -0400
+From: Scott <scott@mnogosearch.org>
+To: Alexander <bar@mnogosearch.org>
+Subject: This is a subject of the attached email
+Content-Type: multipart/mixed;
+ boundary="------------040603080501000907070601"
+
+This is a multi-part message in MIME format.
+--------------040603080501000907070601
+Content-Type: multipart/alternative;
+ boundary="------------080807070400080405010004"
+
+
+--------------080807070400080405010004
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+This is a text part of the attached email.
+
+
+--------------080807070400080405010004
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    This is a html part of the attached email.<br>
+  </body>
+</html>
+
+--------------080807070400080405010004--
+
+--------------040603080501000907070601
+Content-Type: text/plain; name="attach01.txt"
+Content-Disposition: attachment; filename="attach01.txt"
+
+This is a text file attached to the attached email.
+--------------040603080501000907070601--
+
+--------------040304090507030807020809--

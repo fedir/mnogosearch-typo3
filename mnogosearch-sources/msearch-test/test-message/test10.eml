@@ -1,0 +1,30 @@
+From 
+Date: Thu, 03 Feb 2011 12:44:40 +0300
+From: Alexandert Barkov <bar@mnogosearch.org>
+Subject: test subject
+To: bar@mnogosearch.org
+Message-id: <4D4A7908.7070403@mnogosearch.org>
+MIME-version: 1.0
+Content-type: multipart/mixed; boundary="Boundary_(ID_Yfm3G2Xs8cZcH6I0NTQ1Ew)"
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.2.12)
+ Gecko/20101027 Lightning/1.0b2 OracleBeehiveExtension/1.0.0.2-OracleInternal
+ ObetStats/LAFCAT_1289909434479-779356941 Thunderbird/3.1.6
+
+This is a multi-part message in MIME format.
+This message has "\r\n" sequence in Content-Type header
+
+--Boundary_(ID_Yfm3G2Xs8cZcH6I0NTQ1Ew)
+Content-type: 
+  text/html; charset=utf-8
+Content-disposition: attachment;
+ filename="=?KOI8-R?Q?=D0=C9=D3=D8=CD=CF_-_=CE=CF=D7=D9=CA_=DA=C1=CC_=E2=C9=D3?=
+ =?KOI8-R?Q?=D4=D2=CF=2Ehtml?=";
+ filename*0*=KOI8-R''%D0%C9%D3%D8%CD%CF%20%2D%20%CE%CF%D7%D9%CA%20%DA%C1%CC;
+ filename*1*=%20%E2%C9%D3%D4%D2%CF%2E%64%6F%63%78
+
+<html>
+<body>
+а б в г д
+</body>
+</html>
+--Boundary_(ID_Yfm3G2Xs8cZcH6I0NTQ1Ew)--

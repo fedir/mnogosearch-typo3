@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -162,6 +162,33 @@ UdmWideWordCopy(UDM_WIDEWORD *Dst, UDM_WIDEWORD *Src)
 }
 
 
+/*
+  Replace the last three words in the list to range designator
+*/
+int
+UdmWideWordListMakeRange(UDM_WIDEWORDLIST *WWL, int beg, int end)
+{
+  UDM_WIDEWORD *W= &WWL->Word[WWL->nwords - 3];
+  char *word;
+  size_t len;
+  UDM_ASSERT(WWL->nwords >= 3);
+  UDM_ASSERT(WWL->nuniq >= 3);
+  len= 1 + W[0].len + 4 + W[2].len + 1;
+  if (!(word= UdmMalloc(len + 1)))
+    return UDM_ERROR;
+  udm_snprintf(word, len + 1, "%c%s TO %s%c", beg, W[0].word, W[2].word, end);
+  UdmWideWordFree(&W[0]);
+  UdmWideWordFree(&W[1]);
+  UdmWideWordFree(&W[2]);
+  WWL->nwords-= 2;
+  WWL->nuniq-= 2;
+  W->word= word;
+  W->len= len;
+  W->match= UDM_MATCH_RANGE;
+  return UDM_OK;
+}
+
+
 
 UDM_WORDLIST * UdmWordListInit(UDM_WORDLIST * List)
 {
@@ -270,6 +297,22 @@ int UdmWideWordListCopy(UDM_WIDEWORDLIST *Dst, UDM_WIDEWORDLIST *Src)
   for (i= 0; i < Src->nwords; i++)
     UdmWideWordCopy(&Dst->Word[i], &Src->Word[i]);
   return UDM_OK;
+}
+
+
+static int wwcmp(const UDM_WIDEWORD *w1, const UDM_WIDEWORD *w2)
+{
+  int rc;
+  if ((rc= strcmp(w1->word, w2->word)))
+    return rc;
+  return (int) w1->secno - (int) w2->secno;
+}
+
+
+void UdmWideWordListSort(UDM_WIDEWORDLIST *L)
+{
+  if (L->nwords)
+    UdmSort(L->Word, L->nwords, sizeof(UDM_WIDEWORD), (udm_qsort_cmp) wwcmp);
 }
 
 

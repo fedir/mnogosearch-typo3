@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ __C_LINK int __UDMCALL UdmMirrorGET(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc, UDM_U
 }
 
 __C_LINK int __UDMCALL UdmMirrorPUT(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc, UDM_URL *url) {
-     int       fd,size;
+     int       fd;
      char      *str, *estr;
      size_t         str_len, estr_len;
      const char     *mirror_data=UdmVarListFindStr(&Doc->Sections,"MirrorRoot",NULL);
@@ -192,7 +192,7 @@ __C_LINK int __UDMCALL UdmMirrorPUT(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc, UDM_U
                UDM_FREE(estr); UDM_FREE(str);
                return UDM_MIRROR_CANT_OPEN;
           }
-          size = write(fd, Doc->Buf.content, Doc->Buf.size - (Doc->Buf.content-Doc->Buf.buf));
+          /*size =*/ write(fd, Doc->Buf.content, Doc->Buf.size - (Doc->Buf.content-Doc->Buf.buf));
           close(fd);
      }
 
@@ -218,7 +218,7 @@ __C_LINK int __UDMCALL UdmMirrorPUT(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc, UDM_U
                UDM_FREE(estr); UDM_FREE(str);
                return UDM_MIRROR_CANT_OPEN;
           }
-          size = write(fd, Doc->Buf.buf, strlen(Doc->Buf.buf));
+          /*size =*/ write(fd, Doc->Buf.buf, strlen(Doc->Buf.buf));
           close(fd);
      }
      UDM_FREE(estr); UDM_FREE(str);

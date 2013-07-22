@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ display_charsets(void)
     if(cs->family != UDM_CHARSET_UNKNOWN)
       c[n++]=*cs;
   }
-  fprintf(stderr,"\n%d charsets available:\n",n);
+  fprintf(stderr,"\n%d charsets available:\n", (int) n);
 
   UdmSort(c,n,sizeof(UDM_CHARSET),&cmpgrp);
   for(i=0;i<n;i++){
@@ -105,7 +105,7 @@ usage(UDM_CMDLINE_OPT *options, int level)
   printf(
 "\n"
 "mconv from %s-%s\n"
-"http://www.mnogosearch.org/ (C) 1998-2010, LavTech Corp.\n"
+"http://www.mnogosearch.org/ (C) 1998-2013, LavTech Corp.\n"
 "\n"
 "Usage: mconv [OPTIONS] -f charset_from -t charset_to  < infile > outfile\n"
 "\n",

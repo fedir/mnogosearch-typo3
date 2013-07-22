@@ -1,0 +1,6 @@
+From: Alexander Barkov <bar@mnogosearch.org>
+Content-Type: text/plain; charset=cp1251
+Content-Transfer-Encoding: quoted-printable
+Subject: non-multipart message with a quoted-printable body
+
+Test =E0 =E1 =E2 =E3 =E4 a b c d

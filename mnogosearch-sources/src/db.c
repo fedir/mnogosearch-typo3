@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -225,7 +225,7 @@ static int DocUpdate(UDM_AGENT * Indexer, UDM_DOCUMENT *Doc)
   int        status=UdmVarListFindInt(&Doc->Sections,"Status",0);
   urlid_t    url_id = (urlid_t)UdmVarListFindInt(&Doc->Sections, "ID", 0);
   time_t     next_index_time= time(NULL) + Doc->Spider.period;
-  char       dbuf[64];
+  char       dbuf[UDM_MAXTIMESTRLEN];
   int        use_newsext; 
   int        action;
 
@@ -363,7 +363,7 @@ static int DocUpdate(UDM_AGENT * Indexer, UDM_DOCUMENT *Doc)
 
 update:
 
-  UdmTime_t2HttpStr(next_index_time,dbuf);
+  UdmTime_t2HttpStr(next_index_time, dbuf, sizeof(dbuf));
   UdmVarListReplaceStr(&Doc->Sections,"Next-Index-Time",dbuf);  
   rc= UdmURLActionNoLock(Indexer, Doc, action);
   return rc;
@@ -381,7 +381,11 @@ static int UdmDocUpdate(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc)
   UDM_LOCK_CHECK_OWNER(Indexer, UDM_LOCK_CONF);
   maxsize = UdmVarListFindInt(&Indexer->Conf->Vars,"DocMemCacheSize",0) * 1024 * 1024;
 
-  if (maxsize > 0 && I->memused > 0) UdmLog(Indexer, UDM_LOG_EXTRA, "DocCacheSize: %d/%d", I->memused, maxsize);
+  if (maxsize > 0 && I->memused > 0)
+  {
+    UdmLog(Indexer, UDM_LOG_EXTRA,
+           "DocCacheSize: %d/%d", (int) I->memused, (int) maxsize);
+  }
   if (Doc)
   {
     I->memused += sizeof(UDM_DOCUMENT);
@@ -404,8 +408,11 @@ static int UdmDocUpdate(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc)
     size_t  docnum;
 
     if (I->num_rows)
-      UdmLog(Indexer, UDM_LOG_EXTRA, "Flush %d document(s)", I->num_rows + ((Doc != NULL) ? 1 : 0));
-    
+    {
+      UdmLog(Indexer, UDM_LOG_EXTRA,
+             "Flush %d document(s)", (int) (I->num_rows + ((Doc != NULL) ? 1 : 0)));
+    }
+
     if (Doc)
     {
       UDM_THREADINFO(Indexer, "Updating", UdmVarListFindStr(&Doc->Sections, "URL", ""));
@@ -512,6 +519,7 @@ int UdmURLActionNoLock(UDM_AGENT *A, UDM_DOCUMENT *D, int cmd)
     
     if (res != UDM_OK && execflag)
     {
+      fflush(stdout); /* TODO34: move UdmLog to the caller level */
       UdmLog (A, UDM_LOG_ERROR, "%s", db->errstr);
     }
     UDM_RELEASELOCK(A, UDM_LOCK_DB);
@@ -775,7 +783,7 @@ UdmResultJoin(UDM_AGENT *A,
   }
 
   ticks= UdmStartTimer();
-  UdmLog(A, UDM_LOG_DEBUG, "Start joining results from %d dbs", nresults);
+  UdmLog(A, UDM_LOG_DEBUG, "Start joining results from %d dbs", (int) nresults);
 
   if (Res->URLData.nitems > 0)
   {
@@ -863,7 +871,7 @@ UdmFindWordsMulDB(UDM_AGENT *A, UDM_RESULT *TmpRes,
     if (use_threads)
     {
       void *thd;
-      UdmLog(A, UDM_LOG_DEBUG, "Starting thread[%d]", i + 1);
+      UdmLog(A, UDM_LOG_DEBUG, "Starting thread[%d]", (int) i + 1);
       search_param[i].Agent= UdmAgentInit(NULL, A->Conf, i + 1);
       search_param[i].Res= CurRes;
       search_param[i].db= db;
@@ -885,7 +893,7 @@ UdmFindWordsMulDB(UDM_AGENT *A, UDM_RESULT *TmpRes,
     for (i= 0; i < ndatabases; i++)
     {
       void *thd= search_param[i].thd;
-      UdmLog(A, UDM_LOG_DEBUG, "Joining thread[%d]", i + 1);
+      UdmLog(A, UDM_LOG_DEBUG, "Joining thread[%d]", (int) i + 1);
       A->Conf->ThreadJoin(thd);
     }
     UdmLog(A, UDM_LOG_DEBUG, "Threads finished: %.2f", UdmStopTimer(&ticks));
@@ -1155,7 +1163,7 @@ UDM_RESULT * __UDMCALL UdmFind(UDM_AGENT *A)
   UDM_RESULT  *Res, *TmpRes;
   int    res=UDM_OK;
   udm_timer_t ticks= UdmStartTimer(), ticks_;
-  size_t  i, nbytes, numdatabases=  A->Conf->dbl.nitems;
+  size_t  i, orig_num_rows, nbytes, numdatabases=  A->Conf->dbl.nitems;
   size_t  page_number= (size_t) UdmVarListFindInt(&A->Conf->Vars, "np", 0);
   size_t  page_size=   (size_t) UdmVarListFindInt(&A->Conf->Vars, "ps", 10);
   size_t  offs=        (size_t) UdmVarListFindInt(&A->Conf->Vars, "offs", 0);
@@ -1200,7 +1208,7 @@ UDM_RESULT * __UDMCALL UdmFind(UDM_AGENT *A)
   if (ResultsLimit && (Res->first + page_size > ResultsLimit))
   {
     UdmLog(A, UDM_LOG_DEBUG, "Too large ps or np: offset=%d limit=%d\n",
-           Res->first + page_size, ResultsLimit);
+           (int) (Res->first + page_size), (int) ResultsLimit);
     goto conv;
   }
 
@@ -1234,10 +1242,11 @@ UDM_RESULT * __UDMCALL UdmFind(UDM_AGENT *A)
   }
   if(Res->first + page_size > Res->URLData.nitems)
   {
-    Res->num_rows= Res->URLData.nitems - Res->first;
+    orig_num_rows= Res->num_rows= Res->URLData.nitems - Res->first;
   }
   else
   {
+    orig_num_rows= Res->Doc ? Res->num_rows : page_size;
     Res->num_rows= page_size;
   }
   Res->last= Res->first + Res->num_rows - 1;
@@ -1259,6 +1268,19 @@ UDM_RESULT * __UDMCALL UdmFind(UDM_AGENT *A)
       res = UdmResAddDocInfoSQL(A, db, Res, i);
       break;
 #endif
+    }
+  }
+
+  /*
+    Cluster: the original response had more documents than we need.
+    Free the unused part of the documents: UdmResultFree()
+    will not know that they existed.
+  */
+  if (orig_num_rows > Res->num_rows)
+  {
+    for (i= Res->num_rows; i < orig_num_rows ; i++)
+    {
+      UdmDocFree(&Res->Doc[i]);
     }
   }
 
@@ -1300,7 +1322,7 @@ UDM_RESULT * __UDMCALL UdmFind(UDM_AGENT *A)
         for (c= 0; c < Cl->num_rows; c++)
         {
           char name[32];
-          sprintf(name, "Clone%d", c);
+          sprintf(name, "Clone%d", (int) c);
           UdmVarListReplaceLst(&Res->Doc[i].Sections,
                                &Cl->Doc[c].Sections, name, "*");
         }
@@ -1346,6 +1368,23 @@ conv:
 
   UdmTrack(A, Res);
   UdmLog(A, UDM_LOG_EXTRA, "%-30s%.2f", "Stop  UdmFind:", (float)ticks/1000);
+
+  /*
+    Free the remaining parts of TmpRes.
+    Note:
+    - TmpRes[i].URLData is already freed in UdmResultJoin.
+    - TmpRes[i].ItemList.items is not allocated, it points to Res.ItemList.items
+    - TmpRes[i].Doc is allocated only in case of cluster
+    - TmpRes[i].WWList is allocated.
+  */
+  for (i= 0; i < numdatabases; i++)
+  {
+    size_t j;
+    UdmWideWordListFree(&TmpRes[i].WWList);
+    for (j= 0; j < TmpRes[i].num_rows; j++)
+      UdmDocFree(&TmpRes[i].Doc[j]);
+    UdmFree(TmpRes[i].Doc);
+  }
 
   UdmFree(TmpRes);
   if(res!=UDM_OK)
@@ -1722,6 +1761,7 @@ int UdmDBSetAddr(UDM_DB *db, const char *dbaddr, int mode)
   if((!dbaddr) || UdmURLParse(&addr, dbaddr) || (!addr.schema))
   {
     rc= UDM_ERROR; /* Invalid DBAddr */
+    udm_snprintf(db->errstr, sizeof(db->errstr), "Invalid DBAddr");
     goto ret;
   }
   
@@ -1776,7 +1816,8 @@ int UdmDBSetAddr(UDM_DB *db, const char *dbaddr, int mode)
     UDM_SQLDB_DRIVER *drv= UdmSQLDriverByName(addr.schema);
     if (!drv)
     {
-      rc= UDM_UNSUPPORTED; /* Unsupported DBAddr */
+      udm_snprintf(db->errstr, sizeof(db->errstr), "Unsupported DBAddr");
+      rc= UDM_ERROR;
       goto ret;
     }
     
@@ -1797,7 +1838,11 @@ int UdmDBSetAddr(UDM_DB *db, const char *dbaddr, int mode)
   if((v= UdmVarListFindStr(&db->Vars,"dbmode",NULL)))
   {
     if ((db->DBMode=UdmStr2DBMode(v)) < 0) 
-    return UDM_ERROR;
+    {
+      udm_snprintf(db->errstr, sizeof(db->errstr), "Unknown DBMode");
+      rc= UDM_ERROR;
+      goto ret;
+    }
   }
   
   db->dbmode_handler= UdmDBModeHandlerByID(db->DBMode);
@@ -1805,8 +1850,12 @@ int UdmDBSetAddr(UDM_DB *db, const char *dbaddr, int mode)
   if((v= UdmVarListFindStr(&db->Vars,"dbmodesearch",NULL)))
   {
     int DBMode;
-    if ((DBMode=UdmStr2DBMode(v)) < 0) 
-      return UDM_ERROR;
+    if ((DBMode=UdmStr2DBMode(v)) < 0)
+    {
+      udm_snprintf(db->errstr, sizeof(db->errstr), "Unknown DBModeSearch");
+      rc= UDM_ERROR;
+      goto ret;
+    }
     if (DBMode == UDM_DBMODE_BLOB  &&
         db->DBType != UDM_DB_MYSQL &&
         db->DBType != UDM_DB_SYBASE &&
@@ -1819,7 +1868,12 @@ int UdmDBSetAddr(UDM_DB *db, const char *dbaddr, int mode)
         db->DBType != UDM_DB_VIRT &&
         db->DBType != UDM_DB_SQLITE3 &&
         db->DBType != UDM_DB_MONETDB)
-      return UDM_ERROR;
+    {
+      udm_snprintf(db->errstr, sizeof(db->errstr),
+                   "This DBMode=blob is not supported with this database");
+      rc= UDM_ERROR;
+      goto ret;
+    }
   }
 
   if((v= UdmVarListFindStr(&db->Vars, "debugsql", "no")))
@@ -2036,8 +2090,15 @@ size_t UdmDBListAdd(UDM_DBLIST *List, const char * addr, int mode)
   db=List->db=(UDM_DB*)UdmRealloc(List->db,(List->nitems+1)*sizeof(UDM_DB));
   db+=List->nitems;
   UdmDBInit(db);
-  res = UdmDBSetAddr(db, addr, mode);
-  if (res == UDM_OK) List->nitems++;
+  if (UDM_OK == (res= UdmDBSetAddr(db, addr, mode)))
+  {
+    List->nitems++;
+  }
+  else
+  {
+    UdmDBFree(db);
+    udm_snprintf(List->errstr, sizeof(List->errstr), "%s", db->errstr);
+  }
   return res;
 }
 
@@ -2064,7 +2125,7 @@ int UdmMulti2Blob (UDM_AGENT *Indexer)
   size_t i;
   udm_timer_t ticks;
 
-  UdmLog(Indexer,UDM_LOG_ERROR,"Converting to blob");
+  UdmLog(Indexer,UDM_LOG_ERROR,"Indexing");
   ticks=UdmStartTimer();
 
   for (i = 0; i < Indexer->Conf->dbl.nitems; i++)
@@ -2083,7 +2144,7 @@ int UdmMulti2Blob (UDM_AGENT *Indexer)
     }
   }
 
-  UdmLog(Indexer,UDM_LOG_ERROR,"Converting to blob finished\t%.2f", UdmStopTimer(&ticks));
+  UdmLog(Indexer,UDM_LOG_ERROR,"Indexing finished\t%.2f", UdmStopTimer(&ticks));
 #endif
   return UDM_OK;
 }

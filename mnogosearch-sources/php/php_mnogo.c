@@ -1,5 +1,5 @@
-/* $Source: /home/bar/cvsroot/mnogosearch33/php/php_mnogo.c,v $ */
-/* $Id: php_mnogo.c,v 1.32 2008/09/03 12:45:11 bar Exp $ */
+/* $Source$ */
+/* $Id$ */
 
 /*
    +----------------------------------------------------------------------+
@@ -151,7 +151,7 @@ static int le_link,le_res;
 
 /* {{{ mnogosearch_functions[]
  */
-function_entry mnogosearch_functions[]=
+zend_function_entry mnogosearch_functions[]=
 {
   PHP_FE(udm_api_version,         NULL)
   PHP_FE(udm_check_charset,       NULL)
@@ -444,7 +444,7 @@ DLEXPORT PHP_FUNCTION(udm_alloc_agent)
 
     case 1:
       {
-        pval **yydbaddr;
+        zval **yydbaddr;
         char *dbaddr;
         UDM_ENV   * Env;
         UDM_AGENT * Agent;
@@ -467,8 +467,8 @@ DLEXPORT PHP_FUNCTION(udm_alloc_agent)
       
     case 2:
       {
-        pval **yydbaddr;
-        pval **yydbmode;
+        zval **yydbaddr;
+        zval **yydbmode;
         char *dbaddr;
         char *dbmode;
         UDM_ENV   * Env;
@@ -503,7 +503,7 @@ DLEXPORT PHP_FUNCTION(udm_alloc_agent)
    Set mnoGoSearch agent session parameters */
 DLEXPORT PHP_FUNCTION(udm_set_agent_param)
 {
-  pval **yyagent, **yyvar, **yyval;
+  zval **yyagent, **yyvar, **yyval;
   char *val;
   int var;
   UDM_AGENT * Agent;
@@ -821,7 +821,7 @@ DLEXPORT PHP_FUNCTION(udm_set_agent_param)
    Load ispell data */
 DLEXPORT PHP_FUNCTION(udm_load_ispell_data)
 {
-  pval **yyagent, **yyvar, **yyval1, **yyval2, **yyflag, **yycharset ;
+  zval **yyagent, **yyvar, **yyval1, **yyval2, **yyflag, **yycharset ;
   char *val1, *val2, *charset;
   int var, flag;
   UDM_AGENT * Agent;
@@ -917,7 +917,7 @@ DLEXPORT PHP_FUNCTION(udm_load_ispell_data)
    Free memory allocated for ispell data */
 DLEXPORT PHP_FUNCTION(udm_free_ispell_data)
 {
-  pval ** yyagent;
+  zval ** yyagent;
   UDM_AGENT * Agent;
   switch(ZEND_NUM_ARGS())
   {
@@ -942,7 +942,7 @@ DLEXPORT PHP_FUNCTION(udm_free_ispell_data)
    Add mnoGoSearch search restrictions */
 DLEXPORT PHP_FUNCTION(udm_add_search_limit)
 {
-  pval **yyagent, **yyvar, **yyval;
+  zval **yyagent, **yyvar, **yyval;
   char *val;
   int var;
   UDM_AGENT * Agent;
@@ -1043,7 +1043,7 @@ DLEXPORT PHP_FUNCTION(udm_add_search_limit)
    Clear all mnoGoSearch search restrictions */
 DLEXPORT PHP_FUNCTION(udm_clear_search_limits)
 {
-  pval ** yyagent;
+  zval ** yyagent;
   UDM_AGENT * Agent;
   int i;
   
@@ -1080,7 +1080,7 @@ DLEXPORT PHP_FUNCTION(udm_clear_search_limits)
    Check if the given charset is known to mnogosearch */
 DLEXPORT PHP_FUNCTION(udm_check_charset)
 {
-  pval ** yycharset, ** yyagent;
+  zval ** yycharset, ** yyagent;
   UDM_AGENT * Agent;
   int id=-1;
 
@@ -1113,7 +1113,7 @@ DLEXPORT PHP_FUNCTION(udm_check_charset)
    Return CRC32 checksum of gived string */
 DLEXPORT PHP_FUNCTION(udm_crc32)
 {
-  pval ** yystr, ** yyagent;
+  zval ** yystr, ** yyagent;
   char *str;
   int crc32;
   char buf[32];
@@ -1148,7 +1148,7 @@ DLEXPORT PHP_FUNCTION(udm_crc32)
    Parses query string, initialises variables and search limits taken from it */
 DLEXPORT PHP_FUNCTION(udm_parse_query_string)
 {
-  pval ** yystr, ** yyagent;
+  zval ** yystr, ** yyagent;
   char *str;
   UDM_AGENT * Agent;
   int id=-1;
@@ -1177,7 +1177,7 @@ DLEXPORT PHP_FUNCTION(udm_parse_query_string)
    Perform search */
 DLEXPORT PHP_FUNCTION(udm_make_excerpt)
 {
-  pval ** yyagent, **yyres, **yyrow_num;
+  zval ** yyagent, **yyres, **yyrow_num;
   UDM_RESULT * Res;
   UDM_AGENT * Agent;
   int id=-1, row;
@@ -1235,7 +1235,7 @@ DLEXPORT PHP_FUNCTION(udm_make_excerpt)
    Set mnoGoSearch agent session parameters extended */
 DLEXPORT PHP_FUNCTION(udm_set_agent_param_ex)
 {
-  pval **yyagent, **yyvar, **yyval;
+  zval **yyagent, **yyvar, **yyval;
   char *val, *var;
   UDM_AGENT * Agent;
 
@@ -1317,7 +1317,7 @@ DLEXPORT PHP_FUNCTION(udm_set_agent_param_ex)
    Fetch mnoGoSearch environment parameters */
 DLEXPORT PHP_FUNCTION(udm_get_agent_param_ex)
 {
-  pval **yyagent, **yyfield_name;
+  zval **yyagent, **yyfield_name;
 
   UDM_AGENT * Agent;
   char *field;
@@ -1346,7 +1346,7 @@ DLEXPORT PHP_FUNCTION(udm_get_agent_param_ex)
    Fetch mnoGoSearch result field */
 DLEXPORT PHP_FUNCTION(udm_get_res_field_ex)
 {
-  pval **yyres, **yyrow_num, **yyfield_name;
+  zval **yyres, **yyrow_num, **yyfield_name;
 
   UDM_RESULT * Res;
   int row;
@@ -1390,7 +1390,7 @@ DLEXPORT PHP_FUNCTION(udm_get_res_field_ex)
    Get CachedCopy of document and return TRUE if cached copy found */
 DLEXPORT PHP_FUNCTION(udm_store_doc_cgi)
 {
-  pval ** yyagent;
+  zval ** yyagent;
   UDM_AGENT * Agent;
   int id=-1;
   
@@ -1496,7 +1496,7 @@ DLEXPORT PHP_FUNCTION(udm_alloc_agent_array)
   switch(ZEND_NUM_ARGS()){
 
     case 1: {
-        pval **yydbaddr;
+        zval **yydbaddr;
         zval **tmp;
         char *dbaddr;
         UDM_ENV   * Env;
@@ -1544,7 +1544,7 @@ DLEXPORT PHP_FUNCTION(udm_alloc_agent_array)
    Return Hash32 checksum of gived string */
 DLEXPORT PHP_FUNCTION(udm_hash32)
 {
-  pval ** yystr, ** yyagent;
+  zval ** yystr, ** yyagent;
   char *str;
   udmhash32_t hash32;
   char buf[32];
@@ -1577,7 +1577,7 @@ DLEXPORT PHP_FUNCTION(udm_hash32)
    Perform search */
 DLEXPORT PHP_FUNCTION(udm_find)
 {
-  pval ** yyquery=NULL, ** yyagent;
+  zval ** yyquery=NULL, ** yyagent;
   UDM_RESULT * Res;
   UDM_AGENT * Agent;
   int id=-1;
@@ -1619,7 +1619,7 @@ DLEXPORT PHP_FUNCTION(udm_find)
    Fetch mnoGoSearch result field */
 DLEXPORT PHP_FUNCTION(udm_get_res_field)
 {
-  pval **yyres, **yyrow_num, **yyfield_name;
+  zval **yyres, **yyrow_num, **yyfield_name;
 
   UDM_RESULT * Res;
   int row,field;
@@ -1740,7 +1740,7 @@ DLEXPORT PHP_FUNCTION(udm_get_res_field)
    Get mnoGoSearch result parameters */
 DLEXPORT PHP_FUNCTION(udm_get_res_param)
 {
-  pval ** yyres, ** yyparam;
+  zval ** yyres, ** yyparam;
   int param;
   UDM_RESULT * Res;
   switch(ZEND_NUM_ARGS()){
@@ -1870,7 +1870,7 @@ DLEXPORT PHP_FUNCTION(udm_get_res_param)
    mnoGoSearch free result */
 DLEXPORT PHP_FUNCTION(udm_free_res)
 {
-  pval ** yyres;
+  zval ** yyres;
   UDM_RESULT * Res;
   switch(ZEND_NUM_ARGS()){
     case 1: {
@@ -1894,7 +1894,7 @@ DLEXPORT PHP_FUNCTION(udm_free_res)
    Free mnoGoSearch session */
 DLEXPORT PHP_FUNCTION(udm_free_agent)
 {
-  pval ** yyagent;
+  zval ** yyagent;
   UDM_RESULT * Agent;
   switch(ZEND_NUM_ARGS()){
     case 1: {
@@ -1918,7 +1918,7 @@ DLEXPORT PHP_FUNCTION(udm_free_agent)
    Get mnoGoSearch error number */
 DLEXPORT PHP_FUNCTION(udm_errno)
 {
-  pval ** yyagent;
+  zval ** yyagent;
   UDM_AGENT * Agent;
   switch(ZEND_NUM_ARGS()){
     case 1: {
@@ -1944,7 +1944,7 @@ DLEXPORT PHP_FUNCTION(udm_errno)
    Get mnoGoSearch error message */
 DLEXPORT PHP_FUNCTION(udm_error)
 {
-  pval ** yyagent;
+  zval ** yyagent;
   UDM_AGENT * Agent;
   
   switch(ZEND_NUM_ARGS()){
@@ -1975,7 +1975,7 @@ DLEXPORT PHP_FUNCTION(udm_api_version)
    Get mnoGoSearch categories list with the same root */
 DLEXPORT PHP_FUNCTION(udm_cat_list)
 {
-  pval ** yycat, ** yyagent;
+  zval ** yycat, ** yyagent;
   UDM_AGENT * Agent;
   char *cat;
   UDM_CATEGORY C;
@@ -2028,7 +2028,7 @@ DLEXPORT PHP_FUNCTION(udm_cat_list)
    Get mnoGoSearch categories path from the root to the given catgory */
 DLEXPORT PHP_FUNCTION(udm_cat_path)
 {
-  pval ** yycat, ** yyagent;
+  zval ** yycat, ** yyagent;
   UDM_AGENT * Agent;
   char *cat;
   UDM_CATEGORY C;
@@ -2083,7 +2083,7 @@ DLEXPORT PHP_FUNCTION(udm_cat_path)
    Get total number of documents in database */
 DLEXPORT PHP_FUNCTION(udm_get_doc_count)
 {
-  pval ** yyagent;
+  zval ** yyagent;
   UDM_AGENT * Agent;
   int id=-1;
 

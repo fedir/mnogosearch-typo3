@@ -8,14 +8,17 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="mnoGoSearch 3.3.11 reference manual"
+TITLE="mnoGoSearch 3.3.14 reference manual"
 HREF="index.html"><LINK
+REL="UP"
+TITLE="Supported file formats and mime types"
+HREF="msearch-file-formats.html"><LINK
 REL="PREVIOUS"
-TITLE="Extended indexing features"
-HREF="msearch-extended-indexing.html"><LINK
+TITLE="Supported file formats and mime types"
+HREF="msearch-file-formats.html"><LINK
 REL="NEXT"
-TITLE="HTML entities"
-HREF="msearch-htmlparser-spec.html"><LINK
+TITLE="External parsers"
+HREF="msearch-parsers.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="mnogo.css"><META
@@ -24,7 +27,7 @@ CONTENT="mnoGoSearch - Full Featured Web site Open Source Search Engine Software
 NAME="Keywords"
 CONTENT="shareware, freeware, download, internet, unix, utilities, search engine, text retrieval, knowledge retrieval, text search, information retrieval, database search, mining, intranet, webserver, index, spider, filesearch, meta, free, open source, full-text, udmsearch, website, find, opensource, search, searching, software, udmsearch, engine, indexing, system, web, ftp, http, cgi, php, SQL, MySQL, database, php3, FreeBSD, Linux, Unix, mnoGoSearch, MacOS X, Mac OS X, Windows, 2000, NT, 95, 98, GNU, GPL, url, grabbing"></HEAD
 ><BODY
-CLASS="chapter"
+CLASS="sect1"
 BGCOLOR="#EEEEEE"
 TEXT="#000000"
 LINK="#000080"
@@ -45,7 +48,7 @@ ALIGN="center"
 ><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> 3.3.11 reference manual: Full-featured search engine software</TH
+> 3.3.14 reference manual: Full-featured search engine software</TH
 ></TR
 ><TR
 ><TD
@@ -53,7 +56,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="msearch-extended-indexing.html"
+HREF="msearch-file-formats.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -61,13 +64,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
-></TD
+>Chapter 4. Supported file formats and mime types</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="msearch-htmlparser-spec.html"
+HREF="msearch-parsers.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -77,74 +80,31 @@ ACCESSKEY="N"
 ALIGN="LEFT"
 WIDTH="100%"></DIV
 ><DIV
-CLASS="chapter"
+CLASS="sect1"
 ><H1
+CLASS="sect1"
 ><A
 NAME="htmlparser"
-></A
->Chapter 5. 
-    mnoGoSearch <ACRONYM
+><SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+> <ACRONYM
 CLASS="acronym"
 >HTML</ACRONYM
-> parser
-  </H1
+> parser</A
+></H1
 ><DIV
-CLASS="TOC"
-><DL
-><DT
-><B
->Table of Contents</B
-></DT
-><DT
-><A
-HREF="msearch-htmlparser.html#htmlparser-tag"
->Tag parser
-      <A
-NAME="AEN2834"
-></A
-></A
-></DT
-><DT
-><A
-HREF="msearch-htmlparser-spec.html"
-><ACRONYM
-CLASS="acronym"
->HTML</ACRONYM
-> entities</A
-></DT
-><DT
-><A
-HREF="msearch-htmlparser-meta.html"
->META tags
-<A
-NAME="AEN2868"
-></A
-></A
-></DT
-><DT
-><A
-HREF="msearch-htmlparser-links.html"
->Links</A
-></DT
-><DT
-><A
-HREF="msearch-htmlparser-comments.html"
->Comments</A
-></DT
-></DL
-></DIV
-><DIV
-CLASS="sect1"
-><H1
-CLASS="sect1"
+CLASS="sect2"
+><H2
+CLASS="sect2"
 ><A
 NAME="htmlparser-tag"
 >Tag parser
       <A
-NAME="AEN2834"
+NAME="AEN2280"
 ></A
 ></A
-></H1
+></H2
 ><P
 >The tag parser understands these tag attribute notations:</P
 ><P
@@ -161,6 +121,382 @@ NAME="AEN2834"
 ><LI
 ><P
 >&#60;tagname attribute='value' ...   &#62;</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="htmlparser-spec"
+><ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> entities</A
+></H2
+><P
+>&#13;      <SPAN
+CLASS="application"
+>indexer</SPAN
+> understands the
+      following special <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> characters:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>&#38;lt;</TT
+>
+          <TT
+CLASS="literal"
+>&#38;gt;</TT
+>
+          <TT
+CLASS="literal"
+>&#38;amp;</TT
+>
+          <TT
+CLASS="literal"
+>&#38;nbsp;</TT
+>
+          <TT
+CLASS="literal"
+>&#38;quot;</TT
+>
+        </P
+></LI
+><LI
+><P
+>All <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+>-4 character entities:
+          <TT
+CLASS="literal"
+>&#38;auml;</TT
+>
+          <TT
+CLASS="literal"
+>&#38;uuml;</TT
+>
+          and other.
+        </P
+></LI
+><LI
+><P
+>Characters in their Unicode notation:
+          <TT
+CLASS="literal"
+>&#38;#234;</TT
+>
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="htmlparser-meta"
+>META tags
+<A
+NAME="AEN2314"
+></A
+></A
+></H2
+><P
+>&#13;     <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+     <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> parser currently understands the
+     following special META tags.
+     Note that <TT
+CLASS="literal"
+>HTTP-EQUIV</TT
+> is also
+     understood instead of <TT
+CLASS="literal"
+>NAME</TT
+> in all entries.
+     </P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>&#60;META
+          NAME="Content-Type" Content="text/html; charset=xxxx"&#62;</TT
+>
+          -
+          This tag is used to detect the document character set when it is not specified
+          in the <TT
+CLASS="literal"
+>Content-type</TT
+> <ACRONYM
+CLASS="acronym"
+>HTTP</ACRONYM
+>
+          response header.
+         </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>&#60;META
+          NAME="REFRESH" Content="5; URL=http://www.somewhere.com"&#62;</TT
+>
+          -
+          The <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> value is inserted into the database.
+        </P
+></LI
+><LI
+><P
+>&#13;          <TT
+CLASS="literal"
+>&#60;META
+           NAME="Robots" Content="xxx"&#62;</TT
+>
+           with the values
+           <TT
+CLASS="literal"
+>ALL</TT
+>,
+           <TT
+CLASS="literal"
+>NONE</TT
+>,
+           <TT
+CLASS="literal"
+>INDEX</TT
+>,
+           <TT
+CLASS="literal"
+>NOINDEX</TT
+>,
+           <TT
+CLASS="literal"
+>FOLLOW</TT
+>,
+           <TT
+CLASS="literal"
+>NOFOLLOW</TT
+>.
+        </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="htmlparser-links"
+>Links</A
+></H2
+><P
+>&#13;      <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+      <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> parser collects links from
+      these tags:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+><TT
+CLASS="literal"
+>&#60;A HREF="xxx"&#62;</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>&#60;IMG SRC="xxx"&#62;</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>&#60;LINK HREF="xxx"&#62;</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>&#60;FRAME SRC="xxx"&#62;</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>&#60;IFRAME SRC="xxx"&#62;</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>&#60;AREA HREF="xxx"&#62;</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="literal"
+>&#60;BASE HREF="xxx"&#62;</TT
+>
+          <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+            <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>
+            ignores not well-formed <TT
+CLASS="literal"
+>BASE HREF</TT
+>
+            values and uses the current <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+>
+            to compose relative links in case when
+            a badly formed base <ACRONYM
+CLASS="acronym"
+>URL</ACRONYM
+> met.
+            </P
+></BLOCKQUOTE
+></DIV
+>
+        </P
+></LI
+></UL
+><P
+>&#13;     The links having the <TT
+CLASS="literal"
+>rel="nofollow"</TT
+> attribute
+     are ignored by <SPAN
+CLASS="application"
+>mnoGoSearch</SPAN
+>.
+     </P
+><P
+><P
+><B
+>Example:</B
+></P
+>
+<PRE
+CLASS="programlisting"
+>&#13;&#60;a href="http://site/" rel="nofollow"&#62;
+</PRE
+>
+    </P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="htmlparser-comments"
+>Comments</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>&#13;         Character data inside the
+         <TT
+CLASS="literal"
+>&#60;!-- .... --&#62;</TT
+>
+         tag is recognized as an <ACRONYM
+CLASS="acronym"
+>HTML</ACRONYM
+> comment.
+        </P
+></LI
+><LI
+><P
+>You can use special purpose comment tags
+          <TT
+CLASS="literal"
+>&#60;!--UdmComment--&#62;</TT
+>
+          ...
+          <TT
+CLASS="literal"
+>&#60;!--/UdmComment--&#62;</TT
+>
+          to hide the character data and the mark-up
+          in between from <SPAN
+CLASS="application"
+>indexer</SPAN
+>.
+          It may find useful to put these tags around
+          the things such as the site navigation menus,
+          advertisement blocks, etc.
+        </P
+></LI
+><LI
+><P
+>The
+        <TT
+CLASS="literal"
+>&#60;NOINDEX&#62;</TT
+>
+        ...
+        <TT
+CLASS="literal"
+>&#60;/NOINDEX&#62;</TT
+> tags
+        are also understood as synonyms for
+        <TT
+CLASS="literal"
+>&#60;!--UdmComment--&#62;</TT
+>
+        and
+        <TT
+CLASS="literal"
+>&#60;!--/UdmComment--&#62;</TT
+>.
+        </P
 ></LI
 ></UL
 ></DIV
@@ -181,7 +517,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="msearch-extended-indexing.html"
+HREF="msearch-file-formats.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -199,7 +535,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="msearch-htmlparser-spec.html"
+HREF="msearch-parsers.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -209,20 +545,24 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Extended indexing features</TD
+>Supported file formats and mime types</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
->&nbsp;</TD
+><A
+HREF="msearch-file-formats.html"
+ACCESSKEY="U"
+>Up</A
+></TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><ACRONYM
-CLASS="acronym"
->HTML</ACRONYM
-> entities</TD
+>External parsers<A
+NAME="AEN2399"
+></A
+></TD
 ></TR
 ></TABLE
 ></DIV

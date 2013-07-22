@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -64,7 +64,14 @@ static UDM_CTMATCH udm_magic[]=
   {0, 30, "<h1",            3,  "text/html"},
   {0, 30, "<BASE",          5,  "text/html"},
   {0, 30, "<base",          5,  "text/html"},
-  {0, 30, NULL, 0, NULL}
+  {0,  1,   UDM_CSTR_WITH_LEN("{\\rtf"), "application/rtf"},
+  {0,  1,   UDM_CSTR_WITH_LEN("Received: "), "message/rfc822"},
+  {0, 1024, UDM_CSTR_WITH_LEN("\nReceived: "), "message/rfc822"},
+  {0, 1024, UDM_CSTR_WITH_LEN("\nFrom: "),     "message/rfc822"},
+  {0, 1024, UDM_CSTR_WITH_LEN("\nTo: "),       "message/rfc822"},
+  {0, 1024, UDM_CSTR_WITH_LEN("\nSubject: "),  "message/rfc822"},
+  {0, 4096, "\x00word/document.xml", 18, "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+  {0, 1024, NULL, 0, NULL}
 };
 
 const char *UdmGuessContentType(const char *begin, size_t length,
@@ -120,8 +127,9 @@ static UDM_LANGMAP *FindLangMap(UDM_LANGMAPLIST *L, const char *lang, const char
     o = &L->Map[L->nmaps];
   }
   if (o == NULL || L->Map == NULL) {
-    fprintf(stderr, "Can't alloc/realloc for language map (%s, %s), nmaps: %d (%d)", lang, charset, 
-		 L->nmaps + 1, (L->nmaps + 1) * sizeof(UDM_LANGMAP) );
+    fprintf(stderr,
+            "Can't alloc/realloc for language map (%s, %s), nmaps: %d (%d)",
+            lang, charset, (int) L->nmaps + 1, (int) ((L->nmaps + 1) * sizeof(UDM_LANGMAP)));
     return NULL;
   }
   bzero((void*)o, sizeof(UDM_LANGMAP));
@@ -261,7 +269,7 @@ void UdmLangMapListSave(UDM_LANGMAPLIST *List) {
           for(s = Cmap->memb[j].str; *s; s++)
                if(*s == ' ') *s='_';
           
-          fprintf(out, "%s\t%d\n", Cmap->memb[j].str, Cmap->memb[j].count);
+          fprintf(out, "%s\t%d\n", Cmap->memb[j].str, (int) Cmap->memb[j].count);
          }
          fclose(out);
        }
@@ -453,7 +461,9 @@ int  UdmGuessCharSet(UDM_AGENT *Indexer, UDM_DOCUMENT * Doc,UDM_LANGMAPLIST *Lis
 
        /* Allocate memory for comparison statistics */
        if ((mapstat=(UDM_MAPSTAT *)UdmMalloc((List->nmaps + 1) * sizeof(UDM_MAPSTAT))) == NULL) {
-	 UdmLog(Indexer, UDM_LOG_ERROR, "Can't alloc momory for UdmGuessCharSet (%d bytes)", List->nmaps*sizeof(UDM_MAPSTAT));
+	 UdmLog(Indexer, UDM_LOG_ERROR,
+	        "Can't alloc momory for UdmGuessCharSet (%d bytes)",
+	        (int) (List->nmaps*sizeof(UDM_MAPSTAT)));
 	 return UDM_ERROR;
        }
      
@@ -481,7 +491,9 @@ int  UdmGuessCharSet(UDM_AGENT *Indexer, UDM_DOCUMENT * Doc,UDM_LANGMAPLIST *Lis
        /* Display results, best is shown first */
 
        for (i = 0; i < ((List->nmaps < 5) ? List->nmaps : 5); i++)
-	 UdmLog(Indexer,UDM_LOG_EXTRA, "Guesser: %dh:%dm %s-%s",mapstat[i].hits, mapstat[i].miss,mapstat[i].map->lang,mapstat[i].map->charset);
+         UdmLog(Indexer,UDM_LOG_EXTRA, "Guesser: %dh:%dm %s-%s",
+                (int) mapstat[i].hits, (int) mapstat[i].miss,
+                mapstat[i].map->lang, mapstat[i].map->charset);
 
 
        if (*server_charset != '\0' || *meta_charset != '\0')

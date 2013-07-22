@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -26,18 +26,60 @@
 #include "udm_unicode.h"
 
 
+static inline int
+UdmTextListRealloc(UDM_TEXTLIST *tlist)
+{
+  if (tlist->nitems >= tlist->mitems)
+  {
+    tlist->mitems+= 16*1024;
+    tlist->Item= (UDM_TEXTITEM*) UdmRealloc(tlist->Item,
+                                            tlist->mitems * sizeof(UDM_TEXTITEM));
+    if (!tlist->Item)
+    {
+      tlist->nitems= 0;
+      tlist->mitems= 0;
+      return UDM_ERROR;
+    }
+  }
+  return UDM_OK;
+}
+
+
 __C_LINK void __UDMCALL UdmTextListAdd(UDM_TEXTLIST *tlist,
                                        const UDM_TEXTITEM *item)
 {
   if(!item->str)return;
-  
-  tlist->Item=(UDM_TEXTITEM*)UdmRealloc(tlist->Item,(tlist->nitems+1)*sizeof(UDM_TEXTITEM));
-     
+
+  if (UDM_OK != UdmTextListRealloc(tlist))
+    return; /* TODO34: return error code  */
+
   tlist->Item[tlist->nitems].str = (char*)UdmStrdup(item->str);
   tlist->Item[tlist->nitems].href = item->href ? (char*)UdmStrdup(item->href) : NULL;
   tlist->Item[tlist->nitems].section_name = item->section_name ? (char*)UdmStrdup(item->section_name) : NULL;
   tlist->Item[tlist->nitems].section=item->section;
   tlist->Item[tlist->nitems].flags= item->flags;
+  tlist->nitems++;
+  return;
+}
+
+
+__C_LINK void __UDMCALL UdmTextListAddConst(UDM_TEXTLIST *tlist,
+                                       const UDM_CONST_TEXTITEM *item)
+{
+  UDM_TEXTITEM *I;
+  /*
+  if (!item->str)
+    return;
+  */
+  if (UDM_OK != UdmTextListRealloc(tlist))
+    return; /* TODO34: return error code  */
+
+  I= &tlist->Item[tlist->nitems];
+  I->str= UdmConstStrDup(&item->text);
+  I->href= item->href.str ? UdmConstStrDup(&item->href) : NULL;
+  I->section_name= item->section_name.str ? UdmConstStrDup(&item->section_name) : NULL;
+  I->section=item->section;
+  I->flags= item->flags;
   tlist->nitems++;
   return;
 }
@@ -78,5 +120,6 @@ __C_LINK void __UDMCALL UdmTextListFree(UDM_TEXTLIST *tlist)
     UDM_FREE(tlist->Item[i].section_name);
   }
   UDM_FREE(tlist->Item);
-  tlist->nitems = 0;
+  tlist->nitems= 0;
+  tlist->mitems= 0;
 }

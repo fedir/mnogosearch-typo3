@@ -3,7 +3,7 @@ CREATE GENERATOR qtrack_GEN;
 
 CREATE TABLE url (
   rec_id          INT                  NOT NULL PRIMARY KEY,
-  url             VARCHAR(128) DEFAULT '' NOT NULL,
+  url             VARCHAR(247) DEFAULT '' NOT NULL,
   status          INT       DEFAULT  0 NOT NULL,
   hops            INT       DEFAULT  0 NOT NULL,
   crc32           INT       DEFAULT -1 NOT NULL,
@@ -85,7 +85,7 @@ CREATE INDEX qinfo_id ON qinfo (q_id);
 create table server (
 	rec_id		int not null primary key,
 	enabled		int		default 0	not null,
-	url		VARCHAR(127)	default ''	not null,
+	url		VARCHAR(247)	default ''	not null,
 	tag		VARCHAR(63)	default ''	not null,
 	category	int		default 0	not null,
 	command		char(1)		default 'S'	not null,

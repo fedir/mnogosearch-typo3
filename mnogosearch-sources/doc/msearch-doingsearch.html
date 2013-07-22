@@ -7,7 +7,7 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="mnoGoSearch 3.3.11 reference manual"
+TITLE="mnoGoSearch 3.3.14 reference manual"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Indexing multilingual servers"
@@ -46,7 +46,7 @@ ALIGN="center"
 ><SPAN
 CLASS="application"
 >mnoGoSearch</SPAN
-> 3.3.11 reference manual: Full-featured search engine software</TH
+> 3.3.14 reference manual: Full-featured search engine software</TH
 ></TR
 ><TR
 ><TD
@@ -101,7 +101,7 @@ HREF="msearch-doingsearch.html#search"
 HREF="msearch-templates.html"
 >How to write search result templates
     <A
-NAME="AEN5144"
+NAME="AEN5289"
 ></A
 ></A
 ></DT
@@ -123,7 +123,7 @@ HREF="msearch-templates-oper.html"
 HREF="msearch-rel.html"
 >Ranking documents
      <A
-NAME="AEN5905"
+NAME="AEN6050"
 ></A
 ></A
 ></DT
@@ -132,7 +132,7 @@ NAME="AEN5905"
 HREF="msearch-track.html"
 >Tracking search queries
     <A
-NAME="AEN6154"
+NAME="AEN6299"
 ></A
 ></A
 ></DT
@@ -141,7 +141,7 @@ NAME="AEN6154"
 HREF="msearch-srcache.html"
 >Search results cache
     <A
-NAME="AEN6181"
+NAME="AEN6326"
 ></A
 ></A
 ></DT
@@ -262,7 +262,7 @@ CLASS="sect2"
 NAME="search-params"
 >Search parameters
     <A
-NAME="AEN4477"
+NAME="AEN4614"
 ></A
 ></A
 ></H2
@@ -310,7 +310,7 @@ HREF="msearch-cmdref-replacevar.html"
 ><DIV
 CLASS="table"
 ><A
-NAME="AEN4489"
+NAME="AEN4626"
 ></A
 ><P
 ><B
@@ -843,7 +843,7 @@ HREF="msearch-subsections.html#categories"
 >the Section called <I
 >Categories
     <A
-NAME="AEN3692"
+NAME="AEN3829"
 ></A
 ></I
 > in Chapter 8</A
@@ -1257,7 +1257,7 @@ HREF="msearch-fuzzy.html#ispell"
 >the Section called <I
 >Ispell
     <A
-NAME="AEN6232"
+NAME="AEN6377"
 ></A
 ></I
 ></A
@@ -2543,7 +2543,7 @@ HREF="msearch-multilang.html"
 >the Section called <I
 >Search pages with multi-lingual interface
     <A
-NAME="AEN4150"
+NAME="AEN4287"
 ></A
 ></I
 > in Chapter 9</A
@@ -2562,7 +2562,7 @@ CLASS="sect2"
 NAME="search-bool"
 >Advanced Boolean search
     <A
-NAME="AEN5049"
+NAME="AEN5186"
 ></A
 ></A
 ></H2
@@ -2724,6 +2724,54 @@ CLASS="command"
 ></BLOCKQUOTE
 ></DIV
 >
+
+      <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+        Boolean search considers stopwords as found in any documents
+        that contain the other search terms from the same query. For example,
+        if ``<KBD
+CLASS="userinput"
+>the</KBD
+>'' is a stopword, the query
+        ``<KBD
+CLASS="userinput"
+>(Jana First)|(Michael Second)|the</KBD
+>''
+        will return all documents that have any of the four non-stopword
+        terms and is effectively the same to
+        ``<KBD
+CLASS="userinput"
+>Jana|First|Michael|Second</KBD
+>''.
+        </P
+></BLOCKQUOTE
+></DIV
+>
+
+      <DIV
+CLASS="note"
+><BLOCKQUOTE
+CLASS="note"
+><P
+><B
+>Note: </B
+>
+        If a search query consists of more than <TT
+CLASS="literal"
+>64</TT
+> words,
+        Boolean search results are not predictable.
+        </P
+></BLOCKQUOTE
+></DIV
+>
+
     </P
 ></DIV
 ><DIV
@@ -2734,7 +2782,7 @@ CLASS="sect2"
 NAME="search-secnoref"
 >Restricting search words to a section
     <A
-NAME="AEN5093"
+NAME="AEN5238"
 ></A
 ></A
 ></H2
@@ -2806,7 +2854,7 @@ CLASS="sect2"
 NAME="search-phrase"
 >Phrase search
     <A
-NAME="AEN5110"
+NAME="AEN5255"
 ></A
 ></A
 ></H2
@@ -2878,7 +2926,7 @@ CLASS="sect2"
 NAME="search-exactsectionmatch"
 >Exact section match
     <A
-NAME="AEN5126"
+NAME="AEN5271"
 ></A
 ></A
 ></H2
@@ -2900,7 +2948,7 @@ HREF="msearch-doingsearch.html#search-secnoref"
 >the Section called <I
 >Restricting search words to a section
     <A
-NAME="AEN5093"
+NAME="AEN5238"
 ></A
 ></I
 ></A
@@ -3005,7 +3053,7 @@ ALIGN="right"
 VALIGN="top"
 >How to write search result templates
     <A
-NAME="AEN5144"
+NAME="AEN5289"
 ></A
 ></TD
 ></TR

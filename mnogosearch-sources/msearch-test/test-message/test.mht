@@ -1,0 +1,65 @@
+From: <Saved by UnMHT>
+Subject: =?koi8-r?B?dGVzdDI=?=
+Date: Mon, Nov 19 2012 11:52:16 GMT+0400
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0000_25455C6A.74B795A4";
+	type="text/html"
+X-UnMHT-tabs: true
+
+------=_NextPart_000_0000_25455C6A.74B795A4
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: index
+
+<?xml version=3D"1.0" encoding=3D"Shift_JIS"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org=
+/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang=3D"ja" xmlns=3D"http://www.w3.org/1999/xhtml" xml:lang=3D"ja">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8" />
+<title>index</title>
+</head>
+<body>
+<li><a class=3D"unmht-tabs" href=3D"file:///home/bar/tmp/ascii.html">This=
+ is a title.</a></li>
+<li><a class=3D"unmht-tabs" href=3D"file:///home/bar/tmp/koi8r.html">=D0=AD=
+=D1=82=D0=BE =D1=82=D0=B8=D1=82=D0=BB.</a></li>
+</ul>
+</body>
+</html>
+
+------=_NextPart_000_0000_25455C6A.74B795A4
+Content-Type: text/html; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///home/bar/tmp/ascii.html
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; charset=
+=3Diso-8859-1">
+<meta content=3D"text/html" http-equiv=3D"Content-Type">
+<title>
+This is a title.
+</title><base href=3D"file:///home/bar/tmp/"></base></head>
+
+<body>
+This is a body
+
+
+</body></html>
+------=_NextPart_000_0000_25455C6A.74B795A4
+Content-Type: text/html; charset="KOI8-R"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///home/bar/tmp/koi8r.html
+
+<html><head>
+<meta content=3D"text/html; charset=3Dkoi8-r" http-equiv=3D"Content-Type">
+<title>
+&#1069;&#1090;&#1086; &#1090;&#1080;&#1090;&#1083;.
+</title><base href=3D"file:///home/bar/tmp/"></base></head>
+
+<body>
+&#1040; &#1101;&#1090;&#1086; &#1090;&#1077;&#1083;&#1086;.
+
+
+</body></html>
+------=_NextPart_000_0000_25455C6A.74B795A4--

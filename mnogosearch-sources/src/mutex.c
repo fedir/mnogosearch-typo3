@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -96,14 +96,14 @@ __C_LINK void __UDMCALL UdmLockProc(UDM_AGENT *A,int command,int type,const char
           A->State.extra= state_extra;
         }
 #endif
-        UDM_ASSERT(MuMu[type].thread != pthread_self());
+        UDM_ASSERT(MuMu[type].thread != UdmThreadSelf());
         UDM_MUTEX_LOCK(&MuMu[type].mutex);
         if (A->State.nmutexes < UDM_AGENT_STATE_MUTEXES)
           A->State.mutex_owned[A->State.nmutexes]= type;
         A->State.nmutexes++;
 #ifdef HAVE_DEBUG
         MuMu[type].count++;
-        MuMu[type].thread= pthread_self();
+        MuMu[type].thread= UdmThreadSelf();
         if (state_extra[0])
         {
           A->State.extra= NULL;

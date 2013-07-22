@@ -1,0 +1,10 @@
+<html>
+<head>
+<title>test1 title</title>
+<meta name="Content-Type" content="text/plain; charset=latin1">
+</head>
+<body>
+This is not a eml file.
+Testing that the message parser error is seen in the section msg.parser.error.
+</body>
+</html>

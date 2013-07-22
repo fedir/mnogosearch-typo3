@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 #ifdef WIN32
 #define udm_thread_t               HANDLE
+#define UdmThreadSelf              GetCurrentThreadId
 #define udm_mutex_t                CRITICAL_SECTION
 #define InitMutex(x)               InitializeCriticalSection(x)
 #define DestroyMutex(x)            DeleteCriticalSection(x)
@@ -34,6 +35,7 @@
 #ifdef HAVE_PTHREAD
 #include <pthread.h>
 #define udm_thread_t               pthread_t
+#define UdmThreadSelf              pthread_self
 #define udm_mutex_t                pthread_mutex_t
 #define InitMutex(x)               pthread_mutex_init(x,NULL)
 #define DestroyMutex(x)            pthread_mutex_destroy(x)
@@ -55,7 +57,7 @@ typedef struct
 #ifdef HAVE_DEBUG
   int handle;
   int count;
-  pthread_t thread;
+  udm_thread_t thread;
 #endif
 } UDM_MUTEX;
 

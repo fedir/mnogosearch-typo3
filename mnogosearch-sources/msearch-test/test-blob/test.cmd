@@ -35,6 +35,8 @@ fail !0 exec $(SEARCH) "this&dstmp=1070222400&dt=er&dx=-1" >> $(UDM_TEST_DIR)/se
 fail !0 exec $(SEARCH) "this&DateFactor=100" >> $(UDM_TEST_DIR)/search.rej1
 fail !0 exec $(SEARCH) "this&us=score1&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej1
 fail !0 exec $(SEARCH) "this&us=score2&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej1
+fail !0 exec $(SEARCH) "nonexistent+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej1
+fail !0 exec $(SEARCH) "this+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej1
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej1 $(UDM_TEST_DIR)/search.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.rej1
 fail 20 exec  $(INDEXER) -Edrop $(UDM_TEST_DIR)/indexer.conf 1>&2
@@ -56,6 +58,8 @@ fail !0 exec $(SEARCH) "this&raw=raw&dstmp=1070222400&dt=er&dx=-1" >> $(UDM_TEST
 fail !0 exec $(SEARCH) "this&raw=raw&DateFactor=100" >> $(UDM_TEST_DIR)/search.rej2
 fail !0 exec $(SEARCH) "this&raw=raw&us=score1&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej2
 fail !0 exec $(SEARCH) "this&raw=raw&us=score2&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej2
+fail !0 exec $(SEARCH) "nonexistent+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&raw=raw" >> $(UDM_TEST_DIR)/search.rej2
+fail !0 exec $(SEARCH) "this+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&raw=raw" >> $(UDM_TEST_DIR)/search.rej2
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej2 $(UDM_TEST_DIR)/search.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.rej2
 
@@ -70,6 +74,8 @@ fail !0 exec $(SEARCH) "this&LiveUpdates=yes&dstmp=1070222400&dt=er&dx=-1" >> $(
 fail !0 exec $(SEARCH) "this&LiveUpdates=yes&DateFactor=100" >> $(UDM_TEST_DIR)/search.rej3
 fail !0 exec $(SEARCH) "this&LiveUpdates=yes&us=score1&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej3
 fail !0 exec $(SEARCH) "this&&LiveUpdates=yes&us=score2&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej3
+fail !0 exec $(SEARCH) "nonexistent+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&LiveUpdates=yes" >> $(UDM_TEST_DIR)/search.rej3
+fail !0 exec $(SEARCH) "this+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&LiveUpdates=yes" >> $(UDM_TEST_DIR)/search.rej3
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej3 $(UDM_TEST_DIR)/search.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.rej3
 
@@ -85,6 +91,8 @@ fail !0 exec $(SEARCH) "this&dstmp=1070222400&dt=er&dx=-1" >> $(UDM_TEST_DIR)/se
 fail !0 exec $(SEARCH) "this&DateFactor=100" >> $(UDM_TEST_DIR)/search.rej4
 fail !0 exec $(SEARCH) "this&us=score1cached&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej4
 fail !0 exec $(SEARCH) "this&us=score2cached&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej4
+fail !0 exec $(SEARCH) "nonexistent+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej4
+fail !0 exec $(SEARCH) "this+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> $(UDM_TEST_DIR)/search.rej4
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej4 $(UDM_TEST_DIR)/search.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.rej4
 
@@ -106,6 +114,8 @@ fail !0 exec $(SEARCH) "this&LiveUpdates=yes&dstmp=1070222400&dt=er&dx=-1" >> $(
 fail !0 exec $(SEARCH) "this&LiveUpdates=yes&DateFactor=100" >> $(UDM_TEST_DIR)/search.rej5
 fail !0 exec $(SEARCH) "this&LiveUpdates=yes&us=score1&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej5
 fail !0 exec $(SEARCH) "this&&LiveUpdates=yes&us=score2&UserScoreFactor=255" >> $(UDM_TEST_DIR)/search.rej5
+fail !0 exec $(SEARCH) "nonexistent+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&LiveUpdates=yes" >> $(UDM_TEST_DIR)/search.rej5
+fail !0 exec $(SEARCH) "this+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&LiveUpdates=yes" >> $(UDM_TEST_DIR)/search.rej5
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej5 $(UDM_TEST_DIR)/search.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.rej5
 

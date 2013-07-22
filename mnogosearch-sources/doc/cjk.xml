@@ -66,7 +66,7 @@
       <para>
        When building &mnogo; from sources
        for use with Chinese language, don't forget to add
-       <option>--with-extra-charsets=big5,gb2313</option> when
+       <option>--with-extra-charsets=big5,gb2312</option> when
        running <application>configure</application>.
       </para>
     </note>

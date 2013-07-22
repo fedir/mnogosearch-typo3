@@ -1,0 +1,11 @@
+Source: mnogosearch
+Maintainer: Alexander Barkov <bar@mnogosearch.org>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 8)
+
+Package: mnogosearch
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A web search engine

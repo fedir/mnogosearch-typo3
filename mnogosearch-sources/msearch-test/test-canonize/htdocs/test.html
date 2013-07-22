@@ -5,6 +5,41 @@
 <a href="http://site/dir/?a=/b/"></a>
 <a href="http://site/dir/test?a=/b/"></a>
 <a href="http://site/?a=b"></a>
+<a href="http://site/'test'"></a>
 <a href="?c=d"></a>
+
+<!-- Bug#1397 -->
+<a href="http://site/index3.html?PARAMFILTER%3AfunctionName%3Dsearch%7CpageIndex%3D2%7C=2">
+
+<!-- Test long URL: 245 characters - to stay under Firebird limit -->
+<a href="
+http://site/dir/aaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbb/ccccccccccccccc/dddddddddddd/eeeeeeeeeeeeeeeeee/fffffffffffffffffffffff/ggggggggggggggggggggg/hhhhhhhhhhhhhhhhh/iiiiiiiiiiiiiiiiiiiii/jjjjjjjjjjjjjjjjjj/kkkkkkkkkkkkkkkkkkk/lllllllllllllllllll/">
+
+<!-- Test bad host names - should not get into the database -->
+<a href="http://site-абвгд/"></a>
+<a href="http://site 1/"></a>
+<a href="http://site!1/"></a>
+<a href="http://site#1/"></a>
+<a href="http://site$1/"></a>
+<a href="http://site%30/"></a>
+<a href="http://site&/"></a>
+<a href="http://site(1)/"></a>
+<a href="http://site*1/"></a>
+<a href="http://site+1/"></a>
+<a href="http://site,1/"></a>
+<a href="http://site;1/"></a>
+<a href="http://site<1>/"></a>
+<a href="http://site=1/"></a>
+<a href="http://site?1/"></a>
+<a href="http://site[1]/"></a>
+<a href="http://site^1/"></a>
+<a href="http://site{1}/"></a>
+<a href="http://site|/"></a>
+<a href="http://site~/"></a>
+
+<!-- Exception: Windows often uses underscore in host names -->
+<a href="http://site_1"></a>
+
+
 </body>
 </html>

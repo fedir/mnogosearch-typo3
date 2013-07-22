@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -32,8 +32,13 @@
 
 #include "udm_config.h"
 #include "udm_uniconv.h" /* for UDM_CHARSET */
-/* This is used in UdmTime_t2Str and in its callers */
-#define UDM_MAXTIMESTRLEN	35
+/*
+  This is used in UdmTime_t2Str and in its callers.
+  Note, on AIX strftime() can return time zone in this format:
+  'GMT+01:00'. So timezone can be longer than 3,4 or five-letter
+  abbreviation.
+*/
+#define UDM_MAXTIMESTRLEN	64
 
 #if !defined(__i386__) || defined(_WIN64)
 #define udm_put_int4(I, C) do { *((char *)(C))= (char)(I);\
@@ -111,7 +116,7 @@ time_t Udm_dp2time_t(const char * time_str);
 
 
 /* This one for printing HTTP Last-Modified: header */
-extern void UdmTime_t2HttpStr(time_t t, char * time_str);
+extern void UdmTime_t2HttpStr(time_t t, char * time_str, size_t time_str_size);
 /* This one deals with timezone offset */
 extern int UdmInitTZ(void);
 extern __C_LINK udm_timer_t __UDMCALL UdmStartTimer(void);
@@ -141,10 +146,14 @@ extern char * strcasestr(register const char *s1, register const char *s2);
 extern int vsnprintf(char *str, size_t size, const char  *fmt,  va_list ap);
 #endif
 
-extern __C_LINK int __UDMCALL udm_snprintf(char *str, size_t size, const char *fmt, ...);
+extern __C_LINK int __UDMCALL udm_snprintf(char *str, size_t size, const char *fmt, ...)
+                              __attribute__((format(printf,3,4)));
 #ifndef HAVE_SNPRINTF
 #define snprintf udm_snprintf
 #endif
+
+extern int udm_strnncasecmp(const char *s, size_t slen,
+                            const char *t, size_t tlen);
 
 extern char *udm_strtok_r(char *s, const char *delim, char **save_ptr);
 #ifndef HAVE_STRTOK_R
@@ -163,11 +172,20 @@ extern __C_LINK int __UDMCALL UdmInt2Hex(int i);
 
 
 size_t UdmHexEncode(char *dst, const char *src, size_t len);
+size_t UdmHexDecode(char *dst, const char *src, size_t len);
 
 #define BASE64_LEN(len) (4 * (((len) + 2) / 3) +2)
 extern __C_LINK size_t __UDMCALL udm_base64_encode (const char *s, char *store, size_t length);
 extern __C_LINK size_t __UDMCALL udm_base64_decode (char * dst, const char * src, size_t len);
 extern char * udm_rfc1522_decode(char * dst, const char *src);
+
+/* Whether to allow multuple chunks 'AAA= BB== CC==' */
+#define UDM_BASE64_ALLOW_MULTIPLE_CHUNKS 1
+int UdmBase64Decode(const char *src, size_t len,
+                    void *dst0, const char **end, int flags);
+
+size_t udm_quoted_printable_decode(const char *src, size_t srclen,
+                                   char *dst, size_t dstlen);
 
 /* Build directory */
 extern int   UdmBuild(char * path, int mode);
@@ -190,7 +208,8 @@ extern __C_LINK void __UDMCALL UdmWriteLockFILE(FILE *f);
 extern __C_LINK void __UDMCALL UdmUnLockFILE(FILE *f);
 
 /************************ Dynamic strings stuff ***********/
-typedef struct dstr_struct {
+typedef struct dstr_struct
+{
 	size_t size_total; /* Bytes allocated */
 	size_t size_data;  /* Bytes used by data */
 	size_t size_page;  /* Bytes to allocate on overflow */
@@ -205,11 +224,21 @@ extern size_t UdmDSTRAppendHex(UDM_DSTR *dstr, const char *s, size_t slen);
 extern size_t UdmDSTRAppendSTR (UDM_DSTR *dstr, const char *data);
 extern size_t UdmDSTRAppendINT4(UDM_DSTR *s, int i);
 extern size_t UdmDSTRAppendINT2(UDM_DSTR *s, int i);
-extern int UdmDSTRAppendf (UDM_DSTR *dstr, const char *fmt, ...);
+extern int UdmDSTRAppendf (UDM_DSTR *dstr, const char *fmt, ...)
+           __attribute__((format(printf,2,3)));
 extern void UdmDSTRReset (UDM_DSTR *dstr);
 extern int UdmDSTRAlloc (UDM_DSTR *dstr, size_t size_data);
 extern int UdmDSTRRealloc (UDM_DSTR *dstr, size_t size_data);
-
+/**************************** Constant string routines ***********************/
+typedef struct udm_const_string_st
+{
+  const char *str;
+  size_t length;
+} UDM_CONST_STR;
+extern void UdmConstStrSet(UDM_CONST_STR *str, const char *s, size_t len);
+extern int UdmConstStrNCaseCmp(const UDM_CONST_STR *str, const char *s, size_t length);
+extern char *UdmConstStrDup(const UDM_CONST_STR *str);
+extern void UdmConstStrTrim(UDM_CONST_STR *str, const char *sep);
 /********************************** zint4 stuff ******************************/
 typedef struct st_udm_zint4_state
 {
@@ -258,5 +287,7 @@ enum udm_dirtype_t
 extern size_t UdmGetDir(char *d, size_t dlen, enum udm_dirtype_t type);
 extern size_t UdmGetFileName(char *d, size_t dlen, enum udm_dirtype_t type,
                              const char *fname);
+
+extern int UdmNormalizeDecimal(char *dst, size_t dstsize, const char *src);
 
 #endif /* _UDM_UTILS_H */

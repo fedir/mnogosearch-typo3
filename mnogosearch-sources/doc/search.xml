@@ -904,6 +904,26 @@ http://www.site.com/path/to/template.zhtml
         sign as the <command>NOT</command> operator.
         </para>
       </note>
+
+      <note>
+        <para>
+        Boolean search considers stopwords as found in any documents
+        that contain the other search terms from the same query. For example,
+        if ``<userinput>the</userinput>'' is a stopword, the query
+        ``<userinput>(Jana First)|(Michael Second)|the</userinput>''
+        will return all documents that have any of the four non-stopword
+        terms and is effectively the same to
+        ``<userinput>Jana|First|Michael|Second</userinput>''.
+        </para>
+      </note>
+
+      <note>
+        <para>
+        If a search query consists of more than &maxwordperquery; words,
+        Boolean search results are not predictable.
+        </para>
+      </note>
+
     </para>
   </sect2>
 

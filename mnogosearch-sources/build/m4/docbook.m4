@@ -1,4 +1,4 @@
-# $Header: /home/bar/cvsroot/mnogosearch33/build/m4/docbook.m4,v 1.1 2005/09/22 09:40:34 svoj Exp $
+# $Header$
 
 # PGAC_PROG_JADE
 # --------------

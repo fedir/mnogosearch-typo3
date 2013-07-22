@@ -1,0 +1,11 @@
+mnogosearch (3.3.14-1.static) UNRELEASED; urgency=low
+
+  * Updating to 3.3.14
+
+ -- Alexander Barkov <bar@mnogosearch.org>  Mon, 01 Apr 2013 19:29:44 +0400
+
+mnogosearch (3.3.13-1.static) UNRELEASED; urgency=low
+
+  * Adding files to make deb packages.
+
+ -- Alexander Barkov <bar@mnogosearch.org>  Fri, 01 Mar 2013 21:19:44 +0400

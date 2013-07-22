@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -21,5 +21,7 @@
 extern __C_LINK UDM_ENV*	__UDMCALL UdmEnvInit(UDM_ENV *);
 extern __C_LINK void __UDMCALL UdmEnvFree(UDM_ENV *);
 extern __C_LINK char* __UDMCALL UdmEnvErrMsg(UDM_ENV *);
+extern void UdmEnvSetDirs(UDM_ENV *Env);
 extern  int UdmEnvPrepare(UDM_ENV *Env);
+extern int UdmEnvDBListAdd(UDM_ENV *Env, const char *dbaddr, int mode);
 #endif

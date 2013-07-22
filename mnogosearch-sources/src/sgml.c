@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -374,68 +374,98 @@ int UdmSGMLScan(int *wc, const unsigned char *str, const unsigned char *end)
 
 #define UDM_MAX_SGML_LEN 20
 
-__C_LINK char * __UDMCALL UdmSGMLUnescape(char * str){
-     char * s=str,*e,c;
-     
-     while(*s){
-          if(*s=='&'){
-               if(*(s+1)=='#'){
-                    for(e=s+2;(e-s<UDM_MAX_SGML_LEN)&&(*e<='9')&&(*e>='0');e++);
-                    if(*e==';'){
-                         int v=atoi(s+2);
-                         if(v>=0&&v<=255) {
-                           *s=(char)v;
-                         } else {
-                           *s = ' ';
-                         }
-                         memmove(s+1, e+1, strlen(e+1)+1);
-                    }
-               }else{
-                    for(e=s+1;(e-s<UDM_MAX_SGML_LEN)&&(((*e<='z')&&(*e>='a'))||((*e<='Z')&&(*e>='A')));e++);
-                    if((*e==';')&&(c=(char)UdmSgmlToUni(s+1))){
-                         *s=c;
-                         memmove(s+1,e+1,strlen(e+1)+1);
-                         
-                    }
-               }
+__C_LINK char * __UDMCALL UdmSGMLUnescape(char * str)
+{
+  char *s= str;
+  
+  while  (*s)
+  {
+    if (*s == '&')
+    {
+      if (s[1] == '#')
+      {
+        char *e;
+        for(e= s + 2; (e - s < UDM_MAX_SGML_LEN) &&
+                      (*e <= '9') && (*e >= '0'); e++);
+        if(*e == ';')
+        {
+          int v= atoi(s + 2);
+          if (v >= 0 && v <= 255)
+          {
+            *s= (char) v;
           }
-          s++;
-     }
-     return(str);
+          else
+          {
+            *s = ' ';
+          }
+          memmove(s + 1, e + 1, strlen(e + 1) + 1);
+        }
+      }
+      else
+      {
+        char *e, c;
+        for (e= s + 1; (e - s < UDM_MAX_SGML_LEN) && 
+                       (((*e <= 'z') && (*e >= 'a'))||
+                        ((*e <= 'Z') && (*e >= 'A')));e++);
+        
+        if ((*e == ';') && (c= (char) UdmSgmlToUni(s + 1)))
+        {
+          *s= c;
+          memmove(s + 1, e + 1, strlen(e + 1) + 1);
+        }
+      }
+    }
+    s++;
+  }
+  return str;
 }
+
 
 /** This function replaces SGML entities
     With their UNICODE   equivalents     
 */
-void UdmSGMLUniUnescape(int * ustr) {
-  int *s = ustr, *e, c;
+void UdmSGMLUniUnescape(int * ustr)
+{
+  int *s= ustr;
 
-  while (*s){
-          if(*s=='&'){
-                  char sgml[UDM_MAX_SGML_LEN+1];
-               int i = 0;
-               if(*(s+1)=='#'){
-                    for(e = s + 2; (e - s < UDM_MAX_SGML_LEN) && (*e <= '9') && (*e >= '0'); e++);
-                    if(*e==';'){
-                         for(i = 2; s + i < e; i++)
-                              sgml[i-2]=s[i];
-                         sgml[i-2] = '\0';
-                         *s = atoi(sgml);
-                         memmove(s + 1, e + 1, sizeof(int) * (UdmUniLen(e + 1) + 1));
-                    }
-               }else{
-                       for(e=s+1;(e-s<UDM_MAX_SGML_LEN)&&(((*e<='z')&&(*e>='a'))||((*e<='Z')&&(*e>='A')));e++){
-                      sgml[i] = (char)*e;
-                      i++;
-                    };
-                    if(/* (*e==';')&& */(c = UdmSgmlToUni(sgml)) ) {
-                         *s=c;
-                         memmove(s + 1, e + 1, sizeof(int) * (UdmUniLen(e + 1) + 1));
-                         
-                    }
-               }
-          }
-          s++;
+  for ( ; *s; s++)
+  {
+    if (*s == '&')
+    {
+      char sgml[UDM_MAX_SGML_LEN + 1];
+      int i= 0;
+      if (s[1] == '#')
+      {
+        int *e;
+        for (e= s + 2; (e - s < UDM_MAX_SGML_LEN) &&
+                       (*e <= '9') && (*e >= '0'); e++);
+        if(*e == ';')
+        {
+          for(i= 2; s + i < e; i++)
+            sgml[i - 2]= s[i];
+          sgml[i - 2] = '\0';
+          *s= atoi(sgml);
+          memmove(s + 1, e + 1, sizeof(int) * (UdmUniLen(e + 1) + 1));
+        }
+      }
+      else
+      {
+        int c, *e;
+        for(e= s + 1; (e - s < UDM_MAX_SGML_LEN)&&
+                      (((*e <= 'z') && (*e >= 'a'))||
+                       ((*e <= 'Z') && (*e >= 'A'))); e++)
+        {
+          sgml[i]= (char) *e;
+          i++;
+        }
+        sgml[i]= 0;
+        if((*e == ';') && (c= UdmSgmlToUni(sgml)))
+        {
+          *s= c;
+          memmove(s + 1, e + 1, sizeof(int) * (UdmUniLen(e + 1) + 1));
+        }
+      }
+    }
   }
 }
 

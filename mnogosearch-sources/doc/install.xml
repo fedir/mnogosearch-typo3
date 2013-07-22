@@ -38,16 +38,18 @@
       <literal>4.1</literal>,      
       <literal>5.0</literal>, 
       <literal>5.1</literal>, 
-      <literal>6.0</literal>.
+      <literal>5.5</literal>.
       The <application>zlib</application> library must be installed.
       On a &os-linux; system you'll
       need the <application>zlib-devel</application> &rpm; to
-      compile &mnogo; &app-mysql;.
+      compile &mnogo; with &app-mysql;.
     </para>
     
     <para>
       <emphasis>&app-pgsql; notes</emphasis>:
       &app-pgsql;-<literal>7.3.x</literal> or later is required.
+      &app-pgsql; versions <literal>8.x</literal> and <literal>9.x</literal>
+      are known to work.
     </para>
     
     <para>
@@ -59,15 +61,16 @@
     </para>
 
     <para>
-      <emphasis>&app-odbc; notes</emphasis>:
-      <application>&app-iodbc;-2.50.22a</application> is known to work.
+      <emphasis>&app-iodbc; notes</emphasis>:
+      <application>&app-iodbc;</application>-<literal>2.50.22a</literal>
+      is known to work.
     </para>
     
     <para>
       <emphasis>&app-unixodbc; notes</emphasis>:
       <application>&app-unixodbc;</application> versions
-      <literal>1.7</literal> and <literal>2.2.12</literal>
-      are known to work.
+      <literal>1.7</literal>, <literal>2.2.12</literal>,
+      <literal>2.3.1</literal> are known to work.
     </para>
 
 <!--    
@@ -94,7 +97,11 @@
         </para>
       </listitem>
       <listitem>
-        <para><literal>FirebirdCS-2.0.4</literal> is known to work.
+        <para><literal>Firebird CS-2.0.4</literal> is known to work.
+        </para>
+      </listitem>
+      <listitem>
+        <para><literal>Firebird Super Server 2.5.2</literal> is known to work.
         </para>
       </listitem>
     </itemizedlist>
@@ -108,13 +115,16 @@
     <para>
       <emphasis>&app-freetds; notes</emphasis>: version <literal>0.52</literal>
        is known to work with &app-mssql; version <literal>7.0</literal>.
+       &app-freetds; version <literal>0.91</literal> is known to work with
+       &app-mssql; <literal>2012</literal>.
     </para>
 
     <para>
       <emphasis>&app-oracle; notes</emphasis>:
       the versions
-      <literal>9.0.1</literal> and
-      <literal>xe-univ-10.2.0.1</literal>
+      <literal>9.0.1</literal>,
+      <literal>xe-univ-10.2.0.1</literal>,
+      <literal>xe-11.2.0</literal>
       are known to work.
     </para>
     
@@ -156,11 +166,11 @@
   </para>
     <itemizedlist>
       <listitem>
-        <para>FreeBSD 2.2.x, 3.x, 4.x, 5.x
+        <para>FreeBSD 2.2.x, 3.x, 4.x, 5.x, 9.x.
        </para>
       </listitem>
       <listitem>
-        <para>Linux 2.x
+        <para>Linux 2.x, 3.x
         </para>
       </listitem>
       <listitem>
@@ -724,8 +734,7 @@ mnogosearch stream tcp nowait root /usr/local/mnogosearch/bin/search.cgi search.
     <para>If the above information does not help,
     please feel free to contact the
     <emphasis>&mnogo; mailing lists</emphasis>
-    at <email>general@mnogosearch.org</email> (in English) or
-    to <email>ru@mnogosearch.org</email> (in Russian).
+    at <email>general@mnogosearch.org</email>.
     </para>
   </sect1>
   

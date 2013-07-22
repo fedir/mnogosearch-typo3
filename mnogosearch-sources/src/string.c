@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -180,6 +180,15 @@ UdmRTrim(char* p, const char *delim)
     len--;
   }
   return p;
+}
+
+
+int
+udm_strnncasecmp(const char *s, size_t slen, const char *t, size_t tlen)
+{
+  if (slen != tlen)
+    return slen < tlen ? -1 : 1;
+  return strncasecmp(s, t, slen);
 }
 
 

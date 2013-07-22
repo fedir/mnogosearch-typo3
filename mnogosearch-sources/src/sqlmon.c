@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ ReportError(UDM_SQLMON_PARAM *prm, const char *error)
   if (prm->mode == udm_sqlmon_mode_batch)
   {
     udm_snprintf(errstr, sizeof(errstr), "ERROR at line %d: %s",
-                 prm->lineno + 1, error); 
+                 (int) prm->lineno + 1, error); 
   }
   else
   {
@@ -71,7 +71,7 @@ SetConnection(UDM_ENV *Env, UDM_SQLMON_PARAM *prm, int newnum)
     Env->dbl.currdbnum= newnum - 1;
     if (prm->loglevel >= UDM_LOG_INFO)
     {
-      sprintf(msg,"Connection changed to #%d", Env->dbl.currdbnum);
+      sprintf(msg,"Connection changed to #%d", (int) Env->dbl.currdbnum);
       prm->prompt(prm, UDM_SQLMON_MSG_PROMPT, msg);
       prm->prompt(prm, UDM_SQLMON_MSG_PROMPT, "\n");
     }

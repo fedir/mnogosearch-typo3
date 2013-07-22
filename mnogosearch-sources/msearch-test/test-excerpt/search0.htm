@@ -1,0 +1,62 @@
+<!--variables
+ImportEnv UDM_TEST_DBADDR0
+DBAddr $(UDM_TEST_DBADDR0)?dbmode=single&SetNames=latin1
+SaveSectionSize no
+
+LocalCharset   latin1
+BrowserCharset latin1
+
+HlBeg	'<b>'
+HlEnd	'</b>'
+ExcerptSize 256
+ExcerptPadding 40
+-->
+
+<!--top-->
+----
+<!--/top-->
+
+<!--restop-->
+<!--/restop-->
+
+<!--res-->
+$(Order). $(URL)
+$&(Body)
+<!--/res-->
+
+<!--resbot-->
+<!--/resbot-->
+
+<!--clone-->
+<!--/clone-->
+
+<!--navleft-->
+<!--/navleft-->
+
+<!--navleft_nop-->
+<!--/navleft_nop-->
+
+<!--navbar1-->
+<!--/navbar1-->
+
+<!--navbar0-->
+<!--/navbar0-->
+
+<!--navright-->
+<!--/navright-->
+
+<!--navright_nop-->
+<!--/navright_nop-->
+
+<!--notfound-->
+Sorry, your search for <b>$&(q)</b> did not find any results.<br>
+<!--/notfound-->
+
+<!--noquery-->
+<!--/noquery-->
+
+<!--error-->
+<!--/error-->
+
+<!--bottom-->
+<!--/bottom-->

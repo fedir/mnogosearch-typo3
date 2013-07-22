@@ -95,10 +95,14 @@
       </listitem>
       <listitem>
         <para>Build-in parsers for 
-          <literal>text/html</literal>,
-          <literal>text/xml</literal>,
-          <literal>text/plain</literal> and
-          <literal>audion/mpeg</literal> (MP3) file types.
+          <type>&html;</type>,
+          <type>&xml;</type>,
+          <type>text</type>,
+          <type>&rtf;</type>,
+          <type>DOCX</type>,
+          <type>message/rfc822</type>
+            (<type>*.eml</type> and <type>*.mht</type>) and
+          <type>MP3</type> file types.
        </para>
       </listitem>
       <listitem>
@@ -117,7 +121,7 @@
         <para>Reentry capability.
         You can run multiple indexing and searching processes
         at the same time even on the same database.
-        Multi-threaded indexing is also supported.
+        Multi-threaded crawling and search are also supported.
         </para>
       </listitem>
       <listitem>
@@ -138,7 +142,7 @@
       </listitem>
       <listitem>
         <para>You can embed search into your own application
-        with help of a a <acronym>C API</acronym> library.
+        with help of a <acronym>C API</acronym> library.
         </para>
       </listitem>
       <listitem>
@@ -166,7 +170,9 @@
         <para>&html; templates to customize search results easily.</para>
       </listitem>
       <listitem>
-        <para>Advanced search options like time limits, category limits etc.</para>
+        <para>Advanced search options like modification time limits,
+              document type limits etc.
+        </para>
       </listitem>
       <listitem>
         <para>Phrases segmenting for Chinese and Japanese languages.</para>

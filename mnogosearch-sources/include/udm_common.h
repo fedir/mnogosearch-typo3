@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@
 #include "udm_unicode.h"
 #include "udm_uniconv.h"
 #include "udm_unidata.h"
+#include "udm_utils.h"
 
 extern int new_version;
 
@@ -116,6 +117,7 @@ extern int new_version;
 #define UDM_MATCH_SUBNET	6
 #define UDM_MATCH_NUMERIC_LT	7
 #define UDM_MATCH_NUMERIC_GT	8
+#define UDM_MATCH_RANGE         9
 
 /* Case sensitivity */
 #define UDM_CASE_SENSITIVE      0
@@ -126,7 +128,6 @@ extern int new_version;
 #define UDM_ERROR		1
 #define UDM_NOTARGET		2
 #define UDM_TERMINATED		3
-#define UDM_UNSUPPORTED         4
 
 /* Flags for indexing */
 #define UDM_FLAG_REINDEX           1
@@ -201,6 +202,13 @@ extern int new_version;
 #define UDM_LOCK_ROBOT_COUNT    (UDM_LOCK_ROBOT_LAST - UDM_LOCK_ROBOT_FIRST +1)
 #define UDM_LOCK_MAX		(UDM_LOCK_ROBOT_LAST + 1)
 
+/************************ Basic data types ****************/
+typedef enum 
+{
+  UDM_FALSE= 0,
+  UDM_TRUE= 1
+} udm_bool_t;
+
 /************************ Statistics **********************/
 typedef struct stat_struct {
 	int	status;
@@ -223,6 +231,7 @@ typedef struct stat_list_struct{
 #define UDM_VARFLAG_WIKI       16  /* If to remove text between [ and ] */
 #define UDM_VARFLAG_HL         32  /* If variable has highlight markers */
 #define UDM_VARFLAG_NOINDEX    64  /* If section should be in bdicti but not in bdict */
+#define UDM_VARFLAG_DECIMAL   128  /* Whether to detect decimal numbers */
 
 /* Variable types */
 #define UDM_VAR_INT       1
@@ -258,7 +267,20 @@ typedef struct udm_varlist_st {
 } UDM_VARLIST;
 
 
-#define UDM_TEXTLIST_FLAG_SKIP_ADD_SECTION 1
+#define UDM_TEXTLIST_FLAG_SKIP_ADD_SECTION  0x01
+#define UDM_TEXTLIST_FLAG_RFC1522           0x02 /* Message header (Subj, From)*/
+#define UDM_TEXTLIST_FLAG_MESSAGE_RFC822    0x04 /* Used by cached copy for messages */
+
+typedef struct
+{
+  UDM_CONST_STR text;
+  UDM_CONST_STR href;
+  UDM_CONST_STR section_name;
+  int section;
+  int flags;
+} UDM_CONST_TEXTITEM;
+
+
 typedef struct {
 	char		*str;
 	char		*href;
@@ -267,9 +289,12 @@ typedef struct {
 	int		flags;
 } UDM_TEXTITEM;
 
-typedef struct {
-	size_t		nitems;
-	UDM_TEXTITEM	*Item;
+
+typedef struct
+{
+  size_t        nitems;
+  size_t        mitems;
+  UDM_TEXTITEM	*Item;
 } UDM_TEXTLIST;
 
 /*****************************************************/
@@ -784,7 +809,7 @@ typedef struct {
         int     	origin;
         int             weight; /* origin-dependent weight   */
         int             user_weight; /* User-supplied weight */
-        int		match;
+        int		match;  /* BEGIN,END,SUBSTR,NUM_LT,NUM_GT,FULL*/
         size_t		secno;  /* Which section to search in */
         size_t		phrpos; /* 0 means "not in phrase"    */
         size_t		phrlen; /* phase length               */
@@ -919,17 +944,21 @@ typedef struct {
 #include "udm_db_int.h"
 
 typedef struct {
-	size_t		nitems;
-        size_t          currdbnum;
-	UDM_DB		*db;
+  size_t      nitems;
+  size_t      currdbnum;
+  UDM_DB     *db;
+  char errstr[128];
 } UDM_DBLIST;
 
+
+#define UDM_LOG_FLAG_SKIP_PID 0x00000001
 
 typedef struct
 {
   int is_log_open; /* Flag indicating if openlog() has been called      */
   FILE *logFD;     /* File descriptor, when logging to stderr or file   */
   int facility;    /* Which facility to use, or negative number if none */
+  int flags;
 } UDM_LOG;
 
 

@@ -308,6 +308,30 @@ $base64(a)
 <!-- no trailing ')' character in a variable name -->
 $(aaaa
 $(aaaa
+
+<!-- Bug#4819 Variables Overwriting in mnoGoSearch -->
+<!-- Checking that variables coming from query string are HTML-escaped -->
+<!-- automatically, even if no & specified -->
+xxx=$(xxx)
+xxx=$&(xxx)
+xxx=$%(xxx)
+<!-- Checking how query string variables work in IF statement -->
+<!IF NAME="xxx" CONTENT="<xxx>">IF-UNDERSTANDS-UNESCAPED-LITERAL<!ELSE>IF-DOES-NOT-UNDERSTAND-UNESCAPED-LITERAL<!ENDIF>
+<!IF NAME="xxx" CONTENT="&#60;xxx&#62;>">IF-WANTS-HTML-ESCAPED-CODEPOINT-LITERAL<!ELSE>IF-DOES-NOT-UNDERSTAND-ESCAPED-CODEPOINT-LITERAL<!ENDIF>
+<!IF NAME="xxx" CONTENT="&lt;xxx&#gt;>">IF-WANTS-HTML-ESCAPED-LTGT-LITERAL<!ELSE>IF-DOES-NOT-UNDERSTAND-ESCAPED-LTGT-LITERAL<!ENDIF>
+
+<!-- Checking how query string variables work in IF statement -->
+<!IF NAME="xxx" CONTENT="$(xxx)">IF-UNDERSTANDS-UNESCAPED-VARIABLE<!ELSE>IF-DOES-NOT-UNDERSTAND-UNESCAPED-VARIABLE<!ENDIF>
+<!IF NAME="xxx" CONTENT="$&(xxx)">IF-WANTS-HTML-ESCAPED-CODEPOINT-VARIABLE<!ELSE>IF-DOES-NOT-UNDERSTAND-ESCAPED-CODEPOINT-VARIABLE<!ENDIF>
+<!IF NAME="xxx" CONTENT="$%(xxx)">IF-WANTS-HTML-ESCAPED-LTGT-VARIABLE<!ELSE>IF-DOES-NOT-UNDERSTAND-ESCAPED-LTGT-VARIABLE<!ENDIF>
+
+<!-- Checking how query string variables work in SET/TEXT -->
+<!SET NAME="xxx2" CONTENT="$(xxx)">$(xxx2)
+<!SET NAME="xxx2" CONTENT="$(xxx)">$&(xxx2)
+<!SET NAME="xxx2" CONTENT="$(xxx)">$%(xxx2)
+
+<!--/Bug#4819 Variables Overwriting in mnoGoSearch -->
+
 <!--/top-->
 
 <!--restop-->

@@ -6750,6 +6750,7 @@ SaveSectioSize yes
       <arg choice="req">name</arg>
       <arg choice="req">number</arg>
       <arg choice="req">maxlen</arg>
+      <arg choice="opt">datatype</arg>
       <arg choice="opt">when</arg>
       <arg choice="opt">format</arg>
       <arg choice="opt">cloneflag</arg>
@@ -6795,6 +6796,24 @@ title:word1 body:word2
     then this section is not stored in the database and therefore is not
     available at search time using <varname>$(name)</varname> syntaxt in
     &search.htm;.
+    </para>
+    <para>
+    The <parameter>datatype</parameter> parameter is optional.
+    If the parameter is omitted, then the words of this section
+    are treated as usual words, i.e. they are stored and compared
+    lexicographically.
+    </para>
+    <para>
+    If the <parameter>datatype</parameter> is set to <literal>decimal</literal>,
+    then the words of this section are treated as decimal numbers with up
+    to <literal>9</literal> integral digits and up to <literal>9</literal>
+    fractional digits. The words of this section are stored as a 
+    <literal>18</literal>-digit words in the format
+    <literal>IIIIIIIIIFFFFFFFFF</literal>, where 
+    <literal>IIIIIIIII</literal> is the integral part left padded with 
+    zeroes, and 
+    <literal>FFFFFFFFF</literal> is the fractional part right padded
+    with zeros.
     </para>
     <para>
     <parameter>when</parameter> is an optional parameter defining when the
@@ -8667,12 +8686,64 @@ UseNumericOperators yes
     <xref linkend="cmdref-spell"/>,
     <xref linkend="cmdref-sqlwordforms"/>,
     <xref linkend="cmdref-stopwordfile"/>,
-    <xref linkend="cmdref-synonym"/>.
+    <xref linkend="cmdref-synonym"/>,
+    <xref linkend="cmdref-userangeoperators"/>.
   </para>
   </refsect1>
 </refentry>
 
 
+<refentry id="cmdref-userangeoperators">
+  <refmeta>
+  <refentrytitle>UseRangeOperators</refentrytitle>
+  </refmeta>
+  <refnamediv>
+    <refname><command>UseRangeOperators</command></refname>
+    <refpurpose>defines whether to recognize range operators in a search query</refpurpose>
+    <refclass>&search.htm;</refclass>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>UseRangeOperators</command>
+      <group choice="req"><arg>yes</arg><arg>no</arg></group>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <para>
+     When <command>UseRangeOperators</command> is set to <literal>yes</literal>,
+     the <literal>[a TO b]</literal>, <literal>[a TO b}</literal>,
+     <literal>{a TO b]</literal> and <literal>{a TO b}</literal>
+     operators are interpreted as
+     <link linkend="range-search">range operators</link>.
+    </para>
+    <para>
+    When <command>UseRangeOperators</command> is set to <literal>no</literal>,
+    the range operators are ignored, and the words <literal>a</literal>,
+    <literal>TO</literal> and <literal>b</literal> are considered as three
+    separate search terms.
+    </para>
+    <para>
+    &def-is-no;, for performance purposes.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>Examples</title>
+    <informalexample>
+      <programlisting>
+UseRangeOperators yes
+      </programlisting>
+    </informalexample>
+  </refsect1>
+  <refsect1>
+    <title>See also</title>
+    <para>
+    <xref linkend="cmdref-dehyphenate"/>,
+    <xref linkend="cmdref-synonym"/>,
+    <xref linkend="cmdref-usenumericoperators"/>,
+    <xref linkend="range-search"/>.
+  </para>
+  </refsect1>
+</refentry>
 
 
 <refentry id="cmdref-useremotecontenttype">

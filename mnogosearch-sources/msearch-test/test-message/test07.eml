@@ -1,0 +1,59 @@
+Received: from mx01.tr155m.lavtech.ru (www.mnogomail.ru [195.239.38.20] (may be forged))
+	by myoffice.izhnet.ru (8.14.3/8.14.3) with ESMTP id q2MNcbL2035547
+	for <bar-msearch@myoffice.izhnet.ru>; Fri, 23 Mar 2012 02:38:37 +0300 (MSK)
+	(envelope-from anilj@pear.com)
+Received: (qmail 8850 invoked by alias); 22 Mar 2012 23:34:37 -0000
+Delivered-To: alias-mnogosearch-bar@mnogosearch.org
+Received: (qmail 8793 invoked by uid 89); 22 Mar 2012 23:34:36 -0000
+Received: from unknown (HELO mail-in.mnogo.ru) (178.22.68.183)
+  by mx01.inferno.lavtech.ru with SMTP; 22 Mar 2012 23:34:36 -0000
+Received: from mail-out.pear.com (mail-out.pear.com [17.151.62.49])
+	by mail-in.mnogo.ru (Postfix) with ESMTP id 5E258132086
+	for <bar@mnogosearch.org>; Fri, 23 Mar 2012 03:34:44 +0400 (MSK)
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: text/plain; CHARSET=US-ASCII
+Received: from relay13.pear.com ([17.128.113.29])
+ by mail-out.pear.com (Oracle Communications Messaging Server 7u4-23.01
+ (7.0.4.23.0) 64bit (built Aug 10 2011))
+ with ESMTPS id <0M1B00JDB84ZWKI1@mail-out.pear.com> for bar@mnogosearch.org;
+ Thu, 22 Mar 2012 16:34:43 -0700 (PDT)
+X-AuditID: 1180711d-b7fe86d000000eca-39-4f6bb713c426
+Received: from fenugreek.pear.com (fenugreek.pear.com [17.128.115.97])
+	(using TLS with cipher RC4-MD5 (RC4-MD5/128 bits))
+	(Client did not present a certificate)	by relay13.pear.com (Apple SCV relay)
+ with SMTP id D9.D7.03786.317BB6F4; Thu, 22 Mar 2012 16:34:43 -0700 (PDT)
+Received: from jangity1.pear.com ([17.209.17.220])
+ by fenugreek.pear.com (Oracle Communications Messaging Server 7u4-23.01
+ (7.0.4.23.0) 64bit (built Aug 10 2011))
+ with ESMTPSA id <0M1B007T385RZDA0@fenugreek.pear.com> for
+ bar@mnogosearch.org; Thu, 22 Mar 2012 16:34:43 -0700 (PDT)
+Subject: Re: search.cgi core dump
+From: Name Withheld <name@pear.com>
+In-reply-to: <4F6B82C6.8060307@mnogosearch.org>
+Date: Thu, 22 Mar 2012 16:34:39 -0700
+Message-id: <476BC713-2F91-483B-B5CA-D7A09B81B95F@pear.com>
+References: <8E488683-B2DB-4AD4-8943-6AD0707946EB@pear.com>
+ <4F6178A1.3040906@mnogosearch.org>
+ <1C91B9A7-0C2A-48C1-ABA8-9A03CA8A4B4A@pear.com>
+ <4F678EB3.5050203@mnogosearch.org> <4F681239.3020405@mnogosearch.org>
+ <1AAE9E99-672C-40F8-8774-136A63D77E3D@pear.com>
+ <4F6B82C6.8060307@mnogosearch.org>
+To: Alexander Barkov <bar@mnogosearch.org>
+X-Mailer: Apple Mail (2.1257)
+X-Brightmail-Tracker:
+ H4sIAAAAAAAAA+NgFlrGLMWRmVeSWpSXmKPExsUi2FCcqCu8Pdvf4MhfXYv9ezvZHBg9Xt+d
+	whjAGMVlk5Kak1mWWqRvl8CVsa/3P1vB5RbGisMfPrE2MK7M7WLk5JAQMJHofXOAEcIWk7hw
+	bz1bFyMXh5DADCaJaT8mM4EkeAUEJX5MvsfSxcjBwSwgL3HwvCxImFlAS+L7o1YWiPpFTBL/
+	33eD1QsLKEo0/JjFCmKzCahIvNgzlR3E5hTQlzjVsxgsziKgKvHv2A1WiEFWEg9mTGeE2GUj
+	cegCRK+QwBYmicfL00FsEaBlOyd+Z4c4VFbi9sH9TBMYBWYhOW8WwnmzkJy3gJF5FaNgUWpO
+	YqWhsV5iQUFOql5yfu4mRnDoFcruYNz/k/8QowAHoxIPb5NPtr8Qa2JZcWXuIUYJDmYlEV4l
+	Z6AQb0piZVVqUX58UWlOavEhRmkOFiVx3gkb0/2FBNITS1KzU1MLUotgskwcnFINjC2OJkva
+	Dkb8jOk0OlnCcsPrQ4DpOq03ESHpZtKx4a5TfuQ+mZSV9PFo/+fVvG0+k6X31sqYc/vY3c6d
+	yrQoVCTqf9f1V6++ZTJIrEh+ItnV9UvvfGe83PO9te/n/Lu+OMSp2Wn2hgf/Pa2aoxmvcsZ9
+	l9KrSjd5daD2VcCxz9PPLn8yo+rybiWW4oxEQy3mouJEANTT5+o5AgAA
+
+This message has a special case of a multi-line header:
+"X-Brightmail-Tracker:<nl><space><header content>",
+and also "Content-type: text/plain; CHARSET=US-ASCII"
+(notice CHARSET in upper case).

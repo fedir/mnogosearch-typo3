@@ -1,0 +1,97 @@
+<sect1 id="built-in-parsers">
+  <title>Built-in parsers
+  </title>
+  <para>
+   &mnogo; has built-in parsers for
+    <type>text</type>, <type>&html;</type>, <type>&xml;</type>,
+    <type>DOCX</type>, <type>&rtf;</type>,
+    <type>message</type> (<type>*.eml</type>, <type>*.mht</type>) and <type>MP3</type> file formats,
+    and understands the following <emphasis>mime types</emphasis>
+    in the <type>Content-Type</type> &http; header
+    (or in the <xref linkend="cmdref-addtype"/> command when indexing
+     local files):
+
+    <itemizedlist>
+      <listitem>
+        <para>
+        For
+        <type>text/plain</type>,
+        <type>text/tab-separated-values</type>,
+        <type>text/css</type> -
+        the built-in <type>text</type> parser is invoked.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+        For
+        <type>text/html</type> - the built-in 
+        <link linkend="html-parser">&html;</link>
+        parser is invoked.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+        For
+        <type>text/xml</type>, <type>application/xml</type>,
+        as well as all for mime types that have sub-strings
+        "<type>+xml</type>" or "<type>rss</type>" 
+        (e.g. <type>application/rss+xml</type>, 
+         <type>application/vnd.wap.xhtml+xml</type> etc.) -
+        the built-in &xml; parser is invoked.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+        For <type>application/vnd.openxmlformats-officedocument.wordprocessingml.document</type>
+        - the built-in <type>DOCX</type> parser is invoked.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+        For
+        <type>text/rtf</type>, <type>application/rtf</type>
+        and <type>application/x-rtf</type> -
+        the built-in <type>&rtf;</type> parser is invoked.
+        </para>
+      </listitem>
+
+
+      <listitem>
+        <para>
+        For
+        <type>message/rfc822</type> - 
+        the built-in <type>message</type> parser is invoked.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+        For
+        <type>autio/mpeg</type> - 
+        the built-in <link linkend="mp3"><type>MP3</type></link>
+        parser is invoked.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+        For the mime types
+        <type>application/http</type> and <type>message/http</type>
+        the document is considered as a full &http; response
+        consisting of headers (including status line, e.g.
+        <type>HTTP/1.0 200 OK</type>) followed by content.
+        The headers are separated from the content and parsed,
+        then one of the known parser is recursively executed
+        for the content (without headers) according to the <type>Content-Type</type>
+        header value.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </para>
+
+</sect1>
+

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 #include "udm_config.h"
 #include <stdio.h>
 #include <string.h>
+#include "udm_common.h"
 #include "udm_uniconv.h"
 #include "udm_unidata.h"
 
@@ -3527,11 +3528,16 @@ udm_soundex_code(unsigned int ch)
 }
 
 
-void UdmSoundex(UDM_CHARSET *cs, char *dst, const char *src, size_t srclen)
+void UdmSoundex(UDM_CHARSET *cs,
+                char *dst, size_t dstlen,
+                const char *src, size_t srclen)
 {
-  char *end, *padend;
+  char *end= dst + dstlen - 1; /* -1 for trailing '\0' */
+  char *padend= dst + 4;
   const char *srcend= src + srclen;
   unsigned int prev;
+
+  UDM_ASSERT(dstlen > 4);
 
   while (!(prev= udm_soundex_code((unsigned char)*src)) && srclen > 0)
   {
@@ -3540,11 +3546,8 @@ void UdmSoundex(UDM_CHARSET *cs, char *dst, const char *src, size_t srclen)
   }
 
   *dst++= (*src >= 'a' && *src <= 'z') ? *src - 'a' + 'A' : *src;
-  prev= udm_soundex_code((unsigned char) *src);
-  end= dst + 24;
-  padend= dst + 3;
+  prev= udm_soundex_code((unsigned char) *src++);
 
-  src++;
   for ( ; dst < end && src < srcend; src++)
   {
     unsigned int ch;

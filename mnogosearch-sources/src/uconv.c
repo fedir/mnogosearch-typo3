@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -26,6 +26,13 @@ void __UDMCALL UdmConvInit(UDM_CONV *cnv,UDM_CHARSET *from,UDM_CHARSET *to, int 
   cnv->from= from;
   cnv->to= to;
   cnv->flags= fl;
+}
+
+
+size_t
+UdmConvSizeNeeded(const UDM_CONV *cnv, size_t srclen, int flags)
+{
+  return srclen * 14; /* TOODO34 */
 }
 
 

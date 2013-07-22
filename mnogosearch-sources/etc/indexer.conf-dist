@@ -16,6 +16,10 @@
 #Include /usr/local/mnogosearch/etc/inc1.conf
 # Relative path else:
 #Include inc1.conf
+#
+# Note, installation layout dependent directory variables
+# $(ConfDir), $(VarDir), $(ShareDir) and $(TmpDir) are understood, e.g.:
+#Include $(ConfDir)/inc.conf
 ###########################################################################
 
 
@@ -39,15 +43,19 @@
 #	DBHost does not matter, use "localhost".
 #
 # Currently supported DBType values are 
-# mysql, pgsql, mssql, oracle, ibase, db2, mimer, sqlite.
+# mysql, pgsql, mssql, oracle, ibase, db2,
+# mimer, monetdb, sqlite, sqlite3, sybase, virtuoso.
 # 
 # MySQL users can specify path to Unix socket when connecting to localhost:
-# mysql://foo:bar@localhost/mnogosearch/?socket=/tmp/mysql.sock
+#DBAddr mysql://foo:bar@localhost/mnogosearch/?socket=/tmp/mysql.sock
 #
-# If you are using PostgreSQL and do not specify hostname,
-#	e.g. pgsql://user:password@/dbname/
-# then PostgreSQL will not work via TCP, but will use Unix socket.
+# If you are using PostgreSQL and do not specify the hostname part:
+#DBAddr	pgsql://user:password@/dbname/
+# then indexer will connect through the Unix socket instead of a TCP port.
 #
+# SQLite3 example (the trailing slash is required):
+#DBAddr sqlite3:///$(VarDir)/mnogosearch.sqlite3/
+
 
 DBAddr	mysql://root@localhost/test/?dbmode=blob
 
@@ -308,6 +316,12 @@ DBAddr	mysql://root@localhost/test/?dbmode=blob
 # special meaning in "string" match, so we have to use "regex" match here:
 #Disallow Regex  \?
 
+# Disallow document extensions that are not understood by default.
+# Comment these lines if you have corresponding external parsers.
+Disallow *.doc
+Disallow *.xls
+Disallow *.ppt
+Disallow *.pdf
 
 # Exclude some known extensions using fast "String" match:
 Disallow *.b    *.sh   *.md5  *.rpm
@@ -318,9 +332,9 @@ Disallow *.vdo  *.mpeg *.mpe  *.mpg  *.avi  *.movie *.mov  *.wmv
 Disallow *.mid  *.mp3  *.rm   *.ram  *.wav  *.aiff  *.ra
 Disallow *.vrml *.wrl  *.png  *.ico  *.psd  *.dat
 Disallow *.exe  *.com  *.cab  *.dll  *.bin  *.class *.ex_
-Disallow *.tex  *.texi *.xls  *.doc  *.texinfo
-Disallow *.rtf  *.pdf  *.cdf  *.ps
-Disallow *.ai   *.eps  *.ppt  *.hqx
+Disallow *.tex  *.texi *.texinfo
+Disallow *.cdf  *.ps
+Disallow *.ai   *.eps  *.hqx
 Disallow *.cpt  *.bms  *.oda  *.tcl
 Disallow *.o    *.a    *.la   *.so 
 Disallow *.pat  *.pm   *.m4   *.am   *.css
@@ -479,11 +493,14 @@ AddType image/gif	*.gif
 
 AddType	text/plain			*.txt  *.pl *.js *.h *.c *.pm *.e
 AddType	text/html			*.html *.htm
+AddType text/xml			*.xml
+AddType message/rfc822			*.eml *.mht *.mhtml
 
 AddType text/rtf			*.rtf
 AddType application/pdf			*.pdf
 AddType application/msword		*.doc
 AddType application/vnd.ms-excel	*.xls
+AddType application/vnd.ms-powerpoint	*.ppt
 AddType text/x-postscript		*.ps
 
 
@@ -527,10 +544,9 @@ AddType	application/unknown *.*
 #Mime application/x-troff-man  text/plain                 "deroff"
 #Mime text/x-postscript        text/plain                 "ps2ascii"
 #Mime application/pdf          text/plain                 "pdftotext $1 -"
+#Mime application/pdf          text/html                  "pdftohtml -noframes -enc UTF-8 -i -stdout $1"
 #Mime application/vnd.ms-excel text/plain                 "xls2csv $1"
 #Mime application/vnd.ms-excel text/html                  "xlhtml $1"
-#Mime "text/rtf*"              text/html                  "rthc --use-stdout $1 2>/dev/null"
-#Mime "text/rtf*"              text/xml                   "rtfx -w $1 2>/dev/null"
 #Mime application/vnd.ms-powerpoint "text/html; charset=utf-8" "pptohtml $1"
 #Mime application/vnd.ms-powerpoint text/html             "ppthtml $1"
 
@@ -783,12 +799,12 @@ Section Content-Language	13	16
 #Section attribute.title	17	128
 #Section attribute.face		27	0
 
-# Uncomment the following lines if you want use NewsExtensions
-# You may add any Newsgroups header to be indexed and stored in urlinfo table
+# Message/rfc822 headers
 
-#Section References		18	0
-#Section Message-ID		19	0
-#Section Parent-ID		20	0
+Section msg.from		18	0
+Section msg.to			19	0
+Section msg.subject		20	0
+
 
 # Uncomment the following lines if you want index MP3 tags.
 #Section MP3.Song           	21    128

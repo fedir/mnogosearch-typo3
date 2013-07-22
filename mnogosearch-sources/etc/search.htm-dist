@@ -13,7 +13,10 @@
 <!--variables
 # Database parameters
 # Format: <DBType>:[//[DBUser[:DBPass]@]DBHost[:DBPort]]/DBName/[?dbmode=mode]
-DBAddr	mysql://root@localhost/test/?dbmode=blob
+#DBAddr pgsql://user:password@localhost/test/
+#DBAddr sqlite3:///$(VarDir)/mnogosearch.sqlite3/
+
+DBAddr mysql://root@localhost/test/?dbmode=blob
 
 # Uncomment this line to enable search result cache
 #Cache yes
@@ -55,8 +58,8 @@ BrowserCharset iso-8859-1
 #
 # How to hilight searched words.
 #
-HlBeg	'<span style="background-color: #ff0; color: #f00; font-weight: bold;">'
-HlEnd	'</span>'
+HlBeg '<span style="font-weight:bold;">'
+HlEnd '</span>'
 
 # Uncomment this line to enable error logging to stderr
 #Log2stderr yes
@@ -101,17 +104,17 @@ img.logo { border: none; }
 
 <!IF NAME="form" CONTENT="extended">
 <FORM METHOD=GET ACTION="">
-<table bgcolor=#EEEEEE border=0>
+<table bgcolor="#EEEEEE" border="0">
   <TR>
     <TD>Search for:</TD>
-    <TD COLSPAN=4>
+    <TD COLSPAN="4">
 <!IF NAME="q" CONTENT="">
-      <INPUT TYPE="text"   NAME="q"    VALUE="$&(qprev)" SIZE=50 >
+      <INPUT TYPE="text"   NAME="q"    VALUE="$&(qprev)" SIZE="50">
       <INPUT TYPE="submit" NAME="cmd"  VALUE="Search!">
       <INPUT TYPE="hidden" NAMe="form" VALUE="extended">
       <small><a href="?qprev=$%(qprev)">Simple mode</a></small>
 <!ELSE>
-      <INPUT TYPE="text"   NAME="q"    VALUE="$&(q)" SIZE=50 >
+      <INPUT TYPE="text"   NAME="q"    VALUE="$&(q)" SIZE="50" >
       <INPUT TYPE="submit" NAME="cmd"  VALUE="Search!">
       <INPUT TYPE="hidden" NAMe="form" VALUE="extended">
       <small><a href="?qprev=$%(q)">Simple mode</a></small>
@@ -240,7 +243,7 @@ img.logo { border: none; }
       <input type="submit" name="cmd" value="Search!" />
       <small><a href="?form=extended&amp;qprev=$%(qprev)">Extended</a></small>
 <!ELSE>
-      <INPUT TYPE="text"   NAME="q"    VALUE="$&(q)" SIZE=50 />
+      <INPUT TYPE="text"   NAME="q"    VALUE="$&(q)" SIZE="50" />
       <INPUT TYPE="submit" NAME="cmd" VALUE="Search!" />
       <small><a href="?form=extended&amp;qprev=$%(q)">Extended</a></small>
 <!ENDIF>
@@ -265,110 +268,118 @@ img.logo { border: none; }
 
 
 <!--restop-->
-<table bgcolor=#EEEEEE width=100% border=0>
+<table bgcolor="#EEEEEE" width="100%" border="0">
   <tr>
     <td>
-      <small>Search for <b>$&(q)</b>.</small>
       <small>Search results: <b>$&(WE)</b>.</small>
     </td>
-    <td>
-      <small>Results <b>$(first)-$(last)</b> of <B>$(total)</B>.</small>
-      <small>Search took <b>$(SearchTime)</b> seconds</small>
-    </td>
   </tr>
-  <tr><td colspan="2">
-      Sort by:
-      <!IF NAME="s" CONTENT="DRP">
-      <a href="$(FirstPage)&s=RPD">relevancy</a>&nbsp;|&nbsp;<b>last modified date</b>&nbsp;|&nbsp;<a href="$(FirstPage)&s=SRPD&su=title">title</a><!ELSEIF NAME="s" CONTENT="SRPD">
-      <a href="$(FirstPage)&s=RPD">relevancy</a>&nbsp;|&nbsp;<a href="$(FirstPage)&s=DRP">last modified date</a>&nbsp;|&nbsp;<b>title</b><!ELSE>
-      <b>relevancy</b>&nbsp;|&nbsp;<a href="$(FirstPage)&s=DRP">last modified date</a>&nbsp;|&nbsp;<a href="$(FirstPage)&s=SRPD&su=title">title</a><!ENDIF>
-  </td></tr>
+  </tr>
 </table>
 
 <!IFGT NAME="StrictModeFound" CONTENT="0">
-<table bgcolor=#EEEEEE width=100% border=0>
+<table bgcolor="#EEEEEE" width="100%" border="0">
 <tr><td>
 Too few results were found in strict mode: $(StrictModeFound)
 <tr><td>
 Displaying results in less strict mode.
 </table>
 <!ENDIF>
+
+<table>
+  <tr>
+    <td width="40" valign="top">
+    </td>
+  <td>
+    <div style="color:#888888;">
+      <small>Results <b>$(first)-$(last)</b> of <B>$(total)</B>
+      (<b>$(SearchTime)</b> seconds)</small>
+    </div>
+  </td>
+</table>
 <!--/restop-->
 
 
 <!--res-->
-<DL>
 <!IFNOT NAME="Alias" CONTENT=""><!COPY NAME="URL" CONTENT="Alias"><!ENDIF>
-<!IF   NAME="fmt" CONTENT="url">
-  <DT>$(Order).
-  <a href="$(URL)" TARGET="_blank">$(URL:40)</a>
-  <small>[<b>$(Score)</b>]</small>
-<!ELSEIF NAME="fmt" CONTENT="short">
-  <DT>$(Order).
-  <a href="$(URL)" TARGET="_blank">
-    <!IF NAME="Title" CONTENT="">$(URL:40)<!ELSE>$&(Title)<!ENDIF>
-  </a>
-  <small>[<b>$(Score)</b>]</small>
-<!ELSE>
-  <DT>$(Order).
-  <a href="$(URL)" TARGET="_blank">
-    <!IF NAME="Title" CONTENT="">$(URL:40)<!ELSE>$&(Title)<!ENDIF>
-  </a>
-  <small>
-   [
-    <b>$(Score)</b>
-    <!IFNOT NAME="Pop_Rank" CONTENT="0.00000">Popularity: <b>$(Pop_Rank)</b><!ENDIF>
-   ]
-  </small>
-  <DD>
-  <table width=60%>
+  <table width="600" border="0" style="font-family:Arial,Helvetica,sans-serif;">
     <tr>
-      <td>
-        <small>$&(Body)...</small>
+      <td width="40" valign="top">
+        <span style="color:#999999;font-size: 12">$&(Order)</span>
       </td>
-    </tr>
-    <tr>
       <td>
-        <UL>
-         <li>
-           <small>
-             <A HREF="$(URL)" TARGET="_blank">$(URL:40)</A>
-             <font color="#008800">
-              - $(Content-Length) bytes [$(Content-Type)] 
-              - $(Last-Modified) 
-	      <!IFNOT NAME="stored_href" CONTENT="">
-	      <DD><small>[<a href="$(stored_href)" TARGET="_blank">Cached copy</a>]</small></DD>
-	      <!ENDIF>
-	      <!IFNOT NAME="sitelimit_href" CONTENT="">
-	      <!IFGT NAME="PerSite" CONTENT="0">
-	      <DD><small>
-              [<a href="$(sitelimit_href)">More results from this site ($(PerSite) total) </a>]
-	      </small></DD>
-	      <!ENDIF>
-	      <!ENDIF>
-             </font>
-           </small>
-           <BR>
-           $(CL)
-        </UL>
-        $(STORED)
-	
+
+        <!-- Title, score, popularity -->
+        <div style="font-size:16;color:#999999;">
+          <a href="$(URL)" TARGET="_blank">
+          <!IF NAME="Title" CONTENT=""><!IF NAME="msg.Subject" CONTENT="">$(URL:40)<!ELSE>$&(msg.Subject)<!ENDIF><!ELSE>$&(Title)<!ENDIF>
+          </a>
+          <small>&nbsp;[ <b>$(Score)</b>
+            <!IFNOT NAME="fmt" CONTENT="short">
+            <!IFNOT NAME="Pop_Rank" CONTENT="0.00000">Popularity: <b>$(Pop_Rank)</b><!ENDIF>
+            <!ENDIF>
+          ]</small>
+        </div> 
+
+        <!-- Body snippet -->
+        <!IFNOT NAME="fmt" CONTENT="url">
+        <div style="font-size:14;">
+          $&(Body)...
+        </div>
+        <!ENDIF>
+
+        <!-- URL, cached copy, more results from site -->
+        <div style="font-size: 12; color:#093;">
+          $(URL:50)
+          <!IFNOT NAME="stored_href" CONTENT="">
+          - <span><a href="$(stored_href)" style="color:#999;" target="_blank">Cached</a>
+          </span>
+          <!ENDIF>
+
+          <!IFNOT NAME="sitelimit_href" CONTENT="">
+          <!IFGT NAME="PerSite" CONTENT="0">-
+          <a href="$(sitelimit_href)" style="color:#999;">More ($(PerSite)) </a>
+          <!ENDIF>
+          <!ENDIF>
+        </div>
+
+        <!-- Meta information -->
+        <!IFNOT NAME="fmt" CONTENT="url"
+        <!IFNOT NAME="fmt" CONTENT="short">
+        <div style="font-size: 12; color:#bbb;">
+          $&(Content-Type) - $&(Content-Length) bytes - $&(Last-Modified)
+        </div>
+        <!ENDIF>
+        <!ENDIF>
+
+        <div>&nbsp;</div>
       </td>
     </tr>
   </table>
-  
-<!ENDIF>
-</DL>
 <!--/res-->
 
 
 <!--resbot-->
-<table width=100% bgcolor=#FFFFFF>
+<table width="600" border="0" style="font-family:Arial,Helvetica,sans-serif;">
   <tr>
-    <td align=center>
-      <TABLE BORDER=0>
-        <TR><TD><small>Result pages: <TD>&nbsp;</TD></TD>$(NL)$(NB)$(NR)</TD></TR>
+    <td width="40">
+    <td align="right"><small>Result pages:</small>
+    <td align="center">
+      <TABLE BORDER="0" style="font-size:18;" width="100%">
+        <TR>$(NL)$(NB)$(NR)</TR>
       </TABLE>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    <td align="right"><small>Sort by:</small>
+    <td align="left">&nbsp;&nbsp;
+     <small>
+      <!IF NAME="s" CONTENT="DRP">
+      <a href="$(FirstPage)&s=RPD">score</a>&nbsp;|&nbsp;<b>date</b>&nbsp;|&nbsp;<a href="$(FirstPage)&s=SRPD&su=title">title</a><!ELSEIF NAME="s" CONTENT="SRPD">
+      <a href="$(FirstPage)&s=RPD">score</a>&nbsp;|&nbsp;<a href="$(FirstPage)&s=DRP">date</a>&nbsp;|&nbsp;<b>title</b><!ELSE>
+      <b>score</b>&nbsp;|&nbsp;<a href="$(FirstPage)&s=DRP">date</a>&nbsp;|&nbsp;<a href="$(FirstPage)&s=SRPD&su=title">title</a><!ENDIF>
+     </small>
     </td>
   </tr>
 </table>
@@ -389,27 +400,27 @@ Displaying results in less strict mode.
 
 
 <!--navleft-->
-<TD><small><A HREF="$(NH)">&lt;&lt; Prev</A></TD>
+<TD align="right"><A HREF="$(NH)">Previous</A></TD>
 <!--/navleft-->
 
 <!--navleft_nop-->
-<TD><small><FONT COLOR=gray>&lt;&lt; Prev</FONT></TD>
+<TD align="right"><FONT COLOR="gray">Previous</FONT></TD>
 <!--/navleft_nop-->
 
 <!--navbar1-->
-<TD><small><A HREF="$(NH)">$(NP)</A></TD>
+<TD align="center"><A HREF="$(NH)">$(NP)</A></TD>
 <!--/navbar1-->
 
 <!--navbar0-->
-<TD><small>$(NP)</TD>
+<TD align="center" bgcolor="#eeeeee">$(NP)</TD>
 <!--/navbar0-->
 
 <!--navright-->
-<TD><small><A HREF="$(NH)">Next &gt;&gt;</A></TD>
+<TD align="left"><A HREF="$(NH)">Next</A></TD>
 <!--/navright-->
 
 <!--navright_nop-->
-<TD><small><FONT COLOR=gray>Next &gt;&gt;</FONT></TD>
+<TD align="left"><FONT COLOR="gray">Next</FONT></TD>
 <!--/navright_nop-->
 
 
@@ -418,7 +429,7 @@ Displaying results in less strict mode.
 <!IFNOT NAME="WS" CONTENT="">
 Did you mean <b><a href="?q=$%(WS)">$(WS)</a></b>?
 <!ENDIF>
-<table bgcolor=#EEEEEE width=100%>
+<table bgcolor="#EEEEEE" width="100%">
   <tr>
     <td>
       <small>Search for <b>$&(q)</b>.</small>
@@ -497,7 +508,7 @@ $^(document)
 <!--storedoc_bottom-->
 <HR>
 <CENTER>
-<a href="http://www.mnogosearch.org/"><IMG BORDER=0 SRC="http://www.mnogosearch.org/img/udm.gif"></A>
-<FONT SIZE=1><A HREF="http://www.mnogosearch.org/">Powered by mnoGoSearch $(version) - web search engine software</A></FONT>
+<a href="http://www.mnogosearch.org/"><IMG BORDER="0" SRC="http://www.mnogosearch.org/img/udm.gif"></A>
+<FONT SIZE="1"><A HREF="http://www.mnogosearch.org/">Powered by mnoGoSearch $(version) - web search engine software</A></FONT>
 </CENTER>
 <!--/storedoc_bottom-->

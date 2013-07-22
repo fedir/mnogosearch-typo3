@@ -69,4 +69,10 @@ fail !0 exec $(SEARCH) "t1w1_t1w2 t2w1_t2w2" > $(UDM_TEST_DIR)/search16.rej
 fail !0 mdiff $(UDM_TEST_DIR)/search16.rej $(UDM_TEST_DIR)/search16.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search16.rej
 
+# Test "Unsupported DBAddr" error message
+fail !0 exec $(SEARCH) -d $(UDM_TEST_DIR)/bad-dbaddr.htm > $(UDM_TEST_DIR)/bad-dbaddr.rej
+fail !0 mdiff $(UDM_TEST_DIR)/bad-dbaddr.rej $(UDM_TEST_DIR)/bad-dbaddr.res
+fail !0 exec rm -f $(UDM_TEST_DIR)/bad-dbaddr.rej
+
+
 pass 0 exec  $(INDEXER) -Edrop $(UDM_TEST_DIR)/indexer.conf 1>&2

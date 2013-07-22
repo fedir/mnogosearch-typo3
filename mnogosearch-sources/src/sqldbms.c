@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -56,42 +56,13 @@ static char udm_hex_digits[]= "0123456789ABCDEF";
 
 void DecodeHexStr (const char *src, UDM_PSTR *dst, size_t size)
 {
-  char p1;
-  char p2;
-  size_t dst_size = size / 2 + 1;
-  size_t i;
-  size_t d = 0;
-
-  dst->val = UdmMalloc(dst_size);
-
-  if (!size)
-    goto ex;
-  
-  for (i = 0; (size > 0) && (i < size - 1); i++)
+  if (!(dst->val= UdmMalloc(size / 2 + 1)))
   {
-    if (src[i] >= '0' && src[i] <= '9')
-      p1 = src[i] - '0';
-    else if (src[i] >= 'A' && src[i] <= 'F')
-      p1 = src[i] - 'A' + 10;
-    else if (src[i] >= 'a' && src[i] <= 'f')
-      p1 = src[i] - 'a' + 10;
-    else break;
-
-    if (src[i + 1] >= '0' && src[i + 1] <= '9')
-      p2 = src[i + 1] - '0';
-    else if (src[i + 1] >= 'A' && src[i + 1] <= 'F')
-      p2 = src[i + 1] - 'A' + 10;
-    else if (src[i + 1] >= 'a' && src[i + 1] <= 'f')
-      p2 = src[i + 1] - 'a' + 10;
-    else break;
-
-    dst->val[d++] = (p1 << 4) | p2;
-    i++;
+    dst->len= 0;
+    return;
   }
-  
-ex:
-  dst->val[d] = 0;
-  dst->len = d;
+  dst->len= UdmHexDecode(dst->val, src, size);
+  dst->val[dst->len]= '\0';
 }
 
 
@@ -211,99 +182,127 @@ UdmSQLTableTruncateOrDelete(UDM_DB *db, const char *name)
 }
 
 
+static size_t
+UdmSQLEscStrMonet(UDM_DB *db, char *to, const char *from, size_t len)
+{
+  char *to0= to;
+  /* Escape single quote with single quote, backslash with backslash */
+  for ( ; len && *from; from++, len--)
+  {
+    switch (*from)
+    {
+      case '\\':
+      case '\'':
+       /* Note that no break here!*/
+       *to++= *from;
+      default:
+       *to++= *from;
+    }
+  }
+  *to= '\0';
+  return to - to0;
+}
+
+
+static size_t
+UdmSQLEscStrStandard(UDM_DB *db, char *to,const char *from,size_t len)
+{
+  char *to0= to;
+  for ( ; len && *from; from++, len--)
+  {
+    switch (*from)
+    {
+      case '\'':
+       /* Note that no break here!*/
+       *to++= *from;
+      default:
+       *to++= *from;
+    }
+  }
+  *to= '\0';
+  return to - to0;
+}
+
+
+static size_t
+UdmSQLEscStrPgSQL(UDM_DB *db, char *to,const char *from,size_t len)
+{
+  char *to0= to;
+  int DBType= db->DBType;
+  const char *fend= from + len;
+
+  while (*from && from < fend)
+  {
+#ifdef WIN32
+    /*
+      A workaround against a bug in SQLExecDirect
+      in PostgreSQL ODBC driver. It produces
+      an error when meets a question mark in a string
+      constant. For some reasons question marks are
+      considered as parameters. This should not happen
+      with SQLExecDirect.
+      Let's escape question mark using \x3F notation.
+    */
+    if (DBType == UDM_DB_PGSQL &&
+        (*from == '?' ||
+         *from == '{' ||
+         *from == '}'))
+    {
+      *to++= '\\';
+      *to++= 'x';
+      *to++= '3';
+      *to++= 'F';
+      from++;
+      continue;
+    }
+#endif
+    /*
+    "ODBC escape convert error" is returned when '{' or '}' are not escaped.
+    */
+    if (DBType == UDM_DB_PGSQL && (*from == '{' || *from == '}'))
+    {
+      *to++= '\\';
+      *to++= 'x';
+      *to++= '7';
+      *to++= udm_hex_digits[*from & 0x0F];
+      from++;
+      continue;
+    }
+    switch(*from)
+    {
+      case '\'':
+      case '\\':
+        *to='\\';to++;
+      default:*to=*from;
+    }
+    to++;from++;
+  }
+  *to= '\0';
+  return to - to0;
+}
+
+
 size_t
 UdmSQLEscStrGeneric(UDM_DB *db, char *to,const char *from,size_t len)
 {
-  int DBType= db->DBType;
-  char *s= to;
-
-  if (DBType == UDM_DB_ORACLE8 || DBType == UDM_DB_SYBASE ||
-      DBType == UDM_DB_MSSQL || DBType == UDM_DB_DB2 ||
-      DBType == UDM_DB_IBASE || DBType == UDM_DB_SAPDB ||
-      DBType == UDM_DB_SQLITE || DBType == UDM_DB_ACCESS ||
-      DBType == UDM_DB_MIMER || DBType == UDM_DB_CACHE ||
-      DBType == UDM_DB_SQLITE3)
-   {
-     while(*from)
-     {
-       switch(*from)
-       {
-         case '\'':
-          /* Note that no break here!*/
-          *to=*from;to++;
-         default:
-          *to=*from;
-       }
-       to++;from++;
-      }
-  }
-  else if (DBType == UDM_DB_MONETDB)
+  switch (db->DBType)
   {
-    /* Escape single quote with single quote, backslash with backslash */
-    while (*from)
-    {
-      switch (*from)
-      {
-        case '\\':
-        case '\'':
-         /* Note that no break here!*/
-         *to++= *from;
-        default:
-         *to++= *from++;
-      }
-    }
-  }
-  else
-  {
-    while(*from)
-    {
-#ifdef WIN32
+    case UDM_DB_MYSQL:
+      return UdmSQLEscStrPgSQL(db, to, from, len);
+    case UDM_DB_MONETDB:
+      return UdmSQLEscStrMonet(db, to, from, len);
+    case UDM_DB_PGSQL:
       /*
-        A workaround against a bug in SQLExecDirect
-        in PostgreSQL ODBC driver. It produces
-        an error when meets a question mark in a string
-        constant. For some reasons question marks are
-        considered as parameters. This should not happen
-        with SQLExecDirect.
-        Let's escape question mark using \x3F notation.
+        Older version also did PgSQL-style escaping for:
+        UDM_DB_SOLID, UDM_DB_VIRT, UDM_DB_ORACLE7.
+        Restore PgSQL-style escaping if there are trobles with 
       */
-      if (DBType == UDM_DB_PGSQL &&
-          (*from == '?' ||
-           *from == '{' ||
-           *from == '}'))
-      {
-        *to++= '\\';
-        *to++= 'x';
-        *to++= '3';
-        *to++= 'F';
-        from++;
-        continue;
-      }
-#endif
-      /*
-      "ODBC escape convert error" is returned when '{' or '}' are not escaped.
-      */
-      if (DBType == UDM_DB_PGSQL && (*from == '{' || *from == '}'))
-      {
-        *to++= '\\';
-        *to++= 'x';
-        *to++= '7';
-        *to++= udm_hex_digits[*from & 0x0F];
-        from++;
-        continue;
-      }
-      switch(*from)
-      {
-        case '\'':
-        case '\\':
-         *to='\\';to++;
-        default:*to=*from;
-      }
-      to++;from++;
-    }
+      return (db->version < 90000) ?
+             UdmSQLEscStrPgSQL(db, to, from, len) :
+             UdmSQLEscStrStandard(db, to, from, len);
+    default:
+      return UdmSQLEscStrStandard(db, to, from, len);
   }
-  *to=0;
-  return to - s;
 }
 
 
@@ -1140,7 +1139,8 @@ UdmSQLExecGeneric(UDM_DB *db)
   if (!(qbuf= UdmMalloc(qlen)))
   {
     udm_snprintf(db->errstr, sizeof(db->errstr),
-                 "UdmSQLExecGeneric: Failed to allocated buffer %d bytes", qlen);
+                 "UdmSQLExecGeneric: Failed to allocated buffer %d bytes",
+                 (int) qlen);
     return UDM_ERROR;
   }
   

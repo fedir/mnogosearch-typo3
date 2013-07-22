@@ -11,6 +11,8 @@ fail !0 exec $(SEARCH) text > $(UDM_TEST_DIR)/search.rej
 fail !0 mdiff $(UDM_TEST_DIR)/search.rej $(UDM_TEST_DIR)/search.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/search.rej
 fail !0 exec $(SEARCH) "text&cc=1&amp;URL=http:%2F%2Fsite%2F%3Fa=b%26c=d" > $(UDM_TEST_DIR)/cached.rej
+fail !0 exec $(SEARCH) "text&cc=1&amp;URL=http:%2F%2Fsite%2Ftest01.txt"  >> $(UDM_TEST_DIR)/cached.rej
+fail !0 exec $(SEARCH) "text&cc=1&amp;URL=http:%2F%2Fsite%2Fnonexistent.txt"  >> $(UDM_TEST_DIR)/cached.rej
 fail !0 mdiff $(UDM_TEST_DIR)/cached.rej $(UDM_TEST_DIR)/cached.res
 fail !0 exec rm -f $(UDM_TEST_DIR)/cached.rej
 

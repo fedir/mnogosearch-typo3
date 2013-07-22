@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,9 +27,14 @@
 extern __C_LINK UDM_URL * __UDMCALL UdmURLInit(UDM_URL *url);
 extern __C_LINK void __UDMCALL UdmURLFree(UDM_URL *url);
 extern int UdmURLParse(UDM_URL *url,const char *s);
+extern const char *UdmURLErrorStr(int rc);
 extern char * UdmURLNormalizePath(char * path);
 extern size_t UdmURLCanonize(const char *src, char *dst, size_t dstsize);
 extern size_t UdmURLCanonizePath(char *dst, size_t dstsize, const char *src);
+
+/* Functions from idn.c */
+extern size_t UdmIDNEncode(UDM_CHARSET *cs, const char *src, char *dst, size_t dstlen);
+extern size_t UdmIDNDecode(UDM_CHARSET *cs, const char *src, char *dst, size_t dstlen);
 
 #endif
 

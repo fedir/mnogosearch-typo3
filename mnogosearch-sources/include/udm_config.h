@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -190,13 +190,31 @@ extern void UdmViolationExit(void *);
 #ifdef HAVE_DEBUG
   #define UDM_ASSERT(x)  assert(x)
   #ifdef HAVE_PTHREAD
+    #ifdef WIN32
+    #define UDM_ASSERT_MUTEX_OWNER(x) UDM_ASSERT((x)->count >0 && (UdmThreadSelf() == (x)->thread))
+    #else
     #define UDM_ASSERT_MUTEX_OWNER(x) UDM_ASSERT((x)->count > 0 && pthread_equal(pthread_self(),(x)->thread))
+    #endif
   #else
     #define UDM_ASSERT_MUTEX_OWNER(x)
   #endif
 #else
   #define UDM_ASSERT(x)
   #define UDM_ASSERT_MUTEX_OWNER(x) 
+#endif
+
+#ifndef __GNUC__
+#define __attribute__(A)
+#endif
+
+#ifdef __GNUC__
+#define GCC_VERSION (__GNUC__ * 10000  + __GNUC_MINOR__ * 100  + __GNUC_PATCHLEVEL__)
+#else
+#define GCC_VERSION 0
+#endif
+
+#if GCC_VERSION > 40600
+#define HAVE_GCC_PRAGMA_PUSH
 #endif
 
 #endif /* _UDM_CONFIG_H */

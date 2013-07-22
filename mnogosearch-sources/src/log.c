@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -182,6 +182,7 @@ UdmOpenLog(const char * appname,UDM_ENV *Env, int log2stderr)
 #if defined HAVE_SYSLOG_H && defined USE_SYSLOG
   int openlog_flag= LOG_PID;
   
+  Env->Log.flags= UdmVarListFindInt(&Env->Vars, "LogFlags", 0);
   Env->Log.facility= syslog_facility(UdmVarListFindStr(&Env->Vars,"SyslogFacility",""));
   
 #ifdef LOG_PERROR
@@ -225,7 +226,7 @@ udm_logger(UDM_ENV *Env, int handle, int level, const char *fmt, va_list ap)
   char buf[UDM_LOG_BUF_LEN+1];
   int i= 0;
 
-  if (handle)
+  if (handle && !(Env->Log.flags & UDM_LOG_FLAG_SKIP_PID))
     i= snprintf(buf,UDM_LOG_BUF_LEN,"[%d]{%02d} ", (int)getpid(), handle);
 #ifdef WIN32
   _vsnprintf(buf + i, UDM_LOG_BUF_LEN, fmt, ap);

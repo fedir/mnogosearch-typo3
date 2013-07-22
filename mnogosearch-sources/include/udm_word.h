@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,5 +40,9 @@ extern int UdmWideWordListCopy(UDM_WIDEWORDLIST *Dst, UDM_WIDEWORDLIST *Src);
 extern void UdmWordListListInit(UDM_WORDLISTLIST *LL);
 extern void UdmWordListListReset(UDM_WORDLISTLIST *LL);
 extern void UdmWordListListFree(UDM_WORDLISTLIST *LL);
+
+extern int UdmWideWordListMakeRange(UDM_WIDEWORDLIST *LL, int beg, int end);
+
+extern void UdmWideWordListSort(UDM_WIDEWORDLIST *LL);
 
 #endif

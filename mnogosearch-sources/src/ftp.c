@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -146,7 +146,6 @@ int Udm_ftp_open_data_port( UDM_CONN *c, UDM_CONN *d)
 {
   char buf[64];  
   unsigned char *a, *p;
-  int code;
   
   if (!d)
     return -1;
@@ -164,7 +163,7 @@ int Udm_ftp_open_data_port( UDM_CONN *c, UDM_CONN *d)
 
   udm_snprintf(buf, 64, "PORT %d,%d,%d,%d,%d,%d",
                 a[0], a[1], a[2], a[3], p[0], p[1]);
-  code= Udm_ftp_send_cmd(c, buf);
+  Udm_ftp_send_cmd(c, buf);
   if (strncasecmp(c->buf, "200 ", 4))
     return -1;
   d->user= c->user;
@@ -532,7 +531,7 @@ size_t Udm_ftp_size(UDM_CONN *c, char *path)
 {
   char *cmd;
   int code;
-  size_t len; 
+  unsigned int len; 
   
   if (!path || !(cmd= Udm_alloc_cmd_with_path_unescaped("SIZE", path)))
     return -1;
@@ -549,7 +548,7 @@ size_t Udm_ftp_size(UDM_CONN *c, char *path)
     return -1;
   }
   sscanf(c->buf, "213 %u", &len);
-  return len;
+  return (size_t) len;
 }
 
 
@@ -558,7 +557,7 @@ int Udm_ftp_rest(UDM_CONN *c, size_t rest)
   char cmd[64];
   int code;
   
-  udm_snprintf(cmd, 63, "REST %u", rest);
+  udm_snprintf(cmd, 63, "REST %u", (int) rest);
 
   code= Udm_ftp_send_cmd(c, cmd);
   if (code == -1)
@@ -621,10 +620,8 @@ int Udm_ftp_cwd(UDM_CONN *c, const char *path)
 
 int Udm_ftp_close(UDM_CONN *connp)
 {
-  int code;
-
   if (connp->connected == UDM_NET_CONNECTED)
-    code= Udm_ftp_send_cmd(connp, "QUIT");
+    Udm_ftp_send_cmd(connp, "QUIT");
   connp->connected= UDM_NET_NOTCONNECTED;
   socket_close(connp);
   if (connp->connp)

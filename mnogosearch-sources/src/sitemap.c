@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -88,7 +88,8 @@ SitemapXMLLeave(UDM_XML_PARSER *parser, const char *name, size_t len)
     char loc[1024];
     UDM_HREF Href;
     UdmHrefInit(&Href);
-    udm_snprintf(loc, sizeof(loc), "%.*s", Data->Href.loclen, Data->Href.loc);
+    udm_snprintf(loc, sizeof(loc), "%.*s",
+                                   (int) Data->Href.loclen, Data->Href.loc);
     Href.url= loc;
     UdmHrefListAdd(Data->HrefList, &Href);
     UdmSitemapHrefInit(&Data->Href);
@@ -112,13 +113,13 @@ SitemapXMLValue(UDM_XML_PARSER *parser, const char *val, size_t vallen)
   else if (checktag(parser, UDM_CSTR_WITH_LEN("urlset.url.priority")))
   {
     char str[256];
-    udm_snprintf(str, sizeof(str), "%.*s", vallen, val);
+    udm_snprintf(str, sizeof(str), "%.*s", (int) vallen, val);
     Data->Href.priority= atof(str);
   }
   else if (checktag(parser, UDM_CSTR_WITH_LEN("urlset.url.lastmod")))
   {
     char str[256];
-    udm_snprintf(str, sizeof(str), "%.*s", vallen, val);
+    udm_snprintf(str, sizeof(str), "%.*s", (int) vallen, val);
     Data->Href.lastmod= UdmHttpDate2Time_t(str);
   }
   else
@@ -160,8 +161,8 @@ UdmSitemapParse(UDM_AGENT *A, UDM_HREFLIST *HrefList,
     udm_snprintf(err, sizeof(err), 
                  "XML parsing error: %s at line %d pos %d\n",
                   UdmXMLErrorString(&parser),
-                  UdmXMLErrorLineno(&parser),
-                  UdmXMLErrorPos(&parser));
+                  (int) UdmXMLErrorLineno(&parser),
+                  (int) UdmXMLErrorPos(&parser));
     rc= UDM_ERROR;
   }
 

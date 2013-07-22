@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -42,8 +42,62 @@
 
 #define POWERED_LOGO "<BR><a href=\"http://www.mnogosearch.org/\"><IMG BORDER=0 SRC=\"http://www.mnogosearch.org/img/mwin.gif\"></A>&nbsp<FONT SIZE=1><A HREF=\"http://www.mnogosearch.org/\">Powered by mnoGoSearch - free web search engine software</A></FONT><BR>\n"
 
-#define UDM_HTTPD_CGI    1
-#define UDM_HTTPD_DAEMON 2
+#define UDM_HTTPD_CMDLINE 0
+#define UDM_HTTPD_CGI     1
+#define UDM_HTTPD_DAEMON  2
+
+typedef struct udm_self_template_query_st
+{
+  char template_name[1024];
+  char self[1024];
+  char query_string[1024];
+  int  httpd;                /* Execution type: httpd, inetd or command line */
+} UDM_SELF_TEMPLATE_QUERY;
+
+
+static void
+UdmSelfTemplateQueryInit(UDM_SELF_TEMPLATE_QUERY *q)
+{
+  /*
+    Some HTTPD servers do not pass QUERY_STRING if the query was empty,
+    so additionally check REQUEST_METHOD to be safe.
+  */
+  q->httpd= getenv("QUERY_STRING") || getenv("REQUEST_METHOD") ?
+            UDM_HTTPD_CGI : 0;
+  q->template_name[0]= 0;
+  q->self[0]= 0;
+  q->query_string[0]= 0;
+}
+
+
+/******************** Variable functions *****************************/
+/*
+  Wrappers for UdmVarListFindXXX(),
+  with a limit to command parameters only, ignoring query string values.
+  Have two purposes:
+  - generally avoid overwriting search.htm commands in query string
+  - avoid cross-site scripting, in case of String variables
+*/
+static const char *
+UdmVarListFindSafeStr(UDM_VARLIST *List, const char *name, const char *def)
+{
+  UDM_VAR *Var= UdmVarListFind(List, name);
+  if (!Var || Var->section == UDM_VARSRC_QSTRING || !Var->val)
+    return def;
+  return Var->val;
+}
+
+/* Avoid using directly */
+#define UdmVarListFindStr(x)  { error;}
+
+static int
+UdmVarListFindSafeInt(UDM_VARLIST *List, const char *name, int def)
+{
+  UDM_VAR *Var= UdmVarListFind(List, name);
+  if (!Var || Var->section == UDM_VARSRC_QSTRING || !Var->val)
+    return def;
+  return atoi(Var->val);
+}
 
 
 /******************** Misc functions *********************************/
@@ -114,10 +168,10 @@ static char * BuildPageURL(UDM_VARLIST * vars, char **dst)
 
 static int UdmLoadGroups (UDM_ENV *E) {
   struct group *grp;
-  size_t cnt = 0;
+  int cnt = 0;
   char name[32];
   char **p;
-  const char *user = UdmVarListFindStr(&E->Vars, "REMOTE_USER", NULL);
+  const char *user= UdmVarListFindSafeStr(&E->Vars, "REMOTE_USER", NULL);
 
   if (! user) return(UDM_OK);
 
@@ -142,137 +196,31 @@ static int UdmLoadGroups (UDM_ENV *E) {
 #endif
 
 /************************************************************/
+
 static int
-StoreDocCGI(UDM_AGENT *Agent, UDM_ENV *Env, UDM_VARLIST *tmpl, int httpd)
+StoreDocCGI(UDM_AGENT *Agent, UDM_VARLIST *tmpl, UDM_SELF_TEMPLATE_QUERY *q)
 {
-  UDM_DOCUMENT *Doc;
-  UDM_RESULT   *Res;
-  UDM_HTMLTOK  tag;
-  char         *HDoc= NULL;
-  char         *HEnd= NULL;
-  char         *last= NULL;
-  char         ch;
-  const char   *content_type, *charset, *htok, *qstring;
-  UDM_CHARSET  *cs;
-#ifdef USE_PARSER
-  UDM_PARSER   *Parser;
-#endif
-  
-  Doc=UdmDocInit(NULL);
-  Res=UdmResultInit(NULL);
-  UdmPrepare(Agent,Res);
-  UdmVarListReplaceStr(&Doc->Sections, "URL", UdmVarListFindStr(&Env->Vars, "URL", "0"));
-  UdmVarListReplaceStr(&Doc->Sections, "dbnum", UdmVarListFindStr(&Env->Vars, "dbnum", "0"));
-  if ((qstring= UdmVarListFindStr(&Env->Vars, "ENV.QUERY_STRING", NULL)))
-  {
-    /*
-      Remove dbnum from query string.
-      Note: dbnum is passed when a cached copy is displayed in cluster.
-    */
-    if (!strncmp(qstring, "dbnum=", 6))
-    {
-      char tmp[1024];
-      for (qstring+= 6 ; (qstring[0] >= '0' && qstring[0] <= '9') || qstring[0]=='&' ; qstring++);
-      udm_snprintf(tmp, sizeof(tmp), "%s", qstring);
-      UdmVarListReplaceStr(&Doc->Sections, "ENV.QUERY_STRING", tmp);
-      UdmVarListReplaceStr(&Env->Vars, "ENV.QUERY_STRING", tmp);
-    }
-    else
-    {
-      UdmVarListReplaceStr(&Doc->Sections, "ENV.QUERY_STRING", UdmVarListFindStr(&Env->Vars, "ENV.QUERY_STRING", NULL));
-    }
-  }
-  UdmURLAction(Agent, Doc, UDM_URL_ACTION_GET_CACHED_COPY);
-  UdmVarListReplaceLst(&Env->Vars, &Doc->Sections, NULL, "*");
-  
-  charset = UdmVarListFindStr(&Env->Vars,"Charset","iso-8859-1");
-  cs = UdmGetCharSet(charset);
-  
-  if (httpd & UDM_HTTPD_DAEMON)
+  UDM_ENV *Env= Agent->Conf;
+
+  /* Fetch cached copy */
+  UdmCachedCopyGet(Agent);
+
+  /* Print headers */
+  if (q->httpd & UDM_HTTPD_DAEMON)
     printf("HTTP/1.0 200 OK\r\n");
-  printf("Content-type: text/html; charset=%s\r\n\r\n", charset);
-  
+  printf("Content-type: text/html; charset=%s\r\n\r\n",
+         UdmVarListFindSafeStr(&Env->Vars, "Charset", "iso-8859-1"));
+
   /* Now start displaying template*/
   UdmTemplatePrint(Agent, stdout, NULL, 0, &Env->Vars, tmpl, "storedoc_top");
-  
-  /* UnStore Doc, Highlight and Display */
-  
-  content_type = UdmVarListFindStr(&Env->Vars, "Content-Type", "text/html");
-  
-#ifdef USE_PARSER
-  if ((Parser= UdmParserFind(&Env->Parsers, content_type)))
-  {
-    content_type = Parser->to_mime ? Parser->to_mime : "text/html";
-  }
-#endif
-  if(!Doc->Buf.content)goto fin;
-  
-  HEnd=HDoc = (char*)UdmMalloc(UDM_MAXDOCSIZE + 32);
-  *HEnd='\0';
-  
-  if (strncasecmp(content_type, "text/plain", 10) == 0)
-  {
-    sprintf(HEnd, "<pre>\n");
-    HEnd += strlen(HEnd);
-  }
-
-  UdmHTMLTOKInit(&tag);
-  for(htok= UdmHTMLToken(Doc->Buf.content, (const char **)&last, &tag) ; htok ;)
-  {
-    char *tmp;
-    switch(tag.type) {
-    case UDM_HTML_COM:
-    case UDM_HTML_TAG:
-      memcpy(HEnd,htok,(size_t)(last-htok));
-      HEnd+= last-htok;
-      HEnd[0]= '\0';
-      UdmHTMLParseTag(&tag,Doc);
-      break;
-    case UDM_HTML_TXT:
-      ch= *last;
-      *last= '\0';
-      if (tag.title || tag.script || tag.comment || tag.style)
-      {
-        if ((tmp= UdmHlConvert(NULL, htok, cs, cs)))
-        {
-          memcpy(HEnd, tmp, strlen(tmp) + 1);
-          UdmFree(tmp);
-        }
-      }
-      else
-      {
-        if ((tmp= UdmHlConvert(&Res->WWList, htok, cs, cs)))
-        {
-          memcpy(HEnd, tmp, strlen(tmp) + 1);
-          UdmFree(tmp);
-        }
-      }
-      HEnd=UDM_STREND(HEnd);
-      *last = ch;
-      break;
-    }
-    htok = UdmHTMLToken(NULL, (const char **)&last, &tag);
-  }
-
-  if (strncasecmp(content_type, "text/plain", 10) == 0)
-  {
-    sprintf(HEnd, "</pre>\n");
-    HEnd+= strlen(HEnd);
-  }
-  
-  UdmVarListAddStr(&Env->Vars, "document", HDoc);
   UdmTemplatePrint(Agent, stdout, NULL, 0, &Env->Vars, tmpl, "storedoc");
-  
-fin:
-  UdmResultFree(Res);
-  UdmDocFree(Doc);
-  
   UdmTemplatePrint(Agent, stdout, NULL, 0, &Env->Vars, tmpl, "storedoc_bottom");
+
+  /* Free variables */
   UdmVarListFree(tmpl);
   UdmAgentFree(Agent);
   UdmEnvFree(Env);
-  UDM_FREE(HDoc);
-  return(0);
+  return UDM_OK;
 }
 /************************************************************/
 
@@ -314,12 +262,13 @@ int UdmThreadJoin(void *thd)
 #endif
 
 static int
-UdmHTTPHeadersSend(int httpd, const char *content_type, const char *bcs)
+UdmHTTPHeadersSend(UDM_SELF_TEMPLATE_QUERY *q,
+                   const char *content_type, const char *bcs)
 {
-  if (httpd & UDM_HTTPD_DAEMON)
+  if (q->httpd & UDM_HTTPD_DAEMON)
     printf("HTTP/1.0 200 OK\r\n");
   
-  if (httpd && strcasecmp(content_type, "none"))
+  if (q->httpd && strcasecmp(content_type, "none"))
   {
     if (bcs)
       printf("Content-type: %s; charset=%s\r\n\r\n", content_type, bcs);
@@ -333,14 +282,6 @@ UdmHTTPHeadersSend(int httpd, const char *content_type, const char *bcs)
 static void usage(void)
 {
 }
-
-
-typedef struct udm_self_template_query_st
-{
-  char template_name[1024];
-  char self[1024];
-  char query_string[1024];
-} UDM_SELF_TEMPLATE_QUERY;
 
 
 static int
@@ -379,7 +320,7 @@ UdmDetectSelfTemplateQueryCGI(UDM_ENV *Env,
   {
     char ename[1024];
     strncpy(ename,env,sizeof(ename)-1);
-    ename[sizeof(ename)]='\0';
+    ename[sizeof(ename)-1]='\0';
     UdmUnescapeCGIQuery(q->template_name, ename);
   }
   else if(getenv("REDIRECT_STATUS") && (env= getenv("PATH_TRANSLATED")))
@@ -427,7 +368,7 @@ UdmDetectSelfTemplateQueryCGI(UDM_ENV *Env,
   {
     udm_snprintf(q->query_string, sizeof(q->query_string), "%s", env);
   }
-  else if(argv[0])
+  else if (!q->httpd && argv[0])
   {
     udm_snprintf(q->query_string, sizeof(q->query_string), "q=%s", argv[0]);
     UdmVarListReplaceStr(&Env->Vars, "ENV.QUERY_STRING", q->query_string);
@@ -475,7 +416,6 @@ UdmDetectSelfTemplateQueryDaemon(UDM_ENV *Env,
 
 
 static UDM_SELF_TEMPLATE_QUERY q;
-static int httpd= 0;
 
 
 static int
@@ -484,7 +424,7 @@ UdmCmdLineHandleOption(UDM_CMDLINE_OPT *opt, const char *value)
   switch (opt->id)
   {
     case 'x':
-      httpd|= UDM_HTTPD_DAEMON;
+      q.httpd|= UDM_HTTPD_DAEMON;
       break;
     case 'd':
       udm_snprintf(q.template_name, sizeof(q.template_name), "%s", value);
@@ -527,7 +467,7 @@ int main(int argc, char ** argv)
   char        search_time[100]= "";
   char        *nav= NULL, *url= NULL;
   int         page_size, page_number, res;
-  size_t      i, nav_len, noptions;
+  size_t      i, nav_len;
   ssize_t     page1,page2,npages,ppp=10;
   UDM_ENV     *Env;
   UDM_AGENT   *Agent;
@@ -535,36 +475,33 @@ int main(int argc, char ** argv)
   UDM_VARLIST query_vars;
   UDM_VARLIST tmpl;
 
-  httpd|= getenv("QUERY_STRING") || getenv("REQUEST_METHOD") ?
-          UDM_HTTPD_CGI : 0;
+  UdmSelfTemplateQueryInit(&q);
 
 #if ((defined WIN32) && (defined _DEBUG))
-  if(httpd)
+  if(q.httpd)
   {
     WIN32_IIS_DEBUG_MSG(argv[0]);
     DebugBreak();
   }
 #endif
 
-  q.template_name[0]= 0;
-  q.self[0]= 0;
-  q.query_string[0]= 0;
 
-  if (UdmCmdLineOptionsGet(argc, argv, udm_search_cgi_options,
-                           UdmCmdLineHandleOption, &noptions))
-    return 0;
-  argc-= noptions;
-  argv+= noptions;
+  if (!q.httpd)
+  {
+    /*
+      Don't parse command line options when under HTTPD,
+      to avoid opening passing an arbitrary file as a template name:
+      http://localhost/cgi-bin/search.cgi/search.htm?-d/path/to/arbitrary/file
+    */
+    size_t noptions;
+    if (UdmCmdLineOptionsGet(argc, argv, udm_search_cgi_options,
+                             UdmCmdLineHandleOption, &noptions))
+      return 0;
+    argc-= noptions;
+    argv+= noptions;
+  }
 
   UdmWSAStartup();
-  
-  /*
-    Output Content-type if under HTTPD
-    Some servers do not pass QUERY_STRING
-    if the query was empty, so check
-    REQUEST_METHOD too to be safe
-  */
-  
   
   UdmInit();
   Env=UdmEnvInit(NULL);
@@ -580,7 +517,7 @@ int main(int argc, char ** argv)
   UdmVarListAddEnviron(&Env->Vars,"ENV");
   UdmVarListReplaceStr(&Env->Vars, "version", VERSION);
   
-  if (httpd & UDM_HTTPD_DAEMON)
+  if (q.httpd & UDM_HTTPD_DAEMON)
     UdmDetectSelfTemplateQueryDaemon(Env, &q, stdin);
   else
     UdmDetectSelfTemplateQueryCGI(Env, &q, argc, argv);
@@ -611,9 +548,10 @@ int main(int argc, char ** argv)
   }
 #endif
   
+  UdmEnvSetDirs(Env);
   if((res=UdmTemplateLoad(Agent, q.template_name, &tmpl)))
   {
-    UdmHTTPHeadersSend(httpd, "text/plain", NULL);
+    UdmHTTPHeadersSend(&q, "text/plain", NULL);
     printf("%s\n",Env->errstr);
     UdmVarListFree(&tmpl);
     UdmVarListFree(&query_vars);
@@ -627,12 +565,12 @@ int main(int argc, char ** argv)
   UdmVarListReplaceStr(&Env->Vars, "tmplt", q.template_name);
   UdmVarListAddStr(&Env->Vars,"QUERY_STRING", q.query_string);
   UdmVarListAddStr(&Env->Vars,"self", q.self);
-  
+
   UdmTemplatePrint(Agent, NULL, NULL, 0, &Env->Vars, &tmpl, "variables");
 
 
 #ifdef HAVE_LOCALE_H
-  if ((env= UdmVarListFindStr(&Env->Vars, "Locale", NULL)))
+  if ((env= UdmVarListFindSafeStr(&Env->Vars, "Locale", NULL)))
     setlocale(LC_ALL, env);
 #endif
 
@@ -644,26 +582,26 @@ int main(int argc, char ** argv)
       reasonably big value, search.cgi will send whole output
       at once in the end, rather than gradually.
     */
-    size_t bsz= (size_t) UdmVarListFindInt(&Env->Vars, "StdoutBufferSize", 0);
+    size_t bsz= (size_t) UdmVarListFindSafeInt(&Env->Vars, "StdoutBufferSize", 0);
     if (bsz > 0)
       setvbuf(stdout, NULL, _IOFBF, bsz);
   }
 #endif
 
-  UdmSetLogLevel(NULL, UdmVarListFindInt(&Env->Vars, "LogLevel", 0));
-  UdmOpenLog("search.cgi", Env, !strcasecmp(UdmVarListFindStr(&Env->Vars, "Log2stderr", (!httpd) ? "yes" : "no"), "yes"));
+  UdmSetLogLevel(NULL, UdmVarListFindSafeInt(&Env->Vars, "LogLevel", 0));
+  UdmOpenLog("search.cgi", Env, !strcasecmp(UdmVarListFindSafeStr(&Env->Vars, "Log2stderr", (!q.httpd) ? "yes" : "no"), "yes"));
   UdmLog(Agent,UDM_LOG_ERROR, "search.cgi started with '%s'", q.template_name);
   
   
-  bcharset= UdmVarListFindStr(&Env->Vars,"BrowserCharset","iso-8859-1");
+  bcharset= UdmVarListFindSafeStr(&Env->Vars,"BrowserCharset","iso-8859-1");
   Env->bcs= UdmGetCharSet(bcharset);
-  lcharset= UdmVarListFindStr(&Env->Vars,"LocalCharset","iso-8859-1");
+  lcharset= UdmVarListFindSafeStr(&Env->Vars,"LocalCharset","iso-8859-1");
   Env->lcs= UdmGetCharSet(lcharset);
-  ppp= UdmVarListFindInt(&Env->Vars,"PagesPerScreen",10);
+  ppp= UdmVarListFindSafeInt(&Env->Vars,"PagesPerScreen",10);
   
   if (! Env->bcs)
   {
-    UdmHTTPHeadersSend(httpd, "text/plain", NULL);
+    UdmHTTPHeadersSend(&q, "text/plain", NULL);
     printf("Unknown BrowserCharset '%s' in template '%s'\n",
            bcharset, q.template_name);
     exit(0);
@@ -671,7 +609,7 @@ int main(int argc, char ** argv)
   
   if(! Env->lcs)
   {
-    UdmHTTPHeadersSend(httpd, "text/plain", NULL);
+    UdmHTTPHeadersSend(&q, "text/plain", NULL);
     printf("Unknown LocalCharset '%s' in template '%s'\n",
            lcharset, q.template_name);
     exit(0);
@@ -680,11 +618,11 @@ int main(int argc, char ** argv)
   if (UdmVarListFindInt(&Env->Vars, "cc", 0))
   {
     UdmVarListFree(&query_vars);
-    return StoreDocCGI(Agent, Env, &tmpl, httpd);
+    return StoreDocCGI(Agent, &tmpl, &q);
   }
   
-  UdmHTTPHeadersSend(httpd,
-                     UdmVarListFindStr(&Env->Vars, "ResultContentType", "text/html"),
+  UdmHTTPHeadersSend(&q,
+                     UdmVarListFindSafeStr(&Env->Vars, "ResultContentType", "text/html"),
                      bcharset);
   
   /* These parameters taken from "variable section of template"*/
@@ -834,7 +772,7 @@ end:
   UdmAgentFree(Agent);
   UDM_FREE(url);
   UDM_FREE(nav);
-  if (httpd) 
+  if (q.httpd) 
     fflush(NULL); 
   else
     fclose(stdout);

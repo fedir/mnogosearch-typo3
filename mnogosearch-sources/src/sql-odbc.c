@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ typedef struct udm_odbc_field_st
   SQLCHAR     Name[32];
   SQLSMALLINT NameLen;
   SQLSMALLINT Type;
-  SQLUINTEGER Size;
+  SQLULEN     Size;
   SQLSMALLINT Scale;
   SQLSMALLINT Nullable;
 } UDM_ODBC_FIELD;
@@ -107,8 +107,11 @@ typedef struct udm_odbc_field_st
 
 typedef struct udm_odbc_bind_st
 {
-  SQLINTEGER size;
+  SQLLEN size;
   void *data;
+#if defined(__x86_64__)
+  udm_uint8 int8buf;
+#endif
 } UDM_ODBC_BINDBUF;
 
 
@@ -165,7 +168,7 @@ execDB(UDM_DB*db,UDM_SQLRES *result, const char *sqlstr)
 {
   RETCODE rc;
   SWORD iResColumns;
-  SDWORD iRowCount;
+  SQLLEN iRowCount;
   static char  bindbuf[(int)(64L * 1024L - 16L)];
   UDM_ODBC_CONN *sdb= (UDM_ODBC_CONN*) db->specific;
 
@@ -189,13 +192,20 @@ execDB(UDM_DB*db,UDM_SQLRES *result, const char *sqlstr)
     return UDM_ERROR;
   }
 
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
   if (!SQL_OK(rc= SQLExecDirect(sdb->hstmt,(SQLCHAR *)sqlstr, SQL_NTS)))
   {
     if(rc==SQL_NO_DATA) goto ND;
     db->errcode= 1;
     return UDM_ERROR; 
   }
-  
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
+
   if (!SQL_OK(rc= SQLNumResultCols(sdb->hstmt, &iResColumns)))
   {
     db->errcode= 1;
@@ -261,11 +271,11 @@ execDB(UDM_DB*db,UDM_SQLRES *result, const char *sqlstr)
       for (i = 0; i < iResColumns; i++)
       {
         size_t offs=result->nRows*iResColumns+i;
-        const char *p;
+        const char *p= "";
         char *tmp= NULL;
-        SDWORD  pcbValue;
+        SQLLEN  pcbValue;
         SWORD   get_type;
-        int is_binary;
+        int is_binary= 0;
 
         if (Field[i].Type == SQL_FLOAT)
         {
@@ -321,7 +331,7 @@ execDB(UDM_DB*db,UDM_SQLRES *result, const char *sqlstr)
           if (pcbValue > sizeof(bindbuf) &&
               (tmp= UdmMalloc(pcbValue)))
           {
-            SDWORD tmp_pcbValue;
+            SQLLEN tmp_pcbValue;
             memcpy(tmp, bindbuf, sizeof(bindbuf));
             rc= SQLGetData(sdb->hstmt,i+1,get_type,tmp+sizeof(bindbuf),pcbValue - sizeof(bindbuf),&tmp_pcbValue);
             p= tmp;
@@ -460,11 +470,21 @@ UdmODBCConnect(UDM_DB *db)
 #else
   strncpy(DSN, db->DBName?db->DBName:"", sizeof(DSN)-1);
 #endif
-  
+
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"  
+#endif
   if (SQL_SUCCESS != (db->errcode= SQLAllocEnv(&sdb->hEnv)) ||
       SQL_SUCCESS != (db->errcode= SQLAllocConnect(sdb->hEnv, &sdb->hDbc)) ||
       SQL_SUCCESS != (db->errcode= SQLSetConnectOption(sdb->hDbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)) ||
-      !SQL_OK(db->errcode = SQLConnect(sdb->hDbc, (SQLCHAR *)DSN, SQL_NTS, (SQLCHAR*) DBUser, SQL_NTS, (SQLCHAR*) DBPass, SQL_NTS)))
+      !SQL_OK(db->errcode = SQLConnect(sdb->hDbc,
+                                       (SQLCHAR *) DSN, SQL_NTS,
+                                       (SQLCHAR *) DBUser, SQL_NTS,
+                                       (SQLCHAR*) DBPass, SQL_NTS)))
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
     return UDM_ERROR;
 
   db->errcode= 0;
@@ -672,7 +692,14 @@ UdmODBCPrepare(UDM_DB *db, const char *query)
     UdmODBCDisplayError(db,"UdmODBCPrepare: ");
     return(UDM_ERROR);
   }
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"  
+#endif
   rc= SQLPrepare(sdb->hstmt, (SQLCHAR*) query, SQL_NTS);
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
   if (!SQL_OK(rc))
   {
     db->errcode = rc;
@@ -715,18 +742,40 @@ static int
 UdmODBCBind(UDM_DB *db, int position, const void *data, int size, int type)
 {
   UDM_ODBC_CONN *sdb= (UDM_ODBC_CONN*) db->specific;
-  int rc;
+  int rc, ctype= SQL_C_DEFAULT;
   BindBuf[position].size= UdmSQLParamLen2ODBC(size);
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
   BindBuf[position].data= (char*) data;
-  
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
   type= UdmSQLType2ODBCType(type);
   db->errcode = 0;
   db->errstr[0] = 0;
 
-  rc= SQLBindParameter(sdb->hstmt, position, SQL_PARAM_INPUT, SQL_C_DEFAULT,
+#if defined(__x86_64__)
+  /* Virtuoso ODBC driver wants a 64-bit number when binding SQL_INTEGER */
+  if (type == UDM_SQLTYPE_INT32 && db->DBType == UDM_DB_VIRT)
+  {
+    BindBuf[position].int8buf= *((int *) data);
+    BindBuf[position].data= data= &BindBuf[position].int8buf;
+  }
+#endif
+
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual" 
+#endif
+  rc= SQLBindParameter(sdb->hstmt, position, SQL_PARAM_INPUT, ctype,
                        type, 0 /* Column size */, 0 /* Decimal digits */,
                        /*&BindBuf[position]*/ (char*) data, size < 0 ? 0 : size,
                        &BindBuf[position].size);
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
 
 #ifdef WIN32  
 /* s_size= SQL_DATA_AT_EXEC; */

@@ -1,10 +1,10 @@
-<chapter id="htmlparser">
+<sect1 id="htmlparser">
+
   <title>
-    mnoGoSearch &html; parser
+    &mnogo; &html; parser
   </title>
   
-  
-  <sect1 id="htmlparser-tag">
+  <sect2 id="htmlparser-tag">
     <title>Tag parser
       <indexterm><primary>Tag parser</primary></indexterm>
     </title>
@@ -20,10 +20,10 @@
         <para>&lt;tagname attribute='value' ...   &gt;</para>
       </listitem>
     </itemizedlist>
-  </sect1>
+  </sect2>
   
   
-  <sect1 id="htmlparser-spec">
+  <sect2 id="htmlparser-spec">
     <title>&html; entities</title>
     <para>
       &indexer; understands the
@@ -52,10 +52,10 @@
         </para>
       </listitem>
     </itemizedlist>
-  </sect1>
+  </sect2>
   
   
-  <sect1 id="htmlparser-meta">
+  <sect2 id="htmlparser-meta">
     <title>META tags
 <indexterm><primary>MATA tags</primary></indexterm>
 </title>
@@ -99,10 +99,10 @@
         </para>
       </listitem>
     </itemizedlist>
-  </sect1>
+  </sect2>
   
   
-  <sect1 id="htmlparser-links">
+  <sect2 id="htmlparser-links">
     <title>Links</title>
     <para>
       &mnogo;
@@ -152,10 +152,10 @@
 &lt;a href="http://site/" rel="nofollow"&gt;
 </programlisting>
     </para>
-  </sect1>
+  </sect2>
 
 
-  <sect1 id="htmlparser-comments">
+  <sect2 id="htmlparser-comments">
     <title>Comments</title>
     <itemizedlist>
       <listitem>
@@ -189,5 +189,5 @@
         </para>
       </listitem>
     </itemizedlist>
-  </sect1>
-</chapter>
+  </sect2>
+</sect1>

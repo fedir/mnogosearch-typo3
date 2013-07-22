@@ -552,6 +552,60 @@ CREATE TABLE bdict (
 </sect3>
 
 
+<sect3 id="range-search">
+  <title>Range search</title>
+  <para>
+  Starting from the version <literal>3.3.12</literal>
+  <firstterm>range search</firstterm> is available.
+  When <command><xref linkend="cmdref-userangeoperators"/></command>
+  is set to <literal>yes</literal>, the operators 
+  <literal>[a TO b]</literal>, <literal>[a TO b}</literal>,
+  <literal>{a TO b]</literal> and <literal>{a TO b}</literal>
+  are interpreted as <firstterm>range operators</firstterm>.
+  The keyword <literal>TO</literal> must be in upper case.
+  </para>
+  <para>
+  Square brackets denote inclusive range search, while curly brackets
+  denote exclusive range search. For example,
+  <programlisting>[apple TO peach}</programlisting>
+  will find documents having words that are lexicographically
+  between <literal>apple</literal> and <literal>peach</literal>,
+  including <literal>apple</literal> but excluding <literal>peach</literal>.
+  </para>
+  <para>
+  Range search operators can be combined with other operators.
+  For example, <programlisting>title:[apple TO peach]</programlisting>
+  will find all documents having a word between <literal>apple</literal> and
+  <literal>peach</literal> in title (inclusively).
+  See <xref linkend="search-secnoref"/> for details on section references.
+  </para>
+  <para>
+  The query: <programlisting>"yellow [apple TO peach]"</programlisting>
+  will find documents having phrases where the first word is <literal>yellow</literal>,
+  and the second word is in the range between <literal>apple</literal> and
+  <literal>peach</literal>.
+  </para>
+  <para>
+  The query: <programlisting>"[green TO yellow][apple TO peach]"</programlisting>
+  will find documents having phrases where the first word is
+  in the range between <literal>green</literal> and <literal>yellow</literal>,
+  and the second word is in the range between <literal>apple</literal> and
+  <literal>peach</literal>.
+  </para>
+   <para>
+  The range query syntax can be used in combination with the 
+  <literal>decimal</literal> type sections. For example,
+  the query: <programlisting>title:t-shirt price:[10.1 TO 200]</programlisting>
+  will find documents that have <literal>t-shirt</literal> in title and
+  have price in the range from <literal>10.1</literal> to
+  <literal>200</literal>, providing that the section <literal>price</literal>
+  is marked as <literal>decimal</literal> in both &indexer.conf; and 
+  &search.htm;:
+  <programlisting>Section price 5 256 decimal</programlisting>  
+  </para> 
+
+</sect3>
+
 </sect2>
 
 </sect1>

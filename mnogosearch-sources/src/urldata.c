@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -252,6 +252,33 @@ UdmURLDataListClearParams(UDM_URLDATALIST *DataList, size_t num_best_rows)
     D->section= NULL;
   }
   return UDM_OK;
+}
+
+
+/*
+  Free items in the given range
+*/
+void
+UdmURLDataListFreeItems(UDM_URLDATALIST *DataList, size_t first, size_t last)
+{
+  size_t i;
+  for (i= first; i < last; i++)
+  {
+    UDM_URLDATA *D= &DataList->Item[i];
+    UDM_FREE(D->url);
+    UDM_FREE(D->section);
+  }
+}
+
+
+void
+UdmURLDataListFree(UDM_URLDATALIST *DataList)
+{
+  if (DataList->Item)
+  {
+    UdmURLDataListFreeItems(DataList, 0, DataList->nitems);
+    UdmFree(DataList->Item);
+  }
 }
 
 

@@ -1,5 +1,5 @@
-# $Source: /home/bar/cvsroot/mnogosearch33/php/Makefile.in,v $
-# $Id: Makefile.in,v 1.1 2006/10/04 13:15:45 bar Exp $
+# $Source$
+# $Id$
 
 LTLIBRARY_NAME    = libmnogosearch.la
 LTLIBRARY_SOURCES = php_mnogo.c

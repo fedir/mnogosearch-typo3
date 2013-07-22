@@ -1,0 +1,65 @@
+Received: from mx01.tr155m.lavtech.ru ([195.239.38.20])
+	by myoffice.izhnet.ru (8.14.3/8.14.3) with ESMTP id q98F70Tj040843
+	for <bar-msearch@myoffice.izhnet.ru>; Mon, 8 Oct 2012 19:07:00 +0400 (MSD)
+	(envelope-from ab@hoist.com)
+Received: (qmail 9359 invoked by alias); 8 Oct 2012 15:04:11 -0000
+Delivered-To: alias-mnogosearch-bar@mnogosearch.org
+Received: (qmail 9352 invoked by uid 89); 8 Oct 2012 15:04:11 -0000
+DomainKey-Status: no signature
+Received: by simscan 1.3.1 ppid: 9348, pid: 9349, t: 0.1253s
+         scanners: attach: 1.3.1
+Received: from unknown (HELO mail.mnogo.ru) (5.9.5.147)
+  by mx01.inferno.lavtech.ru with SMTP; 8 Oct 2012 15:04:11 -0000
+Received-SPF: softfail (mx01.inferno.lavtech.ru: transitioning SPF record at _spf-ssg-c.microsoft.com does not designate 5.9.5.147 as permitted sender)
+Received: from db3outboundpool.messaging.microsoft.com (db3ehsobe002.messaging.microsoft.com [213.199.154.140])
+	by mail.mnogo.ru (Postfix) with ESMTP id BE84740181
+	for <bar@mnogosearch.org>; Mon,  8 Oct 2012 19:04:31 +0400 (MSK)
+Received: from mail6-db3-R.bigcat.com (11.3.81.225) by
+ DB3EHSOBE009.bigcat.com (11.3.84.29) with Microsoft SMTP Server id
+ 14.1.225.23; Mon, 8 Oct 2012 15:04:33 +0000
+Received: from mail6-db3 (localhost [127.0.0.1])	by mail6-db3-R.bigcat.com
+ (Postfix) with ESMTP id C90CB48008E	for <bar@mnogosearch.org>; Mon,  8 Oct
+ 2012 15:04:32 +0000 (UTC)
+X-Forefront-Antispam-Report: CIP:157.56.234.117;KIP:(null);UIP:(null);IPV:NLI;H:SN2PRD0510HT004.namprd05.prod.outlook.com;RD:none;EFVD:NLI
+X-SpamScore: -7
+X-BigFish: PS-7(zz9371Id6eah148cI542Mzz1202h1d1ah1d2ahzz8275bh8275dhz2fh2a8h668h839h944hd25hf0ah107ah1220h1288h12a5h12a9h12bdh137ah13b6h1441h1155h)
+Received-SPF: pass (mail6-db3: domain of hoist.com designates 157.56.234.117 as permitted sender) client-ip=157.56.234.117; envelope-from=arnoldb@hoist.com; helo=SN2PRD0510HT004.namprd05.prod.outlook.com ;.outlook.com ;
+Received: from mail6-db3 (localhost.localdomain [127.0.0.1]) by mail6-db3
+ (MessageSwitch) id 1349708670199367_12786; Mon,  8 Oct 2012 15:04:30 +0000
+ (UTC)
+Received: from DB3EHSMHS004.bigcat.com (unknown [11.3.81.253])	by
+ mail6-db3.bigcat.com (Postfix) with ESMTP id 2A6272E0052	for
+ <bar@mnogosearch.org>; Mon,  8 Oct 2012 15:04:30 +0000 (UTC)
+Received: from SN2PRD0510HT004.namprd05.prod.outlook.com (157.56.234.117) by
+ DB3EHSMHS004.bigcat.com (11.3.87.104) with Microsoft SMTP Server (TLS) id
+ 14.1.225.23; Mon, 8 Oct 2012 15:04:29 +0000
+Received: from SN2PRD0510MB371.namprd05.prod.outlook.com ([169.254.12.219]) by
+ SN2PRD0510HT004.namprd05.prod.outlook.com ([11.255.116.39]) with mapi id
+ 14.16.0207.009; Mon, 8 Oct 2012 15:04:28 +0000
+From: "Alex, Brandon" <ab@hoist.com>
+To: Alexander Barkov <bar@mnogosearch.org>
+Subject: mnoGoSearch Primary monthly e-mail support,
+ Brandon Alex
+Thread-Topic: "mnoGoSearch Primary monthly e-mail
+ support", Brandon Alex [ORD]
+Thread-Index: AQHNpWXpS/9muvdAH0eiqAm5DFn/R5evgXtA
+Date: Mon, 8 Oct 2012 15:04:28 +0000
+Message-ID: <18FF8172A020DE40BE6F00B63443A608128771AA@SN2PRD0510MB371.namprd05.prod.outlook.com>
+References: <201210081631010780095273@backoffice.element5.de>
+ <5072EABE.2030306@mnogosearch.org>
+In-Reply-To: <5072EABE.2030306@mnogosearch.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-originating-ip: [199.227.108.74]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version:1.0
+X-OriginatorOrg:hoist.com
+
+This message has headers with empty values:
+'X-MS-Has-Attach:' and 'X-MS-TNEF-Correlator:'
+
+and headers names immediately followed by values with no space character in between:
+'MIME-Version:1.0' and 'X-OriginatorOrg:hoist.com'

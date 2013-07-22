@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,10 +22,20 @@
 #define UDM_DEFAULT_USER_WORD_WEIGHT 256
 
 
+typedef struct
+{
+  UDM_CONV src_uni;
+  UDM_CONV uni_dst;
+  UDM_CONV uni_wcs;
+} UDM_HIGHLIGHT_CONV;
+
+
 /* Functions form urldata.c */
 extern void UdmURLDataSortBySite(UDM_URLDATALIST *L);
 extern void UdmURLDataSortByPattern(UDM_URLDATALIST *D, const char *pattern);
 extern int UdmURLDataListSearch(UDM_URLDATALIST *List, urlid_t id);
+extern void UdmURLDataListFreeItems(UDM_URLDATALIST *List, size_t first, size_t last);
+extern void UdmURLDataListFree(UDM_URLDATALIST *List);
 extern int UdmURLDataListClearParams(UDM_URLDATALIST *List, size_t num_best_rows);
 extern size_t UdmURLDataCompact(UDM_URLDATA *dst, UDM_URLDATA *src, size_t n);
 
@@ -102,11 +112,15 @@ extern size_t UdmHlConvertExt(UDM_AGENT *A, char *dst, size_t dstlen,
                               const char * src, size_t length,
                               UDM_CHARSET * lcs, UDM_CHARSET * bcs,
                               int hilight_stopwords, int segmenter);
+extern void UdmExcerptConvInit(UDM_HIGHLIGHT_CONV *cnv,
+                               UDM_CHARSET *wcs,
+                               UDM_CHARSET *src,
+                               UDM_CHARSET *dst);
 extern size_t
 UdmHlConvertExtWithConv(UDM_AGENT *A, char *dst, size_t dstmaxlen,
                         UDM_WIDEWORDLIST *List,
                         const char *src, size_t srclen,
-                        UDM_CONV *uni_wcs, UDM_CONV *lc_uni, UDM_CONV *uni_bc,
+                        UDM_HIGHLIGHT_CONV *ec,
                         int hilight_stopwords, int segmenter);
                                                                                                
 extern int  UdmConvert(UDM_ENV *Conf, UDM_RESULT *Res,UDM_CHARSET *lcs,UDM_CHARSET *bcs);

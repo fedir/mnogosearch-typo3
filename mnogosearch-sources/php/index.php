@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*   mnoGoSearch-php-lite v.3.3.5
  *   for mnoGoSearch - free web search engine
@@ -561,75 +561,75 @@ function make_nav($query_orig){
 
 <HTML>
 <HEAD>
- <TITLE>mnoGoSearch: <? echo HtmlSpecialChars(StripSlashes($query_orig)); ?></TITLE>
+ <TITLE>mnoGoSearch: <?php echo HtmlSpecialChars(StripSlashes($query_orig)); ?></TITLE>
 </HEAD>
 
 <body BGCOLOR="#FFFFFF" LINK="#0050A0" VLINK="#0050A0" ALINK="#0050A0">
 <center>
 
-<FORM METHOD=GET ACTION="<? echo $self; ?>">
+<FORM METHOD=GET ACTION="<?php echo $self; ?>">
 <table bgcolor=#eeeee0 border=0 width=100%>
 <tr><td>
 <BR>
 <INPUT TYPE="hidden" NAME="ps" VALUE="10">
-Search for: <INPUT TYPE="text" NAME="q" SIZE=50 VALUE="<? echo HtmlSpecialChars(StripSlashes($query_orig)); ?>">
+Search for: <INPUT TYPE="text" NAME="q" SIZE=50 VALUE="<?php echo HtmlSpecialChars(StripSlashes($query_orig)); ?>">
 <INPUT TYPE="submit" VALUE="Search!"><BR>
 
 Results per page:
 <SELECT NAME="ps">
-<OPTION VALUE="10" <? if ($ps==10) echo 'SELECTED';?>>10
-<OPTION VALUE="20" <? if ($ps==20) echo 'SELECTED';?>>20
-<OPTION VALUE="50" <? if ($ps==50) echo 'SELECTED';?>>50
+<OPTION VALUE="10" <?php if ($ps==10) echo 'SELECTED';?>>10
+<OPTION VALUE="20" <?php if ($ps==20) echo 'SELECTED';?>>20
+<OPTION VALUE="50" <?php if ($ps==50) echo 'SELECTED';?>>50
 </SELECT>
 
 Match:
 <SELECT NAME="m">
-<OPTION VALUE="all" <? if ($m=='all') echo 'SELECTED';?>>All
-<OPTION VALUE="any" <? if ($m=='any') echo 'SELECTED';?>>Any
-<OPTION VALUE="bool" <? if ($m=='bool') echo 'SELECTED';?>>Boolean
+<OPTION VALUE="all" <?php if ($m=='all') echo 'SELECTED';?>>All
+<OPTION VALUE="any" <?php if ($m=='any') echo 'SELECTED';?>>Any
+<OPTION VALUE="bool" <?php if ($m=='bool') echo 'SELECTED';?>>Boolean
 </SELECT>
 
 
 Search for:
 <SELECT NAME="wm">
-<OPTION VALUE="wrd" <? if ($wm=='wrd') echo 'SELECTED';?>>Whole word
-<OPTION VALUE="beg" <? if ($wm=='beg') echo 'SELECTED';?>>Beginning
-<OPTION VALUE="end" <? if ($wm=='end') echo 'SELECTED';?>>Ending
-<OPTION VALUE="sub" <? if ($wm=='sub') echo 'SELECTED';?>>Substring
+<OPTION VALUE="wrd" <?php if ($wm=='wrd') echo 'SELECTED';?>>Whole word
+<OPTION VALUE="beg" <?php if ($wm=='beg') echo 'SELECTED';?>>Beginning
+<OPTION VALUE="end" <?php if ($wm=='end') echo 'SELECTED';?>>Ending
+<OPTION VALUE="sub" <?php if ($wm=='sub') echo 'SELECTED';?>>Substring
 </SELECT>
 
 <br>
 
 Search through:
 <SELECT NAME="ul">
-<OPTION VALUE="" <? if ($ul=='') echo 'SELECTED';?>>Entire site
-<OPTION VALUE="/docs/" <? if ($ul=='/docs/') echo 'SELECTED';?>>Docs
-<OPTION VALUE="/files/" <? if ($ul=='/files') echo 'SELECTED';?>>Files
-<OPTION VALUE="/servers/" <? if ($ul=='/servers/') echo 'SELECTED';?>>Servers
+<OPTION VALUE="" <?php if ($ul=='') echo 'SELECTED';?>>Entire site
+<OPTION VALUE="/docs/" <?php if ($ul=='/docs/') echo 'SELECTED';?>>Docs
+<OPTION VALUE="/files/" <?php if ($ul=='/files') echo 'SELECTED';?>>Files
+<OPTION VALUE="/servers/" <?php if ($ul=='/servers/') echo 'SELECTED';?>>Servers
 </SELECT>
 
 in:
 <SELECT NAME="wf">
-<OPTION VALUE="222211" <? if ($wf=='222211') echo 'SELECTED';?>>all sections
-<OPTION VALUE="220000" <? if ($wf=='220000') echo 'SELECTED';?>>Description
-<OPTION VALUE="202000" <? if ($wf=='202000') echo 'SELECTED';?>>Keywords
-<OPTION VALUE="200200" <? if ($wf=='200200') echo 'SELECTED';?>>Title
-<OPTION VALUE="200010" <? if ($wf=='200010') echo 'SELECTED';?>>Body
+<OPTION VALUE="222211" <?php if ($wf=='222211') echo 'SELECTED';?>>all sections
+<OPTION VALUE="220000" <?php if ($wf=='220000') echo 'SELECTED';?>>Description
+<OPTION VALUE="202000" <?php if ($wf=='202000') echo 'SELECTED';?>>Keywords
+<OPTION VALUE="200200" <?php if ($wf=='200200') echo 'SELECTED';?>>Title
+<OPTION VALUE="200010" <?php if ($wf=='200010') echo 'SELECTED';?>>Body
 </SELECT>
 
 Language:
 <SELECT NAME="lang">
-<OPTION VALUE="" <? if ($lang=='222211') echo 'SELECTED';?>>Any
-<OPTION VALUE="en" <? if ($lang=='en') echo 'SELECTED';?>>English
-<OPTION VALUE="ru" <? if ($lang=='ru') echo 'SELECTED';?>>Russian
+<OPTION VALUE="" <?php if ($lang=='222211') echo 'SELECTED';?>>Any
+<OPTION VALUE="en" <?php if ($lang=='en') echo 'SELECTED';?>>English
+<OPTION VALUE="ru" <?php if ($lang=='ru') echo 'SELECTED';?>>Russian
 </SELECT>
 
 Restrict search:
 <SELECT NAME="t">
-<OPTION VALUE="" <? if ($t=='') echo 'SELECTED';?>>All sites
-<OPTION VALUE="AA" <? if ($t=='AA') echo 'SELECTED';?>>Sport
-<OPTION VALUE="BB" <? if ($t=='BB') echo 'SELECTED';?>>Shopping
-<OPTION VALUE="CC" <? if ($t=='CC') echo 'SELECTED';?>>Internet
+<OPTION VALUE="" <?php if ($t=='') echo 'SELECTED';?>>All sites
+<OPTION VALUE="AA" <?php if ($t=='AA') echo 'SELECTED';?>>Sport
+<OPTION VALUE="BB" <?php if ($t=='BB') echo 'SELECTED';?>>Shopping
+<OPTION VALUE="CC" <?php if ($t=='CC') echo 'SELECTED';?>>Internet
 </SELECT>
 
 </td></tr>
@@ -642,63 +642,63 @@ Limit results to pages published within a specified period of time.<BR>
 <FONT SIZE=-1><I>(Please select only one option)</I></FONT>
 </CAPTION>
 <TR> 
-<TD VALIGN=center><INPUT TYPE=radio NAME="dt" VALUE="back" <? if ($dt=='back') echo 'checked';?>></TD>
+<TD VALIGN=center><INPUT TYPE=radio NAME="dt" VALUE="back" <?php if ($dt=='back') echo 'checked';?>></TD>
 <TD><SELECT NAME="dp">
-<OPTION VALUE="0" <? if ($dp=='0') echo 'SELECTED';?>>anytime
-<OPTION VALUE="10M" <? if ($dp=='10M') echo 'SELECTED';?>>in the last ten minutes
-<OPTION VALUE="1h" <? if ($dp=='1h') echo 'SELECTED';?>>in the last hour
-<OPTION VALUE="7d" <? if ($dp=='7d') echo 'SELECTED';?>>in the last week
-<OPTION VALUE="14d" <? if ($dp=='14d') echo 'SELECTED';?>>in the last 2 weeks
-<OPTION VALUE="1m" <? if ($dp=='1m') echo 'SELECTED';?>>in the last month
+<OPTION VALUE="0" <?php if ($dp=='0') echo 'SELECTED';?>>anytime
+<OPTION VALUE="10M" <?php if ($dp=='10M') echo 'SELECTED';?>>in the last ten minutes
+<OPTION VALUE="1h" <?php if ($dp=='1h') echo 'SELECTED';?>>in the last hour
+<OPTION VALUE="7d" <?php if ($dp=='7d') echo 'SELECTED';?>>in the last week
+<OPTION VALUE="14d" <?php if ($dp=='14d') echo 'SELECTED';?>>in the last 2 weeks
+<OPTION VALUE="1m" <?php if ($dp=='1m') echo 'SELECTED';?>>in the last month
 </SELECT>
 </TD>
 </TR>
 <TR>
-<TD VALIGN=center><INPUT type=radio NAME="dt" VALUE="er" <? if ($dt=='er') echo 'checked';?>>
+<TD VALIGN=center><INPUT type=radio NAME="dt" VALUE="er" <?php if ($dt=='er') echo 'checked';?>>
 </TD>
 <TD><SELECT NAME="dx">
-<OPTION VALUE="1" <? if ($dx=='1') echo 'SELECTED';?>>After
-<OPTION VALUE="-1" <? if ($dx=='-1') echo 'SELECTED';?>>Before
+<OPTION VALUE="1" <?php if ($dx=='1') echo 'SELECTED';?>>After
+<OPTION VALUE="-1" <?php if ($dx=='-1') echo 'SELECTED';?>>Before
 </SELECT>
 
 or on
 
 <SELECT NAME="dm">
-<OPTION VALUE="0" <? if ($dm=='0') echo 'SELECTED';?>>January
-<OPTION VALUE="1" <? if ($dm=='1') echo 'SELECTED';?>>February
-<OPTION VALUE="2" <? if ($dm=='2') echo 'SELECTED';?>>March
-<OPTION VALUE="3" <? if ($dm=='3') echo 'SELECTED';?>>April
-<OPTION VALUE="4" <? if ($dm=='4') echo 'SELECTED';?>>May
-<OPTION VALUE="5" <? if ($dm=='5') echo 'SELECTED';?>>June
-<OPTION VALUE="6" <? if ($dm=='6') echo 'SELECTED';?>>July
-<OPTION VALUE="7" <? if ($dm=='7') echo 'SELECTED';?>>August
-<OPTION VALUE="8" <? if ($dm=='8') echo 'SELECTED';?>>September
-<OPTION VALUE="9" <? if ($dm=='9') echo 'SELECTED';?>>October
-<OPTION VALUE="10" <? if ($dm=='10') echo 'SELECTED';?>>November
-<OPTION VALUE="11" <? if ($dm=='11') echo 'SELECTED';?>>December
+<OPTION VALUE="0" <?php if ($dm=='0') echo 'SELECTED';?>>January
+<OPTION VALUE="1" <?php if ($dm=='1') echo 'SELECTED';?>>February
+<OPTION VALUE="2" <?php if ($dm=='2') echo 'SELECTED';?>>March
+<OPTION VALUE="3" <?php if ($dm=='3') echo 'SELECTED';?>>April
+<OPTION VALUE="4" <?php if ($dm=='4') echo 'SELECTED';?>>May
+<OPTION VALUE="5" <?php if ($dm=='5') echo 'SELECTED';?>>June
+<OPTION VALUE="6" <?php if ($dm=='6') echo 'SELECTED';?>>July
+<OPTION VALUE="7" <?php if ($dm=='7') echo 'SELECTED';?>>August
+<OPTION VALUE="8" <?php if ($dm=='8') echo 'SELECTED';?>>September
+<OPTION VALUE="9" <?php if ($dm=='9') echo 'SELECTED';?>>October
+<OPTION VALUE="10" <?php if ($dm=='10') echo 'SELECTED';?>>November
+<OPTION VALUE="11" <?php if ($dm=='11') echo 'SELECTED';?>>December
 </SELECT>
-<INPUT TYPE=text NAME="dd" VALUE="<? echo $dd; ?>" SIZE=2 maxlength=2>
+<INPUT TYPE=text NAME="dd" VALUE="<?php echo $dd; ?>" SIZE=2 maxlength=2>
 ,
 <SELECT NAME="dy" >
-<OPTION VALUE="2000" <? if ($dy=='2000') echo 'SELECTED';?>>2000
-<OPTION VALUE="2001" <? if ($dy=='2001') echo 'SELECTED';?>>2001
-<OPTION VALUE="2002" <? if ($dy=='2002') echo 'SELECTED';?>>2002
-<OPTION VALUE="2003" <? if ($dy=='2003') echo 'SELECTED';?>>2003
-<OPTION VALUE="2004" <? if ($dy=='2004') echo 'SELECTED';?>>2004
-<OPTION VALUE="2005" <? if ($dy=='2005') echo 'SELECTED';?>>2005
-<OPTION VALUE="2006" <? if ($dy=='2006') echo 'SELECTED';?>>2006
-<OPTION VALUE="2007" <? if ($dy=='2007') echo 'SELECTED';?>>2007
+<OPTION VALUE="2000" <?php if ($dy=='2000') echo 'SELECTED';?>>2000
+<OPTION VALUE="2001" <?php if ($dy=='2001') echo 'SELECTED';?>>2001
+<OPTION VALUE="2002" <?php if ($dy=='2002') echo 'SELECTED';?>>2002
+<OPTION VALUE="2003" <?php if ($dy=='2003') echo 'SELECTED';?>>2003
+<OPTION VALUE="2004" <?php if ($dy=='2004') echo 'SELECTED';?>>2004
+<OPTION VALUE="2005" <?php if ($dy=='2005') echo 'SELECTED';?>>2005
+<OPTION VALUE="2006" <?php if ($dy=='2006') echo 'SELECTED';?>>2006
+<OPTION VALUE="2007" <?php if ($dy=='2007') echo 'SELECTED';?>>2007
 </SELECT>
 </TD>
 </TR>
 <TR>
-<TD VALIGN=center><INPUT TYPE=radio NAME="dt" VALUE="range" <? if ($dt=='range') echo 'checked';?>>
+<TD VALIGN=center><INPUT TYPE=radio NAME="dt" VALUE="range" <?php if ($dt=='range') echo 'checked';?>>
 </TD>
 <TD>
 Between
-<INPUT TYPE=text NAME="db" VALUE="<? echo $db; ?>" SIZE=11 MAXLENGTH=11>
+<INPUT TYPE=text NAME="db" VALUE="<?php echo $db; ?>" SIZE=11 MAXLENGTH=11>
 and
-<INPUT TYPE=text NAME="de" VALUE="<? echo $de; ?>" SIZE=11 MAXLENGTH=11>
+<INPUT TYPE=text NAME="de" VALUE="<?php echo $de; ?>" SIZE=11 MAXLENGTH=11>
 </TD>
 </TR>
 </TABLE>
@@ -707,9 +707,9 @@ and
 <!-- end of stl options -->
 
 <!-- categories stuff -->
-<tr><td><? echo $t_CP; ?></td></tr>
-<tr><td><? echo $t_CS; ?></td></tr>
-<input type=hidden name=cat value="<? echo $cat; ?>">
+<tr><td><?php echo $t_CP; ?></td></tr>
+<tr><td><?php echo $t_CS; ?></td></tr>
+<input type=hidden name=cat value="<?php echo $cat; ?>">
 <!-- categories stuff end -->
 
 </table>
@@ -717,7 +717,7 @@ and
 </center>
 
 
-<?
+<?php
     reset($affix_file);
     while (list($t_lang,$file)=each($affix_file))
     {

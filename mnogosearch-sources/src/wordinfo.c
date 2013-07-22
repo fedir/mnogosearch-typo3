@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -54,8 +54,9 @@ UdmWWListWordInfo(UDM_VARLIST *Vars, UDM_WIDEWORDLIST *WWList)
     {
       if(wordinfo[0])
         strcat(wordinfo,", ");
-      sprintf(UDM_STREND(wordinfo)," %s : %d", WWList->Word[i].word, WWList->Word[i].count);
-      sprintf(count, "%d", WWList->Word[i].count);
+      sprintf(UDM_STREND(wordinfo)," %s : %d",
+              WWList->Word[i].word, (int) WWList->Word[i].count);
+      sprintf(count, "%d", (int) WWList->Word[i].count);
     }
     else if (WWList->Word[i].origin == UDM_WORD_ORIGIN_STOP)
     {
@@ -64,17 +65,17 @@ UdmWWListWordInfo(UDM_VARLIST *Vars, UDM_WIDEWORDLIST *WWList)
       sprintf(UDM_STREND(wordinfo)," %s : stopword", WWList->Word[i].word);
       strcpy(count, "stopword");
     }
-    sprintf(name, "word%d.word", i);
+    sprintf(name, "word%d.word", (int) i);
     UdmVarListAddStr(Vars, name, WWList->Word[i].word);
-    sprintf(name, "word%d.count", i);
+    sprintf(name, "word%d.count", (int) i);
     UdmVarListAddStr(Vars, name, count);
-    sprintf(name, "word%d.doccount", i);
+    sprintf(name, "word%d.doccount", (int) i);
     UdmVarListAddInt(Vars, name, WWList->Word[i].doccount);
-    sprintf(name, "word%d.order", i);
+    sprintf(name, "word%d.order", (int) i);
     UdmVarListAddInt(Vars, name, WWList->Word[i].order);
-    sprintf(name, "word%d.origin", i);
+    sprintf(name, "word%d.origin", (int) i);
     UdmVarListAddInt(Vars, name, WWList->Word[i].origin);
-    sprintf(name, "word%d.weight", i);
+    sprintf(name, "word%d.weight", (int) i);
     UdmVarListAddInt(Vars, name, WWList->Word[i].weight);
   }
   
@@ -95,7 +96,9 @@ UdmWWListWordInfo(UDM_VARLIST *Vars, UDM_WIDEWORDLIST *WWList)
     else if (WWList->Word[i].origin == UDM_WORD_ORIGIN_QUERY)
     {
       sprintf(UDM_STREND(wordinfo),"%s%s : %d / %d", 
-        (*wordinfo) ? ", " : "", WWList->Word[i].word, WWList->Word[i].count, ccount);
+              (*wordinfo) ? ", " : "",
+              WWList->Word[i].word,
+              (int) WWList->Word[i].count, (int) ccount);
     }
   }
   UdmVarListReplaceStr(Vars, "W", wordinfo);

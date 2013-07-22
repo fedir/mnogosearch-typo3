@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -177,7 +177,8 @@ static int UdmXMLValue (UDM_XML_PARSER *st, const char *str, size_t len)
 #ifdef DEBUG_XML
   fprintf(stderr, "UdmXMLValue: %.*s\n", len, str);
 #endif
-  return((st->value) ? (st->value)(st, str, len) : UDM_XML_OK);
+  return st->handler.value_action ?
+         (st->handler.value_action)(st, str, len) : UDM_XML_OK;
 }
 
 static int UdmXMLEnter(UDM_XML_PARSER *st, const char *str, size_t len)
@@ -198,7 +199,9 @@ static int UdmXMLEnter(UDM_XML_PARSER *st, const char *str, size_t len)
   memcpy(st->attrend, str, len);
   st->attrend += len;
   st->attrend[0]= '\0';
-  return(st->enter ? st->enter(st, st->attr, st->attrend - st->attr) : UDM_XML_OK);
+  return st->handler.enter_action ?
+         (st->handler.enter_action)(st, st->attr, st->attrend - st->attr) :
+         UDM_XML_OK;
 }
 
 static void mstr (char *s, const char *src, size_t l1, size_t l2)
@@ -231,7 +234,8 @@ static int UdmXMLLeave(UDM_XML_PARSER *p, const char *str, size_t slen)
     return(UDM_XML_ERROR);
   }
 
-  rc= p->leave_xml ? p->leave_xml(p, p->attr, p->attrend - p->attr) : UDM_XML_OK;
+  rc= p->handler.leave_action ?
+      (p->handler.leave_action)(p, p->attr, p->attrend - p->attr) : UDM_XML_OK;
 
   *e= '\0';
   p->attrend= e;
@@ -423,19 +427,25 @@ void UdmXMLParserFree (UDM_XML_PARSER *p)
 
 void UdmXMLSetValueHandler (UDM_XML_PARSER *p, int (*action)(UDM_XML_PARSER *p, const char *s, size_t l))
 {
-  p->value= action;
+  p->handler.value_action= action;
 }
 
 
 void UdmXMLSetEnterHandler (UDM_XML_PARSER *p, int (*action)(UDM_XML_PARSER *p, const char *s, size_t l))
 {
-  p->enter= action;
+  p->handler.enter_action= action;
 }
 
 
 void UdmXMLSetLeaveHandler (UDM_XML_PARSER *p, int (*action)(UDM_XML_PARSER *p, const char *s, size_t l))
 {
-  p->leave_xml= action;
+  p->handler.leave_action= action;
+}
+
+
+void UdmXMLSetHandler(UDM_XML_PARSER *p, const UDM_XML_HANDLER *handler)
+{
+  p->handler= *handler;
 }
 
 
@@ -693,8 +703,8 @@ int UdmXMLParse(UDM_AGENT *Indexer, UDM_DOCUMENT *Doc)
     udm_snprintf(err, sizeof(err), 
                  "XML parsing error: %s at line %d pos %d\n",
                   UdmXMLErrorString(&parser),
-                  UdmXMLErrorLineno(&parser),
-                  UdmXMLErrorPos(&parser));
+                  (int) UdmXMLErrorLineno(&parser),
+                  (int) UdmXMLErrorPos(&parser));
     UdmVarListReplaceStr(&Doc->Sections, "X-Reason", err);
     res= UDM_ERROR;
   }

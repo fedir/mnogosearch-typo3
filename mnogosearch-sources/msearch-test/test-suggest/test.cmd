@@ -8,7 +8,8 @@ fail !0 exec $(INDEXER) -v6 -Ecrawl  $(UDM_TEST_DIR)/indexer.conf 1>&2
 fail !0 exec $(INDEXER) -Eblob   $(UDM_TEST_DIR)/indexer.conf 1>&2
 fail !0 exec $(INDEXER) -Ewordstat $(UDM_TEST_DIR)/indexer.conf 1>&2
 
-fail !0 exec $(SEARCH) "interesting"  > $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(INDEXER) -Esqlmon -d $(UDM_TEST_DIR)/indexer.conf < $(UDM_TEST_DIR)/test.sql > $(UDM_TEST_DIR)/search.rej
+fail !0 exec $(SEARCH) "interesting"  >> $(UDM_TEST_DIR)/search.rej
 fail !0 exec $(SEARCH) "intresting"   >> $(UDM_TEST_DIR)/search.rej
 fail !0 exec $(SEARCH) "rupert"       >> $(UDM_TEST_DIR)/search.rej
 

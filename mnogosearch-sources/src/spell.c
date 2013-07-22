@@ -170,7 +170,7 @@ UdmSpellListLoad(UDM_SPELLLIST *L, char *err, size_t errlen)
   for (tok= L->fbody; *tok; )
   {
     UDM_SPELL *S;
-    size_t wordlen;
+    /*size_t wordlen;*/
     
     if (L->mitems <= L->nitems)
     {
@@ -191,7 +191,7 @@ UdmSpellListLoad(UDM_SPELLLIST *L, char *err, size_t errlen)
       *tok= tolowermap[(unsigned char) *tok];
       if (*tok == '/')
       {
-        wordlen= tok - S->word;
+        /*wordlen= tok - S->word;*/
         *tok++= '\0';
         S->flags= tok;
         for ( ; *tok && *tok != '\r' && *tok != '\n' ; tok++);
@@ -199,7 +199,7 @@ UdmSpellListLoad(UDM_SPELLLIST *L, char *err, size_t errlen)
       }
       else if (*tok == '\r' || *tok == '\n')
       {
-        wordlen= tok - S->word;
+        /*wordlen= tok - S->word;*/
         break;
       }  
     }
@@ -246,7 +246,7 @@ UdmSpellListWriteFixed(UDM_SPELLLIST *L, char *err, size_t errlen)
 {
   int rc= UDM_OK, f;
   size_t i, len, nbytes, wbytes;
-  char *buf, fname[UDM_SPELL_FILELEN];
+  char *buf= NULL, fname[UDM_SPELL_FILELEN];
   
   if (!L->nitems)
   {
@@ -271,7 +271,7 @@ UdmSpellListWriteFixed(UDM_SPELLLIST *L, char *err, size_t errlen)
   nbytes= len * L->nitems;
   if (!(buf= UdmMalloc(nbytes)))
   {
-    udm_snprintf(err, errlen, "Failed to alloc %d bytes", nbytes);
+    udm_snprintf(err, errlen, "Failed to alloc %d bytes", (int) nbytes);
     rc= UDM_ERROR;
     goto ret;
   }
@@ -302,11 +302,13 @@ UdmSpellListWriteFixed(UDM_SPELLLIST *L, char *err, size_t errlen)
   }
   if ((wbytes= write(f, buf, nbytes)) != nbytes)
   {
-    udm_snprintf(err, errlen, "Wrote only %d out of %d bytes into '%s'",  wbytes, nbytes, fname);
+    udm_snprintf(err, errlen, "Wrote only %d out of %d bytes into '%s'",
+                               (int) wbytes, (int) nbytes, fname);
     rc= UDM_ERROR;
     goto ret;
   }
 ret:
+  UDM_FREE(buf);
   return rc;
 }
 
@@ -322,7 +324,7 @@ UdmSpellListHash(UDM_SPELLLIST *dst, UDM_SPELLLIST *src, char *err, size_t errle
   nbytes= dst->nitems * sizeof(UDM_SPELL);
   if (!(dst->Item= (UDM_SPELL*) UdmMalloc(nbytes)))
   {
-    udm_snprintf(err, errlen, "Failed to alloc %d bytes", nbytes);
+    udm_snprintf(err, errlen, "Failed to alloc %d bytes", (int) nbytes);
     return UDM_ERROR;
   }
   bzero((void*) dst->Item, nbytes);

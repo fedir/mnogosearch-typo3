@@ -1,0 +1,20 @@
+From - Tue Jan 29 23:31:45 2013
+Return-Path: <bar@home>
+Received: from home (localhost [127.0.0.1])
+	by home (8.14.5/8.14.5) with ESMTP id r0TJVjSk024503
+	for <bar@home>; Tue, 29 Jan 2013 23:31:45 +0400
+Received: (from bar@localhost)
+	by home (8.14.5/8.14.5/Submit) id r0TJVjed024418
+	for bar; Tue, 29 Jan 2013 23:31:45 +0400
+From: Alexander Barkov <bar@home>
+Message-Id: <201301291931.r0TJVjed024418@home>
+Date: Tue, 29 Jan 2013 23:30:45 +0400
+To: bar@home
+Subject: test
+User-Agent: Heirloom mailx 12.5 7/5/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+test12
+

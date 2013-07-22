@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -187,7 +187,7 @@ UdmAddNodeQueryString(UDM_VARLIST *Vars)
       break;
     s= amp + 1;
   }
-  sprintf(d, "&ps=%d", (offs + ps * (np + 1)) * group_by_site_factor);
+  sprintf(d, "&ps=%d", (int) ((offs + ps * (np + 1)) * group_by_site_factor));
   UdmVarListReplaceStr(Vars, "NODE_QUERY_STRING", dst);
   UdmFree(dst);
 }
@@ -256,7 +256,8 @@ int __UDMCALL UdmFindWordsSearchd(UDM_AGENT *A,UDM_RESULT *Res, UDM_DB *db)
   UdmResultFromXML(A, Res, Inc.Buf.content, length, A->Conf->lcs);
   UdmDocFree(&Inc);
   UdmLog(A, UDM_LOG_DEBUG, "Stop parsing results: %.2f", UdmStopTimer(&ticks));
-  UdmLog(A, UDM_LOG_DEBUG, "searchd: %d rows, %d totalResults", Res->num_rows, Res->total_found);
+  UdmLog(A, UDM_LOG_DEBUG, "searchd: %d rows, %d totalResults",
+                           (int) Res->num_rows, (int) Res->total_found);
   return UDM_OK;
 }
 

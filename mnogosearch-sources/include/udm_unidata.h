@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -67,7 +67,8 @@ extern int UdmUniStrNCaseCmp(UDM_UNIDATA *,
 
 extern int UdmAutoPhraseChar(int ch);
 
-extern void UdmSoundex(UDM_CHARSET *cs, char *dst, const char *src, size_t srclen);
+extern void UdmSoundex(UDM_CHARSET *cs, char *dst, size_t dstlen,
+                                        const char *src, size_t srclen);
 
 extern UDM_UNIDATA *UdmUnidataGetByName(const char *name);
 

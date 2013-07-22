@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -141,8 +141,10 @@ UdmUniSegmentMecab(UDM_AGENT *Indexer, int *ustr)
   const char  *sjisstr_seg;
   size_t      reslen;
   size_t       dstlen = UdmUniLen(ustr);
+  const mecab_dictionary_info_t *info= mecab_dictionary_info(Indexer->Conf->mecab);
+  const char *csname= (info && info->charset) ? info->charset : "euc-jp";
 
-  sjis_cs= UdmGetCharSet("euc-jp");
+  sjis_cs= UdmGetCharSet(csname);
   if (!sjis_cs) sjis_cs = &udm_charset_sys_int;
   UdmConvInit(&uni_sjis, &udm_charset_sys_int, sjis_cs, UDM_RECODE_HTML);
   UdmConvInit(&sjis_uni, sjis_cs, &udm_charset_sys_int, UDM_RECODE_HTML);

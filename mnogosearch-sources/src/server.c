@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -102,18 +102,9 @@ __C_LINK int __UDMCALL UdmServerAdd(UDM_AGENT *A, UDM_SERVER *src, int flags)
     UdmURLInit(&from);
     
     /* Check whether valid URL is passed */
-    if((rc= UdmURLParse(&from,urlstr)))
+    if ((rc= UdmURLParse(&from, urlstr)))
     {
-      switch (rc)
-      {
-        case UDM_URL_LONG:
-          sprintf(Conf->errstr,"URL too long");
-          break;
-        case UDM_URL_BAD:
-        default:
-          sprintf(Conf->errstr,"Badly formed URL");
-          break;
-      }
+      sprintf(Conf->errstr, "%s", UdmURLErrorStr(rc));
       UDM_FREE(urlstr);
       UdmURLFree(&from);
       return UDM_ERROR;

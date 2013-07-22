@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -42,6 +42,10 @@
 #include "udm_vars.h"
 #include "udm_sqldbms.h"
 #include "udm_xmalloc.h"
+
+#if defined(SIZEOF_LONG) && (SIZEOF_LONG == 8)
+#define SYB_LP64
+#endif
 
 #if HAVE_CTLIB
 #include <ctpublic.h>
@@ -187,6 +191,7 @@ ex_execute_cmd(UDM_DB *db,CS_CHAR *cmdbuf)
 
       case CS_CMD_FAIL:
         query_code= CS_FAIL;
+        DisplayError(db, "ct_results");
         break;
 
       case CS_STATUS_RESULT:
@@ -227,12 +232,27 @@ unlock_ret:
 }
 
 
+/*
+  Change current database to the give dbname.
+  MSSQL supports quotes around database name,
+  which allows database names consisting of only digits.
+  Sybase does not quotes.
+*/
+static int
+UdmCTLIBUseDB(UDM_DB *db, const char *dbname)
+{
+  CS_CHAR cmdbuf[128];
+  const char *quot= db->DBType == UDM_DB_MSSQL ? "\"" : "";
+  udm_snprintf(cmdbuf, sizeof(cmdbuf), "use %s%s%s", quot, db->DBName, quot);
+  return ex_execute_cmd(db, cmdbuf);
+}
+
+
 static int
 UdmCTLIBConnect(UDM_DB *db)
 {
   CS_RETCODE  retcode;
   CS_INT      netio_type = CS_SYNC_IO;
-  CS_CHAR     cmdbuf[128];
   UDM_CTLIB   *ct;
   const char* DBUser= UdmVarListFindStr(&db->Vars,"DBUser",NULL);
   const char* DBPass= UdmVarListFindStr(&db->Vars,"DBPass",NULL);
@@ -264,20 +284,25 @@ UdmCTLIBConnect(UDM_DB *db)
   }
 #endif
   
-  
+
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-pedantic"    
+#endif
   if (CS_SUCCEED != (retcode= ct_callback(ct->ctx, NULL, CS_SET, CS_CLIENTMSG_CB,(CS_VOID *)ex_clientmsg_cb)))
   {
     DisplayError(db, "ct_callback(client)");
     goto ex1;
   }
   
-  
   if (CS_SUCCEED != (retcode= ct_callback(ct->ctx, NULL, CS_SET, CS_SERVERMSG_CB,(CS_VOID *)ex_servermsg_cb)))
   {
     DisplayError(db, "ct_callback(server)");
     goto ex1;
   }
-
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
 
   if (CS_SUCCEED != (retcode= ct_config(ct->ctx, CS_SET, CS_NETIO, &netio_type, CS_UNUSED, NULL)))
   {
@@ -301,6 +326,10 @@ ex1:
     goto unlock_ex;
   }
 
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual" 
+#endif
   if (DBUser != NULL &&
       CS_SUCCEED != (retcode= ct_con_props(ct->conn, CS_SET, CS_USERNAME, (char*) DBUser, CS_NULLTERM, NULL)))
   {
@@ -326,7 +355,9 @@ ex1:
     DisplayError(db, "ct_connect(appname)");
     goto ex2;
   }
-
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
 
 ex2:
   if (retcode != CS_SUCCEED)
@@ -337,10 +368,9 @@ ex2:
   }
 
   db->connected= 1;
-  udm_snprintf(cmdbuf, sizeof(cmdbuf), "use %s\n", db->DBName);
-  if ((retcode= ex_execute_cmd(db, cmdbuf)) != CS_SUCCEED)
+  if (CS_SUCCEED != (retcode= UdmCTLIBUseDB(db, db->DBName)))
     db->errcode= 1;
-  
+
 unlock_ex:
   db->errcode= (retcode == CS_SUCCEED) ? 0 : 1;
   return (retcode == CS_SUCCEED) ? UDM_OK : UDM_ERROR;
@@ -586,9 +616,17 @@ ex_fetch_data(UDM_DB *db, UDM_SQLRES *res, CS_COMMAND *cmd)
         /* valuelen includes trailing 0 */
         if (!coldata[i].indicator)
         {
-          res->Items[offs].val= (char*)UdmMalloc(coldata[i].valuelen);
-          memcpy(res->Items[offs].val,coldata[i].value,coldata[i].valuelen);
-          res->Items[offs].len= coldata[i].valuelen-1;
+          if (coldata[i].valuelen)
+          {
+            res->Items[offs].val= (char*)UdmMalloc(coldata[i].valuelen);
+            memcpy(res->Items[offs].val,coldata[i].value,coldata[i].valuelen);
+            res->Items[offs].len= coldata[i].valuelen;
+          }
+          else
+          {
+            res->Items[offs].val= UdmStrdup("");
+            res->Items[offs].len= 0;
+          }
         }
         else
         {
@@ -662,8 +700,16 @@ UdmCTLIBQuery(UDM_DB *db, UDM_SQLRES *res, const char * query)
     db->errcode=1;
     goto unlock_ret;
   }
-  
+
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"   
+#endif
   retcode = ct_command(cmd, CS_LANG_CMD, (char*) query, CS_NULLTERM, CS_UNUSED);
+#ifdef HAVE_GCC_PRAGMA_PUSH
+#pragma GCC diagnostic pop
+#endif
+
   if (retcode != CS_SUCCEED)
   {
     DisplayError(db, "ct_command");

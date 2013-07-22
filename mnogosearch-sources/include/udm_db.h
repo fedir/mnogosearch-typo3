@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -289,7 +289,7 @@ extern int UdmFindURL(UDM_AGENT *Indexer, UDM_DOCUMENT * Doc, UDM_DB *db);
 extern int UdmApplyFastLimit(UDM_URLCRDLIST *Coord, UDM_URLID_LIST *urls);
 extern int UdmBuildCmpArgSQL(UDM_DB *db, int match, const char *word,
                              char *cmparg, size_t maxlen);
-extern const char* UdmSQLBuildWhereCondition(UDM_ENV * Conf,UDM_DB *db);
+extern int UdmSQLBuildWhereCondition(UDM_ENV * Conf,UDM_DB *db, char const **dst);
 
 /***************/
 

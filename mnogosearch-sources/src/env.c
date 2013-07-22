@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -48,6 +48,23 @@
 #include "udm_mutex.h"
 
 /**************************** DBAddr ***********************************/
+void
+UdmEnvSetDirs(UDM_ENV *Env)
+{
+  char dir[256];
+  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_CONF);
+  UdmVarListReplaceStr(&Env->Vars, "ConfDir", dir);
+
+  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_SHARE);
+  UdmVarListReplaceStr(&Env->Vars, "ShareDir", dir);
+
+  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_VAR);
+  UdmVarListReplaceStr(&Env->Vars, "VarDir", dir);
+
+  UdmGetDir(dir, sizeof(dir), UDM_DIRTYPE_VAR);
+  UdmVarListReplaceStr(&Env->Vars, "TmpDir", dir);
+}
+
 
 __C_LINK UDM_ENV * __UDMCALL
 UdmEnvInit(UDM_ENV *Conf)
@@ -150,8 +167,19 @@ UdmEnvPrepare(UDM_ENV *Env)
 #ifdef MECAB
    if (!Env->mecab)
    {
-     const char *mecab_argv[] = { "mecab", "-F%m\" \"", "-E\" \"", "-B\" \"", NULL };
-     if (!(Env->mecab= mecab_new (4, (char**) mecab_argv)))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+     static char *mecab_argv[]=
+     {
+       (char *) "mecab",
+       (char *) "-F%m\" \"",
+       (char *) "-E\" \"",
+       (char *) "-B\" \"",
+       NULL
+     };
+#pragma GCC diagnostic pop
+
+     if (!(Env->mecab= mecab_new (4, mecab_argv)))
      {
        udm_snprintf(Env->errstr, sizeof(Env->errstr) - 1,
                     "mecab_new failed: %s", mecab_strerror(Env->mecab));
@@ -172,4 +200,17 @@ UdmEnvPrepare(UDM_ENV *Env)
   }
   UdmSynonymListListSortItems(&Env->Synonym);
   return UDM_OK;
+}
+
+
+int
+UdmEnvDBListAdd(UDM_ENV *Env, const char *dbaddr, int mode)
+{
+  int rc;
+  if(UDM_OK != (rc= UdmDBListAdd(&Env->dbl, dbaddr, mode)))
+  {
+    udm_snprintf(Env->errstr, sizeof(Env->errstr), "%s", Env->dbl.errstr);
+    rc=UDM_ERROR;
+  }
+  return rc;
 }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2011 Lavtech.com corp. All rights reserved.
+/* Copyright (C) 2000-2013 Lavtech.com corp. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -71,12 +71,12 @@ UdmURLDataListGroupBySiteUsingSort(UDM_AGENT *A,
        Dat < End; Dat++)
     Dat->per_site= 1;
 
-  UdmLog(A,UDM_LOG_DEBUG,"Start sort by site_id %d docs", R->nitems);
+  UdmLog(A,UDM_LOG_DEBUG,"Start sort by site_id %d docs", (int) R->nitems);
   ticks=UdmStartTimer();
   UdmURLDataSortBySite(R);
   UdmLog(A,UDM_LOG_DEBUG,"Stop sort by site_id:\t%.2f",UdmStopTimer(&ticks));
   
-  UdmLog(A,UDM_LOG_DEBUG,"Start group by site_id %d docs", R->nitems);
+  UdmLog(A,UDM_LOG_DEBUG,"Start group by site_id %d docs", (int) R->nitems);
   ticks=UdmStartTimer();
   UdmURLDataGroupBySite(R);
   UdmLog(A,UDM_LOG_DEBUG,"Stop group by site_id:\t%.2f", UdmStopTimer(&ticks));
@@ -190,12 +190,14 @@ UdmURLDataListGroupBySiteUsingHash(UDM_AGENT *A,
   }
 
   if (nbad >= 4)
-    UdmLog(A, UDM_LOG_DEBUG, "GroupBySite may have worked incorrectly. Total URL_IDs not found in '#rec_id': %d", nbad);
+    UdmLog(A, UDM_LOG_DEBUG, "GroupBySite may have worked incorrectly. "
+                             "Total URL_IDs not found in '#rec_id': %d",
+                             (int) nbad);
 
   ticks= UdmStartTimer();
   j= DataList->nitems= UdmURLDataCompact(DataList->Item, HashData, hcoords);
   UdmLog(A, UDM_LOG_DEBUG, "HashCompact %d to %d done: %.2f",
-         hcoords, DataList->nitems, UdmStopTimer(&ticks));
+         (int) hcoords, (int) DataList->nitems, UdmStopTimer(&ticks));
   UdmFree(HashData);
   return UDM_OK;
 }
