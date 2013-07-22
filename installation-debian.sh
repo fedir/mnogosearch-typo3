@@ -6,6 +6,8 @@
 # License : GNU General Public License (http://www.gnu.org/licenses/gpl.html)
 ##############################################
 
+CURRENT_VERSION="3.3.14"
+
 ok() {
 	MSG=$1
 	echo "[OK] ${MSG}"
@@ -15,16 +17,15 @@ apt-get install make automake autoconf gcc php5-dev mysql-server libmysqlclient1
 ok "Dependencies installation for mnoGoSearch compilation"
 
 # Install search engine
-LOCAL_SOURCES=
 echo -n "Would You like to use local mnogosearch sources ? [y/N] "
-read query
+read LOCAL_SOURCES
 if [ "${LOCAL_SOURCES}" = "y" ] || [ "${LOCAL_SOURCES}" = "Y" ]; then
 	cd mnogosearch-sources
 else
 	cd ~/
-	wget http://www.mnogosearch.org/Download/mnogosearch-3.3.11.tar.gz
-	tar xzf mnogosearch-3.3.11.tar.gz
-	cd mnogosearch-3.3.11
+	wget http://www.mnogosearch.org/Download/mnogosearch-${CURRENT_VERSION}.tar.gz
+	tar xzf mnogosearch-${CURRENT_VERSION}.tar.gz
+	cd mnogosearch-${CURRENT_VERSION}
 	ok "Sources download"
 fi
 
