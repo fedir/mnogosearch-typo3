@@ -13,7 +13,7 @@ ok() {
 	echo "[OK] ${MSG}"
 }
 
-# Install search engine
+# Install mnoGoSearch search engine
 apt-get install make automake autoconf gcc php5-dev mysql-server libmysqlclient15-dev zlib1g zlib1g-dev
 ok "Dependencies installation for mnoGoSearch compilation"
 echo -n "Would You like to use local mnogosearch sources ? [y/N] "
