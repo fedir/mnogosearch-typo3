@@ -23,5 +23,6 @@ You could use installation script for Debian / Ubuntu systems
 
     bash installation-debian.sh
     
-* Copy the TYPO3 extension sources into Your typo3conf/ext folder
-* Configure the extension in TYPO3 BE after official manual
+Copy the TYPO3 extension sources into Your typo3conf/ext folder.
+
+Configure the extension in TYPO3 BE after official manual.
