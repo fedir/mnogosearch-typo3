@@ -12,7 +12,7 @@ Systematization of elements to proceed installation of mnoGoSearch search engine
 
 ## Steps ##
 
-* Install mnogosearch
+### Install mnogosearch
 
 Get sources
 
