@@ -18,8 +18,8 @@ Get sources
 
     git clone https://github.com/fedir/mnogosearch-typo3.git
 
-Compile mnoGoSearch search engine from sources under root account 
-You could use installation script for Debian / Ubuntu systems
+Compile mnoGoSearch search engine from sources under root account.
+You could use installation script for Debian / Ubuntu systems.
 
     bash installation-debian.sh
     
