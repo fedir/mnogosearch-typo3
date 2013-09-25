@@ -2,7 +2,7 @@
 
 ## Description ##
 
-Systematization of elements to proceed installation of mnoGoSearch search engine on TYPO3 CMS 4.x.
+Elements to proceed installation of mnoGoSearch search engine on TYPO3 CMS v.4.x.
 
 ## Project structure ##
 
