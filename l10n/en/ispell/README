@@ -1,0 +1,39 @@
+In english.zip you find four different english variants of ISPELL
+dictionaries with one common affix file (english.aff):
+  english/american.med+
+  english/american.xlg
+  english/british.med+
+  english/british.xlg
+  english/english.aff
+
+They are created with ispell-3.1.20 on a SGI UNIX box. The med+
+versions does contain extra words from a british dictionary
+(british.med+) or the equivalent american version (american.med+).
+The xlg versions are extra large versions. It is recommended to
+select one of the med+ versions as your default and to select the
+xlg versions via the `-d US-xlg' or `-d UK-xlg' ispell flags.
+
+Suppose we choose for the british.med+ as our default for english. Then
+you can build all hash files with (buildhash.exe should be in your PATH):
+
+   cd english
+   buildhash british.med+  english.aff c:\ispell\lib\english.hash
+   buildhash american.med+ english.aff c:\ispell\lib\american.hash
+   buildhash british.xlg   english.aff c:\ispell\lib\UK-xlg.hash
+   buildhash american.xlg  english.aff c:\ispell\lib\US-xlg.hash
+
+For ispell insiders the value of LANGUAGES (normally one line,
+here broken up for readability) and MASTERHASH in local.h used to
+generate above compressed wordlists are:
+#define MASTERHASH "britishmed+.hash"
+#define LANGUAGES
+"{british,MASTERDICTS=british.med+,HASHFILES=britishmed+.hash,
+          EXTRADICT=/usr/local/dict/words /usr/local/dict/british}
+ {british,MASTERDICTS=british.xlg,HASHFILES=britishxlg.hash,EXTRADICT=}
+ {american,MASTERDICTS=american.med+,HASHFILES=americanmed+.hash,
+	  EXTRADICT=/usr/local/dict/words /usr/local/dict/american}
+ {american,MASTERDICTS=american.xlg,HASHFILES=americanxlg.hash,EXTRADICT=}
+ {nederlands,EXTRADICT=/usr/local/dict/woorden}"
+
+--pt
+19 Febr. 1998
