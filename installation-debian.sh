@@ -6,7 +6,7 @@
 # License : GNU General Public License (http://www.gnu.org/licenses/gpl.html)
 ##############################################
 
-CURRENT_VERSION="3.3.14"
+CURRENT_VERSION="3.3.15"
 
 ok() {
 	MSG=$1
