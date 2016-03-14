@@ -28,7 +28,7 @@ else
 	ok "Sources download"
 fi
 sed -i "s/\[HAVE_PGSQL\],\ \[1\]/\[HAVE_PGSQL\],\ \[0\]/" configure.in
-./configure --prefix=/opt/mnogosearch --disable-mp3 --disable-news --without-debug --with-pgsql=no --with-freetds=no --with-oracle8=no --with-oracle8i=no --with-iodbc=no --with-unixODBC=no --with-db2=no --with-solid=no --with-openlink=no --with-easysoft=no --with-sapdb=no --with-ibase=no --with-ctlib=no --with-zlib --with-mysql --disable-syslog
+./configure --prefix=/opt/mnogosearch --disable-mp3 --disable-news --without-debug --with-pgsql=no --with-freetds=no --with-oracle8=no --with-oracle8i=no --with-iodbc=no --with-unixODBC=no --with-db2=no --with-solid=no --with-openlink=no --with-easysoft=no --with-sapdb=no --with-ibase=no --with-ctlib=no --with-zlib --with-mysql --disable-syslog --with-openssl
 sed -i "s/\/\*\ #undef\ HAVE_PGSQL\ \*\//#undef\ HAVE_PGSQL/" include/udm_autoconf.h
 ok "Sources patching"
 make
