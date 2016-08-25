@@ -45,4 +45,12 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/mnogosearch/lib/
 make
 ok "PHP extension compilation"
 make install
+
+echo 'extension=mnogosearch.so' > /etc/php5/mods-available/mnogosearch.ini
+chmod a+r /etc/php5/mods-available/mnogosearch.ini
+cd /etc/php5/apache2/conf.d && ln -s ../../mods-available/mnogosearch.ini 30-mnogosearch.ini
+cd /etc/php5/cli/conf.d && ln -s ../../mods-available/mnogosearch.ini 30-mnogosearch.ini
+cd /etc/php5/cgi/conf.d && ln -s ../../mods-available/mnogosearch.ini 30-mnogosearch.ini
+apache2ctl configtest && apache2ctl graceful
+
 ok "PHP extension installation"
